@@ -1,0 +1,3 @@
+# Bản xem thử, không cho máy tìm kiếm vào (docs/phuong-an-dua-ban-xem-thu.md)
+User-agent: *
+Disallow: /

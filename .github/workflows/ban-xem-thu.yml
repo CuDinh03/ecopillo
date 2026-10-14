@@ -1,0 +1,81 @@
+# Bản xem thử cho Ecopillo duyệt giao diện: build rồi đưa lên Cloudflare Pages (có mã, chặn Google).
+# Cách làm, cách gỡ khi khách chốt: docs/phuong-an-dua-ban-xem-thu.md trên máy owner.
+#
+# Secrets cần đặt ở GitHub (Settings → Secrets and variables → Actions):
+#   CLOUDFLARE_API_TOKEN   token Cloudflare, quyền Account → Cloudflare Pages → Edit
+#   CLOUDFLARE_ACCOUNT_ID  mã tài khoản Cloudflare
+#   XEM_THU_MA             mã xem thử gửi khách (đổi là chặn mọi link cũ)
+name: Bản xem thử
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Lần đẩy mới thì huỷ lần đang chạy dở, chỉ đưa lên bản mới nhất
+concurrency:
+  group: ban-xem-thu
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  PROJECT: ecopillo-xem-thu
+
+jobs:
+  dua-len:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Kiểm đã đặt đủ secrets
+        run: |
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID XEM_THU_MA; do
+            if [ -z "${!name}" ]; then echo "::error::Chưa đặt secret $name"; exit 1; fi
+          done
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          XEM_THU_MA: ${{ secrets.XEM_THU_MA }}
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 9.15.9
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Kiểm kiểu và lint
+        run: |
+          pnpm exec tsc -b
+          pnpm exec eslint src tools
+
+      - name: Build bản xem thử
+        run: pnpm exec vite build --outDir dist-xem-thu
+        env:
+          VITE_BAN_XEM_THU: '1'
+          XEM_THU_URL: https://${{ env.PROJECT }}.pages.dev
+
+      - name: Đóng gói, kiểm chặn Google, ảnh ẩn, chữ cấm
+        run: node tools/chuan-bi-ban-xem-thu.mjs
+
+      - name: Đưa lên Cloudflare Pages
+        uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4.1.3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4.142.0'
+          workingDirectory: .xem-thu
+          # Lần đầu: tạo dự án (đã có thì bỏ qua), rồi đặt mã xem thử cho cổng hỏi mã
+          preCommands: |
+            npx wrangler pages project create ${{ env.PROJECT }} --production-branch=main || true
+            printf '%s' "$XEM_THU_MA" | npx wrangler pages secret put XEM_THU_MA --project-name=${{ env.PROJECT }}
+          command: pages deploy site --project-name=${{ env.PROJECT }} --branch=main --commit-dirty=true
+        env:
+          XEM_THU_MA: ${{ secrets.XEM_THU_MA }}

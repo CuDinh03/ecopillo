@@ -1,0 +1,224 @@
+/*!
+ * Ecopillo · Hiệu ứng êm v1.0
+ * Hiện dần khi cuộn, chữ trượt vào, ảnh trôi chậm, đổi ảnh sản phẩm khi rê chuột, cuộn trôi (Lenis).
+ * Chỉ dùng opacity / translate / scale nên trình duyệt không phải tính lại bố cục trang.
+ * Không có JS thì nội dung vẫn hiện đủ (chỉ ẩn khi <html> có lớp .ecm-js).
+ */
+
+:root {
+  --ecm-ease: cubic-bezier(0.22, 1, 0.36, 1); /* chậm dần về cuối, giống --ease-soft của bản web mới */
+  --ecm-dur: 0.7s;
+  --ecm-dist: 24px;   /* hiện dần: nhích lên bao nhiêu */
+  --ecm-side: 32px;   /* chữ trượt vào từ bên trái / phải */
+  --ecm-range: 6%;    /* ảnh trôi chậm: biên độ, tính theo chiều cao ảnh */
+  --ecm-header: 72px; /* chiều cao thanh menu dính trên cùng, để nhảy tới mục không bị che */
+}
+
+@media (max-width: 767px) {
+  :root {
+    --ecm-dist: 16px;
+    --ecm-side: 18px;
+    --ecm-range: 3.5%;
+  }
+}
+
+html {
+  scroll-padding-top: var(--ecm-header);
+}
+
+/* ---------- 1. Hiện dần khi cuộn ---------- */
+/* Lớp: ecm-reveal (nhích lên) · ecm-reveal-left · ecm-reveal-right (chữ trượt vào) · ecm-fade (chỉ mờ dần)
+   ecm-stagger đặt trên khối cha: các con hiện lần lượt cách nhau 90ms.
+   Thuộc tính data-reveal của bản web mới cũng chạy được.
+   Chỉ chạy khi <html> có .ecm-js (đoạn script nhỏ trong <head>); JS đến quá muộn thì nội dung hiện luôn, không nháy. */
+
+.ecm-js :is(.ecm-reveal, .ecm-reveal-left, .ecm-reveal-right, .ecm-fade, .ecm-stagger > *, [data-reveal]):not(.is-visible) {
+  opacity: 0;
+}
+
+.ecm-js :is(.ecm-reveal, .ecm-stagger > *, [data-reveal]).is-visible {
+  /* backwards: sau khi chạy xong không giữ lại gì, nên hiệu ứng rê chuột của thẻ vẫn chạy bình thường */
+  animation: ecm-up var(--ecm-dur) var(--ecm-ease) var(--reveal-delay, 0ms) backwards;
+}
+
+.ecm-js :is(.ecm-reveal-left, [data-reveal='left']).is-visible {
+  animation: ecm-left var(--ecm-dur) var(--ecm-ease) var(--reveal-delay, 0ms) backwards;
+}
+
+.ecm-js :is(.ecm-reveal-right, [data-reveal='right']).is-visible {
+  animation: ecm-right var(--ecm-dur) var(--ecm-ease) var(--reveal-delay, 0ms) backwards;
+}
+
+.ecm-js :is(.ecm-fade, [data-reveal='fade']).is-visible {
+  animation: ecm-fade var(--ecm-dur) var(--ecm-ease) var(--reveal-delay, 0ms) backwards;
+}
+
+.ecm-stagger > :nth-child(6n + 2) { --reveal-delay: 90ms; }
+.ecm-stagger > :nth-child(6n + 3) { --reveal-delay: 180ms; }
+.ecm-stagger > :nth-child(6n + 4) { --reveal-delay: 270ms; }
+.ecm-stagger > :nth-child(6n + 5) { --reveal-delay: 360ms; }
+.ecm-stagger > :nth-child(6n + 6) { --reveal-delay: 450ms; }
+
+/* ---------- 2. Phần đầu trang: ảnh đứng yên, chữ hiện dần ---------- */
+/* ecm-hero trên khối chứa chữ: các con hiện lần lượt ngay khi tải trang. Chỉ là CSS, không chờ JS. */
+
+.ecm-hero > * {
+  animation: ecm-up 0.9s var(--ecm-ease) calc(120ms + var(--hero-i, 0) * 120ms) backwards;
+}
+.ecm-hero > :nth-child(2) { --hero-i: 1; }
+.ecm-hero > :nth-child(3) { --hero-i: 2; }
+.ecm-hero > :nth-child(4) { --hero-i: 3; }
+.ecm-hero > :nth-child(n + 5) { --hero-i: 4; }
+
+/* ---------- 3. Ảnh trôi chậm hơn chữ (parallax) ---------- */
+/* ecm-parallax trên khung chứa ảnh (khối Ảnh hoặc khối Ảnh bìa của WordPress).
+   Trình duyệt mới chạy bằng CSS (không tốn JS); trình duyệt cũ do JS lo. */
+
+.ecm-parallax {
+  position: relative;
+  overflow: hidden;
+  view-timeline: --ecm-frame block;
+}
+
+.ecm-parallax > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  scale: 1.16;
+  will-change: translate;
+}
+
+@supports (animation-timeline: view()) {
+  .ecm-parallax > img {
+    animation: ecm-drift linear both;
+    animation-timeline: --ecm-frame;
+    animation-range: cover 0% cover 100%;
+  }
+}
+
+/* ---------- 4. Ảnh sản phẩm: rê chuột thì mờ dần sang ảnh cận chất vải ---------- */
+/* <div class="ecm-swap"><img ảnh chính><img class="ecm-swap__alt" ảnh cận vải loading="lazy"></div> */
+
+.ecm-swap {
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+
+.ecm-swap > img {
+  display: block;
+  width: 100%;
+  transition: opacity var(--ecm-dur) var(--ecm-ease), scale 1.1s var(--ecm-ease);
+}
+
+.ecm-swap > .ecm-swap__alt {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+}
+
+/* Nhãn "Giảm giá", "Hết hàng" của WooCommerce nằm trên cả hai ảnh */
+.ecm-swap > :not(img) {
+  z-index: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :is(.ecm-swap:hover, :where(.product, .ecm-card):hover .ecm-swap) > img {
+    scale: 1.03;
+  }
+  :is(.ecm-swap:hover, :where(.product, .ecm-card):hover .ecm-swap) > .ecm-swap__alt {
+    opacity: 1;
+  }
+}
+
+:where(a, .product, .ecm-card):focus-visible .ecm-swap > .ecm-swap__alt,
+.ecm-swap:focus-within > .ecm-swap__alt {
+  opacity: 1;
+}
+
+/* ---------- 5. Cuộn trôi (Lenis) ---------- */
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+html.lenis {
+  scroll-behavior: auto !important; /* "smooth" của CSS sẽ đánh nhau với Lenis */
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+.lenis [data-lenis-prevent],
+.lenis [data-lenis-prevent-wheel],
+.lenis [data-lenis-prevent-touch] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ---------- Chuyển động ---------- */
+
+@keyframes ecm-up {
+  from { opacity: 0; translate: 0 var(--ecm-dist); }
+}
+
+@keyframes ecm-left {
+  from { opacity: 0; translate: calc(var(--ecm-side) * -1) 0; }
+}
+
+@keyframes ecm-right {
+  from { opacity: 0; translate: var(--ecm-side) 0; }
+}
+
+@keyframes ecm-fade {
+  from { opacity: 0; }
+}
+
+@keyframes ecm-drift {
+  from { translate: 0 calc(var(--ecm-range) * -1); }
+  to { translate: 0 var(--ecm-range); }
+}
+
+/* ---------- Tắt hiệu ứng ---------- */
+/* Máy bật "Giảm chuyển động": chỉ còn mờ dần, không trượt, không trôi. */
+
+@media (prefers-reduced-motion: reduce) {
+  .ecm-js :is(.ecm-reveal, .ecm-reveal-left, .ecm-reveal-right, .ecm-stagger > *, [data-reveal]).is-visible,
+  .ecm-hero > * {
+    animation-name: ecm-fade;
+  }
+  .ecm-parallax > img {
+    animation: none;
+    translate: none;
+    scale: 1;
+  }
+  .ecm-swap > img {
+    transition-property: opacity;
+  }
+}
+
+/* html.ecm-off: tắt hẳn (dùng khi cần so sánh hoặc tìm lỗi) */
+.ecm-off :is(.ecm-reveal, .ecm-reveal-left, .ecm-reveal-right, .ecm-fade, .ecm-stagger > *, [data-reveal], .ecm-hero > *) {
+  opacity: 1 !important;
+  animation: none !important;
+}
+.ecm-off .ecm-parallax > img {
+  animation: none;
+  translate: none;
+  scale: 1;
+}
+
+@media print {
+  .ecm-js :is(.ecm-reveal, .ecm-reveal-left, .ecm-reveal-right, .ecm-fade, .ecm-stagger > *, [data-reveal]) {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+}

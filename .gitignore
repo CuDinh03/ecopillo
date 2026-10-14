@@ -1,0 +1,36 @@
+# Ecopillo: CHẶN HẾT, CHỈ CHO PHÉP phần cần để build web.
+# Thư mục này còn chứa biên bản, hợp đồng (chot hop dong/, bien-ban-*), tài liệu nội bộ (docs/),
+# ảnh gốc của khách (images/, 214 MB) và bản sao lưu (_sao-luu/). Không cái nào được lên GitHub.
+# Muốn đưa thêm gì lên thì thêm dòng "!" ở dưới, rồi xem `git status` trước khi commit.
+# Lý do và cách làm: docs/phuong-an-dua-ban-xem-thu.md (file này cũng KHÔNG lên GitHub).
+
+/*
+
+!/.gitignore
+!/.github/
+!/CLAUDE.md
+!/package.json
+!/pnpm-lock.yaml
+!/index.html
+!/vite.config.ts
+!/tsconfig.json
+!/tsconfig.app.json
+!/tsconfig.node.json
+!/eslint.config.js
+!/src/
+!/public/
+!/tools/
+!/trien-khai/
+
+# Trong các thư mục được phép vẫn chặn
+.DS_Store
+._*
+__pycache__/
+*.log
+*.local
+.env
+.env.*
+
+# Ảnh in sẵn chữ chất liệu cũ đã bỏ (src/data/catalog.ts, mẫu ER12). Chờ Ecopillo gửi ảnh mới
+/public/images/patterns/chan-he-ER12.webp
+/public/images/patterns/chan-he-ER12-sm.webp

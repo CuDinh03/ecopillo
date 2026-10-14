@@ -1,0 +1,431 @@
+@import 'tailwindcss';
+
+/*
+ * Font dự phòng đã chỉnh cỡ, dùng trong lúc font web (Google Fonts, display=swap) chưa về.
+ * Font máy hẹp hơn font web 5–15%, nên khi font web về thì chữ rộng ra, tiêu đề rớt thêm một dòng và đẩy cả trang
+ * xuống (đo 14/10/2026: CLS 0,16–0,18 ở /san-pham khổ 360px). size-adjust kéo font máy rộng bằng font web,
+ * ascent/descent-override giữ đường chân chữ đứng yên. Mỗi họ là một font máy: máy không có font đó thì trình duyệt
+ * bỏ qua và thử họ kế tiếp trong --font-sans / --font-display.
+ * Số đo: bề ngang chữ thật trên 7 trang, font web chia cho font máy (canvas measureText, Chrome).
+ * Đổi font web thì phải đo lại; kiểm bằng `TRE_FONT=1200 node tools/kiem-tra-mobile/do-cls.mjs <đường-link>`.
+ */
+@font-face {
+  font-family: 'Be Vietnam Pro Roboto'; /* Android */
+  src: local('Roboto'), local('Roboto-Regular');
+  size-adjust: 109.4%;
+  ascent-override: 91.4%;
+  descent-override: 24.2%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro Helvetica'; /* iPhone, Mac */
+  src: local('Helvetica Neue'), local('HelveticaNeue');
+  size-adjust: 106.2%;
+  ascent-override: 94.2%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Be Vietnam Pro Arial'; /* Windows và máy còn lại */
+  src: local('Arial'), local('ArialMT');
+  size-adjust: 106.5%;
+  ascent-override: 93.9%;
+  descent-override: 24.9%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Noto Serif Display Georgia'; /* iPhone, Mac, Windows */
+  src: local('Georgia');
+  size-adjust: 104.9%;
+  ascent-override: 101.9%;
+  descent-override: 27.9%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Noto Serif Display Georgia';
+  font-style: italic;
+  src: local('Georgia Italic'), local('Georgia-Italic');
+  size-adjust: 101.5%;
+  ascent-override: 105.3%;
+  descent-override: 28.9%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Noto Serif Display Noto Serif'; /* Android */
+  src: local('Noto Serif'), local('NotoSerif'), local('NotoSerif-Regular');
+  size-adjust: 98.5%;
+  ascent-override: 108.5%;
+  descent-override: 29.7%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Noto Serif Display Noto Serif';
+  font-style: italic;
+  src: local('Noto Serif Italic'), local('NotoSerif-Italic');
+  size-adjust: 99.2%;
+  ascent-override: 107.8%;
+  descent-override: 29.5%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Noto Serif Display Times';
+  src: local('Times New Roman'), local('TimesNewRomanPSMT');
+  size-adjust: 114.6%;
+  ascent-override: 93.3%;
+  descent-override: 25.6%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Noto Serif Display Times';
+  font-style: italic;
+  src: local('Times New Roman Italic'), local('TimesNewRomanPS-ItalicMT');
+  size-adjust: 113.6%;
+  ascent-override: 94.1%;
+  descent-override: 25.8%;
+  line-gap-override: 0%;
+}
+
+@theme {
+  --font-sans:
+    'Be Vietnam Pro', 'Be Vietnam Pro Roboto', 'Be Vietnam Pro Helvetica', 'Be Vietnam Pro Arial', ui-sans-serif, system-ui,
+    sans-serif;
+  --font-display:
+    'Noto Serif Display', 'Noto Serif Display Georgia', 'Noto Serif Display Noto Serif', 'Noto Serif Display Times',
+    'Times New Roman', serif;
+
+  /*
+   * Bộ màu nhận diện thương hiệu Ecopillo — CHỈ dùng 6 mã này (cộng màu đỏ bổ sung bên dưới):
+   * #2D2E8D chàm đậm · #333DBA chàm sáng · #D3EFFF xanh nhạt · #E9F8FF xanh rất nhạt
+   * #FFFFFF trắng · #FFC271 vàng (chỉ cho quà tặng, ưu đãi — không làm màu chính)
+   * Tên token cũ được giữ để không phải sửa từng component.
+   */
+  --color-brand-navy: #2d2e8d;
+  --color-brand-blue: #333dba;
+  --color-brand-sky: #d3efff;
+  --color-brand-mist: #e9f8ff;
+  --color-brand-white: #ffffff;
+  --color-brand-gold: #ffc271;
+
+  /* Khối đậm, chữ tiêu đề, nút chính */
+  --color-deep-950: #2d2e8d;
+  --color-deep-900: #2d2e8d;
+  --color-deep-800: #2d2e8d;
+  --color-deep-700: #333dba;
+  --color-deep-600: #333dba;
+
+  /* Điểm nhấn, nền nhạt */
+  --color-mist-600: #333dba;
+  --color-mist-500: #FFFFFF;
+  --color-mist-400: #FFFFFF;
+  --color-mist-300: #FFFFFF;
+  --color-mist-200: #FFFFFF;
+  --color-mist-100: #e9f8ff;
+  --color-mist-50: #e9f8ff;
+
+  /* Nền trang: #D3EFFF. Thẻ, ô nhập, khối nổi: trắng. Khối xen kẽ: #E9F8FF */
+  --color-page: #FFFFFF;
+  --color-ivory: #ffffff;
+  --color-cream-50: #e9f8ff;
+  --color-cream-100: #e9f8ff;
+  --color-cream-200: #d3efff;
+  --color-cream-300: #d3efff;
+
+  /* Quà tặng, ưu đãi: nền vàng, chữ chàm */
+  --color-brass-600: #2d2e8d;
+  --color-brass-500: #ffc271;
+  --color-brass-100: #ffc271;
+
+  /* Chữ: chàm đậm; chữ phụ dùng chính mã chàm với độ trong suốt */
+  --color-ink: #2d2e8d;
+  --color-ink-soft: rgb(45 46 141 / 0.8);
+  --color-ink-faint: rgb(45 46 141 / 0.6);
+
+  /* Màu đỏ bổ sung theo biên bản (mục 20): "Hết hàng", khuyến mãi, giá giảm, lỗi nhập. Không dùng làm nền lớn */
+  --color-alert: #d62828;
+  --color-alert-soft: rgb(214 40 40 / 0.09);
+  --color-sale: #d62828;
+  /* Màu đỏ CHỈ dùng cho câu "Chăn ga gối đệm cao cấp": đúng màu chữ "ETERNAL" trong logo */
+  --color-tagline: #ed1c24;
+
+  /* Màu trời lấy từ ảnh nền Bảng EC, dùng cho lớp phủ phần đầu trang chủ */
+  --color-hero-sky: #ebf6fd;
+  --color-hero-sky-top: #eef7fd;
+  --color-hero-sky-bottom: #e6f3fc;
+
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --shadow-soft: 0 1px 2px rgb(45 46 141 / 0.04), 0 8px 24px -12px rgb(45 46 141 / 0.18);
+  --shadow-lift: 0 2px 4px rgb(45 46 141 / 0.05), 0 22px 48px -20px rgb(45 46 141 / 0.32);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 4.5rem;
+  }
+
+  body {
+    @apply bg-page text-ink font-sans antialiased;
+    font-feature-settings: 'ss01';
+    line-height: 1.65;
+  }
+
+  ::selection {
+    background: var(--color-mist-200);
+    color: var(--color-deep-900);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-mist-600);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  /* Khung ảnh theo tỉ lệ: không cho ảnh làm khung cao thêm khi tải xong (tránh xô lệch khi cuộn) */
+  [class*='aspect-'] {
+    min-height: 0;
+  }
+
+  [class*='aspect-'] > img {
+    height: 100%;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
+@layer components {
+  .font-display {
+    letter-spacing: -0.01em;
+    line-height: 1.08;
+  }
+
+  .eyebrow {
+    @apply text-[0.72rem] font-medium tracking-[0.22em] uppercase text-mist-600;
+  }
+
+  /* Vân vải dệt nhẹ cho khung ảnh tạm và nền */
+  .weave {
+    background-image:
+      repeating-linear-gradient(45deg, rgb(45 46 141 / 0.05) 0 1px, transparent 1px 9px),
+      repeating-linear-gradient(-45deg, rgb(45 46 141 / 0.05) 0 1px, transparent 1px 9px);
+  }
+
+  .grain {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.35;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.176 0 0 0 0 0.18 0 0 0 0 0.553 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Đường chỉ chần — chi tiết trang trí gợi đường may */
+  .stitch {
+    background-image: linear-gradient(to right, currentColor 50%, transparent 0);
+    background-size: 10px 1px;
+    background-repeat: repeat-x;
+    height: 1px;
+  }
+
+  .placeholder-note {
+    @apply text-[0.7rem] font-medium tracking-wide;
+  }
+}
+
+@layer utilities {
+  /* Điện thoại: biến lưới thành dải vuốt ngang có hít mép; từ 640px trở lên giữ nguyên bố cục */
+  @media (max-width: 639px) {
+    .m-rail {
+      display: flex !important;
+      gap: 1.25rem !important;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      margin-inline: -1.25rem;
+      padding-inline: 1.25rem;
+      scroll-padding-inline: 1.25rem;
+      padding-bottom: 0.5rem;
+      scrollbar-width: none;
+    }
+    .m-rail::-webkit-scrollbar {
+      display: none;
+    }
+    .m-rail > *,
+    .m-rail > .contents > * {
+      flex: 0 0 84%;
+      min-width: 0;
+      scroll-snap-align: start;
+    }
+    /* Thẻ cao thấp khác nhau: mỗi thẻ cao theo nội dung, không kéo giãn khoảng trống */
+    .m-rail-start {
+      align-items: flex-start;
+    }
+  }
+
+  .pb-safe {
+    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  .reveal {
+    animation: reveal 0.7s var(--ease-soft) both;
+  }
+
+  .fade-in {
+    animation: fade-in 0.35s var(--ease-soft) both;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Hiện dần khi cuộn (useScrollReveal): chỉ ẩn khi JS đã sẵn sàng, tránh mất nội dung nếu lỗi script */
+html.reveal-ready [data-reveal]:not(.is-visible) {
+  opacity: 0;
+}
+
+[data-reveal].is-visible {
+  animation: reveal-up 0.85s var(--ease-soft) both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Vòng lan quanh nút phát video */
+.pulse-ring {
+  animation: pulse-ring 2.4s var(--ease-soft) infinite;
+}
+
+@keyframes pulse-ring {
+  from {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  /* Tắt chuyển động trượt/phóng; vẫn giữ mờ dần (opacity) vì không gây chóng mặt */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+  }
+
+  .pulse-ring {
+    animation: none;
+  }
+}
+
+/* ---------- Bản đồ đại lý (Leaflet) ---------- */
+.dealer-map {
+  font-family: var(--font-sans);
+}
+.dealer-map .leaflet-container {
+  font: inherit;
+  background: var(--color-brand-mist);
+}
+/* Nền bản đồ dịu lại cho hợp tông xanh nhạt của web */
+.dealer-map .leaflet-tile-pane {
+  filter: saturate(0.55) brightness(1.04);
+}
+.dealer-pin {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: var(--color-brand-blue);
+  border: 3px solid #fff;
+  box-shadow: 0 6px 14px -4px rgb(45 46 141 / 0.55);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.dealer-pin::after {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  background: #fff;
+}
+.dealer-pin--chinh {
+  background: var(--color-brand-navy);
+}
+.dealer-pin.is-selected {
+  transform: rotate(-45deg) scale(1.3);
+  background: var(--color-brand-navy);
+  box-shadow: 0 0 0 4px rgb(51 61 186 / 0.25), 0 10px 18px -6px rgb(45 46 141 / 0.7);
+}
+.dealer-me {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-brand-blue);
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 6px rgb(51 61 186 / 0.22);
+}
+.dealer-cluster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-brand-navy);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 5px rgb(45 46 141 / 0.18);
+}
+.dealer-map .leaflet-tooltip {
+  border: 0;
+  border-radius: 999px;
+  padding: 4px 10px;
+  color: var(--color-brand-navy);
+  font-weight: 500;
+  box-shadow: 0 6px 16px -6px rgb(45 46 141 / 0.4);
+}
+.dealer-map .leaflet-bar a {
+  color: var(--color-brand-navy);
+}
