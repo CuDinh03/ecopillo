@@ -1,203 +1,440 @@
 import { Link } from 'react-router-dom'
-import { About } from '../components/home/About'
+import { Chapter, PullQuote, Prose, STORY_COLUMN, StoryFigure } from '../components/about/StoryParts'
 import { BrandVideo } from '../components/home/BrandVideo'
 import { TrustStrip } from '../components/home/Craft'
 import { CountUp } from '../components/ui/CountUp'
-import { Icon } from '../components/ui/Icon'
-import { PageHero } from '../components/ui/PageHero'
-import { Placeholder } from '../components/ui/Placeholder'
-import { buttonClass, Container, FillIn, LinkButton, SectionHeading } from '../components/ui/primitives'
+import { Icon, type IconName } from '../components/ui/Icon'
+import { Breadcrumb } from '../components/ui/PageHero'
+import { buttonClass, FillIn, LinkButton } from '../components/ui/primitives'
+import {
+  AWARD_IMAGE,
+  AWARD_NAME,
+  BRAND_PROMISE,
+  BRAND_STATS,
+  CERTIFICATE_FILL_IN,
+  CERTIFICATES,
+  CORE_VALUES,
+  CRAFT_QUOTE,
+  FOUNDER_IMAGE,
+  FOUNDER_NAME,
+  FOUNDER_QUOTE,
+  LYOCELL_INTRO,
+  LYOCELL_TRAITS,
+  MISSION,
+  MISSION_IMAGE,
+  PHILOSOPHY,
+  STORY_OPENING,
+  STORY_REVIEW_NOTE,
+  VISION,
+  VISION_IMAGE,
+} from '../data/about'
+import { patternImage, type ImageSource } from '../data/catalog'
 import { HOTEL_PARTNERS } from '../data/content'
 import { PATHS } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 
 /**
- * Trang Giới thiệu (/gioi-thieu, giữ đường link web cũ). Ghép câu chuyện thương hiệu, triết lý
- * Tốt · Thật · Thiện, sứ mệnh, tầm nhìn (biên bản mục 11, 29, 41), phim thương hiệu và chứng nhận (mục 31).
+ * Trang Giới thiệu (/gioi-thieu, giữ đường link web cũ) dạng chương sách (mẫu 1, owner chọn 16/10/2026,
+ * bìa là ảnh chị Phương tại VTV3 theo yêu cầu owner; mẫu: docs/de-xuat-trang-ve-chung-toi.html).
+ * Bìa + mục lục → Lời mở → 6 chương số La Mã → Lời kết mời ghé thăm. Chữ dùng chung với trang chủ ở data/about.ts.
+ * Tên chương là chữ nối mạch truyện, chờ Ecopillo duyệt cùng phần câu chuyện (STORY_REVIEW_NOTE).
  */
 
-const STATS = [
-  { value: '15+', label: 'năm trong nghề chăn ga gối đệm' },
-  { value: '15.000+', label: 'gia đình, khách sạn tin dùng' },
-  { value: '2', label: 'văn phòng tại Hà Nội và TP. HCM' },
-] as const
+interface TocItem {
+  id: string
+  numeral: string
+  title: string
+  icon: IconName
+}
 
-const CERTIFICATES = [
-  {
-    name: 'ISO 9001:2015',
-    text: 'Hệ thống quản lý chất lượng trong sản xuất được chứng nhận theo tiêu chuẩn quốc tế.',
-    logo: '/images/partners/iso-9001.webp',
-  },
-  {
-    name: 'TQC',
-    text: 'Chứng nhận chất lượng sản phẩm, hàng hoá phù hợp tiêu chuẩn.',
-    logo: '/images/partners/tqc.webp',
-  },
-  {
-    name: 'Thương hiệu dẫn đầu Việt Nam 2025',
-    text: 'Danh hiệu ghi nhận chất lượng sản phẩm và uy tín với khách hàng.',
-    logo: null,
-  },
-] as const
+const TOC: readonly TocItem[] = [
+  { id: 'loi-mo', numeral: '', title: 'Lời mở: một giấc ngủ không trọn', icon: 'night' },
+  { id: 'chuong-1', numeral: 'I', title: 'Người làm nghề', icon: 'feather' },
+  { id: 'chuong-2', numeral: 'II', title: 'Chốn Yên', icon: 'home' },
+  { id: 'chuong-3', numeral: 'III', title: 'Tốt · Thật · Thiện', icon: 'community' },
+  { id: 'chuong-4', numeral: 'IV', title: 'Từ sợi gỗ đến giấc ngủ', icon: 'leaf' },
+  { id: 'chuong-5', numeral: 'V', title: 'Điều chúng tôi theo đuổi', icon: 'compass' },
+  { id: 'chuong-6', numeral: 'VI', title: 'Được ghi nhận', icon: 'award' },
+  { id: 'loi-ket', numeral: '', title: 'Lời kết: mời Quý khách ghé thăm', icon: 'pin' },
+]
+
+const CHON_YEN_IMAGE = patternImage('ED25', 'Phòng ngủ trải bộ chăn ga Eco Doris ED25')
+const LYOCELL_IMAGE: ImageSource = { src: '/images/details/lyocell-et01.webp', srcSet: '', alt: 'Cận mặt vải Lyocell trơn bộ Eco Tera ET01' }
+const EMBROIDERY_IMAGE: ImageSource = { src: '/images/details/theu-ed25.webp', srcSet: '', alt: 'Cận đường thêu bộ Eco Doris ED25' }
+// Tạm dùng ảnh phòng ngủ ED25 cho lời kết, chờ Ecopillo gửi ảnh công ty, văn phòng
+const VISIT_IMAGE: ImageSource = {
+  src: '/images/details/hero-ed25.webp',
+  srcSet: '/images/details/hero-ed25-sm.webp 640w, /images/details/hero-ed25.webp 1200w',
+  alt: 'Phòng ngủ trải bộ Eco Doris ED25',
+}
+const VALUE_ICONS: readonly IconName[] = ['award', 'recycle', 'lightbulb', 'community']
 
 export function AboutPage() {
   usePageMeta(
     'Giới thiệu',
-    'Ecopillo: hơn 15 năm làm chăn ga gối đệm, triết lý Tốt · Thật · Thiện, vải Lyocell thân thiện môi trường, chứng nhận ISO 9001:2015 và TQC.',
+    'Câu chuyện Ecopillo: hơn 15 năm làm chăn ga gối đệm, chị Phạm Thị Phương và “Chốn Yên”, triết lý Tốt · Thật · Thiện, vải Lyocell, chứng nhận ISO 9001:2015 và TQC.',
   )
 
   return (
     <>
-      <PageHero
-        crumbs={[{ label: 'Giới thiệu' }]}
-        eyebrow="Về chúng tôi"
+      <Cover />
+      <TableOfContents />
+
+      <section id="loi-mo" aria-labelledby="loi-mo-tieu-de" className={`${STORY_COLUMN} scroll-mt-[5.5rem] pt-16 sm:pt-24`}>
+        <p className="eyebrow flex items-center gap-2">
+          <Icon name="night" size={15} className="text-deep-700" /> Lời mở
+        </p>
+        <h2 id="loi-mo-tieu-de" className="sr-only">
+          Lời mở: một giấc ngủ không trọn
+        </h2>
+        <p className="mt-4 text-sm">
+          <FillIn>{STORY_REVIEW_NOTE}</FillIn>
+        </p>
+        <Prose dropCap>{STORY_OPENING}</Prose>
+      </section>
+
+      <Chapter
+        id="chuong-1"
+        numeral="I"
+        icon="feather"
+        eyebrow="Người sáng lập"
         title={
           <>
-            Hơn 15 năm
-            <br />
-            <em className="text-deep-700">nâng niu giấc ngủ Việt</em>
+            Người <em className="text-deep-700">làm nghề</em>
           </>
         }
-        lead="Ecopillo Eternal Việt Nam làm chăn ga gối đệm từ chất liệu thiên nhiên, với một mong muốn giản dị: mỗi gia đình có một chốn yên để ngủ ngon."
-        aside={
-          <ul className="grid grid-cols-3 gap-3 sm:gap-4">
-            {STATS.map((s, i) => (
-              <li
-                key={s.label}
-                data-reveal
-                style={revealDelay(i)}
-                className={`rounded-[1.5rem] p-4 sm:p-5 ${i === 1 ? 'bg-deep-800 text-ivory' : 'bg-ivory ring-1 ring-cream-200'}`}
-              >
-                <p className={`font-display text-[1.6rem] leading-none whitespace-nowrap sm:text-[2.2rem] ${i === 1 ? 'text-ivory' : 'text-deep-900'}`}>
-                  <CountUp value={s.value} />
-                </p>
-                <p className={`mt-2 text-[0.78rem] leading-snug sm:text-[0.88rem] ${i === 1 ? 'text-mist-200' : 'text-ink-soft'}`}>
-                  {s.label}
-                </p>
-              </li>
-            ))}
-          </ul>
+      >
+        <Prose>
+          Người đặt nền móng cho thương hiệu là <strong>{FOUNDER_NAME}</strong>, hơn 15 năm trong nghề chăn ga, từ sản xuất đến bán lẻ.
+          Chị luôn trăn trở làm sao để mỗi sản phẩm giúp khách hàng tạo dựng một <em className="text-deep-900">“Chốn Yên”</em>.
+        </Prose>
+        <PullQuote>“{FOUNDER_QUOTE}”</PullQuote>
+      </Chapter>
+
+      <Chapter
+        id="chuong-2"
+        numeral="II"
+        icon="home"
+        eyebrow="Khát vọng"
+        title={
+          <>
+            Chốn <em className="text-deep-700">Yên</em>
+          </>
         }
       >
+        <p data-reveal className="font-display mt-8 rounded-[0.35rem] bg-mist-50 px-6 py-8 text-center text-[1.35rem] leading-snug text-balance text-deep-900 sm:text-[1.6rem]">
+          “Chốn Yên”: nơi giấc ngủ lành mạnh được vun đắp <em className="text-deep-700">và cơ thể được phục hồi trọn vẹn.</em>
+        </p>
+        <Prose>{BRAND_PROMISE}</Prose>
+      </Chapter>
+      <StoryFigure image={CHON_YEN_IMAGE} caption="Một Chốn Yên: phòng ngủ trải bộ Eco Doris ED25." />
+
+      <Chapter
+        id="chuong-3"
+        numeral="III"
+        icon="community"
+        eyebrow="Triết lý"
+        title={
+          <>
+            Tốt · Thật · <em className="text-deep-700">Thiện</em>
+          </>
+        }
+      >
+        <ol className="mt-8 border-b border-cream-200">
+          {PHILOSOPHY.map((p, i) => (
+            <li key={p.word} data-reveal style={revealDelay(i)} className="grid gap-1 border-t border-cream-200 py-5 sm:grid-cols-[9rem_1fr] sm:items-baseline sm:gap-6">
+              <p className="font-display text-[3rem] leading-none font-light text-deep-700 italic">{p.word}</p>
+              <p className="text-[1rem] leading-relaxed text-ink-soft">{p.text}</p>
+            </li>
+          ))}
+        </ol>
+      </Chapter>
+
+      <Chapter
+        id="chuong-4"
+        numeral="IV"
+        icon="leaf"
+        eyebrow="Chất liệu và tay nghề"
+        title={
+          <>
+            Từ sợi gỗ <em className="text-deep-700">đến giấc ngủ</em>
+          </>
+        }
+      >
+        <Prose>{LYOCELL_INTRO}</Prose>
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4">
+          {[LYOCELL_IMAGE, EMBROIDERY_IMAGE].map((img, i) => (
+            <img
+              key={img.src}
+              src={img.src}
+              alt={img.alt}
+              loading="lazy"
+              decoding="async"
+              className={`aspect-[3/4] w-full rounded-[0.35rem] bg-cream-100 object-cover ${i === 1 ? 'mt-8 sm:mt-12' : ''}`}
+            />
+          ))}
+        </div>
+        <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-5">
+          {LYOCELL_TRAITS.map((t) => (
+            <div key={t.title}>
+              <dt className="font-display flex items-center gap-2 text-[1.15rem] text-deep-900">
+                <Icon name="leaf" size={15} className="text-deep-700" />
+                {t.title}
+              </dt>
+              <dd className="mt-1 text-[0.88rem] leading-relaxed text-ink-soft">{t.text}</dd>
+            </div>
+          ))}
+        </dl>
+        <PullQuote>“{CRAFT_QUOTE}”</PullQuote>
+      </Chapter>
+      <div className="mt-12 sm:mt-16">
+        <BrandVideo />
+      </div>
+
+      <Chapter
+        id="chuong-5"
+        numeral="V"
+        icon="compass"
+        eyebrow="Sứ mệnh, tầm nhìn"
+        title={
+          <>
+            Điều chúng tôi <em className="text-deep-700">theo đuổi</em>
+          </>
+        }
+      >
+        <div className="mt-8 grid gap-8 sm:grid-cols-2">
+          {[
+            { label: 'Sứ mệnh', text: MISSION, image: MISSION_IMAGE, position: undefined },
+            { label: 'Tầm nhìn', text: VISION, image: VISION_IMAGE, position: '50% 0%' },
+          ].map((m, i) => (
+            <article key={m.label} data-reveal style={revealDelay(i)}>
+              <img
+                src={m.image.src}
+                srcSet={m.image.srcSet || undefined}
+                alt={m.image.alt}
+                loading="lazy"
+                decoding="async"
+                style={m.position ? { objectPosition: m.position } : undefined}
+                className="aspect-[3/2] w-full rounded-[0.35rem] bg-cream-100 object-cover"
+              />
+              <p className="eyebrow mt-4">{m.label}</p>
+              <p className="font-display mt-2 text-[1.2rem] leading-snug text-deep-900">{m.text}</p>
+            </article>
+          ))}
+        </div>
+        <p className="eyebrow mt-10">Giá trị cốt lõi</p>
+        <ul className="mt-3 border-b border-cream-200">
+          {CORE_VALUES.map((v, i) => (
+            <li key={v.title} className="flex gap-4 border-t border-cream-200 py-4">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-mist-50 text-deep-700">
+                <Icon name={VALUE_ICONS[i]} size={18} />
+              </span>
+              <span>
+                <span className="block font-medium text-deep-900">{v.title}</span>
+                <span className="mt-0.5 block text-[0.9rem] text-ink-soft">{v.text}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </Chapter>
+
+      <Chapter
+        id="chuong-6"
+        numeral="VI"
+        icon="award"
+        eyebrow="Chứng nhận, đối tác"
+        title={
+          <>
+            Được <em className="text-deep-700">ghi nhận</em>
+          </>
+        }
+      >
+        <Recognition />
+      </Chapter>
+
+      <div className="mt-16 sm:mt-24">
+        <TrustStrip />
+      </div>
+
+      <Closing />
+    </>
+  )
+}
+
+/** Bìa: chữ bên trái, ảnh chị Phương tại VTV3 bên phải (owner chọn 16/10/2026) */
+function Cover() {
+  return (
+    <header aria-labelledby="page-title" className="grid grid-cols-1 border-b border-cream-200 lg:min-h-[min(40rem,calc(100svh-4.5rem))] lg:grid-cols-[7fr_5fr]">
+      <div className="relative aspect-[4/3] overflow-hidden bg-cream-100 lg:order-2 lg:aspect-auto">
+        <img
+          src={FOUNDER_IMAGE.src}
+          srcSet={FOUNDER_IMAGE.srcSet}
+          sizes="(min-width: 1024px) 42vw, 100vw"
+          alt={FOUNDER_IMAGE.alt}
+          fetchPriority="high"
+          decoding="async"
+          style={{ objectPosition: '30% 30%' }}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <span className="absolute right-4 bottom-3 rounded-full bg-ivory/90 px-3 py-1 text-[0.72rem] text-deep-900 lg:right-6 lg:bottom-5">
+          Chị Phạm Thị Phương tại VTV3
+        </span>
+      </div>
+      <div className="flex min-w-0 flex-col justify-center px-5 pt-7 pb-10 sm:px-8 lg:py-16 lg:pr-14 lg:pl-[max(2.5rem,calc((100vw-1240px)/2+2.5rem))]">
+        <Breadcrumb items={[{ label: 'Giới thiệu' }]} />
+        <p className="eyebrow mt-8 flex items-center gap-2">
+          <Icon name="book" size={15} className="text-deep-700" /> Câu chuyện Ecopillo
+        </p>
+        <h1 id="page-title" className="font-display mt-4 text-[2.6rem] leading-[1.02] text-balance text-deep-900 sm:text-[3.6rem] xl:text-[4.4rem]">
+          Hơn 15 năm <em className="block text-deep-700">nâng niu giấc ngủ Việt</em>
+        </h1>
+        <p className="mt-5 max-w-md text-[1.02rem] leading-relaxed text-ink-soft">
+          Ecopillo Eternal Việt Nam làm chăn ga gối đệm từ chất liệu thiên nhiên, với một mong muốn giản dị: mỗi gia đình có một chốn yên để ngủ ngon.
+        </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <a href="#ve-chung-toi" className={buttonClass('primary', 'md')}>
+          <a href="#muc-luc" className={buttonClass('primary', 'lg')}>
+            <Icon name="book" size={18} />
             Đọc câu chuyện
-            <Icon name="chevronDown" size={17} />
           </a>
-          <LinkButton to={PATHS.products} variant="secondary">
+          <LinkButton to={PATHS.products} variant="secondary" size="lg">
             Xem sản phẩm
           </LinkButton>
         </div>
-      </PageHero>
+      </div>
+    </header>
+  )
+}
 
-      <About />
-
-      <BrandVideo />
-
-      <section aria-labelledby="cert-title" className="py-14 sm:py-28">
-        <Container>
-          <SectionHeading
-            id="cert-title"
-            eyebrow="Chứng nhận"
-            title={
-              <>
-                Chất lượng <span className="text-mist-600 italic">có giấy tờ chứng minh</span>
-              </>
-            }
-            lead="Ecopillo công khai các chứng nhận để Quý khách yên tâm về nguồn gốc và quy trình làm ra từng sản phẩm."
-          />
-          <p className="mt-5 text-sm">
-            <FillIn>[ECOPILLO GỬI BẢN CHỤP GIẤY CHỨNG NHẬN ĐỂ ĐỐI CHIẾU ĐÚNG TÊN, NĂM CẤP]</FillIn>
-          </p>
-          <ul className="m-rail mt-10 grid gap-4 sm:mt-12 lg:grid-cols-3">
-            {CERTIFICATES.map((c, i) => (
-              <li
-                key={c.name}
-                data-reveal
-                style={revealDelay(i)}
-                className="flex gap-5 rounded-[1.75rem] bg-cream-50 p-6 ring-1 ring-cream-200 sm:p-8 lg:flex-col"
-              >
-                <span className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-white p-2 shadow-[var(--shadow-soft)]">
-                  {c.logo ? (
-                    <img src={c.logo} alt={`Chứng nhận ${c.name}`} loading="lazy" className="max-h-full max-w-full object-contain" />
-                  ) : (
-                    <Icon name="award" size={34} className="text-mist-600" />
-                  )}
+function TableOfContents() {
+  return (
+    <nav id="muc-luc" aria-label="Mục lục" className="scroll-mt-[4.5rem] border-b border-cream-200 py-8 sm:py-10">
+      <div className="mx-auto grid w-full max-w-[1240px] gap-4 px-5 sm:px-8 lg:grid-cols-[12rem_1fr] lg:gap-8 lg:px-10">
+        <p className="eyebrow flex items-center gap-2">
+          <Icon name="list" size={15} className="text-deep-700" /> Mục lục
+        </p>
+        <ol className="sm:columns-2 sm:gap-10">
+          {TOC.map((t) => (
+            <li key={t.id} className="break-inside-avoid">
+              <a href={`#${t.id}`} className="group grid grid-cols-[2.8rem_1fr_auto] items-center border-t border-cream-200 py-2.5">
+                <span className="font-display text-[1.15rem] text-deep-700 italic">
+                  {t.numeral || <Icon name={t.icon} size={15} className="text-deep-700" />}
                 </span>
-                <span>
-                  <span className="font-display block text-[1.35rem] leading-tight text-deep-900">{c.name}</span>
-                  <span className="mt-2 block text-[0.92rem] leading-relaxed text-ink-soft">{c.text}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Container>
-      </section>
+                <span className="font-display text-[1.05rem] text-deep-900 transition-colors group-hover:text-deep-700">{t.title}</span>
+                <Icon name="arrowRight" size={15} className="text-deep-700 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" />
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </nav>
+  )
+}
 
-      <section aria-labelledby="partner-title" className="bg-cream-50 py-14 sm:py-24">
-        <Container className="grid gap-10 lg:grid-cols-12 lg:items-center">
-          <div className="lg:col-span-5">
-            <SectionHeading
-              id="partner-title"
-              eyebrow="Khách hàng, đối tác"
-              title="Đồng hành cùng khách sạn, resort"
-              lead="Ngoài các gia đình, Ecopillo may chăn ga gối theo kích thước cho khách sạn, resort và nhà nghỉ trên cả nước."
-            />
-            <Link to={PATHS.hotel} className={buttonClass('primary', 'md', 'mt-8')}>
-              Giải pháp cho khách sạn
-              <Icon name="arrowRight" size={17} />
-            </Link>
-          </div>
-          <ul className="grid grid-cols-2 gap-3 lg:col-span-7">
-            {HOTEL_PARTNERS.map((p, i) => (
-              <li
-                key={p.name}
-                data-reveal
-                style={revealDelay(i)}
-                className="flex h-24 items-center justify-center rounded-2xl bg-ivory px-5 py-4 shadow-[var(--shadow-soft)] sm:h-32"
-              >
-                <img src={p.logo} alt={`Logo ${p.name}`} loading="lazy" decoding="async" className="max-h-full max-w-full object-contain" />
-              </li>
-            ))}
-          </ul>
-        </Container>
-      </section>
-
-      <TrustStrip />
-
-      <section aria-labelledby="visit-title" className="py-14 sm:py-24">
-        <Container>
-          <div className="grid overflow-hidden rounded-[2rem] bg-deep-900 text-ivory lg:grid-cols-2">
-            <div className="p-7 sm:p-12">
-              <p className="eyebrow !text-mist-300">Ghé thăm Ecopillo</p>
-              <h2 id="visit-title" className="font-display mt-4 text-[2rem] leading-tight sm:text-[2.6rem]">
-                Chạm tay vào chất vải trước khi chọn
-              </h2>
-              <p className="mt-4 max-w-md text-mist-200/90">
-                Cảm nhận độ mềm mát của Lyocell, nằm thử gối và đệm, được tư vấn mẫu hợp với phòng ngủ của Quý khách.
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <LinkButton to={PATHS.distribution} variant="light">
-                  <Icon name="pin" size={17} />
-                  Hệ thống phân phối
-                </LinkButton>
-                <LinkButton to={PATHS.contact} variant="outlineLight">
-                  Liên hệ
-                </LinkButton>
-              </div>
-            </div>
-            {/* Ảnh giữ chỗ cho ảnh công ty (biên bản: chờ Ecopillo gửi); khung cao theo phần chữ bên cạnh */}
-            <div className="relative min-h-[240px]">
-              <Placeholder
-                tone="deep"
-                className="absolute inset-0 h-full w-full !rounded-none"
-                note="Ảnh công ty, văn phòng (chờ Ecopillo gửi)"
-              />
-            </div>
-          </div>
-        </Container>
-      </section>
+function Recognition() {
+  return (
+    <>
+      <ul className="mt-8 grid grid-cols-3 gap-3 text-center">
+        {BRAND_STATS.map((s) => (
+          <li key={s.label} data-reveal>
+            <p className="font-display text-[1.9rem] leading-none whitespace-nowrap text-deep-900 sm:text-[2.4rem]">
+              <CountUp value={s.value} />
+            </p>
+            <p className="mt-2 text-[0.76rem] leading-snug text-ink-soft sm:text-[0.85rem]">{s.label}</p>
+          </li>
+        ))}
+      </ul>
+      <figure data-reveal className="mt-10">
+        <img
+          src={AWARD_IMAGE.src}
+          srcSet={AWARD_IMAGE.srcSet || undefined}
+          alt={AWARD_IMAGE.alt}
+          loading="lazy"
+          decoding="async"
+          className="aspect-[2/1] w-full rounded-[0.35rem] bg-cream-100 object-cover"
+        />
+        <figcaption className="font-display mt-3 text-center text-[0.95rem] text-ink-faint italic">Lễ công bố {AWARD_NAME}.</figcaption>
+      </figure>
+      <ul className="mt-8 grid gap-3">
+        {CERTIFICATES.map((c, i) => (
+          <li key={c.name} data-reveal style={revealDelay(i)} className="flex items-center gap-4 rounded-2xl bg-cream-50 p-4 ring-1 ring-cream-200 sm:p-5">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-white p-1.5 shadow-[var(--shadow-soft)]">
+              {c.logo ? (
+                <img src={c.logo} alt={`Chứng nhận ${c.name}`} loading="lazy" className="max-h-full max-w-full object-contain" />
+              ) : (
+                <Icon name="award" size={26} className="text-deep-700" />
+              )}
+            </span>
+            <span>
+              <span className="font-display block text-[1.15rem] leading-tight text-deep-900">{c.name}</span>
+              <span className="mt-1 block text-[0.88rem] leading-relaxed text-ink-soft">{c.text}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-4 text-sm">
+        <FillIn>{CERTIFICATE_FILL_IN}</FillIn>
+      </p>
+      <p className="eyebrow mt-10 flex items-center gap-2">
+        <Icon name="building" size={15} className="text-deep-700" /> Khách sạn, resort đã đồng hành
+      </p>
+      <Prose>Ngoài các gia đình, Ecopillo may chăn ga gối theo kích thước cho khách sạn, resort và nhà nghỉ trên cả nước.</Prose>
+      <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {HOTEL_PARTNERS.map((p) => (
+          <li key={p.name} className="flex h-16 items-center justify-center rounded-xl bg-ivory px-3 py-2 ring-1 ring-cream-200 sm:h-20">
+            <img src={p.logo} alt={`Logo ${p.name}`} loading="lazy" decoding="async" className="max-h-full max-w-full object-contain" />
+          </li>
+        ))}
+      </ul>
+      <Link to={PATHS.hotel} className={buttonClass('secondary', 'md', 'mt-6')}>
+        <Icon name="building" size={17} />
+        Khách sạn và dự án
+        <Icon name="arrowRight" size={17} />
+      </Link>
     </>
+  )
+}
+
+/** Lời kết: mời ghé thăm, nền chàm cạnh ảnh phòng ngủ */
+function Closing() {
+  return (
+    <section id="loi-ket" aria-labelledby="loi-ket-tieu-de" className="grain relative grid scroll-mt-[4.5rem] grid-cols-1 overflow-hidden bg-deep-900 text-ivory lg:grid-cols-[7fr_5fr]">
+      <div className="relative min-w-0 px-5 py-14 sm:px-8 sm:py-20 lg:pr-14 lg:pl-[max(2.5rem,calc((100vw-1240px)/2+2.5rem))]">
+        <p className="eyebrow flex items-center gap-2 !text-mist-300">
+          <Icon name="pin" size={15} /> Lời kết · Ghé thăm Ecopillo
+        </p>
+        <h2 id="loi-ket-tieu-de" className="font-display mt-4 text-[2.1rem] leading-tight sm:text-[2.8rem]">
+          Chạm tay vào chất vải <em className="text-mist-300">trước khi chọn</em>
+        </h2>
+        <p className="mt-4 max-w-md text-mist-200/90">
+          Cảm nhận độ mềm mát của Lyocell, nằm thử gối và đệm, được tư vấn mẫu hợp với phòng ngủ của Quý khách.
+        </p>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <LinkButton to={PATHS.distribution} variant="light">
+            <Icon name="pin" size={17} />
+            Hệ thống phân phối
+          </LinkButton>
+          <LinkButton to={PATHS.products} variant="outlineLight">
+            <Icon name="bed" size={17} />
+            Xem sản phẩm
+          </LinkButton>
+          <LinkButton to={PATHS.contact} variant="outlineLight">
+            <Icon name="mail" size={17} />
+            Liên hệ
+          </LinkButton>
+        </div>
+      </div>
+      <div className="relative aspect-[16/10] lg:aspect-auto">
+        <img
+          src={VISIT_IMAGE.src}
+          srcSet={VISIT_IMAGE.srcSet}
+          sizes="(min-width: 1024px) 42vw, 100vw"
+          alt={VISIT_IMAGE.alt}
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      </div>
+    </section>
   )
 }

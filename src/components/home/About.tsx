@@ -1,33 +1,29 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { staticImage, type ImageSource } from '../../data/catalog'
+import {
+  BRAND_PROMISE,
+  CORE_VALUES,
+  FOUNDER_IMAGE,
+  FOUNDER_QUOTE,
+  MISSION,
+  MISSION_IMAGE,
+  PHILOSOPHY,
+  STORY_OPENING,
+  STORY_REVIEW_NOTE,
+  VISION,
+  VISION_IMAGE,
+  AWARD_IMAGE,
+  AWARD_NAME,
+} from '../../data/about'
+import type { ImageSource } from '../../data/catalog'
 import { PATHS } from '../../data/links'
 import { revealDelay } from '../../lib/reveal'
-import { Icon, type IconName } from '../ui/Icon'
+import { Icon } from '../ui/Icon'
 import { MobileMore } from '../ui/MobileMore'
 import { Placeholder } from '../ui/Placeholder'
 import { Container, FillIn, SectionHeading } from '../ui/primitives'
 
-/* Nội dung theo trang Giới thiệu và trang chủ cũ của ecopillo.com.vn */
-
-const PHILOSOPHY = [
-  { word: 'Tốt', text: 'trong chất lượng sản phẩm: nguyên liệu chọn lọc, từng chi tiết được chế tác kỹ lưỡng.' },
-  { word: 'Thật', text: 'trong cam kết với khách hàng: chính trực, tận tâm và minh bạch.' },
-  { word: 'Thiện', text: 'trong cách chọn vật liệu và hành động: hướng tới cộng đồng và môi trường.' },
-] as const
-
-const VALUES: readonly { icon: IconName; title: string; text: string }[] = [
-  { icon: 'award', title: 'Chất lượng vượt trội', text: 'Nguyên liệu tự nhiên, công nghệ tiên tiến.' },
-  { icon: 'recycle', title: 'Bảo vệ môi trường', text: 'Vật liệu bền vững, quy trình thân thiện, sản phẩm dùng lâu bền.' },
-  { icon: 'lightbulb', title: 'Đổi mới, sáng tạo', text: 'Cải tiến chất liệu và thiết kế từ góp ý của khách hàng.' },
-  { icon: 'community', title: 'Kết nối cộng đồng xanh', text: 'Lan toả lối sống và tiêu dùng bền vững.' },
-]
-
-const FOUNDER_IMAGE: ImageSource = {
-  src: '/images/about/chi-phuong.webp',
-  srcSet: '/images/about/chi-phuong-sm.webp 800w, /images/about/chi-phuong.webp 1309w',
-  alt: 'Chị Phạm Thị Phương, người sáng lập Ecopillo, tại VTV3',
-}
+/* Chữ, ảnh dùng chung với trang Giới thiệu: data/about.ts */
 
 /** moreLink: trên trang chủ thêm lối sang trang Giới thiệu đầy đủ */
 export function About({ moreLink = false }: { moreLink?: boolean }) {
@@ -52,7 +48,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
             <blockquote className="relative -mt-16 ml-6 max-w-xs rounded-[1.5rem] bg-deep-900 p-6 text-ivory shadow-[var(--shadow-lift)] sm:ml-auto sm:-mr-6 lg:-mr-10">
               <Icon name="quote" size={26} className="text-mist-300" />
               <p className="font-display mt-3 text-[1.3rem] leading-snug">
-                Mỗi sản phẩm làm ra đều bắt đầu từ sự tử tế.
+                {FOUNDER_QUOTE}
               </p>
             </blockquote>
           </div>
@@ -68,13 +64,10 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
               }
             />
             <p data-reveal className="mt-5">
-              <FillIn>[ECOPILLO ĐANG DUYỆT LẠI CÂU CHỮ PHẦN CÂU CHUYỆN THƯƠNG HIỆU]</FillIn>
+              <FillIn>{STORY_REVIEW_NOTE}</FillIn>
             </p>
             <div data-reveal style={revealDelay(1)} className="mt-5 max-w-2xl space-y-5 text-[1.02rem] leading-relaxed text-ink-soft">
-              <p>
-                Một giấc ngủ không trọn đôi khi chẳng bắt đầu từ điều gì lớn lao: chiếc ga quá thô ráp, đứa trẻ trằn
-                trọc vì chăn bí nóng, hay người lớn mang cả áp lực vào giấc ngủ sau một ngày dài.
-              </p>
+              <p>{STORY_OPENING}</p>
               <div className={isExpanded ? 'space-y-5' : 'hidden space-y-5 sm:block'}>
                 <p>
                   Người đặt nền móng cho thương hiệu là <strong className="font-medium text-deep-900">chị Phạm Thị Phương</strong>,
@@ -82,10 +75,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
                   khách hàng tạo dựng một <em className="text-deep-900">“Chốn Yên”</em>: nơi giấc ngủ lành mạnh được vun
                   đắp và cơ thể được phục hồi trọn vẹn.
                 </p>
-                <p>
-                  Từ đó, Ecopillo® ra đời với một cam kết: mỗi sản phẩm làm ra đều bắt đầu từ sự tử tế, và kết thúc bằng
-                  sự bình yên trong giấc ngủ của mọi gia đình.
-                </p>
+                <p>{BRAND_PROMISE}</p>
               </div>
               {!isExpanded && (
                 <button
@@ -122,13 +112,13 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
         <div className="m-rail mt-12 grid gap-5 sm:mt-20 lg:grid-cols-2">
           <MissionCard
             label="Sứ mệnh"
-            text="Mang đến giải pháp chăn ga gối đệm vừa nâng niu giấc ngủ, vừa góp phần bảo vệ môi trường."
-            image={staticImage('/images/about/su-menh.webp', 'Sứ mệnh Ecopillo: thay màu cho yêu thương')}
+            text={MISSION}
+            image={MISSION_IMAGE}
           />
           <MissionCard
             label="Tầm nhìn"
-            text="Trở thành thương hiệu chăn ga gối đệm hàng đầu, kết hợp chất lượng vượt trội với trách nhiệm môi trường, đồng hành cùng các gia đình Việt."
-            image={staticImage('/images/about/tam-nhin.webp', 'Tầm nhìn Ecopillo')}
+            text={VISION}
+            image={VISION_IMAGE}
             position="50% 0%"
           />
         </div>
@@ -137,7 +127,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
           <div data-reveal className="rounded-[1.75rem] bg-cream-50 p-7 ring-1 ring-cream-200 sm:p-9">
             <p className="eyebrow">Giá trị cốt lõi</p>
             <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
-              {VALUES.map((v) => (
+              {CORE_VALUES.map((v) => (
                 <li key={v.title} className="flex gap-3.5">
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ivory text-mist-600 ring-1 ring-cream-200">
                     <Icon name={v.icon} size={18} />
@@ -156,16 +146,13 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
               <Placeholder
                 className="h-full w-full !rounded-none"
                 note="Ảnh lễ trao danh hiệu"
-                image={staticImage(
-                  '/images/about/thuong-hieu-dan-dau.webp',
-                  'Ecopillo tại lễ công bố Thương hiệu dẫn đầu Việt Nam 2025',
-                )}
+                image={AWARD_IMAGE}
               />
             </div>
             <figcaption className="flex flex-wrap items-center justify-between gap-4 p-6">
               <span>
                 <span className="block text-[0.7rem] tracking-[0.16em] text-mist-300 uppercase">Danh hiệu</span>
-                <span className="font-display mt-1 block text-xl">Thương hiệu dẫn đầu Việt Nam 2025</span>
+                <span className="font-display mt-1 block text-xl">{AWARD_NAME}</span>
               </span>
               <span className="flex items-center gap-2">
                 <img
@@ -193,7 +180,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
 interface MissionCardProps {
   label: string
   text: string
-  image: ReturnType<typeof staticImage>
+  image: ImageSource
   position?: string
 }
 

@@ -1,4 +1,5 @@
 import { Icon, type IconName } from '../ui/Icon'
+import { CRAFT_QUOTE, LYOCELL_INTRO, LYOCELL_TRAITS } from '../../data/about'
 import { staticImage } from '../../data/catalog'
 import { revealDelay } from '../../lib/reveal'
 import { CountUp } from '../ui/CountUp'
@@ -51,13 +52,6 @@ export function TrustStrip() {
   )
 }
 
-const LYOCELL_TRAITS: readonly { title: string; text: string }[] = [
-  { title: 'Mềm', text: 'Bề mặt mịn như lụa, rủ nhẹ theo dáng giường.' },
-  { title: 'Mát', text: 'Sợi hút ẩm nhanh, giữ cho lưng khô thoáng suốt đêm.' },
-  { title: 'Thoáng khí', text: 'Cấu trúc sợi cho không khí lưu thông, không hầm bí.' },
-  { title: 'Lành tính', text: 'Dịu với da nhạy cảm, phù hợp cả trẻ nhỏ.' },
-]
-
 export function BrandStory() {
   return (
     <section aria-labelledby="story-title" className="py-14 sm:py-32">
@@ -72,10 +66,10 @@ export function BrandStory() {
                   Từ thiên nhiên <span className="text-mist-600 italic">đến giấc ngủ</span>
                 </>
               }
-              lead="Ecopillo chọn vải Lyocell cao cấp nhập khẩu, dệt từ sợi gỗ tự nhiên, làm chất liệu chủ đạo. Quy trình sản xuất khép kín, thân thiện môi trường và an toàn cho cả làn da nhạy cảm của trẻ nhỏ."
+              lead={LYOCELL_INTRO}
             />
             <blockquote data-reveal style={revealDelay(1)} className="mt-6 border-l-2 sm:mt-8 border-mist-300 pl-5 font-display text-[1.35rem] leading-snug text-deep-800 italic">
-              “Không chạy theo số lượng, mà kiên định tạo ra từng sản phẩm có linh hồn.”
+              “{CRAFT_QUOTE}”
             </blockquote>
             <div className="mt-10 hidden items-center gap-5 rounded-2xl bg-mist-50 p-5 ring-1 ring-mist-200 sm:flex">
               <p className="font-display text-[2.5rem] leading-none text-deep-900">

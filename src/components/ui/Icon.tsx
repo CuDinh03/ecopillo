@@ -40,6 +40,11 @@ import {
   List,
   Map as MapIcon,
   Navigation,
+  BookOpen,
+  MoonStar,
+  House,
+  Compass,
+  Feather,
 } from 'lucide-react'
 
 /** Bộ icon Lucide, đặt tên theo nghĩa dùng trên web */
@@ -85,6 +90,12 @@ const ICONS = {
   navigate: Navigation,
   messenger: MessageCircle,
   air: Wind,
+  // Trang Giới thiệu dạng chương sách (16/10/2026)
+  book: BookOpen,
+  night: MoonStar,
+  home: House,
+  compass: Compass,
+  feather: Feather,
 } satisfies Record<string, LucideIcon>
 
 const BRAND_PATHS = {
