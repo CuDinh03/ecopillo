@@ -109,7 +109,6 @@ function Actions({ dealer, className, size = 'sm' }: { dealer: Dealer; className
 
 export function DealerCard({ dealer, km, selected = false, onSelect, featured = false }: DealerCardProps) {
   const status = openStatus(dealer)
-  const official = dealer.loai !== 'dai-ly'
 
   // Bấm vào vùng trống của thẻ thì chọn; bấm nút, link thì để nút tự làm việc của nó
   const handleClick = (e: MouseEvent) => {
@@ -121,12 +120,23 @@ export function DealerCard({ dealer, km, selected = false, onSelect, featured = 
     <article
       id={`diem-${dealer.id}`}
       onClick={handleClick}
-      className={`scroll-mt-32 overflow-hidden rounded-[1.5rem] bg-ivory transition ${onSelect ? 'cursor-pointer' : ''} ${
-        selected
-          ? 'ring-2 ring-deep-700 shadow-[var(--shadow-lift)]'
-          : 'ring-1 ring-cream-200 hover:shadow-[var(--shadow-soft)]'
+      className={`scroll-mt-32 overflow-hidden rounded-[1.5rem] transition ${onSelect ? 'cursor-pointer' : ''} ${
+        featured
+          ? 'bg-mist-50 ring-2 ring-deep-800 shadow-[var(--shadow-lift)]'
+          : selected
+            ? 'bg-ivory ring-2 ring-deep-700 shadow-[var(--shadow-lift)]'
+            : 'bg-ivory ring-1 ring-cream-200 hover:shadow-[var(--shadow-soft)]'
       }`}
     >
+      {/* Chỉ khi khách bấm "Tìm đại lý gần tôi": dải chàm đầu thẻ điểm gần nhất (owner yêu cầu 15/10/2026) */}
+      {featured && (
+        <p className="flex flex-wrap items-center justify-between gap-x-4 gap-y-0.5 bg-deep-800 px-4 py-2.5 text-ivory sm:px-6">
+          <span className="inline-flex items-center gap-2 text-[0.78rem] font-semibold tracking-[0.12em] uppercase">
+            <Icon name="locate" size={15} /> Gần Quý khách nhất
+          </span>
+          {km !== undefined && <span className="tabular text-[0.88rem] font-medium">cách khoảng {formatKm(km)}</span>}
+        </p>
+      )}
       {/* Thẻ thường trên điện thoại: ảnh nhỏ bên trái. Thẻ gần nhất: ảnh rộng phía trên. Từ sm: ảnh cột trái cao hết thẻ */}
       <div
         className={`grid sm:grid-cols-[176px_minmax(0,1fr)] sm:gap-0 sm:p-0 ${
@@ -138,21 +148,15 @@ export function DealerCard({ dealer, km, selected = false, onSelect, featured = 
         </div>
         <div className={`flex min-w-0 flex-col sm:p-6 ${featured ? 'p-4 pb-0' : ''}`}>
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            {featured && (
-              <span className="rounded-full bg-mist-100 px-2.5 py-0.5 text-[0.68rem] font-semibold tracking-[0.12em] text-deep-900 uppercase">
-                Gần Quý khách nhất
-              </span>
-            )}
-            <span
-              className={`rounded-full px-2.5 py-0.5 text-[0.68rem] font-semibold tracking-[0.12em] uppercase ${
-                official ? 'bg-deep-800 text-ivory' : 'bg-cream-50 text-deep-800 ring-1 ring-cream-200'
-              }`}
-            >
+            {/* Mọi loại điểm cùng một kiểu nhãn: chưa tìm gần tôi thì các điểm như nhau */}
+            <span className="rounded-full bg-cream-50 px-2.5 py-0.5 text-[0.68rem] font-semibold tracking-[0.12em] text-deep-800 uppercase ring-1 ring-cream-200">
               {KIND_LABEL[dealer.loai]}
             </span>
-            {km !== undefined && <span className="tabular text-[0.82rem] font-medium text-deep-700">cách khoảng {formatKm(km)}</span>}
+            {km !== undefined && !featured && <span className="tabular text-[0.82rem] font-medium text-deep-700">cách khoảng {formatKm(km)}</span>}
           </p>
-          <h3 className="font-display mt-2 text-[1.3rem] leading-tight text-deep-900 sm:text-[1.45rem]">{dealer.ten}</h3>
+          <h3 className={`font-display mt-2 leading-tight text-deep-900 ${featured ? 'text-[1.55rem] sm:text-[1.8rem]' : 'text-[1.3rem] sm:text-[1.45rem]'}`}>
+            {dealer.ten}
+          </h3>
           <p className="mt-1 text-[0.9rem] text-ink-soft">{dealer.dia_chi}</p>
           <p className="mt-2 flex flex-wrap items-center gap-x-2 text-[0.85rem]">
             {status ? (
