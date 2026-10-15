@@ -5,6 +5,7 @@ import { DealerCard } from '../components/dealers/DealerCard'
 import { DealerMap } from '../components/dealers/DealerMap'
 import { ZaloMark, Icon } from '../components/ui/Icon'
 import { Breadcrumb } from '../components/ui/PageHero'
+import { Select, type SelectHandle } from '../components/ui/Select'
 import { buttonClass, Container, FillIn } from '../components/ui/primitives'
 import { CONTACT, DISTRIBUTION_FILL_IN, SHOWROOMS } from '../data/brand'
 import { PATHS, SITE_ORIGIN } from '../data/links'
@@ -118,18 +119,25 @@ export function DistributionPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [limit, setLimit] = useState(PAGE_SIZE)
   const [mobileView, setMobileView] = useState<'list' | 'map'>('list')
-  const [desktopMap, setDesktopMap] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   // Tăng mỗi lần có kết quả mới do khách chủ động (định vị xong, chọn tỉnh): điện thoại cuộn tới kết quả
   const [resultsTick, setResultsTick] = useState(0)
-  const selectRef = useRef<HTMLSelectElement>(null)
+  const selectRef = useRef<SelectHandle>(null)
   const asideRef = useRef<HTMLElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
-  const pickedRef = useRef<HTMLDivElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
   const searchRef = useRef<HTMLInputElement>(null)
 
   const province = provinceById(provinceId)
+  // Tỉnh có điểm bán ghi số điểm bên phải dòng
+  const provinceOptions = useMemo(
+    () =>
+      sortedProvinces.map((p) => {
+        const count = dealers.filter((d) => d.tinh === p.name).length
+        return { value: p.id, label: p.name, note: count > 0 ? `${count} điểm` : undefined }
+      }),
+    [dealers],
+  )
 
   const locate = useCallback(() => {
     if (!('geolocation' in navigator)) {
@@ -166,34 +174,8 @@ export function DistributionPage() {
   // Không lấy được vị trí: mở sẵn ô chọn tỉnh
   useEffect(() => {
     if (geo !== 'failed') return
-    const select = selectRef.current
-    if (!select) return
-    select.focus({ preventScroll: true })
-    try {
-      select.showPicker()
-    } catch {
-      /* trình duyệt không cho mở danh sách bằng mã: đã đưa con trỏ vào ô */
-    }
+    selectRef.current?.open()
   }, [geo])
-
-  // Máy tính: chỉ tải bản đồ khi khối bản đồ sắp hiện
-  useEffect(() => {
-    const aside = asideRef.current
-    if (!aside || desktopMap) return
-    const wide = window.matchMedia('(min-width: 1024px)')
-    if (!('IntersectionObserver' in window)) {
-      setDesktopMap(wide.matches)
-      return
-    }
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && wide.matches) setDesktopMap(true)
-      },
-      { rootMargin: '300px' },
-    )
-    io.observe(aside)
-    return () => io.disconnect()
-  }, [desktopMap])
 
   const chooseProvince = (id: string) => {
     setProvinceId(id)
@@ -242,23 +224,6 @@ export function DistributionPage() {
   // Đang "gần tôi" (biết vị trí, chưa chọn tỉnh, không gõ tìm): điểm đầu là câu trả lời chính ("Gần Quý khách nhất").
   // Khách tự chọn tỉnh thì đang duyệt tỉnh đó, điểm đầu có thể ở rất xa: giữ danh sách thường.
   const hasFeatured = view.mode === 'list' && me !== null && !province && query.trim() === '' && shown.length > 0
-  const mapDealers = useMemo(() => view.rows.map((r) => r.dealer), [view.rows])
-
-  // Bấm ghim trên bản đồ: sáng thẻ tương ứng và cuộn vào tầm nhìn
-  const selectFromMap = useCallback(
-    (id: string) => {
-      setSelectedId(id)
-      const index = view.rows.findIndex((r) => r.dealer.id === id)
-      if (index >= limit) setLimit(index + 1)
-      if (window.matchMedia('(min-width: 1024px)').matches) {
-        requestAnimationFrame(() => {
-          const card = document.getElementById(`diem-${id}`)
-          if (card) scrollToElement(card, 'nearest')
-        })
-      }
-    },
-    [view.rows, limit],
-  )
 
   const summary =
     view.mode === 'far'
@@ -273,7 +238,8 @@ export function DistributionPage() {
               ? `${view.total} điểm tại ${province.name}`
               : `${view.total} điểm trên toàn quốc`
 
-  const selectedRow = view.rows.find((r) => r.dealer.id === selectedId)
+  // Bản đồ hiện điểm khách vừa bấm; chưa bấm thì hiện điểm đầu danh sách (gần nhất khi đã định vị)
+  const mapDealer = (view.rows.find((r) => r.dealer.id === selectedId) ?? view.rows[0])?.dealer
 
   // Điện thoại, tab Bản đồ: đưa bản đồ lên sát dưới thanh đầu trang để thấy trọn
   useEffect(() => {
@@ -281,11 +247,6 @@ export function DistributionPage() {
     requestAnimationFrame(() => asideRef.current && scrollToElement(asideRef.current))
   }, [mobileView])
 
-  // Điện thoại: bấm ghim thì kéo thẻ của điểm đó vào tầm nhìn (thẻ nằm dưới bản đồ)
-  useEffect(() => {
-    if (mobileView !== 'map' || !selectedId || window.matchMedia('(min-width: 1024px)').matches) return
-    requestAnimationFrame(() => pickedRef.current && scrollToElement(pickedRef.current, 'nearest'))
-  }, [mobileView, selectedId])
 
   return (
     <div className="pb-24">
@@ -316,27 +277,16 @@ export function DistributionPage() {
             {/* Điện thoại: ô gõ chữ thu vào nút kính lúp cạnh ô tỉnh (ít người gõ, chiếm chỗ màn hình đầu).
                 Máy tính: lg:contents trả ô tỉnh về làm một cột của lưới, nút kính lúp ẩn đi. */}
             <div className="flex gap-2 lg:contents">
-              <label className="relative block min-w-0 flex-1">
-                <span className="sr-only">Chọn tỉnh/thành</span>
-                <select
-                  ref={selectRef}
-                  value={provinceId}
-                  onChange={(e) => chooseProvince(e.target.value)}
-                  className="h-[3.25rem] w-full appearance-none rounded-full bg-ivory pr-11 pl-5 text-[0.98rem] text-deep-900 ring-1 ring-cream-200 transition outline-none focus:ring-2 focus:ring-deep-700"
-                >
-                  <option value="">{me ? 'Gần tôi nhất (mọi tỉnh)' : 'Chọn tỉnh/thành'}</option>
-                  {sortedProvinces.map((p) => {
-                    const count = dealers.filter((d) => d.tinh === p.name).length
-                    return (
-                      <option key={p.id} value={p.id}>
-                        {p.name}
-                        {count > 0 ? ` (${count})` : ''}
-                      </option>
-                    )
-                  })}
-                </select>
-                <Icon name="chevronDown" size={18} className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-deep-700" />
-              </label>
+              <Select
+                ref={selectRef}
+                variant="pill"
+                value={provinceId}
+                onChange={chooseProvince}
+                placeholder={me ? 'Gần tôi nhất (mọi tỉnh)' : 'Chọn tỉnh/thành'}
+                options={provinceOptions}
+                ariaLabel="Chọn tỉnh/thành"
+                className="min-w-0 flex-1"
+              />
               <button
                 type="button"
                 onClick={toggleSearch}
@@ -456,27 +406,28 @@ export function DistributionPage() {
             )}
           </div>
 
-          {/* Bản đồ: máy tính đứng yên bên phải; điện thoại chỉ tải khi mở tab Bản đồ, cao vừa khoảng
-              giữa thanh đầu trang (4.5rem) và đáy màn hình (trang này không có thanh liên hệ), chừa 2rem */}
-          <aside ref={asideRef} className={`scroll-mt-[5.5rem] lg:col-span-5 ${mobileView === 'map' ? '' : 'max-lg:hidden'}`}>
+          {/* Bản đồ Google nhúng như trang Liên hệ: máy tính đứng yên bên phải, bấm thẻ nào thì hiện điểm đó.
+              Điện thoại: tab Bản đồ, chọn điểm bằng hàng nút vuốt ngang phía trên */}
+          <aside ref={asideRef} className={`min-w-0 scroll-mt-[5.5rem] lg:col-span-5 ${mobileView === 'map' ? '' : 'max-lg:hidden'}`}>
             <div className="lg:sticky lg:top-28">
-              {desktopMap || mobileView === 'map' ? (
-                <DealerMap
-                  dealers={mapDealers}
-                  selectedId={selectedId}
-                  onSelect={selectFromMap}
-                  me={me}
-                  className="h-[max(18rem,calc(100svh-6.5rem-env(safe-area-inset-bottom)))] rounded-[1.75rem] ring-1 ring-cream-200 md:h-[60svh] lg:h-[calc(100svh-9rem)]"
-                />
-              ) : (
-                <div className="h-[calc(100svh-9rem)] rounded-[1.75rem] bg-cream-50 ring-1 ring-cream-200" />
-              )}
-              {/* Điện thoại: bấm ghim thì hiện thẻ của điểm đó ngay dưới bản đồ */}
-              {mobileView === 'map' && selectedRow && (
-                <div ref={pickedRef} className="mt-4 scroll-mb-[calc(1rem+env(safe-area-inset-bottom))] lg:hidden">
-                  <DealerCard dealer={selectedRow.dealer} km={selectedRow.km} selected />
+              {view.rows.length > 1 && (
+                <div role="group" aria-label="Chọn điểm trên bản đồ" className="-mx-5 mb-4 flex gap-2 overflow-x-auto px-5 py-1 [scrollbar-width:none] lg:hidden">
+                  {view.rows.map((r) => (
+                    <button
+                      key={r.dealer.id}
+                      type="button"
+                      aria-pressed={r.dealer.id === mapDealer?.id}
+                      onClick={() => setSelectedId(r.dealer.id)}
+                      className={`h-10 shrink-0 rounded-full px-3.5 text-[0.82rem] whitespace-nowrap transition ${
+                        r.dealer.id === mapDealer?.id ? 'bg-deep-800 text-ivory' : 'bg-cream-50 text-deep-900 ring-1 ring-cream-200'
+                      }`}
+                    >
+                      {r.dealer.ten.replace(/^Ecopillo /, '')}
+                    </button>
+                  ))}
                 </div>
               )}
+              <DealerMap dealer={mapDealer} />
             </div>
           </aside>
         </div>

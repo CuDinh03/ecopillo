@@ -61,9 +61,6 @@ jobs:
         env:
           VITE_BAN_XEM_THU: '1'
           XEM_THU_URL: https://${{ env.PROJECT }}.pages.dev
-          # Bản đồ Hệ thống phân phối: chưa đặt hai secret này thì web dùng bản đồ OpenStreetMap
-          VITE_GOOGLE_MAPS_KEY: ${{ secrets.GOOGLE_MAPS_KEY }}
-          VITE_GOOGLE_MAPS_MAP_ID: ${{ secrets.GOOGLE_MAPS_MAP_ID }}
 
       - name: Đóng gói, kiểm chặn Google, ảnh ẩn, chữ cấm
         run: node tools/chuan-bi-ban-xem-thu.mjs

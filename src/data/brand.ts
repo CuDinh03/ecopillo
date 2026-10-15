@@ -74,6 +74,9 @@ export interface Showroom {
 export const mapEmbedUrl = (address: string) =>
   `https://www.google.com/maps?q=${encodeURIComponent(`Ecopillo ${address}`)}&hl=vi&z=16&output=embed`
 
+/** Bản đồ nhúng ghim đúng toạ độ (điểm bán): tra theo địa chỉ chữ có khi Google đặt lệch, toạ độ thì lấy từ ghim thật */
+export const pinEmbedUrl = (lat: number, lng: number) => `https://www.google.com/maps?q=${lat},${lng}&hl=vi&z=16&output=embed`
+
 /**
  * Chỉ đường theo địa chỉ chữ (Google tự tìm đúng số nhà), trên điện thoại mở thẳng ứng dụng Google Maps.
  * Không dùng toạ độ: toạ độ chỉ để đặt ghim và tính khoảng cách, nhập lệch vài trăm mét là đưa khách tới sai chỗ.

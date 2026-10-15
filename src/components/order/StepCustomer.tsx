@@ -5,6 +5,7 @@ import { formatVND } from '../../lib/format'
 import type { CustomerErrors, CustomerInfo, OrderSummaryData } from '../../lib/order'
 import { PROVINCES } from '../../lib/shipping'
 import { Icon } from '../ui/Icon'
+import { Select } from '../ui/Select'
 
 interface StepCustomerProps {
   customer: CustomerInfo
@@ -15,6 +16,8 @@ interface StepCustomerProps {
 
 const INPUT =
   'mt-2 block w-full rounded-xl border bg-ivory px-4 py-3.5 text-[1rem] text-deep-900 placeholder:text-ink-faint transition focus:border-deep-700 focus:ring-4 focus:ring-mist-200 focus:outline-none'
+
+const PROVINCE_OPTIONS = PROVINCES.map((p) => ({ value: p.id, label: p.name }))
 
 const inputClass = (hasError: boolean) => `${INPUT} ${hasError ? 'border-alert ring-4 ring-alert-soft' : 'border-cream-300'}`
 
@@ -84,30 +87,16 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
             />
           </Field>
           <Field id="provinceId" label="Tỉnh / thành phố" error={errors.provinceId} className="sm:col-span-2">
-            <div className="relative">
-              <select
-                id="f-provinceId"
-                value={customer.provinceId}
-                onChange={(e) => onChange({ provinceId: e.target.value })}
-                aria-invalid={Boolean(errors.provinceId)}
-                aria-describedby={describedBy('provinceId')}
-                className={`${inputClass(Boolean(errors.provinceId))} appearance-none pr-11 ${
-                  customer.provinceId ? '' : 'text-ink-faint'
-                }`}
-              >
-                <option value="">Chọn tỉnh/thành nhận hàng</option>
-                {PROVINCES.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
-              <Icon
-                name="chevronDown"
-                size={18}
-                className="pointer-events-none absolute top-1/2 right-4 mt-1 -translate-y-1/2 text-ink-soft"
-              />
-            </div>
+            <Select
+              id="f-provinceId"
+              variant="field"
+              value={customer.provinceId}
+              onChange={(provinceId) => onChange({ provinceId })}
+              placeholder="Chọn tỉnh/thành nhận hàng"
+              options={PROVINCE_OPTIONS}
+              ariaInvalid={Boolean(errors.provinceId)}
+              ariaDescribedBy={describedBy('provinceId')}
+            />
           </Field>
           <Field id="address" label="Địa chỉ nhận hàng" error={errors.address} className="sm:col-span-2">
             <input

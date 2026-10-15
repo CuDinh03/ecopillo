@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { ColorwayCard } from '../components/products/ColorwayCard'
 import { ProductCard } from '../components/products/ProductCard'
 import { Icon } from '../components/ui/Icon'
+import { Select } from '../components/ui/Select'
 import { buttonClass, Container, FillIn } from '../components/ui/primitives'
 import { BEDDING_SETS, collectionRange, type Collection } from '../data/catalog'
 import { CATEGORIES, inPriceBand, LEGACY_CATEGORY, priceBandsOf, PRODUCTS, type CategoryId, type PriceBand } from '../data/products'
@@ -406,23 +407,14 @@ function PriceBands({ bands, active, countOf, onPick }: PriceBandsProps) {
   )
 }
 
-/** Sắp xếp: một dòng chữ gọn thay cho ô chọn có viền, vẫn là <select> thật để dùng được bằng bàn phím */
+const SORT_OPTIONS = SORTS.map((s) => ({ value: s.id, label: s.label }))
+
+/** Sắp xếp: một dòng chữ gọn thay cho ô chọn có viền; danh sách xổ xuống theo màu của web (ui/Select) */
 function SortSelect({ value, onChange }: { value: SortId; onChange: (value: string) => void }) {
   return (
-    <label className="relative inline-flex h-11 shrink-0 items-center gap-1.5 self-start text-sm text-ink-soft sm:self-auto">
-      Sắp xếp:
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="h-11 cursor-pointer appearance-none rounded-lg bg-transparent pr-6 font-medium text-deep-900 focus-visible:ring-2 focus-visible:ring-deep-700 focus-visible:outline-none"
-      >
-        {SORTS.map((s) => (
-          <option key={s.id} value={s.id}>
-            {s.label}
-          </option>
-        ))}
-      </select>
-      <Icon name="chevronDown" size={15} className="pointer-events-none absolute top-1/2 right-0 -translate-y-1/2 text-deep-900" />
-    </label>
+    <div className="inline-flex h-11 shrink-0 items-center gap-1.5 self-start text-sm text-ink-soft sm:self-auto">
+      <span aria-hidden="true">Sắp xếp:</span>
+      <Select variant="inline" value={value} options={SORT_OPTIONS} onChange={onChange} ariaLabel="Sắp xếp" alignRight />
+    </div>
   )
 }
