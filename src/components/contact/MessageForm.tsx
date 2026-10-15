@@ -1,6 +1,7 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { OPENING_HOURS } from '../../data/brand'
+import { PATHS } from '../../data/links'
 import { isValidPhone } from '../../lib/order'
 import { Icon } from '../ui/Icon'
 import { PreviewNotSent } from '../ui/PreviewNotSent'
@@ -199,7 +200,7 @@ export function MessageForm({
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="max-w-sm text-[0.8rem] leading-relaxed text-ink-faint">
           Ecopillo chỉ dùng thông tin này để liên hệ lại, theo{' '}
-          <Link to="/chinh-sach-bao-mat" className="underline underline-offset-2 hover:text-deep-900">
+          <Link to={PATHS.privacy} className="underline underline-offset-2 hover:text-deep-900">
             chính sách bảo vệ thông tin
           </Link>
           .

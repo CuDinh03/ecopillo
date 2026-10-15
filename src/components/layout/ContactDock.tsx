@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
+import { PATHS } from '../../data/links'
 import { Icon, ZaloMark } from '../ui/Icon'
 
 /**
@@ -40,7 +41,7 @@ export function ContactDock({ mobileBar = true }: { mobileBar?: boolean }) {
               <span className="mt-0.5 text-[0.7rem] font-medium">Messenger</span>
             </a>
             <Link
-              to="/dat-hang"
+              to={PATHS.order}
               className="flex h-12 items-center justify-center gap-1.5 rounded-2xl bg-deep-800 text-sm font-medium text-ivory active:bg-deep-700"
             >
               Đặt hàng

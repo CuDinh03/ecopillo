@@ -2,7 +2,7 @@ import { CONTACT, OPENING_HOURS } from './brand'
 import type { PolicySlug } from './policyNav'
 
 /**
- * Các trang chính sách (web cũ có 7 trang chính sách; giữ đúng đường link cũ khi có quyền vào WordPress).
+ * Các trang chính sách, ở đúng đường link của web cũ (src/data/policyNav.ts).
  * Nội dung theo biên bản chốt 12/10/2026 mục 35–38, 47, 50 và câu hỏi thường gặp; Ecopillo duyệt lại câu chữ.
  * Phần [ĐIỀN …] là chỗ Ecopillo cần bổ sung.
  */
@@ -63,7 +63,7 @@ export const POLICIES: readonly Policy[] = [
     ],
   },
   {
-    slug: 'chinh-sach-giao-hang',
+    slug: 'chinh-sach-van-chuyen',
     title: 'Chính sách giao hàng',
     description: 'Miễn phí giao toàn quốc cho đơn từ 500.000đ. Hà Nội khoảng 1 ngày, phía Bắc 2–3 ngày, phía Nam 3–5 ngày.',
     intro: 'Ecopillo giao hàng toàn quốc, thu tiền khi nhận hàng. Quý khách được kiểm hàng và trải thử trước khi thanh toán.',
@@ -92,11 +92,20 @@ export const POLICIES: readonly Policy[] = [
         body: ['Thời gian tính từ khi nhân viên gọi xác nhận đơn, không tính ngày lễ, Tết. Nếu giao chậm, Ecopillo gọi báo trước.'],
       },
       {
+        title: 'Giao bằng gì',
+        list: [
+          'Nội thành Hà Nội: chăn ga, gối, đệm bông ép giao bằng xe máy; đệm lò xo, đệm cao su giao bằng xe tải.',
+          'Các tỉnh khác: gửi qua đơn vị vận chuyển (Viettel Post, Giao hàng tiết kiệm, Giao hàng nhanh…).',
+          'Mọi kiện hàng được Ecopillo đóng gói, niêm phong, ghi tên, số điện thoại người nhận và mã vận đơn.',
+        ],
+      },
+      {
         title: 'Khi nhận hàng',
         list: [
           'Quý khách kiểm hàng cùng nhân viên giao, được trải thử lên giường để xem vừa kích thước (vui lòng không nằm lên).',
           'Giao sai mẫu, sai kích thước: Quý khách có quyền từ chối nhận và không phải trả tiền.',
           'Kiện hàng móp, rách: chụp ảnh và báo ngay cho Ecopillo trước khi ký nhận.',
+          'Hàng hư hỏng trên đường vận chuyển, dù Ecopillo tự giao hay qua đơn vị vận chuyển: Ecopillo chịu trách nhiệm đổi cho Quý khách, rồi tự làm việc với bên vận chuyển.',
         ],
       },
     ],
@@ -122,7 +131,10 @@ export const POLICIES: readonly Policy[] = [
       },
       {
         title: 'Mua trực tiếp tại hệ thống phân phối',
-        list: ['Thanh toán tiền mặt hoặc quẹt thẻ ngân hàng tại quầy.'],
+        list: [
+          'Thanh toán tiền mặt hoặc quẹt thẻ ngân hàng tại quầy.',
+          'Nhờ người khác nhận hàng giúp thì người nhận kiểm hàng và thanh toán thay.',
+        ],
       },
       {
         title: 'Khách sạn, dự án, đại lý',
@@ -130,12 +142,14 @@ export const POLICIES: readonly Policy[] = [
       },
       {
         title: 'Hoá đơn',
-        body: ['[ECOPILLO XÁC NHẬN CÁCH XUẤT HOÁ ĐƠN VAT CHO KHÁCH CÓ NHU CẦU]'],
+        body: [
+          'Hoá đơn VAT xuất theo thông tin Quý khách ghi khi đặt hàng và gửi vào email khi hàng xuất kho (theo web cũ). [ECOPILLO XÁC NHẬN CÒN ÁP DỤNG]',
+        ],
       },
     ],
   },
   {
-    slug: 'chinh-sach-doi-hang',
+    slug: 'chinh-sach-doi-tra-hang-va-hoan-tien',
     title: 'Chính sách kiểm hàng và đổi hàng',
     description: 'Được kiểm hàng, trải thử khi nhận. Báo lỗi trong 24 giờ, gửi đổi trong 7 ngày. Ecopillo hỗ trợ đổi, không trả hàng hoàn tiền.',
     intro: 'Ecopillo muốn Quý khách nhận đúng bộ mình chọn. Vì vậy Quý khách được kiểm hàng, trải thử trước khi trả tiền, và được đổi khi có lỗi.',
@@ -151,6 +165,14 @@ export const POLICIES: readonly Policy[] = [
           'Mở hộp, kiểm mẫu, màu, kích thước và số lượng cùng nhân viên giao.',
           'Được trải thử lên giường để xem vừa kích thước (vui lòng không nằm lên, không giặt).',
           'Sai mẫu, sai kích thước, thiếu hàng: Quý khách có quyền từ chối nhận và không phải trả tiền.',
+          'Không bóc hộp có tem niêm phong khi chưa nhận hàng. Nên quay video lúc mở hộp để đối chiếu khi cần.',
+        ],
+      },
+      {
+        title: 'Được đổi khi',
+        list: [
+          'Giao sai số lượng, kích thước, mẫu so với đơn đã xác nhận.',
+          'Sản phẩm lỗi do sản xuất (đường may, khoá kéo, chun, màu khác tiêu chuẩn đã công bố) hoặc hư hỏng khi vận chuyển (rách, bẩn, biến dạng).',
         ],
       },
       {
@@ -160,6 +182,7 @@ export const POLICIES: readonly Policy[] = [
           'Gửi hàng đổi trong 7 ngày kể từ ngày nhận.',
           'Sản phẩm còn nguyên tem mác, chưa giặt, chưa sử dụng, còn đủ hộp và phụ kiện.',
           'Hàng may theo kích thước riêng chỉ đổi khi có lỗi sản xuất hoặc may sai số đo đã chốt.',
+          'Mẫu cần đổi đã hết: Quý khách chọn mẫu khác cùng giá. Chọn mẫu giá cao hơn thì bù phần chênh lệch.',
         ],
       },
       {
@@ -173,14 +196,15 @@ export const POLICIES: readonly Policy[] = [
         title: 'Cách gửi yêu cầu đổi',
         steps: [
           { title: 'Báo cho Ecopillo', text: `Gọi hoặc nhắn Zalo ${CONTACT.hotlineDisplay}, gửi mã đơn hoặc số điện thoại đặt hàng và ảnh sản phẩm.` },
-          { title: 'Ecopillo xác nhận', text: 'Nhân viên kiểm tra và hẹn cách gửi hàng đổi, hoặc cho người đến lấy với khách ở Hà Nội, TP. HCM.' },
-          { title: 'Nhận hàng mới', text: 'Hàng đổi được giao lại theo thời gian giao hàng thông thường.' },
+          { title: 'Ecopillo xác nhận', text: 'Trong 48 giờ làm việc, nhân viên báo kết quả kiểm tra và hẹn cách gửi hàng đổi, hoặc cho người đến lấy với khách ở Hà Nội, TP. HCM.' },
+          { title: 'Gửi hàng về', text: 'Đóng gói sản phẩm kèm quà tặng (nếu có), gửi về văn phòng Ecopillo, 273 Xã Đàn, Đống Đa, Hà Nội.' },
+          { title: 'Nhận hàng mới', text: 'Ecopillo gửi hàng đổi ngay khi nhận được hàng trả về.' },
         ],
       },
     ],
   },
   {
-    slug: 'chinh-sach-bao-hanh',
+    slug: 'chinh-sach-bao-hanh-san-pham',
     title: 'Chính sách bảo hành',
     description: 'Bảo hành theo từng sản phẩm tính từ ngày mua: đệm 5–15 năm tuỳ dòng, chăn ga và gối theo thời hạn ghi ở từng sản phẩm.',
     intro: 'Mỗi sản phẩm Ecopillo đều có thời hạn bảo hành rõ ràng, tính từ ngày mua và ghi ngay trên trang sản phẩm.',
@@ -205,6 +229,7 @@ export const POLICIES: readonly Policy[] = [
           'Bung đường may, tuột chỉ trong điều kiện sử dụng thông thường.',
           'Khoá kéo, chun ga hỏng do lỗi sản xuất.',
           'Đệm lún, biến dạng vượt mức cho phép của nhà sản xuất [ECOPILLO XÁC NHẬN MỨC LÚN ĐƯỢC BẢO HÀNH].',
+          'Đệm có các tấm dày cứng không đều, mặt cắt không phẳng, bề mặt lồi lõm do lỗi sản xuất.',
         ],
       },
       {
@@ -213,12 +238,14 @@ export const POLICIES: readonly Policy[] = [
           'Hư hỏng do giặt, sấy, là sai hướng dẫn trên nhãn.',
           'Rách, cháy, ố bẩn, côn trùng cắn, hoặc tự ý sửa chữa.',
           'Phai màu, xù nhẹ tự nhiên sau thời gian dài sử dụng.',
+          'Dùng sai mục đích, hoặc dùng và bảo quản không đúng hướng dẫn kèm theo sản phẩm.',
         ],
       },
       {
         title: 'Cách yêu cầu bảo hành',
         body: [
           `Gọi hoặc nhắn Zalo ${CONTACT.hotlineDisplay}, gửi số điện thoại đặt hàng và ảnh phần cần bảo hành. Ecopillo hẹn cách nhận và trả hàng bảo hành.`,
+          'Thời gian xử lý tuỳ mức độ lỗi và vật tư thay thế; Ecopillo báo cụ thể khi nhận sản phẩm.',
           '[ECOPILLO XÁC NHẬN CÓ CÒN YÊU CẦU KÍCH HOẠT BẢO HÀNH ĐIỆN TỬ HAY KHÔNG; NẾU CÒN, GỬI CÁC BƯỚC KÍCH HOẠT]',
         ],
       },

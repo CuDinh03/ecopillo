@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { patternImage } from '../../data/catalog'
 import { HOTEL_PARTNERS } from '../../data/content'
+import { PATHS } from '../../data/links'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
@@ -52,7 +53,7 @@ export function Hospitality() {
             zaloLabel="Gửi yêu cầu qua Zalo"
           />
           <Link
-            to="/khach-san"
+            to={PATHS.hotel}
             className="mt-4 -mb-2 inline-flex items-center gap-1.5 py-2 text-[0.95rem] font-medium text-mist-200 underline-offset-4 hover:text-ivory hover:underline"
           >
             Xem giải pháp cho khách sạn <Icon name="arrowRight" size={16} />

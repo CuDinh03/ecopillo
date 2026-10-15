@@ -8,6 +8,7 @@ import { PageHero } from '../components/ui/PageHero'
 import { Placeholder } from '../components/ui/Placeholder'
 import { buttonClass, Container, FillIn, LinkButton, SectionHeading } from '../components/ui/primitives'
 import { HOTEL_PARTNERS } from '../data/content'
+import { PATHS } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 
@@ -84,7 +85,7 @@ export function AboutPage() {
             Đọc câu chuyện
             <Icon name="chevronDown" size={17} />
           </a>
-          <LinkButton to="/san-pham" variant="secondary">
+          <LinkButton to={PATHS.products} variant="secondary">
             Xem sản phẩm
           </LinkButton>
         </div>
@@ -143,7 +144,7 @@ export function AboutPage() {
               title="Đồng hành cùng khách sạn, resort"
               lead="Ngoài các gia đình, Ecopillo may chăn ga gối theo kích thước cho khách sạn, resort và nhà nghỉ trên cả nước."
             />
-            <Link to="/khach-san" className={buttonClass('primary', 'md', 'mt-8')}>
+            <Link to={PATHS.hotel} className={buttonClass('primary', 'md', 'mt-8')}>
               Giải pháp cho khách sạn
               <Icon name="arrowRight" size={17} />
             </Link>
@@ -177,11 +178,11 @@ export function AboutPage() {
                 Cảm nhận độ mềm mát của Lyocell, nằm thử gối và đệm, được tư vấn mẫu hợp với phòng ngủ của Quý khách.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <LinkButton to="/he-thong-phan-phoi" variant="light">
+                <LinkButton to={PATHS.distribution} variant="light">
                   <Icon name="pin" size={17} />
                   Hệ thống phân phối
                 </LinkButton>
-                <LinkButton to="/lien-he" variant="outlineLight">
+                <LinkButton to={PATHS.contact} variant="outlineLight">
                   Liên hệ
                 </LinkButton>
               </div>

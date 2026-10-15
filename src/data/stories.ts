@@ -166,9 +166,8 @@ export const storyOf = (collection: Collection, pattern: Pattern): PatternStory 
 export const chapterTitle = (collection: Collection, pattern: Pattern): string =>
   storyOf(collection, pattern)?.title ?? pattern.colorName
 
-/** Đường link riêng của từng phối màu, ví dụ /san-pham/eco-tera/et01 */
-export const patternPath = (collection: Collection, pattern: Pattern): string =>
-  `/san-pham/${collection.id}/${pattern.code.toLowerCase()}`
+/** Đường link riêng của từng phối màu: trang sản phẩm của mẫu đó trên web cũ (bảng ở links.ts) */
+export { patternPath } from './links'
 
 export const patternByParam = (collection: Collection, param: string | null | undefined): Pattern | undefined =>
   param ? collection.patterns.find((p) => p.code.toLowerCase() === param.toLowerCase()) : undefined

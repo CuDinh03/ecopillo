@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
+import { PATHS, withSlash } from '../../data/links'
+import { POLICY_ALIASES, POLICY_PAGES } from '../../data/policyNav'
 import { Icon, ZaloMark } from '../ui/Icon'
 import { buttonClass, Container } from '../ui/primitives'
 import { useActiveSection } from '../../hooks/useActiveSection'
@@ -20,17 +22,17 @@ interface NavItem {
  * Về chúng tôi, Hệ thống phân phối, Khách sạn, Quà tặng, Hỏi đáp nay là trang riêng (trang chủ vẫn giữ phần tóm tắt).
  */
 export const NAV_ITEMS: readonly NavItem[] = [
-  { href: '/san-pham', label: 'Sản phẩm', primary: true },
-  { href: '/gioi-thieu', label: 'Về chúng tôi', primary: true },
-  { href: '/he-thong-phan-phoi', label: 'Hệ thống phân phối', primary: true },
-  { href: '/khach-san', label: 'Khách sạn', primary: true },
+  { href: PATHS.products, label: 'Sản phẩm', primary: true },
+  { href: PATHS.about, label: 'Về chúng tôi', primary: true },
+  { href: PATHS.distribution, label: 'Hệ thống phân phối', primary: true },
+  { href: PATHS.hotel, label: 'Khách sạn', primary: true },
   { href: '/#bo-suu-tap', label: 'Bộ sưu tập' },
   { href: '/#ruot-chan-goi', label: 'Ruột chăn gối' },
-  { href: '/qua-tang', label: 'Quà tặng' },
-  { href: '/tin-tuc', label: 'Tin tức' },
-  { href: '/hoi-dap', label: 'Hỏi đáp' },
+  { href: PATHS.gifts, label: 'Quà tặng' },
+  { href: PATHS.blog, label: 'Tin tức' },
+  { href: PATHS.faq, label: 'Hỏi đáp' },
   // Giữ trang Liên hệ như web cũ (yêu cầu của Ecopillo ngày 12/10)
-  { href: '/lien-he', label: 'Liên hệ', primary: true },
+  { href: PATHS.contact, label: 'Liên hệ', primary: true },
 ]
 
 const PRIMARY_ITEMS = NAV_ITEMS.filter((item) => item.primary)
@@ -51,10 +53,14 @@ const SECTION_IDS = NAV_ITEMS.filter((i) => i.href.startsWith('/#')).map((i) => 
 function useActiveHref(): string | null {
   const { pathname } = useLocation()
   const section = useActiveSection(SECTION_IDS, pathname === '/')
-  const page = NAV_ITEMS.find((i) => !i.href.startsWith('/#') && pathname.startsWith(i.href))
+  const path = withSlash(pathname)
+  const page = NAV_ITEMS.find((i) => i.href !== '/' && !i.href.startsWith('/#') && path.startsWith(i.href))
   if (page) return page.href
+  // Bộ sưu tập, danh mục nhỏ và trang từng sản phẩm của web cũ nằm dưới mục Sản phẩm
+  if (path.startsWith('/danh-muc-san-pham/') || path.startsWith('/san-pham/')) return PATHS.products
   // Các trang chính sách nằm dưới mục Hỏi đáp
-  if (pathname.startsWith('/chinh-sach') || pathname === '/huong-dan-mua-hang') return '/hoi-dap'
+  const slug = path.slice(1, -1)
+  if (path === PATHS.privacy || POLICY_PAGES.some((p) => p.slug === slug) || POLICY_ALIASES[slug]) return PATHS.faq
   return section ? `/#${section}` : null
 }
 
@@ -188,7 +194,7 @@ export function Header() {
           </a>
           {/* Điện thoại đã có nút Đặt hàng ở thanh dưới */}
           <span className="hidden sm:block">
-            <NavLink to="/dat-hang" className={buttonClass('primary', 'sm')}>
+            <NavLink to={PATHS.order} className={buttonClass('primary', 'sm')}>
               Đặt hàng
             </NavLink>
           </span>
@@ -231,7 +237,7 @@ export function Header() {
                 </ul>
               </nav>
               <div className="mt-auto space-y-3 pt-8 pb-10">
-                <Link to="/dat-hang" className={buttonClass('primary', 'lg', 'w-full')} onClick={() => setIsMenuOpen(false)}>
+                <Link to={PATHS.order} className={buttonClass('primary', 'lg', 'w-full')} onClick={() => setIsMenuOpen(false)}>
                   Đặt hàng online
                   <Icon name="arrowRight" size={18} />
                 </Link>

@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CONTACT, DISTRIBUTION_FILL_IN, OPENING_HOURS, SHOWROOMS } from '../../data/brand'
 import { FAQS } from '../../data/content'
+import { PATHS } from '../../data/links'
 import { DEALERS, dealerCountLabel, NEAR_ME_URL } from '../../data/dealers'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
@@ -47,7 +49,8 @@ export function Showrooms() {
           {SHOWROOMS.map((s, i) => (
             <article key={s.id} data-reveal style={revealDelay(i)} className="overflow-hidden rounded-[2rem] bg-ivory ring-1 ring-cream-200">
               <div className="flex h-full flex-col">
-                <div className="aspect-[2/1] sm:aspect-[16/9]">
+                {/* Khung chờ ảnh (chưa có ảnh thật): điện thoại ẩn cho gọn */}
+                <div className="aspect-[2/1] max-sm:hidden sm:aspect-[16/9]">
                   <Placeholder className="h-full w-full !rounded-none border-0" tone={i === 0 ? 'mist' : 'cream'} note={s.imageNote} />
                 </div>
                 <div className="flex flex-1 flex-col p-7 sm:p-9">
@@ -88,8 +91,16 @@ export function Showrooms() {
   )
 }
 
-/** standalone: dùng trên trang Hỏi đáp (đã có tiêu đề trang), đổi tiêu đề cột trái cho khỏi lặp */
-export function Faq({ standalone = false }: { standalone?: boolean }) {
+/** Trang chủ điện thoại: hiện ngần này câu, các câu sau nằm sau nút Xem thêm (vẫn có trong trang) */
+const FAQ_COMPACT = 4
+
+/**
+ * standalone: dùng trên trang Hỏi đáp (đã có tiêu đề trang), đổi tiêu đề cột trái cho khỏi lặp.
+ * compact: trang chủ điện thoại (mẫu 2), câu đầu không mở sẵn, chỉ hiện FAQ_COMPACT câu.
+ */
+export function Faq({ standalone = false, compact = false }: { standalone?: boolean; compact?: boolean }) {
+  const [showAll, setShowAll] = useState(false)
+  const isHidden = (i: number) => compact && !showAll && i >= FAQ_COMPACT
   return (
     <section id="hoi-dap" aria-labelledby="faq-title" className={standalone ? 'py-14 sm:py-24' : 'py-14 sm:py-32'}>
       <Container className="grid gap-8 sm:gap-12 lg:grid-cols-12">
@@ -103,7 +114,7 @@ export function Faq({ standalone = false }: { standalone?: boolean }) {
             <p className="mt-5 text-ink-soft">Chưa thấy câu trả lời Quý khách cần? Gọi hoặc nhắn Zalo, Ecopillo phản hồi ngay.</p>
             <ContactButtons size="md" stretch className="mt-7" />
             {!standalone && (
-              <Link to="/hoi-dap" className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-deep-800 hover:underline">
+              <Link to={PATHS.faq} className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-deep-800 hover:underline">
                 Xem chính sách giao hàng, đổi hàng, bảo hành <Icon name="arrowRight" size={14} />
               </Link>
             )}
@@ -113,8 +124,8 @@ export function Faq({ standalone = false }: { standalone?: boolean }) {
         <div className="lg:col-span-8">
           <ul data-reveal className="divide-y divide-ivory border-y border-ivory">
             {FAQS.map((f, i) => (
-              <li key={f.q}>
-                <details className="group" open={i === 0}>
+              <li key={f.q} className={isHidden(i) ? 'max-sm:hidden' : ''}>
+                <details className="group" open={i === 0 && !compact}>
                   <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-6 text-left">
                     <span className="flex gap-4">
                       <span className="tabular pt-1 text-xs text-ink-faint">{String(i + 1).padStart(2, '0')}</span>
@@ -135,6 +146,15 @@ export function Faq({ standalone = false }: { standalone?: boolean }) {
               </li>
             ))}
           </ul>
+          {compact && !showAll && FAQS.length > FAQ_COMPACT && (
+            <button
+              type="button"
+              onClick={() => setShowAll(true)}
+              className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-deep-800 sm:hidden"
+            >
+              Xem thêm {FAQS.length - FAQ_COMPACT} câu hỏi <Icon name="chevronDown" size={15} />
+            </button>
+          )}
         </div>
       </Container>
     </section>

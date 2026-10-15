@@ -1,14 +1,15 @@
 import { Link } from 'react-router-dom'
 import { Icon } from '../components/ui/Icon'
 import { Container, LinkButton } from '../components/ui/primitives'
+import { PATHS } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
 
 /** Lối đi tiếp gần nhất cho khách bấm phải đường link cũ (biên bản mục 07: không để khách kẹt ở trang lỗi) */
 const SUGGESTIONS = [
-  { to: '/san-pham', label: 'Sản phẩm' },
-  { to: '/tin-tuc', label: 'Tin tức, cẩm nang' },
-  { to: '/hoi-dap', label: 'Hỏi đáp, chính sách' },
-  { to: '/lien-he', label: 'Liên hệ' },
+  { to: PATHS.products, label: 'Sản phẩm' },
+  { to: PATHS.blog, label: 'Tin tức, cẩm nang' },
+  { to: PATHS.faq, label: 'Hỏi đáp, chính sách' },
+  { to: PATHS.contact, label: 'Liên hệ' },
 ] as const
 
 export function NotFoundPage() {

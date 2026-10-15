@@ -1,12 +1,13 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { MessageForm } from '../components/contact/MessageForm'
+import { AgentSignup } from '../components/dealers/AgentSignup'
 import { DealerCard } from '../components/dealers/DealerCard'
 import { DealerMap } from '../components/dealers/DealerMap'
 import { ZaloMark, Icon } from '../components/ui/Icon'
 import { Breadcrumb } from '../components/ui/PageHero'
-import { buttonClass, Container, FillIn, SectionHeading } from '../components/ui/primitives'
+import { buttonClass, Container, FillIn } from '../components/ui/primitives'
 import { CONTACT, DISTRIBUTION_FILL_IN, SHOWROOMS } from '../data/brand'
+import { PATHS, SITE_ORIGIN } from '../data/links'
 import {
   FAR_KM,
   formatKm,
@@ -30,12 +31,6 @@ import { usePageMeta } from '../hooks/usePageMeta'
  * - Điểm gần nhất xa hơn FAR_KM, hoặc tỉnh chưa có điểm: mời đặt online / nhắn Zalo, kèm tối đa 3 điểm gần nhất.
  */
 
-const AGENT_BENEFITS = [
-  'Giá sỉ và chính sách chiết khấu theo sản lượng',
-  'Hàng mẫu, catalogue, ảnh và video bán hàng',
-  'Đào tạo tư vấn chất liệu Lyocell, kích thước, bảo quản',
-  'Hỗ trợ đổi hàng lỗi và bảo hành như khách lẻ',
-] as const
 
 type Geo = 'idle' | 'locating' | 'failed'
 
@@ -76,7 +71,7 @@ function LocalBusinessData() {
     geo: { '@type': 'GeoCoordinates', latitude: s.lat, longitude: s.lng },
     telephone: s.hotline ?? CONTACT.hotlineDisplay,
     openingHours: 'Mo-Su 08:30-21:00',
-    url: 'https://ecopillo.com.vn/he-thong-phan-phoi',
+    url: `${SITE_ORIGIN}${PATHS.distribution}`,
   }))
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
 }
@@ -92,7 +87,7 @@ function NoDealerNearby({ place }: { place?: string }) {
         Ecopillo giao hàng toàn quốc, thanh toán khi nhận, miễn phí giao từ 500.000đ. Nhắn Zalo để được tư vấn mẫu qua video.
       </p>
       <div className="mt-6 flex flex-wrap gap-3">
-        <Link to="/dat-hang" className={buttonClass('light', 'md')}>
+        <Link to={PATHS.order} className={buttonClass('light', 'md')}>
           Đặt hàng online <Icon name="arrowRight" size={17} />
         </Link>
         <a href={CONTACT.zaloUrl} target="_blank" rel="noopener noreferrer" className={buttonClass('outlineLight', 'md')}>
@@ -488,44 +483,7 @@ export function DistributionPage() {
       </Container>
 
       <Container className="mt-16 sm:mt-24">
-        <section
-          id="dang-ky-dai-ly"
-          aria-labelledby="agent-title"
-          className="scroll-mt-28 grid gap-10 rounded-[2rem] bg-cream-50 p-6 ring-1 ring-cream-200 sm:p-10 lg:grid-cols-12 lg:gap-12 lg:p-14"
-        >
-          <div className="lg:col-span-5">
-            <SectionHeading
-              id="agent-title"
-              eyebrow="Hợp tác"
-              title={
-                <>
-                  Trở thành <span className="text-mist-600 italic">đại lý Ecopillo</span>
-                </>
-              }
-              lead="Ecopillo tìm đối tác phân phối chăn ga gối đệm cao cấp tại các tỉnh, thành. Để lại thông tin, bộ phận kinh doanh sẽ gọi lại."
-            />
-            <ul className="mt-8 space-y-3">
-              {AGENT_BENEFITS.map((b) => (
-                <li key={b} className="flex gap-3 text-[0.95rem] text-deep-900">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-deep-800 text-ivory">
-                    <Icon name="check" size={12} strokeWidth={2.2} />
-                  </span>
-                  {b}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-6 text-sm">
-              <FillIn>[ECOPILLO XÁC NHẬN QUYỀN LỢI ĐẠI LÝ TRƯỚC KHI ĐĂNG]</FillIn>
-            </p>
-          </div>
-          <div className="rounded-[1.5rem] bg-ivory p-6 shadow-[var(--shadow-soft)] sm:p-8 lg:col-span-7">
-            <MessageForm
-              defaultTopic="Đăng ký đại lý"
-              placeholder="Ví dụ: cửa hàng chăn ga tại Nam Định, diện tích 60 m², muốn nhận bảng giá sỉ…"
-              submitLabel="Gửi đăng ký"
-            />
-          </div>
-        </section>
+        <AgentSignup />
       </Container>
     </div>
   )

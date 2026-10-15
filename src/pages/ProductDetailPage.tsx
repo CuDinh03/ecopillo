@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { CollectionDetail } from '../components/collection/CollectionDetail'
 import { DetailBreadcrumb, MobileBuyBar, NearMeLine, ProductInfoCards, RelatedProducts, TrustList } from '../components/products/DetailParts'
 import { ProductReviews } from '../components/products/ProductReviews'
@@ -8,17 +8,33 @@ import { Icon, ZaloMark } from '../components/ui/Icon'
 import { Placeholder } from '../components/ui/Placeholder'
 import { buttonClass, Container } from '../components/ui/primitives'
 import { CONTACT } from '../data/brand'
+import { COLLECTION_BY_PATH, productPageTarget, withSlash } from '../data/links'
+import { PRODUCT_INFO, type InfoSection } from '../data/productInfo'
+import { relatedForProduct } from '../data/related'
+import { ExploreMore } from '../components/ui/ExploreMore'
 import { categoryLabel, priceLabel, productBySlug, singleOrderUrl, variantPrice, type Product } from '../data/products'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { formatVND } from '../lib/format'
 import { NotFoundPage } from './NotFoundPage'
 
+/**
+ * Trang sản phẩm, ở đúng đường link của web cũ (src/data/links.ts):
+ * - trang danh mục bộ sưu tập (/danh-muc-san-pham/bo-suu-tap-eco-rosa/): trang bộ sưu tập, mở sẵn chương đại diện;
+ * - trang sản phẩm của một mẫu (/san-pham/bo-chan-ga-lyocell-eco-rosa-er25/): cùng trang bộ sưu tập, mở chương ER25;
+ * - trang sản phẩm lẻ (/san-pham/ruot-goi-to-tam-ecopillo/): ruột gối, ruột chăn, topper, đệm.
+ * Cả hai kiểu link bộ sưu tập dùng chung một component, nên đổi chương không tải lại trang.
+ */
 export function ProductDetailPage() {
-  const { slug, mau } = useParams()
-  const product = productBySlug(slug)
+  const { slug } = useParams()
+  const { pathname } = useLocation()
+  const collectionId = COLLECTION_BY_PATH.get(withSlash(pathname))
+  const target = productPageTarget(slug)
+  const pattern = target?.kind === 'pattern' ? target : undefined
+  const product = productBySlug(collectionId ?? pattern?.collectionId ?? (target?.kind === 'product' ? target.slug : undefined))
   if (!product) return <MissingProduct />
   // Bộ chăn ga, chăn hè: trang bộ sưu tập, mỗi phối màu là một chương có đường link riêng
-  if (product.collection) return <CollectionDetail key={product.slug} product={product} collection={product.collection} patternParam={mau} />
+  if (product.collection)
+    return <CollectionDetail key={product.slug} product={product} collection={product.collection} patternParam={pattern?.code} />
   // key: đổi sản phẩm thì làm mới lựa chọn kích thước
   return <ProductDetail key={product.slug} product={product} />
 }
@@ -43,6 +59,9 @@ function ProductDetail({ product }: { product: Product }) {
   const singleUrl = variants ? singleOrderUrl(product, variantSize, thickness) : singleOrderUrl(product, choiceId)
   const singlePrice = variantUnitPrice ?? choice?.price
   const image = photos[photoIndex] ?? product.image
+  const info = PRODUCT_INFO[product.slug]
+  // Thông số: ô trong productInfo.ts ghi đè ô cùng tên trong products.ts
+  const specs = [...(info?.specs ?? []), ...(product.specs ?? []).filter((s) => !info?.specs?.some((i) => i.label === s.label))]
 
   return (
     <div className="pb-36 lg:pb-24">
@@ -111,9 +130,9 @@ function ProductDetail({ product }: { product: Product }) {
                   Giá cỡ {choice.label} theo độ dày và dòng đệm: nhân viên báo giá chính xác khi gọi xác nhận đơn.
                 </p>
               )}
-              {product.specs && (
+              {specs.length > 0 && (
                 <dl className="grid grid-cols-2 gap-3 rounded-2xl bg-cream-50 p-4 ring-1 ring-cream-200">
-                  {product.specs.map((spec) => (
+                  {specs.map((spec) => (
                     <div key={spec.label}>
                       <dt className="text-[0.7rem] tracking-[0.12em] text-ink-faint uppercase">{spec.label}</dt>
                       <dd className="mt-0.5 text-sm font-medium text-deep-900">{spec.value}</dd>
@@ -142,11 +161,14 @@ function ProductDetail({ product }: { product: Product }) {
           </div>
         </div>
 
+        {info && <ProductStory sections={info.sections} />}
+
         <ProductInfoCards product={product} />
 
         <ProductReviews product={product} />
 
         <RelatedProducts product={product} />
+        <ExploreMore groups={relatedForProduct(product)} />
       </Container>
 
       <MobileBuyBar product={product} size={null} unitPrice={singlePrice ?? null} singleUrl={singleUrl} />
@@ -183,5 +205,38 @@ function VariantGroup({ label, options, value, onChange }: VariantGroupProps) {
         ))}
       </div>
     </fieldset>
+  )
+}
+
+/** "Hiểu kỹ trước khi chọn": cấu tạo, hợp với ai, cách dùng (src/data/productInfo.ts) */
+function ProductStory({ sections }: { sections: readonly InfoSection[] }) {
+  return (
+    <section aria-labelledby="story-title" className="mt-16 sm:mt-20">
+      <h2 id="story-title" className="font-display text-[1.8rem] leading-tight text-deep-900 sm:text-[2.2rem]">
+        Hiểu kỹ <span className="text-mist-600 italic">trước khi chọn</span>
+      </h2>
+      <div className="mt-6 grid gap-x-12 gap-y-8 lg:grid-cols-3">
+        {sections.map((section) => (
+          <div key={section.title}>
+            <h3 className="eyebrow">{section.title}</h3>
+            {section.body?.map((line) => (
+              <p key={line} className="mt-3 text-[0.95rem] leading-relaxed text-ink-soft">
+                {line}
+              </p>
+            ))}
+            {section.list && (
+              <ul className="mt-3 space-y-2.5 text-[0.95rem] leading-relaxed text-ink-soft">
+                {section.list.map((line) => (
+                  <li key={line} className="flex gap-3">
+                    <span aria-hidden className="mt-[0.6rem] h-1.5 w-1.5 shrink-0 rounded-full bg-mist-600" />
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
   )
 }

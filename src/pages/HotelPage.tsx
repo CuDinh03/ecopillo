@@ -7,6 +7,7 @@ import { buttonClass, Container, FillIn, SectionHeading } from '../components/ui
 import { CONTACT } from '../data/brand'
 import { patternImage } from '../data/catalog'
 import { HOTEL_PARTNERS } from '../data/content'
+import { productsUrl } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 
@@ -23,10 +24,10 @@ const REASONS: readonly { icon: IconName; title: string; text: string }[] = [
 ]
 
 const LINES: readonly { title: string; text: string; to: string }[] = [
-  { title: 'Ga bọc, ga phủ', text: 'Trắng tinh hoặc màu theo nhận diện khách sạn.', to: '/san-pham?danh-muc=bo-chan-ga' },
-  { title: 'Vỏ chăn, ruột chăn', text: 'Ruột chăn nhẹ, ấm, giặt máy được.', to: '/san-pham?danh-muc=chan' },
-  { title: 'Ruột gối, vỏ gối', text: 'Gối êm vừa, giữ phom sau nhiều lần giặt.', to: '/san-pham?danh-muc=goi' },
-  { title: 'Đệm, tấm làm mềm', text: 'Đệm và topper nâng đỡ, đúng cỡ giường.', to: '/san-pham?danh-muc=dem' },
+  { title: 'Ga bọc, ga phủ', text: 'Trắng tinh hoặc màu theo nhận diện khách sạn.', to: productsUrl({ 'danh-muc': 'bo-chan-ga' }) },
+  { title: 'Vỏ chăn, ruột chăn', text: 'Ruột chăn nhẹ, ấm, giặt máy được.', to: productsUrl({ 'danh-muc': 'chan' }) },
+  { title: 'Ruột gối, vỏ gối', text: 'Gối êm vừa, giữ phom sau nhiều lần giặt.', to: productsUrl({ 'danh-muc': 'goi' }) },
+  { title: 'Đệm, tấm làm mềm', text: 'Đệm và topper nâng đỡ, đúng cỡ giường.', to: productsUrl({ 'danh-muc': 'dem' }) },
 ]
 
 const STEPS: readonly { title: string; text: string }[] = [

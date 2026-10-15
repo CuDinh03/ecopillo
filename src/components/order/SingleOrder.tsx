@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
+import { PATHS } from '../../data/links'
 import { productPath, singleOrderUrl, singleUnitPrice, variantPrice, type Product } from '../../data/products'
 import { formatVND } from '../../lib/format'
 import {
@@ -83,7 +84,7 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
             orderCode={orderCode}
             summary={summary}
             customer={draft.customer}
-            onNewOrder={() => navigate('/san-pham')}
+            onNewOrder={() => navigate(PATHS.products)}
           />
         </Container>
       </div>

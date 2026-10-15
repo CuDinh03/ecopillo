@@ -5,6 +5,7 @@ import { PageHero } from '../components/ui/PageHero'
 import { Placeholder } from '../components/ui/Placeholder'
 import { buttonClass, ContactButtons, Container, FillIn, SectionHeading } from '../components/ui/primitives'
 import { collectionById, coverOf } from '../data/catalog'
+import { collectionPathById } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 
@@ -88,7 +89,7 @@ export function GiftsPage() {
                       {o.ids.map((id) => (
                         <Link
                           key={id}
-                          to={`/san-pham/${id}`}
+                          to={collectionPathById(id)}
                           className="inline-flex items-center gap-1 rounded-full bg-cream-100 px-3.5 py-1.5 text-[0.85rem] text-deep-800 transition-colors hover:bg-mist-200"
                         >
                           {collectionById(id)?.name}

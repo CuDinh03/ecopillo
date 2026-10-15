@@ -11,7 +11,9 @@ import {
 } from '../../data/catalog'
 import type { Product } from '../../data/products'
 import { chapterTitle, patternByParam, patternPath, storyOf, toneById, volumesOf } from '../../data/stories'
+import { relatedForProduct } from '../../data/related'
 import { usePageMeta } from '../../hooks/usePageMeta'
+import { ExploreMore } from '../ui/ExploreMore'
 import { DetailBreadcrumb, MobileBuyBar, ProductInfoCards, RelatedProducts } from '../products/DetailParts'
 import { ProductReviews } from '../products/ProductReviews'
 import { Container } from '../ui/primitives'
@@ -132,6 +134,7 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
 
         <ProductReviews product={product} />
         <RelatedProducts product={product} />
+        <ExploreMore groups={relatedForProduct(product)} />
       </Container>
 
       <MobileBuyBar

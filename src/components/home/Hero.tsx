@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { Icon, type IconName } from '../ui/Icon'
 import { buttonClass, Container } from '../ui/primitives'
+import { PATHS, productsUrl } from '../../data/links'
 
 /**
  * Phần đầu trang chủ — bản chốt 12/10/2026, phương án "ảnh trọn khung": ảnh Bảng EC hiện đủ, rõ,
@@ -14,10 +15,10 @@ import { buttonClass, Container } from '../ui/primitives'
 
 /** "Hệ sinh thái sản phẩm" lấy ý từ Bảng EC; dòng mô tả chỉ hiện khi rê chuột (title) */
 const ECOSYSTEM: readonly { name: string; text: string; to: string; thumb: string }[] = [
-  { name: 'Chăn', text: 'Nhẹ nhàng, ấm áp', to: '/san-pham?danh-muc=chan', thumb: '/images/products/chan-long-vu-tu-nhien-sm.webp' },
-  { name: 'Ga', text: 'Mềm mại, thoáng mát', to: '/san-pham?danh-muc=bo-chan-ga', thumb: '/images/details/hero-ed25-sm.webp' },
-  { name: 'Gối', text: 'Nâng niu từng giấc ngủ', to: '/san-pham?danh-muc=goi', thumb: '/images/products/ruot-goi-micro-plus-sm.webp' },
-  { name: 'Đệm', text: 'Nâng đỡ chuẩn cột sống', to: '/san-pham?danh-muc=dem', thumb: '/images/products/dem-lo-xo-tui-doc-lap-sm.webp' },
+  { name: 'Chăn', text: 'Nhẹ nhàng, ấm áp', to: productsUrl({ 'danh-muc': 'chan' }), thumb: '/images/products/chan-long-vu-tu-nhien-sm.webp' },
+  { name: 'Ga', text: 'Mềm mại, thoáng mát', to: productsUrl({ 'danh-muc': 'bo-chan-ga' }), thumb: '/images/details/hero-ed25-sm.webp' },
+  { name: 'Gối', text: 'Nâng niu từng giấc ngủ', to: productsUrl({ 'danh-muc': 'goi' }), thumb: '/images/products/ruot-goi-micro-plus-sm.webp' },
+  { name: 'Đệm', text: 'Nâng đỡ chuẩn cột sống', to: productsUrl({ 'danh-muc': 'dem' }), thumb: '/images/products/dem-lo-xo-tui-doc-lap-sm.webp' },
 ]
 
 const VALUES = ['Tốt', 'Thật', 'Thiện'] as const
@@ -175,7 +176,7 @@ function MobileTop() {
           <a href="#bo-suu-tap" className={buttonClass('primary', 'md')}>
             Xem bộ sưu tập
           </a>
-          <Link to="/dat-hang" className={buttonClass('light', 'md')}>
+          <Link to={PATHS.order} className={buttonClass('light', 'md')}>
             Đặt hàng online
           </Link>
         </div>
@@ -235,7 +236,7 @@ export function Hero() {
                 Xem bộ sưu tập
                 <Icon name="arrowRight" size={18} />
               </a>
-              <Link to="/dat-hang" className={buttonClass('secondary', 'lg')}>
+              <Link to={PATHS.order} className={buttonClass('secondary', 'lg')}>
                 Đặt hàng online
               </Link>
             </div>

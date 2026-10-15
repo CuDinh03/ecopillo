@@ -4,6 +4,7 @@ import { Icon } from '../ui/Icon'
 import { Container } from '../ui/primitives'
 import { NAV_ITEMS } from './Header'
 import { POLICY_NAV } from '../../data/policyNav'
+import { PATHS } from '../../data/links'
 import { NEAR_ME_URL } from '../../data/dealers'
 import { SocialIcons } from '../home/SocialLinks'
 import { Logo } from './Logo'
@@ -46,7 +47,7 @@ export function Footer() {
                 </li>
               ))}
               <li>
-                <Link to="/dat-hang" className={LIST_LINK}>
+                <Link to={PATHS.order} className={LIST_LINK}>
                   Đặt hàng online
                 </Link>
               </li>
@@ -97,7 +98,7 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <Link to="/lien-he" className="inline-flex items-center gap-2.5 font-medium text-deep-900 underline-offset-2 hover:underline max-sm:py-2">
+                <Link to={PATHS.contact} className="inline-flex items-center gap-2.5 font-medium text-deep-900 underline-offset-2 hover:underline max-sm:py-2">
                   <Icon name="mail" size={16} /> Gửi tin nhắn cho Ecopillo
                 </Link>
               </li>
@@ -136,7 +137,7 @@ export function Footer() {
             <p>© {new Date().getFullYear()} {BRAND.company}. Đạt chứng nhận ISO 9001:2015 và TQC.</p>
             <p>Chỉ đổi hàng, không trả hàng hoàn tiền · Kiểm hàng khi nhận · Thanh toán khi nhận hàng toàn quốc</p>
             <p>
-              <Link to="/chinh-sach-bao-mat" className="-my-2.5 inline-block py-2.5 underline underline-offset-2 hover:text-deep-900">
+              <Link to={PATHS.privacy} className="-my-2.5 inline-block py-2.5 underline underline-offset-2 hover:text-deep-900">
                 Chính sách bảo vệ thông tin cá nhân
               </Link>
             </p>

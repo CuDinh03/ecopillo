@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { staticImage, type ImageSource } from '../../data/catalog'
+import { PATHS } from '../../data/links'
 import { revealDelay } from '../../lib/reveal'
 import { Icon, type IconName } from '../ui/Icon'
+import { MobileMore } from '../ui/MobileMore'
 import { Placeholder } from '../ui/Placeholder'
 import { Container, FillIn, SectionHeading } from '../ui/primitives'
 
@@ -106,7 +108,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
             </ol>
             {moreLink && (
               <Link
-                to="/gioi-thieu"
+                to={PATHS.about}
                 className="mt-5 -mb-2 inline-flex items-center gap-1.5 py-2 text-[0.95rem] font-medium text-deep-800 underline-offset-4 hover:underline"
               >
                 Xem trang Giới thiệu đầy đủ <Icon name="arrowRight" size={16} />
@@ -115,6 +117,8 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
           </div>
         </div>
 
+        {/* Điện thoại: sứ mệnh, tầm nhìn, giá trị cốt lõi nằm sau nút (vẫn có trong trang) */}
+        <MobileMore label="Sứ mệnh, tầm nhìn, giá trị cốt lõi" buttonClassName="mt-6">
         <div className="m-rail mt-12 grid gap-5 sm:mt-20 lg:grid-cols-2">
           <MissionCard
             label="Sứ mệnh"
@@ -180,6 +184,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
             </figcaption>
           </figure>
         </div>
+        </MobileMore>
       </Container>
     </section>
   )

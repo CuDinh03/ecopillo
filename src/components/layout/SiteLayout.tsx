@@ -1,5 +1,6 @@
 import { Suspense, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
+import { hasOwnBuyBar, PATHS } from '../../data/links'
 import { BackToTop } from './BackToTop'
 import { ContactDock } from './ContactDock'
 import { Footer } from './Footer'
@@ -57,10 +58,10 @@ export function SiteLayout() {
   // Hiện dần khi cuộn: do public/hieu-ung/ecopillo-hieu-ung.js lo cho cả trang (thay useScrollReveal)
   const { pathname } = useLocation()
   // Trang đặt hàng và chi tiết sản phẩm có thanh dưới riêng (giá + gọi/Zalo)
-  const showDock = !pathname.startsWith('/dat-hang') && !pathname.startsWith('/san-pham/')
+  const showDock = !pathname.startsWith(PATHS.order.slice(0, -1)) && !hasOwnBuyBar(pathname)
   // Trang tìm đại lý: điện thoại bỏ thanh liên hệ dưới đáy, vì mỗi thẻ đã có Gọi/Zalo của đúng điểm đó
   // (thêm hotline chung dễ bấm nhầm) và bản đồ cần chỗ. Máy tính vẫn giữ nút "Liên hệ" nổi.
-  const isDealerFinder = pathname.startsWith('/he-thong-phan-phoi')
+  const isDealerFinder = pathname.startsWith(PATHS.distribution.slice(0, -1))
 
   return (
     <div className="flex min-h-svh flex-col">

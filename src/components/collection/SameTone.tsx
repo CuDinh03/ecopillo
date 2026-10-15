@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import type { Collection } from '../../data/catalog'
+import { productsUrl } from '../../data/links'
 import { sameToneElsewhere, type Tone } from '../../data/stories'
 import { ColorwayCard } from '../products/ColorwayCard'
 import { Icon } from '../ui/Icon'
@@ -17,7 +18,7 @@ export function SameTone({ collection, tone }: { collection: Collection; tone: T
           Thêm <span className="text-mist-600 italic">{tone.phrase}</span> ở bộ khác
         </h2>
         <Link
-          to={`/san-pham?gam=${tone.id}`}
+          to={productsUrl({ gam: tone.id })}
           className="-my-2 inline-flex items-center gap-1.5 py-2 text-sm font-medium text-deep-800 underline-offset-4 hover:underline"
         >
           Xem cả {tone.phrase} <Icon name="arrowRight" size={15} />

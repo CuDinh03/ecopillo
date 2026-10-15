@@ -1,10 +1,11 @@
 import { patternImage, type ImageSource } from './catalog'
+import { productsUrl } from './links'
 
 /**
  * Bài viết (biên bản mục 49: 59 bài trên web cũ chuyển sang, GIỮ NGUYÊN đường link, chỉ đổi giao diện).
  * Trên WordPress, danh sách này lấy thẳng từ bài viết đang có; 3 bài dưới đây là bài mẫu để dựng giao diện
- * và có thể đăng thật sau khi Ecopillo duyệt. Bài đầu dùng đúng đường link cũ /vai-tencel-la-gi/:
- * chữ "tencel" chỉ còn trong đường link này (giữ theo mục 49), không xuất hiện trong tiêu đề hay nội dung.
+ * và có thể đăng thật sau khi Ecopillo duyệt. Bài đầu là bài cũ đổi tên chất liệu thành Lyocell, link cũ chuyển 301 sang đây
+ * (owner chốt 15/10/2026, bảng RENAMED_PATHS trong links.ts).
  */
 
 export type PostBlock =
@@ -22,6 +23,11 @@ export interface Post {
   cover: ImageSource
   /** Bộ sưu tập gợi ý ở cuối bài */
   related?: readonly { label: string; to: string }[]
+  /**
+   * Bài nói về nhóm sản phẩm nào ('bo-chan-ga', 'chan', 'goi', 'dem') hoặc 'chinh-sach'.
+   * Dùng cho khối "Khám phá thêm": bài hiện ở cuối trang sản phẩm cùng nhóm (src/data/related.ts)
+   */
+  topics?: readonly ('bo-chan-ga' | 'chan' | 'goi' | 'dem' | 'chinh-sach')[]
   body: readonly PostBlock[]
 }
 
@@ -30,16 +36,17 @@ export type PostCategory = (typeof POST_CATEGORIES)[number]
 
 export const POSTS: readonly Post[] = [
   {
-    slug: 'vai-tencel-la-gi',
+    slug: 'vai-lyocell-la-gi',
     title: 'Vải Lyocell là gì? Vì sao nằm mát và mềm như lụa',
     excerpt:
       'Lyocell là sợi làm từ bột gỗ. Bài này giải thích sợi được làm ra thế nào, vì sao nằm mát, và cách phân biệt khi mua chăn ga.',
     category: 'Chất liệu',
+    topics: ['bo-chan-ga', 'chan'],
     readMinutes: 5,
     cover: patternImage('ER25', 'Bộ chăn ga Lyocell Eco Rosa ER25 trải trên giường'),
     related: [
-      { label: 'Bộ chăn ga Lyocell', to: '/san-pham?danh-muc=bo-chan-ga' },
-      { label: 'Chăn hè Lyocell', to: '/san-pham?danh-muc=chan' },
+      { label: 'Bộ chăn ga Lyocell', to: productsUrl({ 'danh-muc': 'bo-chan-ga' }) },
+      { label: 'Chăn hè Lyocell', to: productsUrl({ 'danh-muc': 'chan' }) },
     ],
     body: [
       {
@@ -78,9 +85,10 @@ export const POSTS: readonly Post[] = [
     excerpt:
       'Đo đúng ba số dài, rộng, dày của đệm là chọn được ga vừa khít. Hướng dẫn đo nhanh, cách chọn ga chun hay ga phủ, và bảng cỡ phổ biến.',
     category: 'Hướng dẫn chọn',
+    topics: ['bo-chan-ga', 'dem'],
     readMinutes: 4,
     cover: patternImage('ED10', 'Ga phủ trắng trải phẳng, vừa khít đệm'),
-    related: [{ label: 'Xem bộ chăn ga', to: '/san-pham?danh-muc=bo-chan-ga' }],
+    related: [{ label: 'Xem bộ chăn ga', to: productsUrl({ 'danh-muc': 'bo-chan-ga' }) }],
     body: [
       {
         type: 'p',
@@ -122,9 +130,10 @@ export const POSTS: readonly Post[] = [
     excerpt:
       'Vài thói quen nhỏ khi giặt, phơi, cất giữ giúp chăn ga Lyocell giữ độ bóng mịn và bền màu qua nhiều năm.',
     category: 'Chăm sóc, bảo quản',
+    topics: ['bo-chan-ga', 'chan', 'chinh-sach'],
     readMinutes: 3,
     cover: patternImage('EF06', 'Bộ ga chun Lyocell Eco Flora EF06 trải phẳng sau khi giặt'),
-    related: [{ label: 'Chính sách bảo hành', to: '/chinh-sach-bao-hanh' }],
+    related: [{ label: 'Chính sách bảo hành', to: '/chinh-sach-bao-hanh-san-pham/' }],
     body: [
       {
         type: 'p',
@@ -163,6 +172,6 @@ export const POSTS: readonly Post[] = [
 export const postBySlug = (slug: string | undefined): Post | undefined => POSTS.find((p) => p.slug === slug)
 
 /** Bài viết nằm ở gốc web như WordPress cũ: ecopillo.com.vn/ten-bai/ */
-export const postPath = (p: Post): string => `/${p.slug}`
+export const postPath = (p: Post): string => `/${p.slug}/`
 
 export const BLOG_FILL_IN = '[59 BÀI VIẾT TỪ WORDPRESS SẼ HIỆN Ở ĐÂY, GIỮ NGUYÊN ĐƯỜNG LINK CŨ; 3 BÀI DƯỚI ĐÂY LÀ BÀI MẪU]'

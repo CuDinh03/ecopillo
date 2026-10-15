@@ -8,6 +8,7 @@
 
 import { CONTACT, SHOWROOMS } from './brand'
 import { slugify } from '../lib/slug'
+import { PATHS } from './links'
 
 export type DealerKind = 'van-phong' | 'chi-nhanh' | 'dai-ly'
 
@@ -45,7 +46,7 @@ export const KIND_LABEL: Readonly<Record<DealerKind, string>> = {
 export const FAR_KM = 50
 
 /** Nút "Tìm đại lý gần tôi" ở trang khác: mở trang và hỏi vị trí ngay */
-export const NEAR_ME_URL = '/he-thong-phan-phoi?gan-toi=1'
+export const NEAR_ME_URL = `${PATHS.distribution}?gan-toi=1`
 
 /** Hiện bấy nhiêu điểm đầu, còn lại sau nút "Xem thêm" */
 export const PAGE_SIZE = 10

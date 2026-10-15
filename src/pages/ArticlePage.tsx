@@ -4,7 +4,10 @@ import { Icon } from '../components/ui/Icon'
 import { Breadcrumb } from '../components/ui/PageHero'
 import { Placeholder } from '../components/ui/Placeholder'
 import { ContactButtons, Container } from '../components/ui/primitives'
+import { PATHS } from '../data/links'
 import { postBySlug, POSTS, type PostBlock } from '../data/posts'
+import { relatedForPost } from '../data/related'
+import { ExploreMore } from '../components/ui/ExploreMore'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { NotFoundPage } from './NotFoundPage'
 
@@ -51,9 +54,9 @@ export function ArticlePage() {
     <div className="pb-24">
       <Container className="pt-10 sm:pt-14">
         <div className="mx-auto max-w-3xl">
-          <Breadcrumb items={[{ label: 'Tin tức', to: '/tin-tuc' }, { label: post.category }]} />
+          <Breadcrumb items={[{ label: 'Tin tức', to: PATHS.blog }, { label: post.category }]} />
           <p className="mt-8 flex items-center gap-2 text-[0.8rem] text-ink-soft">
-            <Link to={`/tin-tuc?chu-de=${encodeURIComponent(post.category)}`} className="font-medium tracking-[0.12em] text-mist-600 uppercase hover:underline">
+            <Link to={`${PATHS.blog}?chu-de=${encodeURIComponent(post.category)}`} className="font-medium tracking-[0.12em] text-mist-600 uppercase hover:underline">
               {post.category}
             </Link>
             <span aria-hidden>·</span>
@@ -105,7 +108,7 @@ export function ArticlePage() {
         <Container className="mt-16 sm:mt-24">
           <div className="flex items-end justify-between gap-4">
             <h2 className="font-display text-[1.8rem] text-deep-900 sm:text-[2.2rem]">Bài viết khác</h2>
-            <Link to="/tin-tuc" className="inline-flex items-center gap-1 text-sm font-medium text-deep-800 hover:underline">
+            <Link to={PATHS.blog} className="inline-flex items-center gap-1 text-sm font-medium text-deep-800 hover:underline">
               Tất cả bài viết <Icon name="arrowRight" size={14} />
             </Link>
           </div>
@@ -118,6 +121,10 @@ export function ArticlePage() {
           </ul>
         </Container>
       )}
+
+      <Container>
+        <ExploreMore groups={relatedForPost(post)} />
+      </Container>
     </div>
   )
 }

@@ -25,9 +25,12 @@ const EXCLUDED = [
   'images/patterns/chan-he-ER12-sm.webp',
 ]
 
-/** Chữ cấm (CLAUDE.md). Đường link bài viết cũ được giữ có chủ ý theo biên bản mục 49 */
+/**
+ * Chữ cấm (CLAUDE.md). Chỉ được phép trong đường link CŨ nằm ở bảng chuyển hướng (src/data/links.ts), vì phải nhận link cũ
+ * để chuyển 301 sang link mới đã đổi thành "lyocell" (owner chốt 15/10/2026). Chữ hiện trên trang vẫn bị chặn.
+ */
 const BANNED = /tencel|\b60 ?s\b/i
-const ALLOWED_BANNED = ['vai-tencel-la-gi']
+const OLD_PATH_WITH_BANNED = /['"]\/(?:vai-tencel-la-gi|san-pham\/[a-z0-9-]*tencel[a-z0-9-]*)\/['"]/g
 
 const TEXT_FILE = /\.(html|js|css|json|txt|xml|svg|webmanifest)$/i
 
@@ -41,7 +44,7 @@ function walk(dir) {
 }
 
 function stripAllowed(text) {
-  return ALLOWED_BANNED.reduce((acc, word) => acc.split(word).join(''), text)
+  return text.replace(OLD_PATH_WITH_BANNED, '""')
 }
 
 if (!existsSync(join(BUILD, 'index.html'))) {

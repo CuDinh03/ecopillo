@@ -2,17 +2,21 @@ import { PolicyLayout } from '../components/policy/PolicyLayout'
 import { RichText } from '../components/ui/RichText'
 import { useLocation } from 'react-router-dom'
 import { policyBySlug } from '../data/policies'
+import { POLICY_ALIASES } from '../data/policyNav'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { NotFoundPage } from './NotFoundPage'
 
 /** Một trang chính sách (giao hàng, thanh toán, đổi hàng, bảo hành, hướng dẫn mua hàng), chọn theo đường link */
 export function PolicyPage() {
   const { pathname } = useLocation()
-  const policy = policyBySlug(pathname.replace(/^\/|\/$/g, ''))
-  usePageMeta(policy?.title ?? null, policy?.description)
-  if (!policy) return <NotFoundPage />
+  const path = pathname.replace(/^\/|\/$/g, '')
+  const alias = POLICY_ALIASES[path]
+  const policy = policyBySlug(alias?.slug ?? path)
+  const title = alias?.title ?? policy?.title
+  usePageMeta(title ?? null, policy?.description)
+  if (!policy || !title) return <NotFoundPage />
   return (
-    <PolicyLayout title={policy.title} intro={policy.intro}>
+    <PolicyLayout title={title} intro={policy.intro}>
       <ul className="grid gap-3 sm:grid-cols-3">
         {policy.highlights.map((h) => (
           <li key={h.label} className="rounded-[1.25rem] bg-mist-50 p-5 ring-1 ring-mist-200">

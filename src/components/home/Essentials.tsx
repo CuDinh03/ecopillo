@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
 import { COLLECTIONS, ESSENTIALS, GIFT_PROGRAM_NOTE, MATTRESSES, productImage } from '../../data/catalog'
 import { formatRange, formatVND } from '../../lib/format'
@@ -6,15 +7,51 @@ import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { buttonClass, ContactButtons, Container, FillIn, SectionHeading } from '../ui/primitives'
 import { PRODUCTS, productForEssential, productPath, singleOrderUrl } from '../../data/products'
+import { PATHS, productsUrl } from '../../data/links'
 import { revealDelay } from '../../lib/reveal'
+import { scrollToElement } from '../../lib/scroll'
 import { orderLink } from './Collections'
+import { MobileTabBar } from './MobileTabBar'
 
 const SUMMER_QUILT_NAME = 'Chăn hè Lyocell'
 const SUMMER_QUILT_ID = 'chan-he-lyocell'
 
-export function Essentials() {
+/** Tab của khối gộp trên điện thoại: ba nhóm ruột chăn gối, đệm, quà tặng */
+type EssentialTab = 'ruot-goi' | 'ruot-chan' | 'chan-topper' | 'dem' | 'qua-tang'
+
+const ESSENTIAL_TABS: readonly { id: EssentialTab; label: string }[] = [
+  ...ESSENTIALS.map((g) => ({ id: g.id as EssentialTab, label: g.title })),
+  { id: 'dem', label: 'Đệm' },
+  { id: 'qua-tang', label: 'Quà tặng' },
+]
+
+interface EssentialsProps {
+  /**
+   * Trang chủ điện thoại (mẫu 2, owner chốt 15/10/2026): gộp Ruột chăn gối, Đệm, Quà tặng thành một khối có tab.
+   * Máy tính không đổi. Mọi nhóm vẫn nằm trong trang, chỉ hiện nhóm đang chọn.
+   */
+  withTabs?: boolean
+}
+
+export function Essentials({ withTabs = false }: EssentialsProps) {
+  const { hash } = useLocation()
+  // Mở thẳng tab Quà tặng khi đi từ link #qua-tang
+  const [tab, setTab] = useState<EssentialTab>(hash === '#qua-tang' ? 'qua-tang' : 'ruot-goi')
+  // Đi từ link #qua-tang: tab vừa mở nên mục mới có chiều cao, cuộn lại tới đúng chỗ
+  useEffect(() => {
+    if (!withTabs || hash !== '#qua-tang') return
+    setTab('qua-tang')
+    const frame = requestAnimationFrame(() => {
+      const target = document.getElementById('qua-tang')
+      if (target) scrollToElement(target)
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [withTabs, hash])
+  const shownOnMobile = (id: EssentialTab) => !withTabs || tab === id
+  const mobileOnly = (id: EssentialTab) => (shownOnMobile(id) ? '' : 'max-sm:hidden')
   return (
-    <section id="ruot-chan-goi" aria-labelledby="essentials-title" className="py-14 sm:py-32">
+    <>
+    <section id="ruot-chan-goi" aria-labelledby="essentials-title" className={withTabs && tab === 'qua-tang' ? 'pt-14 sm:py-32' : 'py-14 sm:py-32'}>
       <Container>
         <SectionHeading
           id="essentials-title"
@@ -27,9 +64,16 @@ export function Essentials() {
           lead="Chọn độ êm hợp với thói quen ngủ của Quý khách. Đặt online ngay, hoặc ghé cửa hàng Ecopillo để nằm thử từng loại gối."
         />
 
-        <div className="m-rail mt-8 grid gap-5 sm:mt-14 lg:grid-cols-3">
+        {withTabs && <MobileTabBar label="Nhóm sản phẩm" tabs={ESSENTIAL_TABS} value={tab} onChange={setTab} className="mt-6" />}
+
+        <div className={`mt-8 grid gap-5 sm:mt-14 lg:grid-cols-3 ${withTabs ? 'max-sm:mt-5' : 'm-rail'}`}>
           {ESSENTIALS.map((group, i) => (
-            <article key={group.id} data-reveal style={revealDelay(i)} className="flex flex-col rounded-[1.75rem] bg-cream-50 p-3 ring-1 ring-cream-200">
+            <article
+              key={group.id}
+              data-reveal
+              style={revealDelay(i)}
+              className={`flex flex-col rounded-[1.75rem] bg-cream-50 p-3 ring-1 ring-cream-200 ${mobileOnly(group.id as EssentialTab)}`}
+            >
               <div className="aspect-[16/9] rounded-[1.35rem]">
                 <Placeholder
                   className="h-full w-full"
@@ -68,19 +112,35 @@ export function Essentials() {
           ))}
         </div>
 
-        <p className="mt-6 flex items-start gap-2 text-sm text-ink-soft">
+        <p className={`mt-6 flex items-start gap-2 text-sm text-ink-soft ${withTabs && (tab === 'dem' || tab === 'qua-tang') ? 'max-sm:hidden' : ''}`}>
           <Icon name="info" size={16} className="mt-0.5 shrink-0 text-mist-600" />
-          Ruột gối, ruột chăn, topper và đệm đều đặt online được; nhân viên gọi xác nhận trước khi giao. Cần tư vấn độ
-          êm? Gọi hoặc nhắn Zalo{' '}
-          <a href={CONTACT.zaloUrl} target="_blank" rel="noopener noreferrer" className="font-medium text-deep-900 underline underline-offset-4">
-            {CONTACT.hotlineDisplay}
-          </a>
-          .
+          {/* Gói chữ vào một khối: không thì mỗi mảnh chữ, link thành một cột riêng của flex và số điện thoại bị bẻ dòng */}
+          <span>
+            Ruột gối, ruột chăn, topper và đệm đều đặt online được; nhân viên gọi xác nhận trước khi giao. Cần tư vấn độ
+            êm? Gọi hoặc nhắn Zalo{' '}
+            <a
+              href={CONTACT.zaloUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium whitespace-nowrap text-deep-900 underline underline-offset-4"
+            >
+              {CONTACT.hotlineDisplay}
+            </a>
+            .
+          </span>
         </p>
 
-        <Mattresses />
+        <div className={mobileOnly('dem')}>
+          <Mattresses />
+        </div>
       </Container>
     </section>
+    {withTabs && (
+      <div className={mobileOnly('qua-tang')}>
+        <Gifts />
+      </div>
+    )}
+    </>
   )
 }
 
@@ -88,7 +148,7 @@ export function Essentials() {
 const essentialOrderUrl = (name: string): string => {
   if (name === SUMMER_QUILT_NAME) return orderLink(SUMMER_QUILT_ID)
   const product = productForEssential(name)
-  return product ? singleOrderUrl(product) : '/dat-hang'
+  return product ? singleOrderUrl(product) : PATHS.order
 }
 
 const mattressProduct = (note: string) => PRODUCTS.find((p) => p.category === 'dem' && p.summary === note)
@@ -191,7 +251,7 @@ export function Gifts({ standalone = false }: GiftsProps) {
               </p>
             </div>
             {standalone ? (
-              <Link to="/san-pham?danh-muc=bo-chan-ga" className={buttonClass('primary', 'md', 'self-start lg:self-auto')}>
+              <Link to={productsUrl({ 'danh-muc': 'bo-chan-ga' })} className={buttonClass('primary', 'md', 'self-start lg:self-auto')}>
                 Xem bộ chăn ga
                 <Icon name="arrowRight" size={17} />
               </Link>

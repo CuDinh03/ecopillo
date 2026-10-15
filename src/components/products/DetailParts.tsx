@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
 import type { Pattern, SizeId } from '../../data/catalog'
 import { NEAR_ME_URL } from '../../data/dealers'
+import { PATHS, productsUrl } from '../../data/links'
 import { categoryLabel, orderUrl, priceLabel, PRODUCTS, type Product } from '../../data/products'
 import { formatVND } from '../../lib/format'
 import { Icon, ZaloMark } from '../ui/Icon'
@@ -35,11 +36,11 @@ export function DetailBreadcrumb({ product }: { product: Product }) {
         Trang chủ
       </Link>
       <Icon name="arrowRight" size={13} className="text-ink-faint" />
-      <Link to="/san-pham" className="hover:text-deep-900">
+      <Link to={PATHS.products} className="hover:text-deep-900">
         Sản phẩm
       </Link>
       <Icon name="arrowRight" size={13} className="text-ink-faint" />
-      <Link to={`/san-pham?danh-muc=${product.category}`} className="hover:text-deep-900">
+      <Link to={productsUrl({ 'danh-muc': product.category })} className="hover:text-deep-900">
         {categoryLabel(product.category)}
       </Link>
     </nav>
@@ -144,7 +145,7 @@ export function RelatedProducts({ product }: { product: Product }) {
         <h2 id="related-title" className="font-display text-[1.8rem] text-deep-900 sm:text-[2.2rem]">
           Có thể Quý khách thích
         </h2>
-        <Link to={`/san-pham?danh-muc=${product.category}`} className="text-sm font-medium text-deep-800 hover:underline">
+        <Link to={productsUrl({ 'danh-muc': product.category })} className="text-sm font-medium text-deep-800 hover:underline">
           Xem tất cả
         </Link>
       </div>

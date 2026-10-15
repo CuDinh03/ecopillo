@@ -1,5 +1,6 @@
 import { formatRange, formatVND } from '../lib/format'
 import { slugify } from '../lib/slug'
+import { collectionPath, PATHS, singleProductPath } from './links'
 import {
   COLLECTIONS,
   collectionRange,
@@ -243,7 +244,8 @@ export const PRODUCTS: readonly Product[] = [
 
 export const productBySlug = (slug: string | undefined): Product | undefined => PRODUCTS.find((p) => p.slug === slug)
 
-export const productPath = (p: Product): string => `/san-pham/${p.slug}`
+/** Đường link trang sản phẩm: bộ sưu tập mở trang danh mục của web cũ, sản phẩm lẻ mở trang sản phẩm của web cũ (links.ts) */
+export const productPath = (p: Product): string => (p.collection ? collectionPath(p.collection) : singleProductPath(p.slug))
 
 /** Giá một đơn vị theo lựa chọn; undefined = chưa có giá, nhân viên báo khi gọi xác nhận */
 export const singleUnitPrice = (p: Product, choiceId: string | null, thickness: string | null): number | undefined => {
@@ -265,7 +267,7 @@ export const singleOrderUrl = (p: Product, choiceId?: string | null, thickness?:
   if (choiceId) params.set('lua-chon', choiceId)
   if (thickness) params.set('do-day', thickness)
   if (quantity > 1) params.set('so-luong', String(quantity))
-  return `/dat-hang?${params}`
+  return `${PATHS.order}?${params}`
 }
 
 export const priceLabel = (p: Product): string => (p.isFromPrice ? `từ ${formatVND(p.min)}` : formatRange(p.min, p.max))
@@ -275,7 +277,7 @@ export const orderUrl = (collection: Collection, pattern?: Pattern, size?: SizeI
   const params = new URLSearchParams({ 'bo-suu-tap': collection.id })
   if (pattern) params.set('mau', pattern.code)
   if (pattern && size) params.set('kich-thuoc', size)
-  return `/dat-hang?${params}`
+  return `${PATHS.order}?${params}`
 }
 
 /** Sản phẩm ứng với một dòng trong bảng giá ruột chăn gối ở trang chủ */

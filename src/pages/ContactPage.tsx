@@ -1,6 +1,8 @@
 import { useState, type ReactNode } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { CONTACT, mapEmbedUrl, OPENING_HOURS, SHOWROOMS } from '../data/brand'
+import { PATHS } from '../data/links'
+import { policyPath } from '../data/policyNav'
 import { Icon, ZaloMark, type IconName } from '../components/ui/Icon'
 import { buttonClass, Container } from '../components/ui/primitives'
 import { SocialIcons } from '../components/home/SocialLinks'
@@ -149,7 +151,7 @@ function OfficeMap() {
           <a href={place.mapsUrl} target="_blank" rel="noopener noreferrer" className={buttonClass('primary', 'sm')}>
             <Icon name="pin" size={16} /> Chỉ đường
           </a>
-          <Link to="/he-thong-phan-phoi" className={buttonClass('secondary', 'sm')}>
+          <Link to={PATHS.distribution} className={buttonClass('secondary', 'sm')}>
             Hệ thống phân phối
           </Link>
         </div>
@@ -233,11 +235,11 @@ export function ContactPage() {
             <h2 className="font-display text-[1.4rem] text-deep-900">Hỏi nhanh</h2>
             <ul className="mt-4 space-y-2.5 text-[0.93rem]">
               {[
-                ['Giao hàng, thanh toán khi nhận', '/chinh-sach-giao-hang'],
-                ['Kiểm hàng, đổi hàng', '/chinh-sach-doi-hang'],
-                ['Bảo hành sản phẩm', '/chinh-sach-bao-hanh'],
-                ['Chăn ga cho khách sạn, nhà nghỉ', '/khach-san'],
-                ['Câu hỏi thường gặp', '/hoi-dap'],
+                ['Giao hàng, thanh toán khi nhận', policyPath('chinh-sach-van-chuyen')],
+                ['Kiểm hàng, đổi hàng', policyPath('chinh-sach-doi-tra-hang-va-hoan-tien')],
+                ['Bảo hành sản phẩm', policyPath('chinh-sach-bao-hanh-san-pham')],
+                ['Chăn ga cho khách sạn, nhà nghỉ', PATHS.hotel],
+                ['Câu hỏi thường gặp', PATHS.faq],
               ].map(([label, href]) => (
                 <li key={label}>
                   <Link to={href} className="group flex items-center justify-between gap-3 text-deep-900 hover:underline">

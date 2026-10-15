@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { POLICY_NAV } from '../../data/policyNav'
+import { relatedForPolicy } from '../../data/related'
+import { ExploreMore } from '../ui/ExploreMore'
 import { PageHero } from '../ui/PageHero'
 import { ContactButtons, Container } from '../ui/primitives'
 
@@ -14,6 +16,7 @@ interface PolicyLayoutProps {
 
 /** Khuôn chung cho các trang chính sách: menu chính sách bên trái, nội dung bên phải */
 export function PolicyLayout({ title, intro, meta, children }: PolicyLayoutProps) {
+  const { pathname } = useLocation()
   return (
     <div className="pb-24">
       <PageHero crumbs={[{ label: 'Chính sách' }, { label: title }]} eyebrow="Chính sách mua hàng" title={title} lead={intro}>
@@ -55,6 +58,8 @@ export function PolicyLayout({ title, intro, meta, children }: PolicyLayoutProps
             </div>
             <ContactButtons size="md" stretch />
           </div>
+
+          <ExploreMore groups={relatedForPolicy(pathname)} className="max-w-3xl" />
         </div>
       </Container>
     </div>

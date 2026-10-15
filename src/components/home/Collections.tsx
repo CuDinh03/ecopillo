@@ -12,12 +12,14 @@ import {
   type Pattern,
 } from '../../data/catalog'
 import { orderUrl } from '../../data/products'
+import { collectionPath, PATHS } from '../../data/links'
 import { chapterTitle, patternPath } from '../../data/stories'
 import { formatRange } from '../../lib/format'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
 import { preloadImage } from '../../lib/preload'
 import { CrossfadeImage } from '../ui/CrossfadeImage'
+import { MobileMore } from '../ui/MobileMore'
 import { Placeholder } from '../ui/Placeholder'
 import { buttonClass, Container, SectionHeading } from '../ui/primitives'
 
@@ -32,7 +34,7 @@ const LAYOUT: readonly { id: string; wide?: boolean }[] = [
   { id: 'eco-doris', wide: true },
 ]
 
-export const orderLink = (collectionId: string) => `/dat-hang?bo-suu-tap=${collectionId}`
+export const orderLink = (collectionId: string) => `${PATHS.order}?bo-suu-tap=${collectionId}`
 
 const SWATCH_LIMIT = 6
 
@@ -110,7 +112,7 @@ function Swatches({ collection, selected, onSelect, onPreview }: SwatchesProps) 
       })}
       {extraMobile > 0 && (
         <Link
-          to={`/san-pham/${collection.id}`}
+          to={collectionPath(collection)}
           className="relative z-10 -my-3 py-3 pl-1 text-xs font-medium whitespace-nowrap text-deep-800 underline-offset-4 hover:underline"
         >
           <span className="sm:hidden">+{extraMobile} mẫu</span>
@@ -181,7 +183,7 @@ function CollectionCard({ collection, wide, index = 0 }: { collection: Collectio
           {collection.kindLabel}
         </p>
         <h3 className={`font-display mt-2 text-deep-900 ${wide ? 'text-[1.75rem] sm:text-[2.2rem] lg:text-[2.6rem]' : 'text-[1.75rem] sm:text-[1.8rem]'}`}>
-          <Link to={`/san-pham/${collection.id}`} className="decoration-mist-300 underline-offset-[6px] hover:underline">
+          <Link to={collectionPath(collection)} className="decoration-mist-300 underline-offset-[6px] hover:underline">
             {collection.name}
           </Link>
         </h3>
@@ -217,7 +219,7 @@ function CollectionCard({ collection, wide, index = 0 }: { collection: Collectio
               <Icon name="arrowRight" size={17} />
             </Link>
             <Link
-              to={pattern ? patternPath(collection, pattern) : `/san-pham/${collection.id}`}
+              to={pattern ? patternPath(collection, pattern) : collectionPath(collection)}
               className={buttonClass('secondary', 'md', 'flex-1 sm:flex-none')}
               aria-label={`Xem chi tiết ${collection.name}`}
             >
@@ -261,13 +263,16 @@ export function Collections() {
         </div>
 
         <div className="mt-6 flex justify-center sm:mt-10">
-          <Link to="/san-pham" className={buttonClass('secondary', 'lg')}>
+          <Link to={PATHS.products} className={buttonClass('secondary', 'lg')}>
             Xem tất cả sản phẩm
             <Icon name="arrowRight" size={18} />
           </Link>
         </div>
 
-        <SetAnatomy />
+        {/* Điện thoại: "trong bộ gồm" nằm sau nút (vẫn có trong trang) */}
+        <MobileMore label="Trong mỗi bộ gồm những gì" buttonClassName="mt-4">
+          <SetAnatomy />
+        </MobileMore>
       </Container>
     </section>
   )

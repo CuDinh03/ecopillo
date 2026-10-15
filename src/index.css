@@ -171,8 +171,9 @@
     line-height: 1.65;
   }
 
+  /* Nền bôi đen: xanh nhạt; mist-200 nay là trắng nên bôi đen trên nền trắng không thấy */
   ::selection {
-    background: var(--color-mist-200);
+    background: var(--color-brand-sky);
     color: var(--color-deep-900);
   }
 
