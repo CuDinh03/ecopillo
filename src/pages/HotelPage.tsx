@@ -48,7 +48,7 @@ export function HotelPage() {
     <div className="pb-24">
       <PageHero
         tone="deep"
-        crumbs={[{ label: 'Khách sạn' }]}
+        crumbs={[{ label: 'Khách sạn và dự án' }]}
         eyebrow="Khách sạn · Resort · Nhà nghỉ"
         title={
           <>

@@ -19,13 +19,14 @@ interface NavItem {
 
 /**
  * Biên bản chốt mục 48: Showroom đổi thành Hệ thống phân phối; Quà tặng đang chỉnh nên vào mục "Thêm".
- * Về chúng tôi, Hệ thống phân phối, Khách sạn, Quà tặng, Hỏi đáp nay là trang riêng (trang chủ vẫn giữ phần tóm tắt).
+ * Về chúng tôi, Hệ thống phân phối, Khách sạn và dự án, Quà tặng, Hỏi đáp nay là trang riêng (trang chủ vẫn giữ phần tóm tắt).
  */
 export const NAV_ITEMS: readonly NavItem[] = [
   { href: PATHS.products, label: 'Sản phẩm', primary: true },
   { href: PATHS.about, label: 'Về chúng tôi', primary: true },
   { href: PATHS.distribution, label: 'Hệ thống phân phối', primary: true },
-  { href: PATHS.hotel, label: 'Khách sạn', primary: true },
+  // Owner đổi tên 15/10/2026: "Khách sạn" → "Khách sạn và dự án"
+  { href: PATHS.hotel, label: 'Khách sạn và dự án', primary: true },
   { href: '/#bo-suu-tap', label: 'Bộ sưu tập' },
   { href: '/#ruot-chan-goi', label: 'Ruột chăn gối' },
   { href: PATHS.gifts, label: 'Quà tặng' },
