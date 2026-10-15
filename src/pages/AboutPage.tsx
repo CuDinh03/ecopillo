@@ -144,7 +144,7 @@ export function AboutPage() {
         <ol className="mt-8 border-b border-cream-200">
           {PHILOSOPHY.map((p, i) => (
             <li key={p.word} data-reveal style={revealDelay(i)} className="grid gap-1 border-t border-cream-200 py-5 sm:grid-cols-[9rem_1fr] sm:items-baseline sm:gap-6">
-              <p className="font-display text-[3rem] leading-none font-light text-deep-700 italic">{p.word}</p>
+              <p className="font-display text-[3rem] leading-none text-deep-700 italic">{p.word}</p>
               <p className="text-[1rem] leading-relaxed text-ink-soft">{p.text}</p>
             </li>
           ))}

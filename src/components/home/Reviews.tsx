@@ -5,7 +5,7 @@ import { Container, SectionHeading } from '../ui/primitives'
 
 function Stars() {
   return (
-    <span className="flex gap-0.5 text-brass-500" aria-label="5 trên 5 sao">
+    <span role="img" className="flex gap-0.5 text-brass-500" aria-label="5 trên 5 sao">
       {Array.from({ length: 5 }, (_, i) => (
         <svg key={i} viewBox="0 0 20 20" className="h-4 w-4 fill-current" aria-hidden="true">
           <path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.7l-5.1 2.7 1-5.6-4.1-4 5.7-.8L10 1.8Z" />
@@ -33,7 +33,7 @@ export function Reviews() {
       </Container>
 
       {/* Điện thoại: vuốt ngang · Máy tính: lưới 4 cột */}
-      <div className="mt-8 overflow-x-auto sm:mt-12 [scrollbar-width:none] lg:overflow-visible">
+      <div tabIndex={0} aria-label="Nhận xét của khách hàng, cuộn ngang" className="mt-8 overflow-x-auto sm:mt-12 [scrollbar-width:none] focus-visible:outline-2 focus-visible:outline-deep-700 lg:overflow-visible">
         <Container>
           <ul className="flex snap-x snap-mandatory gap-4 pb-2 lg:grid lg:grid-cols-4 lg:gap-5">
             {REVIEWS.map((r, i) => (

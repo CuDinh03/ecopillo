@@ -27,7 +27,7 @@ export function Chapter({ id, numeral, icon, eyebrow, title, children }: Chapter
     <section id={id} aria-labelledby={`${id}-tieu-de`} className={`${STORY_COLUMN} scroll-mt-[5.5rem] pt-16 sm:pt-24`}>
       <header data-reveal="left">
         {numeral && (
-          <p aria-hidden="true" className="font-display text-[4.6rem] leading-[0.9] font-light text-deep-700 italic sm:text-[7rem]">
+          <p aria-hidden="true" className="font-display text-[4.6rem] leading-[0.9] text-deep-700 italic sm:text-[7rem]">
             {numeral}
           </p>
         )}

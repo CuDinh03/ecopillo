@@ -113,7 +113,10 @@ function Swatches({ collection, selected, onSelect, onPreview }: SwatchesProps) 
       {extraMobile > 0 && (
         <Link
           to={collectionPath(collection)}
-          className="relative z-10 -my-3 py-3 pl-1 text-xs font-medium whitespace-nowrap text-deep-800 underline-offset-4 hover:underline"
+          // Máy tính hiện đủ mẫu (extra = 0) thì link không có chữ: ẩn hẳn để không có link trống
+          className={`relative z-10 -my-3 py-3 pl-1 text-xs font-medium whitespace-nowrap text-deep-800 underline-offset-4 hover:underline ${
+            extra > 0 ? '' : 'sm:hidden'
+          }`}
         >
           <span className="sm:hidden">+{extraMobile} mẫu</span>
           {extra > 0 && <span className="max-sm:hidden">+{extra} mẫu</span>}
@@ -310,8 +313,10 @@ function SetAnatomy() {
           <dl className="mt-5 space-y-3 text-sm">
             {set.items.map(([name, size]) => (
               <div key={name} className="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:gap-3">
-                <dt className="text-deep-900">{name}</dt>
-                <span aria-hidden="true" className="stitch hidden flex-1 translate-y-[-3px] text-cream-300 sm:block" />
+                {/* Đường chỉ nối tên và cỡ vẽ bằng ::after của dt: trong dl chỉ được có dt, dd (audit 16/10/2026) */}
+                <dt className="text-deep-900 sm:flex sm:flex-1 sm:items-baseline sm:gap-3 sm:after:block sm:after:flex-1 sm:after:translate-y-[-3px] sm:after:text-cream-300 sm:after:content-[''] sm:after:h-px sm:after:[background-image:linear-gradient(to_right,currentColor_50%,transparent_0)] sm:after:[background-size:10px_1px] sm:after:bg-repeat-x">
+                  {name}
+                </dt>
                 <dd className="tabular text-[0.82rem] text-ink-soft sm:text-right sm:text-sm">{size}</dd>
               </div>
             ))}

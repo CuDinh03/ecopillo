@@ -88,7 +88,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
               )}
             </div>
 
-            <ol className="m-rail mt-8 grid gap-3 sm:mt-10 sm:grid-cols-3">
+            <ol tabIndex={0} aria-label="Tốt, Thật, Thiện" className="m-rail mt-8 grid gap-3 focus-visible:outline-2 focus-visible:outline-deep-700 sm:mt-10 sm:grid-cols-3">
               {PHILOSOPHY.map((p, i) => (
                 <li key={p.word} data-reveal style={revealDelay(i)} className="rounded-[1.25rem] bg-mist-50 p-5 ring-1 ring-mist-200">
                   <p className="font-display text-[2rem] leading-none text-mist-600 italic">{p.word}</p>

@@ -138,14 +138,16 @@
   /* Chữ: chàm đậm; chữ phụ dùng chính mã chàm với độ trong suốt */
   --color-ink: #2d2e8d;
   --color-ink-soft: rgb(45 46 141 / 0.8);
-  --color-ink-faint: rgb(45 46 141 / 0.6);
+  /* 72%: đủ tương phản 4,5:1 trên nền trắng và xanh nhạt (audit 16/10/2026; trước là 60% chỉ 3,6:1) */
+  --color-ink-faint: rgb(45 46 141 / 0.72);
 
   /* Màu đỏ bổ sung theo biên bản (mục 20): "Hết hàng", khuyến mãi, giá giảm, lỗi nhập. Không dùng làm nền lớn */
   --color-alert: #d62828;
   --color-alert-soft: rgb(214 40 40 / 0.09);
   --color-sale: #d62828;
   /* Màu đỏ CHỈ dùng cho câu "Chăn ga gối đệm cao cấp": đúng màu chữ "ETERNAL" trong logo */
-  --color-tagline: #ed1c24;
+  /* Đỏ khẩu hiệu theo logo; chữ nhỏ cần 4,5:1 nên đậm hơn đỏ logo (#ed1c24 chỉ 4,38:1, audit 16/10/2026) */
+  --color-tagline: #d9141c;
 
   /* Màu trời lấy từ ảnh nền Bảng EC, dùng cho lớp phủ phần đầu trang chủ */
   --color-hero-sky: #ebf6fd;

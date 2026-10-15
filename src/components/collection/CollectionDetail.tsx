@@ -53,7 +53,12 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
 
   const story = pattern ? storyOf(collection, pattern) : undefined
   const title = pattern ? chapterTitle(collection, pattern) : product.name
-  usePageMeta(pattern ? `${title} · ${product.name} ${pattern.code}` : product.name, story?.text ?? product.summary)
+  // Trang bộ (chưa chọn chương) mở sẵn chương đầu nhưng đặt tiêu đề theo tên bộ, để không trùng tiêu đề với trang
+  // riêng của chương đó (audit 16/10/2026); trang chương giữ tiêu đề chương
+  usePageMeta(
+    patternParam && pattern ? `${title} · ${product.name} ${pattern.code}` : product.name,
+    patternParam ? (story?.text ?? product.summary) : product.summary,
+  )
 
   if (!pattern) return null
   // Link cũ dạng ?mau=ER42: chuyển sang link riêng của phối màu

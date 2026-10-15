@@ -7,7 +7,7 @@ import { Icon, ZaloMark } from './Icon'
 export function FillIn({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
     <mark
-      className={`rounded-md border border-dashed border-brass-500/70 bg-brass-100/70 px-1.5 py-0.5 text-[0.85em] font-medium text-brass-600 [box-decoration-break:clone] ${className}`}
+      className={`rounded-md border border-dashed border-brass-500/70 bg-brass-100 px-1.5 py-0.5 text-[0.85em] font-medium text-brass-600 [box-decoration-break:clone] ${className}`}
     >
       {children}
     </mark>

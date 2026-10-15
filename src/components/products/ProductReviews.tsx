@@ -5,7 +5,7 @@ import { FillIn } from '../ui/primitives'
 
 function Stars({ value, size = 16 }: { value: number; size?: number }) {
   return (
-    <span className="flex gap-0.5 text-brass-500" aria-label={`${value} trên 5 sao`}>
+    <span role="img" className="flex gap-0.5 text-brass-500" aria-label={`${value} trên 5 sao`}>
       {Array.from({ length: 5 }, (_, i) => (
         <svg
           key={i}
@@ -51,14 +51,12 @@ export function ProductReviews({ product }: { product: Product }) {
           </div>
           <dl className="mt-6 space-y-3.5">
             {criteria.map((c) => (
-              <div key={c.label}>
-                <div className="flex items-baseline justify-between text-sm">
-                  <dt className="text-ink-soft">{c.label}</dt>
-                  <dd className="tabular font-medium text-deep-900">{oneDecimal(c.score)}</dd>
-                </div>
-                <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-cream-200" aria-hidden="true">
+              <div key={c.label} className="grid grid-cols-[1fr_auto] items-baseline text-sm">
+                <dt className="text-ink-soft">{c.label}</dt>
+                <dd className="tabular font-medium text-deep-900">{oneDecimal(c.score)}</dd>
+                <dd className="col-span-2 mt-1.5 h-1.5 overflow-hidden rounded-full bg-cream-200" aria-hidden="true">
                   <div className="h-full rounded-full bg-deep-800" style={{ width: `${(c.score / 5) * 100}%` }} />
-                </div>
+                </dd>
               </div>
             ))}
           </dl>
