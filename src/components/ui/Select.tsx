@@ -34,7 +34,7 @@ interface SelectProps {
   ariaLabel?: string
   ariaInvalid?: boolean
   ariaDescribedBy?: string
-  /** Danh sách canh theo mép phải của nút (ô sắp xếp nằm sát mép phải) */
+  /** Danh sách canh theo mép phải của nút khi đủ chỗ (ô sắp xếp nằm sát mép phải trên máy tính) */
   alignRight?: boolean
   className?: string
   ref?: Ref<SelectHandle>
@@ -55,6 +55,8 @@ const CHEVRON: Readonly<Record<Variant, string>> = {
 
 /** Chừa bấy nhiêu px dưới nút; ít hơn thì mở danh sách lên phía trên */
 const MIN_SPACE_BELOW = 280
+/** Bề rộng ước lượng của danh sách kiểu gọn (sắp xếp), để quyết định canh trái hay phải */
+const MIN_LIST_WIDTH = 220
 /** Khoảng thời gian gõ liền các chữ để nhảy tới dòng ("ha" → Hà Nội) */
 const TYPEAHEAD_MS = 600
 
@@ -85,6 +87,8 @@ export function Select({
   const typed = useRef({ text: '', at: 0 })
   const [open, setOpen] = useState(false)
   const [dropUp, setDropUp] = useState(false)
+  // Canh phải chỉ khi bên trái nút đủ chỗ cho danh sách; điện thoại ô nằm sát trái thì canh trái để không lòi ra ngoài
+  const [toRight, setToRight] = useState(alignRight)
   const items: readonly SelectOption[] = placeholder !== undefined ? [{ value: '', label: placeholder }, ...options] : options
   const selectedIndex = Math.max(
     0,
@@ -97,6 +101,7 @@ export function Select({
   const openList = () => {
     const rect = buttonRef.current?.getBoundingClientRect()
     setDropUp(rect ? window.innerHeight - rect.bottom < MIN_SPACE_BELOW && rect.top > window.innerHeight - rect.bottom : false)
+    setToRight(alignRight && (rect ? rect.right >= MIN_LIST_WIDTH : true))
     setActive(selectedIndex)
     setOpen(true)
   }
@@ -221,7 +226,7 @@ export function Select({
           data-lenis-prevent
           className={`absolute z-40 max-h-72 min-w-full overflow-y-auto overscroll-contain rounded-2xl bg-ivory p-1.5 shadow-[var(--shadow-lift)] ring-1 ring-cream-200 ${
             dropUp ? 'bottom-full mb-2' : 'top-full mt-2'
-          } ${alignRight ? 'right-0' : 'left-0'} ${variant === 'inline' ? 'w-max' : ''}`}
+          } ${toRight ? 'right-0' : 'left-0'} ${variant === 'inline' ? 'w-max' : ''}`}
         >
           {items.map((o, i) => {
             const selected = o.value === value
