@@ -98,5 +98,6 @@ pnpm lint       # đang có 4 cảnh báo cũ react-refresh, không phải lỗi
   Owner gửi ảnh từ cổng khác 5173 thì đó là một máy chủ khác, có thể đã tắt hoặc đang chạy code cũ.
 - **Toạ độ** của điểm bán lấy từ ghim Google Maps (cặp số sau `!3d` và `!4d` trong link).
   Nút "Chỉ đường" đi theo **địa chỉ chữ**, không theo toạ độ. Ghim trên bản đồ thì dùng toạ độ.
-- Bản đồ dùng Leaflet đặt sẵn ở `public/vendor/leaflet/`, tải lười khi cuộn tới. Không cần khoá API.
+- Bản đồ Hệ thống phân phối dùng **Google Maps** (khách yêu cầu 15/10/2026) khi build có `VITE_GOOGLE_MAPS_KEY`; chưa có khoá hoặc Google từ chối khoá
+  thì tự quay về Leaflet đặt sẵn ở `public/vendor/leaflet/`. Cả hai tải lười khi cuộn tới. Tạo khoá, giới hạn tên miền: `docs/viec-can-lam/google-maps.md`.
 - Ổ KINGSTON **chưa mã hoá** mà chứa biên bản và hợp đồng của khách. Không đẩy file nào lên dịch vụ ngoài khi owner chưa đồng ý.

@@ -1,8 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import type { Dealer, LatLng } from '../../data/dealers'
+import { GOOGLE_MAPS_KEY } from '../../lib/googleMaps'
 import { loadLeaflet, type LClusterGroup, type Leaflet, type LMap, type LMarker } from '../../lib/leaflet'
 
-interface DealerMapProps {
+// Tách riêng gói Google Maps: chỉ tải khi có khoá và khối bản đồ đã hiện
+const GoogleDealerMap = lazy(() => import('./GoogleDealerMap').then((m) => ({ default: m.GoogleDealerMap })))
+
+export interface DealerMapProps {
   dealers: readonly Dealer[]
   selectedId: string | null
   onSelect: (id: string) => void
@@ -26,10 +30,24 @@ const pinIcon = (L: Leaflet, d: Dealer, selected: boolean) =>
   })
 
 /**
+ * Bản đồ điểm bán. Có khoá Google Maps (VITE_GOOGLE_MAPS_KEY) thì dùng Google Maps theo yêu cầu của khách (15/10/2026);
+ * chưa có khoá, hoặc Google từ chối khoá, thì dùng bản đồ Leaflet + OpenStreetMap bên dưới.
+ */
+export function DealerMap(props: DealerMapProps) {
+  const [googleFailed, setGoogleFailed] = useState(false)
+  if (!GOOGLE_MAPS_KEY || googleFailed) return <LeafletDealerMap {...props} />
+  return (
+    <Suspense fallback={<div className={`dealer-map bg-cream-50 ${props.className ?? ''}`} />}>
+      <GoogleDealerMap {...props} onFail={() => setGoogleFailed(true)} />
+    </Suspense>
+  )
+}
+
+/**
  * Bản đồ nhiều ghim (Leaflet + OpenStreetMap). Bấm ghim thì báo thẻ tương ứng; chọn thẻ thì bản đồ bay tới ghim.
  * Lăn chuột trên bản đồ vẫn cuộn trang (phóng to bằng nút +/- hoặc hai ngón tay) để không kẹt khi cuộn danh sách.
  */
-export function DealerMap({ dealers, selectedId, onSelect, me, className = '' }: DealerMapProps) {
+function LeafletDealerMap({ dealers, selectedId, onSelect, me, className = '' }: DealerMapProps) {
   const boxRef = useRef<HTMLDivElement>(null)
   const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading')
   const libRef = useRef<Leaflet | null>(null)

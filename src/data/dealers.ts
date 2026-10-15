@@ -25,10 +25,10 @@ export interface Dealer {
   dien_thoai: string
   /** Bỏ trống thì dùng số điện thoại */
   zalo?: string
-  /** "08:30" */
-  gio_mo: string
+  /** "08:30". Bỏ trống khi đại lý chưa báo giờ: thẻ mời gọi trước, không tự đặt giờ */
+  gio_mo?: string
   /** "21:00" */
-  gio_dong: string
+  gio_dong?: string
   /** Ngày nghỉ trong tuần: 0 = Chủ nhật … 6 = Thứ bảy */
   ngay_nghi: readonly number[]
   /** 0 đến 3 ảnh, ảnh đầu là ảnh đại diện */
@@ -138,8 +138,48 @@ export const sortDefault = (list: readonly Dealer[]): Dealer[] => {
   )
 }
 
-/** Danh sách dựng sẵn (dự phòng khi WordPress không trả lời): hiện chỉ có 2 điểm thật, đại lý thêm sau */
-export const DEALERS: readonly Dealer[] = sortDefault(OFFICIAL)
+/**
+ * Đại lý theo danh sách Ecopillo gửi 15/10/2026 (file "danh sach dai ly.xlsx"). Toạ độ lấy từ ghim của link Google Maps
+ * trong file; điểm không có link thì tra theo địa chỉ chữ. Chưa có giờ mở cửa, Zalo, ảnh: thẻ dùng ảnh mặc định,
+ * Zalo theo số điện thoại, giờ mở cửa để trống (không tự đặt giờ).
+ * Chưa đưa lên: "Ecopillo Hải Phòng" (địa chỉ "đang cập nhật", số trùng với Quyết Hương). Có địa chỉ thì thêm một dòng.
+ */
+const AGENTS: readonly Dealer[] = (
+  [
+    // [id, tên, địa chỉ, tỉnh, lat, lng, điện thoại]
+    ['da-nang', 'Ecopillo Đà Nẵng', '254 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng', 'Đà Nẵng', 16.0295615, 108.2471201, '0934 767 110'],
+    ['hien-long', 'Ecopillo Hiên Long', 'E7-E8 Chợ Dầu, Lê Quang Đạo, Từ Sơn, Bắc Ninh', 'Bắc Ninh', 21.11749, 105.96335, '0356 658 198'],
+    ['minh-khai', 'Ecopillo Minh Khai', '81 Minh Khai, Bạch Mai, Hà Nội', 'Hà Nội', 20.9954183, 105.8528493, '0916 292 286'],
+    // File ghi số 57, ghim Google Maps đặt ở số 54 Đồng Bụt: [XÁC NHẬN SỐ NHÀ ĐẠI LÝ QUỐC OAI]
+    ['quoc-oai', 'Ecopillo Quốc Oai', '57 Đồng Bụt, Kiều Phú, Hà Nội', 'Hà Nội', 20.9947168, 105.608156, '0968 846 637'],
+    // File chưa có số riêng: tạm dùng hotline chung [ECOPILLO GỬI SỐ ĐIỆN THOẠI ĐẠI LÝ PHỦ LÝ]
+    ['phu-ly', 'Ecopillo Phủ Lý', '68 Lê Duẩn, Phủ Lý, Ninh Bình', 'Ninh Bình', 20.5315568, 105.9218988, CONTACT.hotlineDisplay],
+    ['quy-nhon', 'Ecopillo Quy Nhơn', '383A Nguyễn Thái Học, Quy Nhơn Nam, Gia Lai', 'Gia Lai', 13.7633226, 109.2137616, '0962 331 353'],
+    ['thu-vu', 'Ecopillo Thu Vũ', '21 Trại Lẻ, Lê Chân, Hải Phòng', 'Hải Phòng', 20.8341097, 106.684671, '0945 903 389'],
+    ['thanh-hue', 'Ecopillo Thanh Huệ', 'Thôn Hạc Sơn, Cẩm Bình, Cẩm Thuỷ, Thanh Hóa', 'Thanh Hóa', 20.2128842, 105.4386151, '0352 134 028'],
+    ['duy-linh', 'Ecopillo Duy Linh', '394 Lê Hoàn, Phường Hạc Thành, Thanh Hóa', 'Thanh Hóa', 19.7987749, 105.7775673, '0911 462 243'],
+    ['vo-chi-cong', 'Ecopillo Võ Chí Công', '136 Võ Chí Công, Tây Hồ, Hà Nội', 'Hà Nội', 21.0532633, 105.804741, '0919 351 089'],
+    ['quyet-huong', 'Ecopillo Quyết Hương', '75 Lê Duẩn, Khu đô thị Ecopark, Tân Hưng, Hải Phòng', 'Hải Phòng', 20.9178034, 106.3391007, '0962 612 768'],
+    // File chỉ ghi khu đô thị, chưa có toà và số căn; toạ độ là giữa khu: [ECOPILLO GỬI ĐỊA CHỈ ĐỦ ĐẠI LÝ VINSMART CITY]
+    ['vinsmart-city', 'Ecopillo Vinsmart City', 'Vinhomes Smart City, Tây Mỗ, Hà Nội', 'Hà Nội', 21.0051592, 105.7385205, '0973 463 586'],
+    ['nguyen-hue', 'Ecopillo Nguyễn Huệ', 'Nam Hồng 2, Phường Bắc Giang, Bắc Ninh', 'Bắc Ninh', 21.2948239, 106.1981358, '0357 165 947'],
+    ['quang-ninh', 'Ecopillo Quảng Ninh', 'Số 3 đường 25/4, Phường Hồng Gai, Quảng Ninh', 'Quảng Ninh', 20.9522182, 107.0775786, '0973 678 882'],
+  ] as const
+).map(([id, ten, dia_chi, tinh, lat, lng, dien_thoai]) => ({
+  id,
+  ten,
+  loai: 'dai-ly',
+  dia_chi,
+  tinh,
+  lat,
+  lng,
+  dien_thoai,
+  ngay_nghi: [],
+  anh: [],
+}))
+
+/** Danh sách dựng sẵn (dự phòng khi WordPress không trả lời) */
+export const DEALERS: readonly Dealer[] = sortDefault([...OFFICIAL, ...AGENTS])
 
 /** "Hơn N điểm trên toàn quốc": làm tròn xuống hàng chục khi từ 20 điểm */
 export const dealerCountLabel = (count: number) =>
@@ -223,7 +263,12 @@ export interface OpenStatus {
   text: string
 }
 
-export const openStatus = (d: Dealer, now = new Date()): OpenStatus => {
+/** Chữ thay cho giờ mở cửa khi đại lý chưa báo giờ */
+export const NO_HOURS_TEXT = 'Quý khách gọi trước khi ghé'
+
+/** null khi đại lý chưa báo giờ mở cửa */
+export const openStatus = (d: Dealer, now = new Date()): OpenStatus | null => {
+  if (!d.gio_mo || !d.gio_dong) return null
   const { day, minutes } = vnNow(now)
   const opens = toMinutes(d.gio_mo)
   const closes = toMinutes(d.gio_dong)
@@ -243,6 +288,7 @@ export const openStatus = (d: Dealer, now = new Date()): OpenStatus => {
 }
 
 export const hoursText = (d: Dealer) => {
+  if (!d.gio_mo || !d.gio_dong) return NO_HOURS_TEXT
   const base = `${shortTime(d.gio_mo)}–${shortTime(d.gio_dong)}`
   if (d.ngay_nghi.length === 0) return `${base} hằng ngày`
   return `${base}, nghỉ ${d.ngay_nghi.map((n) => WEEKDAYS[n]).join(', ')}`

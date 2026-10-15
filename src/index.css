@@ -358,7 +358,7 @@ html.reveal-ready [data-reveal]:not(.is-visible) {
   }
 }
 
-/* ---------- Bản đồ đại lý (Leaflet) ---------- */
+/* ---------- Bản đồ đại lý (Google Maps, dự phòng Leaflet) ---------- */
 .dealer-map {
   font-family: var(--font-sans);
 }
@@ -369,6 +369,17 @@ html.reveal-ready [data-reveal]:not(.is-visible) {
 /* Nền bản đồ dịu lại cho hợp tông xanh nhạt của web */
 .dealer-map .leaflet-tile-pane {
   filter: saturate(0.55) brightness(1.04);
+}
+/* Google Maps đặt mép dưới, giữa của ghim vào toạ độ: chừa chỗ cho mũi ghim xoay 45° (Leaflet canh bằng iconAnchor) */
+.dealer-pin-wrap {
+  position: relative;
+  width: 30px;
+  height: 36px;
+}
+.dealer-pin-wrap .dealer-pin {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 .dealer-pin {
   display: block;

@@ -155,12 +155,18 @@ export function DealerCard({ dealer, km, selected = false, onSelect, featured = 
           <h3 className="font-display mt-2 text-[1.3rem] leading-tight text-deep-900 sm:text-[1.45rem]">{dealer.ten}</h3>
           <p className="mt-1 text-[0.9rem] text-ink-soft">{dealer.dia_chi}</p>
           <p className="mt-2 flex flex-wrap items-center gap-x-2 text-[0.85rem]">
-            <span className={`inline-flex items-center gap-1.5 font-medium ${status.open ? 'text-deep-700' : 'text-ink-faint'}`}>
-              <span aria-hidden="true" className={`h-2 w-2 rounded-full ${status.open ? 'bg-deep-700' : 'bg-ink-faint'}`} />
-              {status.text}
-            </span>
-            {/* Điện thoại: thẻ thường chỉ ghi đang mở hay đóng để thẻ gọn; giờ đầy đủ ở thẻ gần nhất và màn hình lớn */}
-            <span className={`text-ink-faint ${featured ? '' : 'max-sm:hidden'}`}>· {hoursText(dealer)}</span>
+            {status ? (
+              <>
+                <span className={`inline-flex items-center gap-1.5 font-medium ${status.open ? 'text-deep-700' : 'text-ink-faint'}`}>
+                  <span aria-hidden="true" className={`h-2 w-2 rounded-full ${status.open ? 'bg-deep-700' : 'bg-ink-faint'}`} />
+                  {status.text}
+                </span>
+                {/* Điện thoại: thẻ thường chỉ ghi đang mở hay đóng để thẻ gọn; giờ đầy đủ ở thẻ gần nhất và màn hình lớn */}
+                <span className={`text-ink-faint ${featured ? '' : 'max-sm:hidden'}`}>· {hoursText(dealer)}</span>
+              </>
+            ) : (
+              <span className="text-ink-faint">{hoursText(dealer)}</span>
+            )}
           </p>
           {dealer.ghi_chu && <p className="mt-1.5 text-[0.85rem] text-deep-900">{dealer.ghi_chu}</p>}
           {/* Máy tính, máy tính bảng: nút nằm trong cột chữ, ảnh cao hết thẻ */}

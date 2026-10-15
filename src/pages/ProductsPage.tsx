@@ -5,7 +5,7 @@ import { ProductCard } from '../components/products/ProductCard'
 import { Icon } from '../components/ui/Icon'
 import { buttonClass, Container, FillIn } from '../components/ui/primitives'
 import { BEDDING_SETS, collectionRange, type Collection } from '../data/catalog'
-import { CATEGORIES, LEGACY_CATEGORY, PRODUCTS, type CategoryId } from '../data/products'
+import { CATEGORIES, inPriceBand, LEGACY_CATEGORY, priceBandsOf, PRODUCTS, type CategoryId, type PriceBand } from '../data/products'
 import { COLORWAYS, STORIES_APPROVED, toneById, TONES, type Colorway, type Tone } from '../data/stories'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
@@ -25,6 +25,8 @@ const CATEGORY_PARAM = 'danh-muc'
 const COLLECTION_PARAM = 'bo-suu-tap'
 const SORT_PARAM = 'sap-xep'
 const TONE_PARAM = 'gam'
+/** Mức giá: ?gia=5-10-trieu, mốc khác nhau theo loại (PRICE_BANDS trong data/products.ts) */
+const PRICE_PARAM = 'gia'
 /** Số phối màu hiện mỗi lần khi lọc theo gam hoặc bộ; bấm "Xem thêm" để hiện tiếp */
 const COLORWAY_PAGE = 12
 /** Số chấm màu nhỏ trên ô bộ sưu tập */
@@ -44,6 +46,8 @@ export function ProductsPage() {
   const rawCategory = params.get(CATEGORY_PARAM)
   const category = isCategory(rawCategory) ? rawCategory : rawCategory ? (LEGACY_CATEGORY[rawCategory] ?? null) : null
   const sort: SortId = SORTS.some((s) => s.id === params.get(SORT_PARAM)) ? (params.get(SORT_PARAM) as SortId) : 'noi-bat'
+  const bands = priceBandsOf(category)
+  const band = bands.find((b) => b.id === params.get(PRICE_PARAM))
 
   // Chỉ bộ chăn ga và chăn hè mới có phối màu; chăn hè là một bộ duy nhất nên không có cách tìm "theo bộ sưu tập"
   const hasColorways = category === null || category === 'bo-chan-ga' || category === 'chan'
@@ -60,20 +64,33 @@ export function ProductsPage() {
     [category],
   )
   const isShowingColorways = Boolean(tone || collection)
+  // Phối màu và sản phẩm đã lọc theo mọi thứ trừ mức giá: dùng để đếm số trên từng nút mức giá
+  const colorwaysAnyPrice = useMemo(
+    () => scope.filter((c) => (!tone || c.story.tone === tone.id) && (!collection || c.collection.id === collection.id)),
+    [scope, tone, collection],
+  )
+  const productsAnyPrice = useMemo(() => PRODUCTS.filter((p) => !category || p.category === category), [category])
   const colorways = useMemo(() => {
-    if (!tone && !collection) return []
-    const filtered = scope.filter((c) => (!tone || c.story.tone === tone.id) && (!collection || c.collection.id === collection.id))
+    if (!isShowingColorways) return []
+    const filtered = colorwaysAnyPrice.filter((c) => !band || inPriceBand(collectionRange(c.collection), band))
     return bySort(filtered, sort, (c) => collectionRange(c.collection).min)
-  }, [scope, tone, collection, sort])
+  }, [isShowingColorways, colorwaysAnyPrice, band, sort])
   const products = useMemo(
     () =>
       bySort(
-        PRODUCTS.filter((p) => !category || p.category === category),
+        productsAnyPrice.filter((p) => !band || inPriceBand(p, band)),
         sort,
         (p) => p.min,
       ),
-    [category, sort],
+    [productsAnyPrice, band, sort],
   )
+  /** Số trên nút mức giá: đếm đúng thứ đang hiện bên dưới (phối màu khi đang lọc gam/bộ, còn lại là sản phẩm) */
+  const countInBand = (b: PriceBand) =>
+    isShowingColorways
+      ? colorwaysAnyPrice.filter((c) => inPriceBand(collectionRange(c.collection), b)).length
+      : productsAnyPrice.filter((p) => inPriceBand(p, b)).length
+  /** Ô gam màu, ô bộ sưu tập chỉ đếm, chỉ bật những gì có trong mức giá đang chọn */
+  const scopeInBand = useMemo(() => (band ? scope.filter((c) => inPriceBand(collectionRange(c.collection), band)) : scope), [scope, band])
 
   const update = (patch: Record<string, string | null>) => {
     const next = new URLSearchParams(params)
@@ -84,20 +101,27 @@ export function ProductsPage() {
     setColorwayLimit(COLORWAY_PAGE)
     setParams(next, { replace: true })
   }
+  // Mốc giá mỗi loại khác nhau nên đổi loại thì bỏ mức giá
   const pickCategory = (id: CategoryId | null) =>
-    update({ [CATEGORY_PARAM]: id, [COLLECTION_PARAM]: null, ...(id === 'goi' || id === 'dem' ? { [TONE_PARAM]: null } : {}) })
+    update({
+      [CATEGORY_PARAM]: id,
+      [COLLECTION_PARAM]: null,
+      [PRICE_PARAM]: null,
+      ...(id === 'goi' || id === 'dem' ? { [TONE_PARAM]: null } : {}),
+    })
   const switchMode = (next: BrowseMode) => {
     setModeChoice(next)
     update({ [TONE_PARAM]: null, [COLLECTION_PARAM]: null })
   }
 
-  const resultLabel = !isShowingColorways
+  const baseLabel = !isShowingColorways
     ? `${products.length} sản phẩm`
     : collection && tone
       ? `${colorways.length} phối màu ${collection.name}, ${tone.phrase}`
       : collection
         ? `${colorways.length} phối màu của ${collection.name}`
         : `${colorways.length} ${tone?.phrase.replace(/^gam /, 'phối màu gam ')}`
+  const resultLabel = band ? `${baseLabel}, giá ${band.label.replace(/^\S+/, (w) => w.toLowerCase())}` : baseLabel
 
   return (
     <div className="pb-24">
@@ -149,6 +173,13 @@ export function ProductsPage() {
           <SortSelect value={sort} onChange={(v) => update({ [SORT_PARAM]: v === 'noi-bat' ? null : v })} />
         </div>
 
+        <PriceBands
+          bands={bands}
+          active={band}
+          countOf={countInBand}
+          onPick={(b) => update({ [PRICE_PARAM]: band?.id === b.id ? null : b.id })}
+        />
+
         {/* Hàng 2: câu hỏi + công tắc; hàng 3: lưới ô đều nhau, chia cột cố định nên không rớt dòng */}
         {hasColorways && (
           <section aria-labelledby="browse-title" className="mt-7 sm:mt-9">
@@ -179,7 +210,7 @@ export function ProductsPage() {
                   <ToneTile
                     key={t.id}
                     tone={t}
-                    count={scope.filter((c) => c.story.tone === t.id).length}
+                    count={scopeInBand.filter((c) => c.story.tone === t.id).length}
                     active={tone?.id === t.id}
                     onPick={() => update({ [TONE_PARAM]: tone?.id === t.id ? null : t.id, [COLLECTION_PARAM]: null })}
                   />
@@ -192,6 +223,7 @@ export function ProductsPage() {
                   <CollectionTile
                     key={c.id}
                     collection={c}
+                    disabled={band !== undefined && !inPriceBand(collectionRange(c), band) && collection?.id !== c.id}
                     active={collection?.id === c.id}
                     onPick={() => update({ [COLLECTION_PARAM]: collection?.id === c.id ? null : c.id, [TONE_PARAM]: null })}
                   />
@@ -209,7 +241,12 @@ export function ProductsPage() {
               onClick={() => update({ [TONE_PARAM]: null, [COLLECTION_PARAM]: null })}
               className="-my-2 py-2 font-medium text-deep-900 underline underline-offset-4"
             >
-              Xoá lọc
+              {band ? 'Xoá lọc màu' : 'Xoá lọc'}
+            </button>
+          )}
+          {band && (
+            <button type="button" onClick={() => update({ [PRICE_PARAM]: null })} className="-my-2 py-2 font-medium text-deep-900 underline underline-offset-4">
+              Xoá lọc giá
             </button>
           )}
           {hasColorways && mode === 'gam' && !STORIES_APPROVED && <FillIn>[ECOPILLO DUYỆT CÁCH CHIA GAM MÀU]</FillIn>}
@@ -277,9 +314,17 @@ function ToneTile({ tone, count, active, onPick }: { tone: Tone; count: number; 
   )
 }
 
-function CollectionTile({ collection, active, onPick }: { collection: Collection; active: boolean; onPick: () => void }) {
+interface CollectionTileProps {
+  collection: Collection
+  active: boolean
+  onPick: () => void
+  /** Bộ không có cỡ nào trong mức giá đang chọn */
+  disabled?: boolean
+}
+
+function CollectionTile({ collection, active, onPick, disabled }: CollectionTileProps) {
   return (
-    <Tile active={active} onPick={onPick} title={collection.name} note={`${collection.patterns.length} phối màu`}>
+    <Tile active={active} onPick={onPick} title={collection.name} note={`${collection.patterns.length} phối màu`} disabled={disabled}>
       <span aria-hidden="true" className="flex px-3 pt-3 sm:px-3.5">
         {collection.patterns.slice(0, TILE_DOTS).map((p) => (
           <span key={p.code} className="-mr-1 h-4 w-4 rounded-full ring-1 ring-ivory" style={{ backgroundColor: p.swatch } as CSSProperties} />
@@ -312,6 +357,52 @@ function ColorwayGrid({ colorways, limit, onMore }: { colorways: readonly Colorw
         </div>
       )}
     </>
+  )
+}
+
+interface PriceBandsProps {
+  bands: readonly PriceBand[]
+  active: PriceBand | undefined
+  countOf: (band: PriceBand) => number
+  onPick: (band: PriceBand) => void
+}
+
+/**
+ * Hàng nút mức giá dưới tab loại. Mỗi nút ghi sẵn số món; mốc không có gì thì mờ nên không ra trang trống.
+ * Bấm lại nút đang chọn để bỏ lọc. Điện thoại: chữ "Mức giá" ở trên, hàng nút vuốt ngang.
+ */
+function PriceBands({ bands, active, countOf, onPick }: PriceBandsProps) {
+  return (
+    <div className="mt-4 flex flex-col gap-2 sm:mt-5 sm:flex-row sm:items-center sm:gap-4">
+      <span id="price-band-label" className="eyebrow shrink-0">
+        Mức giá
+      </span>
+      <div
+        role="group"
+        aria-labelledby="price-band-label"
+        className="-mx-5 flex min-w-0 gap-2 overflow-x-auto px-5 py-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
+      >
+        {bands.map((b) => {
+          const isActive = active?.id === b.id
+          const count = countOf(b)
+          return (
+            <button
+              key={b.id}
+              type="button"
+              aria-pressed={isActive}
+              disabled={count === 0 && !isActive}
+              onClick={() => onPick(b)}
+              className={`inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full px-4 text-[0.86rem] whitespace-nowrap transition duration-300 ease-[var(--ease-soft)] disabled:cursor-not-allowed disabled:opacity-40 ${
+                isActive ? 'bg-deep-800 text-ivory' : 'bg-ivory text-deep-900 ring-1 ring-cream-200 enabled:hover:ring-deep-700'
+              }`}
+            >
+              {b.label}
+              <span className={`tabular text-[0.72rem] ${isActive ? 'text-ivory/70' : 'text-ink-faint'}`}>{count}</span>
+            </button>
+          )
+        })}
+      </div>
+    </div>
   )
 }
 

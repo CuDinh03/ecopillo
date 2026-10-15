@@ -283,3 +283,55 @@ export const orderUrl = (collection: Collection, pattern?: Pattern, size?: SizeI
 /** Sản phẩm ứng với một dòng trong bảng giá ruột chăn gối ở trang chủ */
 export const productForEssential = (itemName: string): Product | undefined =>
   PRODUCTS.find((p) => p.name === itemName || p.slug === slugify(`Ruột gối ${itemName}`))
+
+/* ——— Lọc theo mức giá (mẫu 1 "Mốc giá theo từng loại", owner chọn 15/10/2026; mẫu: docs/de-xuat-bo-loc-gia.html) ——— */
+
+const MILLION = 1_000_000
+
+export interface PriceBand {
+  /** Dùng trong link: ?gia=5-10-trieu */
+  id: string
+  label: string
+  /** Khoảng [from, to): to = Infinity là "Trên …" */
+  from: number
+  to: number
+}
+
+const band = (id: string, label: string, from: number, to = Infinity): PriceBand => ({ id, label, from, to })
+
+/** Mốc giá đổi theo loại vì giá mỗi loại chênh rất khác nhau (gối vài trăm nghìn, đệm hàng chục triệu). Đổi giá nhiều thì xem lại mốc */
+export const PRICE_BANDS: Readonly<Record<CategoryId | 'tat-ca', readonly PriceBand[]>> = {
+  'tat-ca': [
+    band('duoi-1-trieu', 'Dưới 1 triệu', 0, MILLION),
+    band('1-3-trieu', '1 – 3 triệu', MILLION, 3 * MILLION),
+    band('3-6-trieu', '3 – 6 triệu', 3 * MILLION, 6 * MILLION),
+    band('6-10-trieu', '6 – 10 triệu', 6 * MILLION, 10 * MILLION),
+    band('tren-10-trieu', 'Trên 10 triệu', 10 * MILLION),
+  ],
+  'bo-chan-ga': [
+    band('duoi-5-trieu', 'Dưới 5 triệu', 0, 5 * MILLION),
+    band('5-8-trieu', '5 – 8 triệu', 5 * MILLION, 8 * MILLION),
+    band('tren-8-trieu', 'Trên 8 triệu', 8 * MILLION),
+  ],
+  chan: [
+    band('duoi-2-trieu', 'Dưới 2 triệu', 0, 2 * MILLION),
+    band('2-4-trieu', '2 – 4 triệu', 2 * MILLION, 4 * MILLION),
+    band('tren-4-trieu', 'Trên 4 triệu', 4 * MILLION),
+  ],
+  goi: [
+    band('duoi-500k', 'Dưới 500 nghìn', 0, 500_000),
+    band('500k-1-trieu', '500 nghìn – 1 triệu', 500_000, MILLION),
+    band('tren-1-trieu', 'Trên 1 triệu', MILLION),
+  ],
+  dem: [
+    band('duoi-5-trieu', 'Dưới 5 triệu', 0, 5 * MILLION),
+    band('5-10-trieu', '5 – 10 triệu', 5 * MILLION, 10 * MILLION),
+    band('10-20-trieu', '10 – 20 triệu', 10 * MILLION, 20 * MILLION),
+    band('tren-20-trieu', 'Trên 20 triệu', 20 * MILLION),
+  ],
+}
+
+export const priceBandsOf = (category: CategoryId | null): readonly PriceBand[] => PRICE_BANDS[category ?? 'tat-ca']
+
+/** Thuộc mốc khi có ít nhất một cỡ có giá trong mốc, nên một sản phẩm có thể ở hai mốc (đệm Eco Foam 8 – 15,7 triệu) */
+export const inPriceBand = (range: { min: number; max: number }, b: PriceBand): boolean => range.min < b.to && range.max >= b.from

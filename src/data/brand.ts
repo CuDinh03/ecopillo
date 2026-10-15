@@ -103,6 +103,7 @@ export const SHOWROOMS: readonly Showroom[] = [
     address: '257A6 Nguyễn Văn Lượng, Gò Vấp, TP. HCM',
     lat: 10.838376,
     lng: 106.6677514,
+    hotline: '0869 088 508',
     mapsUrl: directionsUrl('257A6 Nguyễn Văn Lượng, Gò Vấp, TP. HCM'),
     imageNote: 'Ảnh mặt tiền và không gian trưng bày chi nhánh Gò Vấp (chờ Ecopillo gửi)',
   },
@@ -110,4 +111,4 @@ export const SHOWROOMS: readonly Showroom[] = [
 
 /** Chữ chờ điền cho phần hệ thống phân phối */
 export const DISTRIBUTION_FILL_IN =
-  '[ECOPILLO GỬI DANH SÁCH ĐẠI LÝ: TÊN, ĐỊA CHỈ, TOẠ ĐỘ, SỐ ĐIỆN THOẠI, ZALO, GIỜ MỞ CỬA, ẢNH]'
+  '[ECOPILLO GỬI THÊM CHO TỪNG ĐẠI LÝ: GIỜ MỞ CỬA, ZALO (NẾU KHÁC SỐ ĐIỆN THOẠI), ẢNH CỬA HÀNG]'

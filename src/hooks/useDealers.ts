@@ -34,7 +34,7 @@ export function useDealers(): readonly Dealer[] {
         if (list.length > 0) {
           setDealers(
             sortDefault(
-              list.map((d) => ({ ...d, ngay_nghi: d.ngay_nghi ?? [], anh: d.anh ?? [], gio_mo: d.gio_mo || '08:30', gio_dong: d.gio_dong || '21:00' })),
+              list.map((d) => ({ ...d, ngay_nghi: d.ngay_nghi ?? [], anh: d.anh ?? [], gio_mo: d.gio_mo || undefined, gio_dong: d.gio_dong || undefined })),
             ),
           )
         }

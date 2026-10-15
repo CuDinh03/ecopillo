@@ -67,7 +67,7 @@ export function Showrooms() {
                     </li>
                     <li className="flex gap-3">
                       <Icon name="phone" size={18} className="mt-0.5 shrink-0 text-mist-600" />
-                      <a href={CONTACT.hotlineTel} className="tabular text-deep-900 hover:underline">
+                      <a href={s.hotline ? `tel:${s.hotline.replace(/\D/g, '')}` : CONTACT.hotlineTel} className="tabular text-deep-900 hover:underline">
                         {s.hotline ?? CONTACT.hotlineDisplay}
                       </a>
                     </li>
@@ -77,7 +77,7 @@ export function Showrooms() {
                       <Icon name="pin" size={16} />
                       Chỉ đường
                     </a>
-                    <a href={CONTACT.hotlineTel} className={buttonClass('secondary', 'sm')}>
+                    <a href={s.hotline ? `tel:${s.hotline.replace(/\D/g, '')}` : CONTACT.hotlineTel} className={buttonClass('secondary', 'sm')}>
                       Gọi đặt lịch xem hàng
                     </a>
                   </div>
