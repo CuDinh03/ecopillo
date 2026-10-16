@@ -32,7 +32,7 @@ export function Hospitality() {
                 Giấc ngủ năm sao <span className="text-mist-300 italic">cho khách lưu trú</span>
               </>
             }
-            lead="Ecopillo cung cấp chăn ga gối số lượng lớn cho khách sạn, resort và nhà nghỉ, với chất liệu Lyocell và đường may 4 mũi bền đẹp."
+            lead="Ecopillo cung cấp chăn ga gối số lượng lớn cho khách sạn, resort và nhà nghỉ, với chất liệu Lyocell và đường may 4 mũi/cm bền đẹp."
           />
           <ul data-reveal className="mt-9 grid gap-3 sm:grid-cols-2">
             {BENEFITS.map((b) => (

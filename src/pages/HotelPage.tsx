@@ -56,7 +56,7 @@ const LAYERS: readonly Layer[] = [
 
 const REASONS: readonly { title: string; text: string }[] = [
   { title: 'May theo kích thước', text: 'Đo và may đúng cỡ giường của từng hạng phòng, kể cả giường kích thước lạ.' },
-  { title: 'Bền qua nhiều lần giặt', text: 'Đường may 4 mũi chắc, phẳng; chọn vải hợp với tần suất giặt công nghiệp.' },
+  { title: 'Bền qua nhiều lần giặt', text: 'Đường may 4 mũi/cm chắc, phẳng; chọn vải hợp với tần suất giặt công nghiệp.' },
   { title: 'Vải Lyocell mát, mềm', text: 'Khách lưu trú cảm nhận rõ độ mềm mát, thoáng khí ngay đêm đầu tiên.' },
   { title: 'Đồng bộ toàn dự án', text: 'Một mẫu, một màu cho toàn bộ phòng; bổ sung thêm về sau vẫn đúng màu.' },
 ]
@@ -78,7 +78,7 @@ const twoDigits = (n: number) => String(n).padStart(2, '0')
 export function HotelPage() {
   usePageMeta(
     'Chăn ga gối khách sạn và dự án',
-    'Ecopillo may chăn ga gối đệm theo kích thước cho khách sạn, resort, nhà nghỉ và dự án: vải Lyocell, đường may 4 mũi, đồng bộ toàn dự án, báo giá riêng.',
+    'Ecopillo may chăn ga gối đệm theo kích thước cho khách sạn, resort, nhà nghỉ và dự án: vải Lyocell, đường may 4 mũi/cm, đồng bộ toàn dự án, báo giá riêng.',
   )
 
   return (

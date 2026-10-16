@@ -1,13 +1,8 @@
+import { CONTACT } from '../../data/brand'
+import { AGENT_BENEFITS } from '../../data/dealers'
 import { Icon } from '../ui/Icon'
-import { FillIn, SectionHeading } from '../ui/primitives'
+import { SectionHeading } from '../ui/primitives'
 import { MessageForm } from '../contact/MessageForm'
-
-const AGENT_BENEFITS = [
-  'Giá sỉ và chính sách chiết khấu theo sản lượng',
-  'Hàng mẫu, catalogue, ảnh và video bán hàng',
-  'Đào tạo tư vấn chất liệu Lyocell, kích thước, bảo quản',
-  'Hỗ trợ đổi hàng lỗi và bảo hành như khách lẻ',
-] as const
 
 /**
  * Khối "Trở thành đại lý": quyền lợi + form đăng ký. Dùng ở cuối trang Hệ thống phân phối
@@ -31,7 +26,7 @@ export function AgentSignup() {
           }
           lead="Ecopillo tìm đối tác phân phối chăn ga gối đệm cao cấp tại các tỉnh, thành. Để lại thông tin, bộ phận kinh doanh sẽ gọi lại."
         />
-        <ul className="mt-8 space-y-3">
+        <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
           {AGENT_BENEFITS.map((b) => (
             <li key={b} className="flex gap-3 text-[0.95rem] text-deep-900">
               <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-deep-800 text-ivory">
@@ -41,8 +36,15 @@ export function AgentSignup() {
             </li>
           ))}
         </ul>
-        <p className="mt-6 text-sm">
-          <FillIn>[ECOPILLO XÁC NHẬN QUYỀN LỢI ĐẠI LÝ TRƯỚC KHI ĐĂNG]</FillIn>
+        <p className="mt-7 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.95rem] text-deep-900">
+          Liên hệ mở đại lý:
+          <a
+            href={CONTACT.hotlineTel}
+            className="tabular inline-flex items-center gap-1.5 font-semibold text-deep-800 underline decoration-mist-300 underline-offset-4 transition hover:text-mist-600 hover:decoration-mist-600"
+          >
+            <Icon name="phone" size={16} />
+            {CONTACT.hotlineDisplay}
+          </a>
         </p>
       </div>
       <div className="rounded-[1.5rem] bg-ivory p-6 shadow-[var(--shadow-soft)] sm:p-8 lg:col-span-7">

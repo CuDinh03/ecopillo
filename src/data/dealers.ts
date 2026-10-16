@@ -121,7 +121,7 @@ const OFFICIAL: readonly Dealer[] = SHOWROOMS.map((s) => ({
   lng: s.lng,
   dien_thoai: s.hotline ?? CONTACT.hotlineDisplay,
   gio_mo: '08:30',
-  gio_dong: '21:00',
+  gio_dong: '22:00',
   ngay_nghi: [],
   anh: [],
   ghi_chu: 'Có trưng bày đệm, gối để nằm thử',
@@ -180,6 +180,22 @@ const AGENTS: readonly Dealer[] = (
 
 /** Danh sách dựng sẵn (dự phòng khi WordPress không trả lời) */
 export const DEALERS: readonly Dealer[] = sortDefault([...OFFICIAL, ...AGENTS])
+
+/**
+ * Quyền lợi đại lý: Ecopillo gửi qua Zalo 16/10/2026 (thay cả danh sách cũ).
+ * Chỉ sửa chính tả và bỏ chữ "Được" đầu dòng, giữ đúng ý.
+ */
+export const AGENT_BENEFITS: readonly string[] = [
+  'Giá chiết khấu cơ bản và chính sách theo từng gói',
+  'Hàng mẫu, catalogue, ảnh và video sản phẩm',
+  'Đào tạo sản phẩm, đào tạo bán hàng, có sẵn kịch bản bán hàng',
+  'Hỗ trợ bán hàng online',
+  'Hỗ trợ biển bảng và một phần giá kệ theo từng gói hàng',
+  'Độc quyền theo từng khu vực',
+  'Hỗ trợ đổi hàng nếu khó bán',
+  'Không cần ôm tồn, không lo đọng vốn',
+  'Chi phí vốn rất thấp',
+]
 
 /** "Hơn N điểm trên toàn quốc": làm tròn xuống hàng chục khi từ 20 điểm */
 export const dealerCountLabel = (count: number) =>

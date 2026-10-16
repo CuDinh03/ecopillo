@@ -28,14 +28,14 @@ export const REVIEWS: readonly Review[] = [
     place: 'Long Biên, Hà Nội',
     product: 'Eco Flora EF06',
     quote:
-      'Con nhỏ da nhạy cảm, đổi sang Lyocell thì hết hẳn nổi mẩn. Nhân viên tư vấn kích thước rất kỹ trước khi giao.',
+      'Con nhỏ da nhạy cảm, đổi sang chăn ga Ecopillo thì hết hẳn nổi mẩn. Nhân viên tư vấn kích thước rất kỹ trước khi giao.',
   },
   {
     name: 'Chị Lan Phương',
     place: 'Thủ Đức, TP. HCM',
     product: 'Eco Sweet ES02',
     quote:
-      'Hoa văn Jacquard nhìn ngoài đẹp hơn ảnh, phòng ngủ sang lên hẳn. Được trải thử lên giường lúc nhận nên rất yên tâm.',
+      'Ở ngoài nhìn đẹp hơn trong ảnh, phòng ngủ sang lên hẳn. Được trải thử lên giường lúc nhận nên rất yên tâm.',
   },
 ]
 

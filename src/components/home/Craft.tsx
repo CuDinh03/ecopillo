@@ -10,7 +10,7 @@ const TRUST: readonly { icon: IconName; title: string; text: string }[] = [
   // "3 kháng vượt trội" đã lên phần đầu trang (3 ý Bảng EC); con số thương hiệu chuyển xuống đây
   { icon: 'award', title: '15+ năm trong nghề', text: 'Hơn 15.000 khách hàng tin dùng' },
   { icon: 'certified', title: 'ISO 9001:2015\u00a0·\u00a0TQC', text: 'Quy trình sản xuất được chứng nhận' },
-  { icon: 'stitch', title: 'Đường may 4 mũi', text: 'Chắc, phẳng, bền qua nhiều lần giặt' },
+  { icon: 'stitch', title: 'Đường may 4 mũi/cm', text: 'Chắc, phẳng, bền qua nhiều lần giặt' },
   { icon: 'ruler', title: 'May theo kích thước', text: 'Vừa khít mọi chiếc giường' },
   { icon: 'truck', title: 'Kiểm hàng khi nhận', text: 'Được trải thử lên giường trước khi trả tiền' },
 ]
@@ -129,7 +129,7 @@ export function BrandStory() {
               <article data-reveal style={revealDelay(2)} className="relative overflow-hidden rounded-[1.75rem] bg-mist-100 p-6">
                 <Icon name="stitch" size={150} strokeWidth={1} className="absolute -right-6 -bottom-6 text-mist-300/60 sm:hidden" />
                 <Icon name="stitch" size={22} className="relative text-mist-600" />
-                <h3 className="font-display relative mt-3 text-2xl text-deep-900">Đường may 4 mũi</h3>
+                <h3 className="font-display relative mt-3 text-2xl text-deep-900">Đường may 4 mũi/cm</h3>
                 <p className="relative mt-2 text-sm leading-relaxed text-ink-soft">
                   Mép vải được khoá chắc, không sổ chỉ, giữ form đẹp sau nhiều năm.
                 </p>

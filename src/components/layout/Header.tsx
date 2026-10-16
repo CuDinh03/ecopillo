@@ -29,7 +29,8 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { href: PATHS.hotel, label: 'Khách sạn và dự án', primary: true },
   { href: '/#bo-suu-tap', label: 'Bộ sưu tập' },
   { href: '/#ruot-chan-goi', label: 'Ruột chăn gối' },
-  { href: PATHS.gifts, label: 'Quà tặng' },
+  // Khách yêu cầu 16/10/2026: "Quà tặng" thành "Quà tặng và sự kiện" (link giữ /qua-tang/)
+  { href: PATHS.gifts, label: 'Quà tặng và sự kiện' },
   { href: PATHS.blog, label: 'Tin tức' },
   { href: PATHS.faq, label: 'Hỏi đáp' },
   // Giữ trang Liên hệ như web cũ (yêu cầu của Ecopillo ngày 12/10)

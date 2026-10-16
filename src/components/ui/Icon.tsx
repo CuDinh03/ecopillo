@@ -59,7 +59,7 @@ const ICONS = {
   shield: ShieldCheck,
   certified: BadgeCheck,
   ruler: Ruler,
-  /** Chỉ may — đường may 4 mũi */
+  /** Chỉ may — đường may 4 mũi/cm */
   stitch: Spool,
   /** Vải dệt — Jacquard */
   weave: Grid3x3,

@@ -50,7 +50,7 @@ export const BRAND_VIDEO = {
   title: 'Chăn ga gối đệm Ecopillo – Nâng niu giấc mơ xanh',
 } as const
 
-export const OPENING_HOURS = '8:30–21:00 hằng ngày'
+export const OPENING_HOURS = '8:30–22:00 hằng ngày'
 
 /** Biên bản chốt mục 28 và 39: đổi "Showroom" thành "Hệ thống phân phối" */
 export interface Showroom {

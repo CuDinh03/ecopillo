@@ -71,7 +71,7 @@ function LocalBusinessData() {
     address: { '@type': 'PostalAddress', streetAddress: s.address, addressCountry: 'VN' },
     geo: { '@type': 'GeoCoordinates', latitude: s.lat, longitude: s.lng },
     telephone: s.hotline ?? CONTACT.hotlineDisplay,
-    openingHours: 'Mo-Su 08:30-21:00',
+    openingHours: 'Mo-Su 08:30-22:00',
     url: `${SITE_ORIGIN}${PATHS.distribution}`,
   }))
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />

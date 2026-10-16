@@ -94,7 +94,7 @@ const collectionProduct = (c: Collection): Product => {
     imageNote: c.imageNote,
     details: [
       'Vải Lyocell nhập khẩu, dệt từ sợi gỗ tự nhiên: mềm, mát, thoáng khí, lành tính với da nhạy cảm.',
-      'Họa tiết chần thêu độc quyền, đường may 4 mũi.',
+      'Họa tiết chần thêu độc quyền, đường may 4 mũi/cm.',
       ...(c.kind === 'ga-phu' && c.id === 'eco-sweet' ? ['Hoa văn dệt Jacquard nổi khối.'] : []),
       'Nhận may theo kích thước riêng: gọi hoặc nhắn Zalo để báo giá.',
     ],

@@ -39,13 +39,13 @@ const SERVICES = [
 ] as const
 
 export function GiftsPage() {
-  usePageMeta('Quà tặng', 'Chương trình tri ân 15.000 khách hàng và gợi ý chọn chăn ga gối Ecopillo làm quà cưới, quà tân gia, quà biếu Tết.')
+  usePageMeta('Quà tặng và sự kiện', 'Chương trình tri ân 15.000 khách hàng và gợi ý chọn chăn ga gối Ecopillo làm quà cưới, quà tân gia, quà biếu Tết.')
 
   return (
     <div className="pb-24">
       <PageHero
-        crumbs={[{ label: 'Quà tặng' }]}
-        eyebrow="Quà tặng"
+        crumbs={[{ label: 'Quà tặng và sự kiện' }]}
+        eyebrow="Quà tặng và sự kiện"
         title={
           <>
             Món quà cho

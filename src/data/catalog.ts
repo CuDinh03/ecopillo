@@ -290,7 +290,7 @@ export const COLLECTIONS: readonly Collection[] = [
     kindLabel: 'Bộ ga phủ',
     tagline: 'Dòng cao nhất của Ecopillo',
     description:
-      'Tuyển chọn sợi Lyocell đẹp nhất, chần thêu dày và đều, đường may 4 mũi chắc chắn. Tinh hoa của hơn 15 năm làm nghề.',
+      'Tuyển chọn sợi Lyocell đẹp nhất, chần thêu dày và đều, đường may 4 mũi/cm chắc chắn. Tinh hoa của hơn 15 năm làm nghề.',
     badge: 'Dòng cao nhất',
     prices: price(10_000_000, 10_180_000, 10_360_000),
     gift: 'two-plus',
