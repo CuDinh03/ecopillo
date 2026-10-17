@@ -13,7 +13,7 @@ export function AgentSignup() {
     <section
       id="dang-ky-dai-ly"
       aria-labelledby="agent-title"
-      className="scroll-mt-28 grid gap-10 rounded-[2rem] bg-cream-50 p-6 ring-1 ring-cream-200 sm:p-10 lg:grid-cols-12 lg:gap-12 lg:p-14"
+      className="scroll-mt-28 grid gap-10 rounded-[2rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] sm:p-10 lg:grid-cols-12 lg:gap-12 lg:p-14"
     >
       <div className="lg:col-span-5">
         <SectionHeading

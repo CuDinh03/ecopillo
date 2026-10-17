@@ -13,7 +13,7 @@ export function ContactDock({ mobileBar = true }: { mobileBar?: boolean }) {
   return (
     <>
       {mobileBar && (
-        <div className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-cream-200 bg-ivory/95 px-3 pt-2.5 backdrop-blur-md md:hidden">
+        <div className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ivory/95 px-3 pt-2.5 backdrop-blur-md md:hidden">
           <div className="grid grid-cols-[1fr_1fr_1fr_1.4fr] gap-2">
             <a
               href={CONTACT.hotlineTel}
@@ -87,7 +87,7 @@ function DesktopDock() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Nhắn Messenger Ecopillo"
-              className="group flex h-13 items-center gap-2 rounded-full bg-ivory py-2 pr-4 pl-3 text-sm font-medium text-deep-900 shadow-[var(--shadow-lift)] ring-1 ring-cream-200 transition hover:-translate-y-0.5"
+              className="group flex h-13 items-center gap-2 rounded-full bg-ivory py-2 pr-4 pl-3 text-sm font-medium text-deep-900 shadow-[var(--shadow-lift)] transition hover:-translate-y-0.5"
             >
               <Icon name="messenger" size={20} />
               Messenger
@@ -97,7 +97,7 @@ function DesktopDock() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Nhắn Zalo Ecopillo"
-              className="group flex h-13 items-center gap-2 rounded-full bg-ivory py-2 pr-4 pl-3 text-sm font-medium text-deep-900 shadow-[var(--shadow-lift)] ring-1 ring-cream-200 transition hover:-translate-y-0.5"
+              className="group flex h-13 items-center gap-2 rounded-full bg-ivory py-2 pr-4 pl-3 text-sm font-medium text-deep-900 shadow-[var(--shadow-lift)] transition hover:-translate-y-0.5"
             >
               <ZaloMark />
               Zalo

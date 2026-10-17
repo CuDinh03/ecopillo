@@ -21,7 +21,7 @@ const TRUST: readonly { icon: IconName; title: string; text: string }[] = [
  */
 export function TrustStrip() {
   return (
-    <section aria-label="Cam kết của Ecopillo" className="border-y border-cream-200 bg-cream-50">
+    <section aria-label="Cam kết của Ecopillo" className="border-y border-line">
       <Container>
         <ul className="grid grid-cols-2 lg:grid-cols-5">
           {TRUST.map((item, i) => (
@@ -30,8 +30,8 @@ export function TrustStrip() {
               data-reveal
               style={revealDelay(i)}
               className={`flex flex-col items-center gap-2.5 px-3 py-5 text-center sm:gap-3 sm:py-7 lg:px-4 ${
-                i % 2 === 1 ? 'border-l border-cream-200' : ''
-              } ${i > 0 ? 'lg:border-l lg:border-cream-200' : ''} ${i >= 2 ? 'border-t border-cream-200 lg:border-t-0' : ''} ${
+                i % 2 === 1 ? 'border-l border-line' : ''
+              } ${i > 0 ? 'lg:border-l lg:border-line' : ''} ${i >= 2 ? 'border-t border-line lg:border-t-0' : ''} ${
                 i === TRUST.length - 1 && TRUST.length % 2 === 1 ? 'col-span-2 lg:col-span-1' : ''
               }`}
             >
@@ -68,10 +68,10 @@ export function BrandStory() {
               }
               lead={LYOCELL_INTRO}
             />
-            <blockquote data-reveal style={revealDelay(1)} className="mt-6 border-l-2 sm:mt-8 border-mist-300 pl-5 font-display text-[1.35rem] leading-snug text-deep-800 italic">
+            <blockquote data-reveal style={revealDelay(1)} className="mt-6 border-l-2 sm:mt-8 border-mist-600 pl-5 font-display text-[1.35rem] leading-snug text-deep-800 italic">
               “{CRAFT_QUOTE}”
             </blockquote>
-            <div className="mt-10 hidden items-center gap-5 rounded-2xl bg-mist-50 p-5 ring-1 ring-mist-200 sm:flex">
+            <div className="mt-10 hidden items-center gap-5 rounded-2xl bg-mist-50 p-5 shadow-[var(--shadow-soft)] sm:flex">
               <p className="font-display text-[2.5rem] leading-none text-deep-900">
                 <CountUp value="15.000+" />
               </p>
@@ -142,7 +142,7 @@ export function BrandStory() {
                   </p>
                 </div>
               </article>
-              <article data-reveal style={revealDelay(3)} className="flex flex-col overflow-hidden rounded-[1.75rem] sm:grid sm:grid-cols-[2fr_3fr] bg-ivory ring-1 ring-cream-200">
+              <article data-reveal style={revealDelay(3)} className="flex flex-col overflow-hidden rounded-[1.75rem] sm:grid sm:grid-cols-[2fr_3fr] bg-ivory shadow-[var(--shadow-soft)]">
                 <Placeholder
                   className="aspect-[5/3] w-full rounded-b-[1.75rem] sm:aspect-auto sm:h-full sm:min-h-36 sm:rounded-none"
                   note="Ảnh cận hoa văn dệt Jacquard"

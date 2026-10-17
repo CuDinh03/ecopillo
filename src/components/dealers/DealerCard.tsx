@@ -63,7 +63,7 @@ function Photos({ dealer, flush = false }: { dealer: Dealer; flush?: boolean }) 
           <button
             type="button"
             onClick={() => dialogRef.current?.close()}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-cream-50 text-deep-900"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-mist-100 text-deep-900"
             aria-label="Đóng"
           >
             <Icon name="close" size={18} />
@@ -125,7 +125,7 @@ export function DealerCard({ dealer, km, selected = false, onSelect, featured = 
           ? 'bg-mist-50 ring-2 ring-deep-800 shadow-[var(--shadow-lift)]'
           : selected
             ? 'bg-ivory ring-2 ring-deep-700 shadow-[var(--shadow-lift)]'
-            : 'bg-ivory ring-1 ring-cream-200 hover:shadow-[var(--shadow-soft)]'
+            : 'bg-ivory shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-soft)]'
       }`}
     >
       {/* Chỉ khi khách bấm "Tìm đại lý gần tôi": dải chàm đầu thẻ điểm gần nhất (owner yêu cầu 15/10/2026) */}

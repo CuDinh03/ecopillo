@@ -28,7 +28,7 @@ function Block({ block }: { block: PostBlock }) {
       )
     case 'tip':
       return (
-        <aside className="mt-10 flex gap-4 rounded-[1.5rem] bg-mist-50 p-6 ring-1 ring-mist-200">
+        <aside className="mt-10 flex gap-4 rounded-[1.5rem] bg-mist-50 p-6 shadow-[var(--shadow-soft)]">
           <Icon name="lightbulb" size={22} className="mt-0.5 shrink-0 text-mist-600" />
           <p className="text-deep-900">{block.text}</p>
         </aside>
@@ -78,7 +78,7 @@ export function ArticlePage() {
           ))}
 
           {post.related && (
-            <div className="mt-12 border-t border-cream-200 pt-8">
+            <div className="mt-12 border-t border-line pt-8">
               <p className="eyebrow">Có thể Quý khách quan tâm</p>
               <ul className="mt-4 flex flex-wrap gap-2">
                 {post.related.map((r) => (
@@ -96,7 +96,7 @@ export function ArticlePage() {
             </div>
           )}
 
-          <div className="mt-10 rounded-[1.75rem] bg-cream-50 p-6 ring-1 ring-cream-200 sm:p-8">
+          <div className="mt-10 rounded-[1.75rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] sm:p-8">
             <p className="font-display text-[1.4rem] leading-tight text-deep-900">Cần tư vấn thêm?</p>
             <p className="mt-1.5 text-[0.95rem] text-ink-soft">Gửi ảnh phòng, số đo giường qua Zalo, Ecopillo gợi ý mẫu hợp nhất.</p>
             <ContactButtons size="md" stretch className="mt-5" />

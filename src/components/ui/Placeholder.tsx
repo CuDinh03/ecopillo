@@ -22,7 +22,7 @@ interface PlaceholderProps {
 }
 
 const TONES = {
-  cream: 'bg-cream-100 text-deep-700 border-cream-300/80',
+  cream: 'bg-cream-100 text-deep-700 border-line',
   mist: 'bg-mist-100 text-deep-700 border-mist-300/80',
   deep: 'bg-deep-800 text-mist-200 border-deep-600',
 } as const

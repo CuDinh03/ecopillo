@@ -90,7 +90,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
 
             <ol tabIndex={0} aria-label="Tốt, Thật, Thiện" className="m-rail mt-8 grid gap-3 focus-visible:outline-2 focus-visible:outline-deep-700 sm:mt-10 sm:grid-cols-3">
               {PHILOSOPHY.map((p, i) => (
-                <li key={p.word} data-reveal style={revealDelay(i)} className="rounded-[1.25rem] bg-mist-50 p-5 ring-1 ring-mist-200">
+                <li key={p.word} data-reveal style={revealDelay(i)} className="rounded-[1.25rem] bg-mist-50 p-5 shadow-[var(--shadow-soft)]">
                   <p className="font-display text-[2rem] leading-none text-mist-600 italic">{p.word}</p>
                   <p className="mt-3 text-[0.85rem] leading-relaxed text-ink-soft">{p.text}</p>
                 </li>
@@ -124,12 +124,12 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
         </div>
 
         <div className="mt-5 grid gap-5 lg:grid-cols-[1.25fr_1fr]">
-          <div data-reveal className="rounded-[1.75rem] bg-cream-50 p-7 ring-1 ring-cream-200 sm:p-9">
+          <div data-reveal className="rounded-[1.75rem] bg-cream-50 p-7 shadow-[var(--shadow-soft)] sm:p-9">
             <p className="eyebrow">Giá trị cốt lõi</p>
             <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
               {CORE_VALUES.map((v) => (
                 <li key={v.title} className="flex gap-3.5">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ivory text-mist-600 ring-1 ring-cream-200">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-mist-100 text-mist-600">
                     <Icon name={v.icon} size={18} />
                   </span>
                   <span>

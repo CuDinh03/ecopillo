@@ -206,7 +206,7 @@ export function Select({
         onKeyDown={onKeyDown}
         className={`relative block cursor-pointer truncate text-left transition outline-none ${TRIGGER[variant]} ${
           isEmpty && variant !== 'inline' ? 'text-ink-faint' : 'text-deep-900'
-        } ${variant === 'field' ? (ariaInvalid ? 'border-alert ring-4 ring-alert-soft' : 'border-cream-300') : ''}`}
+        } ${variant === 'field' ? (ariaInvalid ? 'border-alert ring-4 ring-alert-soft' : 'border-line') : ''}`}
       >
         {current?.label ?? placeholder ?? ''}
         <Icon
@@ -224,7 +224,7 @@ export function Select({
           role="listbox"
           aria-label={ariaLabel}
           data-lenis-prevent
-          className={`absolute z-40 max-h-72 min-w-full overflow-y-auto overscroll-contain rounded-2xl bg-ivory p-1.5 shadow-[var(--shadow-lift)] ring-1 ring-cream-200 ${
+          className={`absolute z-40 max-h-72 min-w-full overflow-y-auto overscroll-contain rounded-2xl bg-ivory p-1.5 shadow-[var(--shadow-lift)] ${
             dropUp ? 'bottom-full mb-2' : 'top-full mt-2'
           } ${toRight ? 'right-0' : 'left-0'} ${variant === 'inline' ? 'w-max' : ''}`}
         >

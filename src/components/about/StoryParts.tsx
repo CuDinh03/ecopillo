@@ -84,7 +84,7 @@ export function StoryFigure({ image, caption, aspect = 'aspect-[16/10]', positio
 /** Câu trích giữa hai đường kẻ, có dấu ngoặc của bộ icon */
 export function PullQuote({ children }: { children: ReactNode }) {
   return (
-    <blockquote data-reveal className="mt-10 border-y border-cream-200 py-7 text-center">
+    <blockquote data-reveal className="mt-10 border-y border-line py-7 text-center">
       <Icon name="quote" size={24} className="mx-auto text-deep-700/60" />
       <p className="font-display mt-3 text-[1.55rem] leading-snug text-balance text-deep-900 italic sm:text-[1.85rem]">{children}</p>
     </blockquote>

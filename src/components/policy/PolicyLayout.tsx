@@ -51,7 +51,7 @@ export function PolicyLayout({ title, intro, meta, children }: PolicyLayoutProps
         <div className="min-w-0 lg:col-span-9">
           <article className="max-w-3xl">{children}</article>
 
-          <div className="mt-14 flex max-w-3xl flex-col gap-5 rounded-[2rem] bg-cream-50 p-6 ring-1 ring-cream-200 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <div className="mt-14 flex max-w-3xl flex-col gap-5 rounded-[2rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] sm:flex-row sm:items-center sm:justify-between sm:p-8">
             <div>
               <p className="font-display text-[1.4rem] text-deep-900">Còn điều chưa rõ?</p>
               <p className="mt-1 text-sm text-ink-soft">Gọi hoặc nhắn Zalo, Ecopillo trả lời ngay trong giờ làm việc.</p>

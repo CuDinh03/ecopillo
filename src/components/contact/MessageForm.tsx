@@ -46,7 +46,7 @@ const validate = (f: ContactForm): ContactErrors => {
 const INPUT =
   'mt-2 block w-full rounded-xl border bg-ivory px-4 py-3.5 text-[1rem] text-deep-900 placeholder:text-ink-faint transition focus:border-deep-700 focus:ring-4 focus:ring-cream-200 focus:outline-none'
 
-const inputClass = (hasError: boolean) => `${INPUT} ${hasError ? 'border-alert ring-4 ring-alert-soft' : 'border-cream-300'}`
+const inputClass = (hasError: boolean) => `${INPUT} ${hasError ? 'border-alert ring-4 ring-alert-soft' : 'border-line'}`
 
 function Field({ id, label, error, children }: { id: string; label: string; error?: string; children: ReactNode }) {
   return (
@@ -107,7 +107,7 @@ export function MessageForm({
   if (sent) {
     return (
       <div className="flex flex-col items-center py-10 text-center sm:py-16" role="status">
-        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-cream-50 text-deep-800">
+        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-mist-100 text-deep-800">
           <Icon name="check" size={28} />
         </span>
         <h3 className="font-display mt-6 text-[1.9rem] leading-tight text-deep-900">Ecopillo đã nhận tin nhắn</h3>

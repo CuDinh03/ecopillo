@@ -163,7 +163,7 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
 
   if (view === 'done') {
     return (
-      <div ref={topRef} className="scroll-mt-24 bg-ivory py-14 sm:py-20">
+      <div ref={topRef} className="scroll-mt-24 py-14 sm:py-20">
         <Container>
           <Confirmation orderCode={orderCode} summary={summary} customer={draft.customer} onNewOrder={startOver} />
         </Container>

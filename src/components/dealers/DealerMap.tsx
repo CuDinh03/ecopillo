@@ -15,7 +15,7 @@ interface DealerMapProps {
  */
 export function DealerMap({ dealer, className = '' }: DealerMapProps) {
   return (
-    <div className={`overflow-hidden rounded-[1.75rem] bg-ivory ring-1 ring-cream-200 shadow-[var(--shadow-soft)] ${className}`}>
+    <div className={`overflow-hidden rounded-[1.75rem] bg-ivory shadow-[var(--shadow-soft)] ${className}`}>
       {dealer ? (
         <iframe
           key={dealer.id}

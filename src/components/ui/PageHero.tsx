@@ -56,7 +56,7 @@ export function PageHero({ crumbs, eyebrow, title, lead, aside, children, tone =
   return (
     <section
       aria-labelledby={id}
-      className={deep ? 'grain relative overflow-hidden bg-deep-900 text-ivory' : 'border-b border-cream-200 bg-cream-50'}
+      className={deep ? 'grain relative overflow-hidden bg-deep-900 text-ivory' : ''}
     >
       <Container
         className={`relative grid gap-10 pt-10 pb-14 sm:pt-14 sm:pb-20 ${aside ? 'lg:grid-cols-12 lg:items-center lg:gap-14' : ''}`}

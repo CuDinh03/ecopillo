@@ -19,7 +19,7 @@ export function PolicyPage() {
     <PolicyLayout title={title} intro={policy.intro}>
       <ul className="grid gap-3 sm:grid-cols-3">
         {policy.highlights.map((h) => (
-          <li key={h.label} className="rounded-[1.25rem] bg-mist-50 p-5 ring-1 ring-mist-200">
+          <li key={h.label} className="rounded-[1.25rem] bg-mist-50 p-5 shadow-[var(--shadow-soft)]">
             <p className="font-display text-[1.6rem] leading-tight text-deep-900">
               <RichText text={h.value} />
             </p>

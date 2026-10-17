@@ -19,7 +19,7 @@ const INPUT =
 
 const PROVINCE_OPTIONS = PROVINCES.map((p) => ({ value: p.id, label: p.name }))
 
-const inputClass = (hasError: boolean) => `${INPUT} ${hasError ? 'border-alert ring-4 ring-alert-soft' : 'border-cream-300'}`
+const inputClass = (hasError: boolean) => `${INPUT} ${hasError ? 'border-alert ring-4 ring-alert-soft' : 'border-line'}`
 
 interface FieldProps {
   id: keyof CustomerInfo

@@ -59,7 +59,7 @@ export function Confirmation({ orderCode, summary, customer, onNewOrder }: Confi
         {steps.map((step, i) => (
           <li
             key={step.title}
-            className={`rounded-2xl p-5 ring-1 ${step.done ? 'bg-mist-50 ring-mist-200' : 'bg-ivory ring-cream-200'}`}
+            className={`rounded-2xl p-5 ring-1 ${step.done ? 'bg-mist-100 ring-mist-200' : 'bg-ivory ring-cream-200'}`}
           >
             <span className="flex items-center gap-2.5">
               <span
@@ -77,8 +77,8 @@ export function Confirmation({ orderCode, summary, customer, onNewOrder }: Confi
         ))}
       </ol>
 
-      <article className="mt-10 overflow-hidden rounded-[2rem] bg-ivory shadow-[var(--shadow-lift)] ring-1 ring-cream-200">
-        <div className="flex gap-5 border-b border-dashed border-cream-300 bg-cream-50 p-6 sm:p-8">
+      <article className="mt-10 overflow-hidden rounded-[2rem] bg-ivory shadow-[var(--shadow-lift)]">
+        <div className="flex gap-5 border-b border-dashed border-line bg-mist-100 p-6 sm:p-8">
           <div className="h-24 w-32 shrink-0 rounded-2xl sm:h-28 sm:w-40">
             <Placeholder compact className="h-full w-full" tint={line.tint} note={line.imageNote} image={line.image} sizes="160px" />
           </div>
@@ -115,7 +115,7 @@ export function Confirmation({ orderCode, summary, customer, onNewOrder }: Confi
           <Item label="Thời gian giao dự kiến" value={summary.deliveryTime ?? '—'} highlight />
         </dl>
 
-        <dl className="space-y-2.5 border-t border-cream-200 bg-cream-50/60 p-6 text-sm sm:p-8">
+        <dl className="space-y-2.5 border-t border-line bg-mist-100/60 p-6 text-sm sm:p-8">
           <div className="flex justify-between">
             <dt className="text-ink-soft">Tạm tính</dt>
             <dd className="tabular text-deep-900">{subtotal ? formatVND(subtotal) : PRICE_ON_CALL}</dd>

@@ -121,15 +121,22 @@
   --color-mist-300: #FFFFFF;
   --color-mist-200: #FFFFFF;
   --color-mist-100: #e9f8ff;
-  --color-mist-50: #e9f8ff;
+  --color-mist-50: #ffffff;
 
-  /* Nền trang: #D3EFFF. Thẻ, ô nhập, khối nổi: trắng. Khối xen kẽ: #E9F8FF */
-  --color-page: #FFFFFF;
+  /*
+   * Mục 33 (khách 16/10/2026: "nền mới nhạt nhoà"), owner chọn 17/10 phương án 1 cho toàn bộ web:
+   * nền trang #D3EFFF liền từ đầu trang, mọi khối nổi (thẻ, ô, nút, hộp) màu trắng, không cần viền.
+   * cream-50, cream-100, mist-50 (trước là #E9F8FF) nay là trắng; nền nhạt bên trong khối trắng dùng mist-100.
+   * cream-200/300 giữ #D3EFFF: viền ring trùng màu nền nên tự mất trên nền xanh, vẫn hiện quanh ô nằm trong khối trắng.
+   * Đường kẻ dùng line (chàm 14%), vì kẻ #D3EFFF không thấy trên nền xanh. Mẫu: docs/de-xuat-can-mau-nen-san-pham.html
+   */
+  --color-page: #d3efff;
   --color-ivory: #ffffff;
-  --color-cream-50: #e9f8ff;
-  --color-cream-100: #e9f8ff;
+  --color-cream-50: #ffffff;
+  --color-cream-100: #ffffff;
   --color-cream-200: #d3efff;
   --color-cream-300: #d3efff;
+  --color-line: rgb(45 46 141 / 0.14);
 
   /* Quà tặng, ưu đãi: nền vàng, chữ chàm */
   --color-brass-600: #2d2e8d;
@@ -174,9 +181,9 @@
     line-height: 1.65;
   }
 
-  /* Nền bôi đen: xanh nhạt; mist-200 nay là trắng nên bôi đen trên nền trắng không thấy */
+  /* Nền bôi đen: chàm sáng nhạt, thấy được cả trên nền trang xanh lẫn trong khối trắng */
   ::selection {
-    background: var(--color-brand-sky);
+    background: rgb(51 61 186 / 0.22);
     color: var(--color-deep-900);
   }
 

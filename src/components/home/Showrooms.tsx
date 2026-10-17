@@ -24,7 +24,7 @@ function RichLine({ text }: { text: string }) {
 
 export function Showrooms() {
   return (
-    <section id="he-thong-phan-phoi" aria-labelledby="phan-phoi-title" className="bg-cream-50 py-14 sm:py-32">
+    <section id="he-thong-phan-phoi" aria-labelledby="phan-phoi-title" className="py-14 sm:py-32">
       <Container>
         <SectionHeading
           id="phan-phoi-title"
@@ -47,7 +47,7 @@ export function Showrooms() {
 
         <div className="m-rail mt-8 grid gap-6 sm:mt-14 lg:grid-cols-2">
           {SHOWROOMS.map((s, i) => (
-            <article key={s.id} data-reveal style={revealDelay(i)} className="overflow-hidden rounded-[2rem] bg-ivory ring-1 ring-cream-200">
+            <article key={s.id} data-reveal style={revealDelay(i)} className="overflow-hidden rounded-[2rem] bg-ivory shadow-[var(--shadow-soft)]">
               <div className="flex h-full flex-col">
                 {/* Có ảnh thật thì hiện cả trên điện thoại; chưa có thì khung chờ ảnh, điện thoại ẩn cho gọn */}
                 <div className={`aspect-[2/1] sm:aspect-[16/9] ${s.photo ? '' : 'max-sm:hidden'}`}>

@@ -36,6 +36,9 @@ bắt đầu từ [`00-phien-sau-doc-truoc.md`](docs/viec-can-lam/00-phien-sau-d
 - Màu: chỉ dùng bộ nhận diện trong `src/index.css` (`@theme`): chàm `#2D2E8D`, chàm sáng `#333DBA`,
   xanh nhạt `#D3EFFF`/`#E9F8FF`, trắng, vàng `#FFC271` (chỉ cho quà tặng, ưu đãi; ngoại lệ duy nhất: khung "Hệ sinh thái sản phẩm" ở đầu trang chủ, owner duyệt 17/10/2026).
   Tên token cũ (`deep-*`, `mist-*`, `cream-*`, `ivory`) vẫn giữ và đã trỏ về các màu này.
+- **Nền cả web là xanh `#D3EFFF`, khối nổi màu trắng** (owner chọn 17/10/2026, mục 33, phương án 1): `bg-page` = #D3EFFF;
+  `ivory`, `cream-50`, `cream-100`, `mist-50` đều là trắng. Thẻ, ô, hộp trắng tách khỏi nền bằng `shadow-[var(--shadow-soft)]`, không dùng viền `ring-cream-200` (trùng màu nền nên không thấy).
+  Dải kéo hết bề ngang không đặt nền (để nền xanh liền). Đường kẻ dùng `border-line` (chàm 14%). Ô nhỏ nằm **bên trong** khối trắng dùng `bg-mist-100` (#E9F8FF).
 - Font: Be Vietnam Pro (chữ thường) + Noto Serif Display (tiêu đề, lớp `font-display`).
 - **Không dùng `<select>` của trình duyệt** (danh sách xổ xuống màu xám của macOS, owner chê 15/10/2026): dùng `Select` trong `src/components/ui/Select.tsx`.
 - Dữ liệu (chữ, giá, ảnh, liên hệ) nằm trong `src/data/`, không viết cứng trong component.

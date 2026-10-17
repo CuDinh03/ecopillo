@@ -135,7 +135,7 @@ export function ChapterBuy({ collection, pattern, size, onSize, isSoldOut, class
                 onClick={() => onSize(s.id)}
                 className={`flex flex-col items-start rounded-2xl px-3 py-3 text-left transition disabled:cursor-not-allowed ${
                   soldOut
-                    ? 'bg-cream-50 text-ink-faint ring-1 ring-cream-200'
+                    ? 'bg-cream-50 text-ink-faint shadow-[var(--shadow-soft)]'
                     : active
                       ? 'bg-mist-50 ring-2 ring-deep-800'
                       : 'bg-ivory ring-1 ring-cream-200 hover:ring-deep-700'

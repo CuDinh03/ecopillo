@@ -42,7 +42,7 @@ export function Reviews() {
                 data-reveal
                 style={revealDelay(i)}
                 className={`flex w-[84%] shrink-0 snap-start flex-col rounded-[1.75rem] p-7 sm:w-[46%] lg:w-auto ${
-                  i % 2 === 0 ? 'bg-mist-50 ring-1 ring-mist-200' : 'bg-cream-50 ring-1 ring-cream-200'
+                  i % 2 === 0 ? 'bg-mist-50 shadow-[var(--shadow-soft)]' : 'bg-cream-50 shadow-[var(--shadow-soft)]'
                 } ${i % 2 === 1 ? 'lg:translate-y-8' : ''}`}
               >
                 <div className="flex items-center justify-between">
@@ -55,14 +55,14 @@ export function Reviews() {
                 <footer className="mt-7 flex items-start gap-3 border-t border-deep-900/10 pt-5">
                   <span
                     aria-hidden="true"
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-ivory font-display text-lg text-deep-800 ring-1 ring-cream-200"
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-mist-100 font-display text-lg text-deep-800"
                   >
                     {r.name.split(' ').at(-1)?.[0]}
                   </span>
                   <span className="text-sm leading-tight">
                     <span className="block font-medium text-deep-900">{r.name}</span>
                     <span className="block text-ink-soft">{r.place}</span>
-                    <span className="mt-1.5 inline-block rounded-full bg-ivory px-2.5 py-0.5 text-[0.72rem] text-deep-800 ring-1 ring-cream-200">
+                    <span className="mt-1.5 inline-block rounded-full bg-mist-100 px-2.5 py-0.5 text-[0.72rem] text-deep-800">
                       {r.product}
                     </span>
                   </span>

@@ -63,7 +63,7 @@ export function GiftsPage() {
 
       <Gifts standalone />
 
-      <section aria-labelledby="occasion-title" className="bg-cream-50 py-14 sm:py-24">
+      <section aria-labelledby="occasion-title" className="py-14 sm:py-24">
         <Container>
           <SectionHeading
             id="occasion-title"
@@ -78,7 +78,7 @@ export function GiftsPage() {
             {OCCASIONS.map((o, i) => {
               const cover = coverOf(collectionById(o.ids[0])!)
               return (
-                <li key={o.title} data-reveal style={revealDelay(i)} className="flex flex-col overflow-hidden rounded-[1.75rem] bg-ivory ring-1 ring-cream-200">
+                <li key={o.title} data-reveal style={revealDelay(i)} className="flex flex-col overflow-hidden rounded-[1.75rem] bg-ivory shadow-[var(--shadow-soft)]">
                   <div className="aspect-[4/3]">
                     <Placeholder className="h-full w-full !rounded-none border-0" note={o.title} image={cover} sizes="(min-width: 1024px) 400px, 100vw" />
                   </div>
@@ -116,8 +116,8 @@ export function GiftsPage() {
           </div>
           <ul className="grid gap-3 lg:col-span-7">
             {SERVICES.map((s, i) => (
-              <li key={s.title} data-reveal style={revealDelay(i)} className="flex gap-4 rounded-[1.25rem] bg-mist-50 p-5 ring-1 ring-mist-200 sm:p-6">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ivory text-deep-800 ring-1 ring-mist-200">
+              <li key={s.title} data-reveal style={revealDelay(i)} className="flex gap-4 rounded-[1.25rem] bg-mist-50 p-5 shadow-[var(--shadow-soft)] sm:p-6">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-mist-100 text-deep-800">
                   <Icon name={s.icon} size={20} />
                 </span>
                 <span>

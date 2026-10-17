@@ -7,7 +7,7 @@ import { Placeholder } from '../ui/Placeholder'
 export function PostCard({ post, feature = false }: { post: Post; feature?: boolean }) {
   return (
     <article
-      className={`group relative flex h-full overflow-hidden rounded-[1.75rem] bg-ivory ring-1 ring-cream-200 transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-soft)] ${
+      className={`group relative flex h-full overflow-hidden rounded-[1.75rem] bg-ivory shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-soft)] ${
         feature ? 'flex-col lg:grid lg:grid-cols-2' : 'flex-col'
       }`}
     >

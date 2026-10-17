@@ -6,7 +6,7 @@ import { Container } from '../ui/primitives'
 /** Khối "Theo dõi Ecopillo" — các kênh mạng xã hội, đặt nổi bật ở trang chủ */
 export function SocialStrip() {
   return (
-    <section aria-labelledby="social-title" className="border-y border-cream-200 bg-ivory py-10 sm:py-14">
+    <section aria-labelledby="social-title" className="border-y border-line py-10 sm:py-14">
       <Container className="flex flex-col gap-5 sm:gap-8 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-sm">
           <p className="eyebrow">Kết nối</p>

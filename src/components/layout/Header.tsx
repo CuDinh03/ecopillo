@@ -107,7 +107,7 @@ function MoreMenu({ activeHref }: { activeHref: string | null }) {
       {isOpen && (
         <ul
           id="more-menu"
-          className="reveal absolute top-full right-0 mt-2 w-52 rounded-2xl bg-ivory p-2 shadow-[var(--shadow-lift)] ring-1 ring-cream-200"
+          className="reveal absolute top-full right-0 mt-2 w-52 rounded-2xl bg-ivory p-2 shadow-[var(--shadow-lift)]"
         >
           {MORE_ITEMS.map((item) => (
             <li key={item.href}>

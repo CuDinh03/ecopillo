@@ -1,15 +1,27 @@
-import { useMemo, useState, type CSSProperties, type ReactNode } from 'react'
+import { useMemo, useRef, type CSSProperties, type ReactNode } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { ColorwayCard } from '../components/products/ColorwayCard'
 import { ProductCard } from '../components/products/ProductCard'
 import { Icon } from '../components/ui/Icon'
 import { Select } from '../components/ui/Select'
-import { buttonClass, Container, FillIn } from '../components/ui/primitives'
+import { Container, FillIn } from '../components/ui/primitives'
 import { BEDDING_SETS, collectionRange, type Collection } from '../data/catalog'
-import { CATEGORIES, inPriceBand, LEGACY_CATEGORY, priceBandsOf, PRODUCTS, type CategoryId, type PriceBand } from '../data/products'
+import {
+  CATEGORIES,
+  inPriceBand,
+  LEGACY_CATEGORY,
+  priceBandsOf,
+  PRODUCTS,
+  PRODUCTS_INTRO,
+  PRODUCTS_PROMISES,
+  type CategoryId,
+  type PriceBand,
+  type Product,
+} from '../data/products'
 import { COLORWAYS, STORIES_APPROVED, toneById, type Colorway } from '../data/stories'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
+import { scrollToElement } from '../lib/scroll'
 
 const SORTS = [
   { id: 'noi-bat', label: 'Nổi bật' },
@@ -29,8 +41,10 @@ const SORT_PARAM = 'sap-xep'
 const TONE_PARAM = 'gam'
 /** Mức giá: ?gia=5-10-trieu, mốc khác nhau theo loại (PRICE_BANDS trong data/products.ts) */
 const PRICE_PARAM = 'gia'
-/** Số phối màu hiện mỗi lần khi lọc theo bộ (hoặc gam qua link); bấm "Xem thêm" để hiện tiếp */
-const COLORWAY_PAGE = 12
+/** Trang số mấy của lưới: ?trang=2 */
+const PAGE_PARAM = 'trang'
+/** Mục 31 (owner chọn kiểu A 17/10/2026): mỗi mẫu một thẻ, 24 thẻ một trang, có số trang như web cũ */
+const PAGE_SIZE = 24
 /** Số chấm màu nhỏ trên ô bộ sưu tập */
 const TILE_DOTS = 5
 
@@ -56,47 +70,50 @@ export function ProductsPage() {
   const canBrowseByCollection = hasColorways && category !== 'chan'
   const tone = hasColorways ? toneById(params.get(TONE_PARAM)) : undefined
   const collection = canBrowseByCollection ? BEDDING_SETS.find((c) => c.id === params.get(COLLECTION_PARAM)) : undefined
-  const [colorwayLimit, setColorwayLimit] = useState(COLORWAY_PAGE)
+  const gridRef = useRef<HTMLParagraphElement>(null)
 
-  // Phối màu thuộc nhóm đang xem: bộ chăn ga, chăn hè, hoặc cả hai khi xem "Tất cả"
-  const scope = useMemo(
-    () => COLORWAYS.filter((c) => !category || (category === 'chan') === (c.collection.kind === 'chan-he')),
-    [category],
-  )
-  const isShowingColorways = Boolean(tone || collection)
-  // Phối màu và sản phẩm đã lọc theo mọi thứ trừ mức giá: dùng để đếm số trên từng nút mức giá
-  const colorwaysAnyPrice = useMemo(
-    () => scope.filter((c) => (!tone || c.story.tone === tone.id) && (!collection || c.collection.id === collection.id)),
-    [scope, tone, collection],
-  )
-  const productsAnyPrice = useMemo(() => PRODUCTS.filter((p) => !category || p.category === category), [category])
-  const colorways = useMemo(() => {
-    if (!isShowingColorways) return []
-    const filtered = colorwaysAnyPrice.filter((c) => !band || inPriceBand(collectionRange(c.collection), band))
-    return bySort(filtered, sort, (c) => collectionRange(c.collection).min)
-  }, [isShowingColorways, colorwaysAnyPrice, band, sort])
-  const products = useMemo(
+  /*
+   * Mục 31 (khách 16/10/2026: "như web cũ ok hơn", "k gộp đâu", "ít sp lắm"), owner chọn kiểu A 17/10/2026:
+   * bộ chăn ga và chăn hè hiện mỗi phối màu một thẻ thay cho một thẻ gộp cả bộ; gối, đệm, chăn lẻ vẫn một thẻ mỗi sản phẩm.
+   * Thứ tự "Nổi bật": phối màu theo thứ tự bộ trong catalog.ts, rồi các sản phẩm lẻ. Mẫu: docs/de-xuat-trang-san-pham-khong-gop.html
+   */
+  const itemsAnyPrice = useMemo(
     () =>
-      bySort(
-        productsAnyPrice.filter((p) => !band || inPriceBand(p, band)),
-        sort,
-        (p) => p.min,
+      PRODUCTS.filter((p) => !category || p.category === category).flatMap((p): GridItem[] =>
+        p.collection
+          ? COLORWAYS.filter(
+              (c) =>
+                c.collection.id === p.collection?.id &&
+                (!tone || c.story.tone === tone.id) &&
+                (!collection || c.collection.id === collection.id),
+            ).map((colorway) => ({ kind: 'colorway', colorway }))
+          : tone || collection
+            ? []
+            : [{ kind: 'product', product: p }],
       ),
-    [productsAnyPrice, band, sort],
+    [category, tone, collection],
   )
-  /** Số trên nút mức giá: đếm đúng thứ đang hiện bên dưới (phối màu khi đang lọc bộ hoặc gam, còn lại là sản phẩm) */
-  const countInBand = (b: PriceBand) =>
-    isShowingColorways
-      ? colorwaysAnyPrice.filter((c) => inPriceBand(collectionRange(c.collection), b)).length
-      : productsAnyPrice.filter((p) => inPriceBand(p, b)).length
+  const items = useMemo(
+    () => bySort(itemsAnyPrice.filter((item) => !band || inPriceBand(rangeOf(item), band)), sort, (item) => rangeOf(item).min),
+    [itemsAnyPrice, band, sort],
+  )
+  /** Số trên nút mức giá: đếm đúng số thẻ sẽ hiện bên dưới */
+  const countInBand = (b: PriceBand) => itemsAnyPrice.filter((item) => inPriceBand(rangeOf(item), b)).length
+
+  const pageCount = Math.max(1, Math.ceil(items.length / PAGE_SIZE))
+  const rawPage = Number(params.get(PAGE_PARAM))
+  const page = Number.isInteger(rawPage) && rawPage >= 1 && rawPage <= pageCount ? rawPage : 1
+  const first = (page - 1) * PAGE_SIZE
+  const pageItems = items.slice(first, first + PAGE_SIZE)
 
   const update = (patch: Record<string, string | null>) => {
     const next = new URLSearchParams(params)
+    // Đổi bộ lọc thì về trang 1
+    next.delete(PAGE_PARAM)
     for (const [key, value] of Object.entries(patch)) {
       if (value) next.set(key, value)
       else next.delete(key)
     }
-    setColorwayLimit(COLORWAY_PAGE)
     setParams(next, { replace: true })
   }
   // Mốc giá mỗi loại khác nhau nên đổi loại thì bỏ mức giá
@@ -107,19 +124,28 @@ export function ProductsPage() {
       [PRICE_PARAM]: null,
       ...(id === 'goi' || id === 'dem' ? { [TONE_PARAM]: null } : {}),
     })
+  // Sang trang khác: giữ lịch sử để nút quay lại về trang trước, cuộn lên đầu lưới
+  const goToPage = (n: number) => {
+    const next = new URLSearchParams(params)
+    if (n > 1) next.set(PAGE_PARAM, String(n))
+    else next.delete(PAGE_PARAM)
+    setParams(next)
+    if (gridRef.current) scrollToElement(gridRef.current)
+  }
 
-  const baseLabel = !isShowingColorways
-    ? `${products.length} sản phẩm`
-    : collection && tone
-      ? `${colorways.length} phối màu ${collection.name}, ${tone.phrase}`
-      : collection
-        ? `${colorways.length} phối màu của ${collection.name}`
-        : `${colorways.length} ${tone?.phrase.replace(/^gam /, 'phối màu gam ')}`
-  const resultLabel = band ? `${baseLabel}, giá ${band.label.replace(/^\S+/, (w) => w.toLowerCase())}` : baseLabel
+  const isFiltered = Boolean(tone || collection)
+  const unit = isFiltered ? 'phối màu' : 'sản phẩm'
+  const scopeLabel =
+    collection && tone ? ` ${collection.name}, ${tone.phrase}` : collection ? ` của ${collection.name}` : tone ? ` ${tone.phrase}` : ''
+  const countLabel =
+    items.length > PAGE_SIZE
+      ? `Hiển thị ${first + 1}–${first + pageItems.length} của ${items.length} ${unit}${scopeLabel}`
+      : `${items.length} ${unit}${scopeLabel}`
+  const resultLabel = band ? `${countLabel}, giá ${band.label.replace(/^\S+/, (w) => w.toLowerCase())}` : countLabel
 
   return (
     <div className="pb-24">
-      <section className="border-b border-cream-200 bg-cream-50">
+      <section>
         <Container className="pt-10 pb-12 sm:pt-14 sm:pb-16">
           <nav aria-label="Đường dẫn" className="flex items-center gap-2 text-sm text-ink-soft">
             <Link to="/" className="hover:text-deep-900">
@@ -131,10 +157,18 @@ export function ProductsPage() {
           <h1 className="font-display mt-4 text-[2.4rem] leading-tight text-deep-900 sm:text-[3.4rem]">
             Sản phẩm <span className="text-mist-600 italic">Ecopillo</span>
           </h1>
-          <p className="mt-4 max-w-2xl text-ink-soft">
-            Bộ chăn ga Lyocell, chăn, gối, đệm và topper. Mọi sản phẩm đều đặt online được, nhân viên gọi xác nhận trước
-            khi giao, Quý khách thanh toán khi nhận hàng.
-          </p>
+          <div className="mt-4 grid gap-6 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
+            <p className="max-w-2xl text-ink-soft">{PRODUCTS_INTRO}</p>
+            {/* Điện thoại: bốn cam kết gộp trong một khối trắng cho đầu trang ngắn lại */}
+            <ul aria-label="Ecopillo cam kết" className="grid gap-x-2 gap-y-2.5 rounded-2xl bg-ivory p-4 shadow-[var(--shadow-soft)] sm:grid-cols-2 sm:gap-y-2 sm:bg-transparent sm:p-0 sm:shadow-none">
+              {PRODUCTS_PROMISES.map((promise) => (
+                <li key={promise} className="flex gap-2 text-[0.85rem] leading-snug text-ink-soft sm:rounded-2xl sm:bg-ivory sm:px-3.5 sm:py-3 sm:shadow-[var(--shadow-soft)]">
+                  <Icon name="check" size={16} className="mt-0.5 shrink-0 text-mist-600" />
+                  {promise}
+                </li>
+              ))}
+            </ul>
+          </div>
         </Container>
       </section>
 
@@ -144,7 +178,7 @@ export function ProductsPage() {
           <div
             role="group"
             aria-label="Danh mục"
-            className="-mx-5 flex min-w-0 flex-1 gap-6 overflow-x-auto border-b border-cream-200 px-5 [scrollbar-width:none] sm:mx-0 sm:px-0"
+            className="-mx-5 flex min-w-0 flex-1 gap-6 overflow-x-auto border-b border-line px-5 [scrollbar-width:none] sm:mx-0 sm:px-0"
           >
             {[{ id: null, label: 'Tất cả' } as const, ...CATEGORIES].map((c) => {
               const active = category === c.id
@@ -159,7 +193,7 @@ export function ProductsPage() {
                   }`}
                 >
                   {c.label}
-                  <span className="tabular text-xs">{PRODUCTS.filter((p) => !c.id || p.category === c.id).length}</span>
+                  <span className="tabular text-xs">{cardCount(c.id)}</span>
                 </button>
               )
             })}
@@ -195,9 +229,9 @@ export function ProductsPage() {
           </section>
         )}
 
-        <p className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-ink-soft">
+        <p ref={gridRef} className="mt-6 flex scroll-mt-[5.5rem] flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-ink-soft">
           <span aria-live="polite">{resultLabel}</span>
-          {isShowingColorways && (
+          {isFiltered && (
             <button
               type="button"
               onClick={() => update({ [TONE_PARAM]: null, [COLLECTION_PARAM]: null })}
@@ -214,25 +248,26 @@ export function ProductsPage() {
           {tone && !STORIES_APPROVED && <FillIn>[ECOPILLO DUYỆT CÁCH CHIA GAM MÀU]</FillIn>}
         </p>
 
-        {isShowingColorways ? (
-          <ColorwayGrid colorways={colorways} limit={colorwayLimit} onMore={() => setColorwayLimit((n) => n + COLORWAY_PAGE)} />
-        ) : products.length === 0 ? (
-          <div className="mt-6 rounded-[1.5rem] border border-dashed border-cream-300 p-10 text-center text-ink-soft">
+        {items.length === 0 ? (
+          <div className="mt-6 rounded-[1.5rem] border border-dashed border-line p-10 text-center text-ink-soft">
             Không có sản phẩm phù hợp.{' '}
             <button type="button" onClick={() => setParams({}, { replace: true })} className="font-medium text-deep-900 underline">
               Xoá bộ lọc
             </button>
           </div>
         ) : (
-          <ul className="mt-5 grid grid-cols-2 gap-3 sm:gap-5 xl:grid-cols-3">
-            {products.map((p, i) => (
-              <li key={p.slug} data-reveal style={revealDelay(i, 70)} className="flex">
-                <div className="flex w-full flex-col [&>article]:flex-1">
-                  <ProductCard product={p} />
-                </div>
-              </li>
-            ))}
-          </ul>
+          <>
+            <ul className="mt-5 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
+              {pageItems.map((item, i) => (
+                <li key={itemKey(item)} data-reveal style={revealDelay(i, 70)} className="flex">
+                  <div className="flex w-full flex-col [&>article]:flex-1">
+                    {item.kind === 'colorway' ? <ColorwayCard colorway={item.colorway} /> : <ProductCard product={item.product} />}
+                  </div>
+                </li>
+              ))}
+            </ul>
+            {pageCount > 1 && <Pagination page={page} count={pageCount} onPick={goToPage} />}
+          </>
         )}
       </Container>
     </div>
@@ -288,29 +323,58 @@ function CollectionTile({ collection, active, onPick, disabled }: CollectionTile
   )
 }
 
-function ColorwayGrid({ colorways, limit, onMore }: { colorways: readonly Colorway[]; limit: number; onMore: () => void }) {
-  if (colorways.length === 0) {
-    return (
-      <div className="mt-6 rounded-[1.5rem] border border-dashed border-cream-300 p-10 text-center text-ink-soft">Chưa có phối màu phù hợp.</div>
-    )
-  }
+/** Số thẻ của một loại (hoặc tất cả) khi chưa lọc: bộ chăn ga, chăn hè đếm theo phối màu */
+const cardCount = (category: CategoryId | null): number =>
+  PRODUCTS.filter((p) => !category || p.category === category).reduce(
+    (n, p) => n + (p.collection ? COLORWAYS.filter((c) => c.collection.id === p.collection?.id).length : 1),
+    0,
+  )
+
+/** Thẻ trong lưới: một phối màu (bộ chăn ga, chăn hè) hoặc một sản phẩm lẻ (gối, đệm, chăn) */
+type GridItem = { kind: 'colorway'; colorway: Colorway } | { kind: 'product'; product: Product }
+
+const rangeOf = (item: GridItem): { min: number; max: number } =>
+  item.kind === 'colorway' ? collectionRange(item.colorway.collection) : item.product
+
+const itemKey = (item: GridItem): string =>
+  item.kind === 'colorway' ? `${item.colorway.collection.id}/${item.colorway.pattern.code}` : item.product.slug
+
+/** Số trang như web cũ: nút trước, các số trang, nút sau */
+function Pagination({ page, count, onPick }: { page: number; count: number; onPick: (page: number) => void }) {
+  const pageButton = 'inline-flex h-11 min-w-11 items-center justify-center rounded-full px-3 text-[0.92rem] transition'
   return (
-    <>
-      <ul className="mt-5 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
-        {colorways.slice(0, limit).map((colorway) => (
-          <li key={`${colorway.collection.id}/${colorway.pattern.code}`}>
-            <ColorwayCard colorway={colorway} />
-          </li>
-        ))}
-      </ul>
-      {colorways.length > limit && (
-        <div className="mt-8 flex justify-center">
-          <button type="button" onClick={onMore} className={buttonClass('secondary', 'lg')}>
-            Xem thêm {Math.min(COLORWAY_PAGE, colorways.length - limit)} phối màu
-          </button>
-        </div>
-      )}
-    </>
+    <nav aria-label="Trang" className="mt-10 flex flex-wrap justify-center gap-2">
+      <button
+        type="button"
+        onClick={() => onPick(page - 1)}
+        disabled={page === 1}
+        aria-label="Trang trước"
+        className={`${pageButton} bg-ivory text-deep-900 shadow-[var(--shadow-soft)] disabled:opacity-40`}
+      >
+        <Icon name="arrowLeft" size={16} />
+      </button>
+      {Array.from({ length: count }, (_, i) => i + 1).map((n) => (
+        <button
+          key={n}
+          type="button"
+          onClick={() => onPick(n)}
+          aria-current={n === page ? 'page' : undefined}
+          aria-label={`Trang ${n}`}
+          className={`${pageButton} tabular ${n === page ? 'bg-deep-800 font-medium text-ivory' : 'bg-ivory text-deep-900 shadow-[var(--shadow-soft)] hover:bg-mist-100'}`}
+        >
+          {n}
+        </button>
+      ))}
+      <button
+        type="button"
+        onClick={() => onPick(page + 1)}
+        disabled={page === count}
+        aria-label="Trang sau"
+        className={`${pageButton} bg-ivory text-deep-900 shadow-[var(--shadow-soft)] disabled:opacity-40`}
+      >
+        <Icon name="arrowRight" size={16} />
+      </button>
+    </nav>
   )
 }
 

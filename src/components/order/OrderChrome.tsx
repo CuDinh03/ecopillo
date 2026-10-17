@@ -41,7 +41,7 @@ interface MobileOrderBarProps {
 /** Thanh dưới cố định trên điện thoại: gọi / Zalo / số tiền / bước tiếp theo */
 export function MobileOrderBar({ amount, amountLabel, nextLabel, hint, canContinue, onNext }: MobileOrderBarProps) {
   return (
-    <div className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-cream-200 bg-ivory/95 px-3 pt-2.5 backdrop-blur-md lg:hidden">
+    <div className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ivory/95 px-3 pt-2.5 backdrop-blur-md lg:hidden">
       <div className="flex items-center gap-2">
         <a
           href={CONTACT.hotlineTel}

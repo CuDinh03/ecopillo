@@ -74,7 +74,7 @@ export function TrustList() {
 
 function InfoCard({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="rounded-[1.5rem] bg-cream-50 p-6 text-[0.9rem] leading-relaxed text-ink-soft ring-1 ring-cream-200 sm:p-7">
+    <section className="rounded-[1.5rem] bg-cream-50 p-6 text-[0.9rem] leading-relaxed text-ink-soft shadow-[var(--shadow-soft)] sm:p-7">
       <h2 className="font-display mb-4 text-[1.35rem] text-deep-900">{title}</h2>
       {children}
     </section>
@@ -178,7 +178,7 @@ export function MobileBuyBar({ product, pattern, size, unitPrice, singleUrl, isS
   const url = collection ? orderUrl(collection, pattern, size) : singleUrl
   const price = unitPrice ? formatVND(unitPrice) : priceLabel(product)
   return (
-    <div className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-cream-200 bg-ivory/95 px-3 pt-2.5 backdrop-blur-md lg:hidden">
+    <div className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ivory/95 px-3 pt-2.5 backdrop-blur-md lg:hidden">
       <div className="flex items-center gap-2">
         <a
           href={CONTACT.hotlineTel}
@@ -197,7 +197,7 @@ export function MobileBuyBar({ product, pattern, size, unitPrice, singleUrl, isS
           <ZaloMark />
         </a>
         {isSoldOut ? (
-          <span className="flex h-12 min-w-0 flex-1 items-center justify-center rounded-2xl bg-cream-50 text-[0.92rem] font-medium text-ink-faint ring-1 ring-cream-200">
+          <span className="flex h-12 min-w-0 flex-1 items-center justify-center rounded-2xl bg-mist-100 text-[0.92rem] font-medium text-ink-faint ring-1 ring-cream-200">
             {pattern?.code} tạm hết hàng
           </span>
         ) : (

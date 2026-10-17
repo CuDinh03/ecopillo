@@ -34,7 +34,7 @@ export function StepSize({ summary, onSelectSize, onChangeQuantity }: StepSizePr
                 key={s.id}
                 className={`relative flex flex-col rounded-2xl p-5 ring-1 transition duration-300 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-mist-600 ${
                   soldOut
-                    ? 'cursor-not-allowed bg-cream-50 text-ink-faint ring-cream-200'
+                    ? 'cursor-not-allowed bg-mist-100 text-ink-faint ring-cream-200'
                     : checked
                       ? 'cursor-pointer bg-mist-50 shadow-[var(--shadow-soft)] ring-2 ring-deep-800'
                       : 'cursor-pointer bg-ivory ring-cream-200 hover:ring-mist-400'
@@ -61,7 +61,7 @@ export function StepSize({ summary, onSelectSize, onChangeQuantity }: StepSizePr
                   <span
                     aria-hidden="true"
                     className={`mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
-                      checked ? 'border-deep-800 bg-deep-800 text-ivory' : 'border-cream-300'
+                      checked ? 'border-deep-800 bg-deep-800 text-ivory' : 'border-line'
                     }`}
                   >
                     {checked && <Icon name="check" size={12} strokeWidth={2.4} />}

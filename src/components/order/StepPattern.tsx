@@ -55,7 +55,7 @@ export function StepPattern({ collectionId, patternCode, onSelectCollection, onS
         </legend>
 
         {!collection ? (
-          <p className="mt-6 flex items-center gap-3 rounded-2xl border border-dashed border-cream-300 p-6 text-sm text-ink-soft">
+          <p className="mt-6 flex items-center gap-3 rounded-2xl border border-dashed border-line p-6 text-sm text-ink-soft">
             <Icon name="arrowLeft" size={18} className="rotate-90 text-mist-600" />
             Chọn một bộ sưu tập ở trên để xem các mẫu.
           </p>
@@ -164,7 +164,7 @@ function CollectionOption({ collection, checked, onSelect }: CollectionOptionPro
   return (
     <label
       className={`relative flex cursor-pointer flex-col rounded-2xl p-4 transition duration-300 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-mist-600 ${
-        checked ? 'bg-deep-800 text-ivory shadow-[var(--shadow-soft)]' : 'bg-cream-50 ring-1 ring-cream-200 hover:ring-mist-400'
+        checked ? 'bg-deep-800 text-ivory shadow-[var(--shadow-soft)]' : 'bg-cream-50 shadow-[var(--shadow-soft)] hover:ring-mist-400'
       }`}
     >
       <input type="radio" name="collection" checked={checked} onChange={onSelect} className="sr-only" />

@@ -72,7 +72,7 @@ export function Essentials({ withTabs = false }: EssentialsProps) {
               key={group.id}
               data-reveal
               style={revealDelay(i)}
-              className={`flex flex-col rounded-[1.75rem] bg-cream-50 p-3 ring-1 ring-cream-200 ${mobileOnly(group.id as EssentialTab)}`}
+              className={`flex flex-col rounded-[1.75rem] bg-cream-50 p-3 shadow-[var(--shadow-soft)] ${mobileOnly(group.id as EssentialTab)}`}
             >
               <div className="aspect-[16/9] rounded-[1.35rem]">
                 <Placeholder
@@ -85,7 +85,7 @@ export function Essentials({ withTabs = false }: EssentialsProps) {
               <div className="flex flex-1 flex-col px-4 pt-6 pb-4">
                 <h3 className="font-display text-[1.7rem] text-deep-900">{group.title}</h3>
                 <p className="mt-1 text-sm text-ink-soft">{group.subtitle}</p>
-                <ul className="mt-6 divide-y divide-cream-200">
+                <ul className="mt-6 divide-y divide-line">
                   {group.items.map((item) => (
                     <li key={item.name} className="py-3.5">
                       <div className="flex flex-wrap items-baseline justify-between gap-x-4">

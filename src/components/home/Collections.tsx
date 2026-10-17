@@ -147,7 +147,7 @@ function CollectionCard({ collection, wide, index = 0 }: { collection: Collectio
     <article
       data-reveal
       style={revealDelay(index)}
-      className={`group relative flex flex-col overflow-hidden rounded-[1.75rem] bg-ivory ring-1 ring-cream-200 transition duration-500 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] ${
+      className={`group relative flex flex-col overflow-hidden rounded-[1.75rem] bg-ivory shadow-[var(--shadow-soft)] transition duration-500 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] ${
         wide ? `lg:col-span-2 lg:grid ${isTop ? 'lg:grid-cols-[1fr_1.15fr]' : 'lg:grid-cols-[1.15fr_1fr]'}` : ''
       }`}
     >
@@ -239,7 +239,7 @@ export function Collections() {
   const byId = new Map(BEDDING_SETS.map((c) => [c.id, c]))
 
   return (
-    <section id="bo-suu-tap" aria-labelledby="collections-title" className="bg-cream-50 py-14 sm:py-32">
+    <section id="bo-suu-tap" aria-labelledby="collections-title" className="py-14 sm:py-32">
       <Container>
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <SectionHeading
@@ -252,7 +252,7 @@ export function Collections() {
             <li>
               <span className="block font-display text-2xl text-deep-900">3,5tr</span>khởi điểm
             </li>
-            <li className="border-l border-cream-300 pl-6">
+            <li className="border-l border-line pl-6">
               <span className="block font-display text-2xl text-deep-900">10,4tr</span>dòng cao nhất
             </li>
           </ol>
@@ -309,7 +309,7 @@ function SetAnatomy() {
   return (
     <div className="m-rail mt-10 grid gap-5 sm:mt-16 lg:grid-cols-[1fr_1fr_0.9fr]">
       {ANATOMY.map((set, i) => (
-        <div key={set.title} data-reveal style={revealDelay(i)} className="rounded-[1.75rem] border border-dashed border-mist-300 p-6 sm:p-7">
+        <div key={set.title} data-reveal style={revealDelay(i)} className="rounded-[1.75rem] bg-ivory p-6 shadow-[var(--shadow-soft)] sm:p-7">
           <h3 className="font-display text-2xl text-deep-900">{set.title}</h3>
           <p className="mt-1 text-xs text-ink-faint">{set.note}</p>
           <dl className="mt-5 space-y-3 text-sm">

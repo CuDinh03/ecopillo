@@ -38,12 +38,12 @@ function Channel({ href, icon, label, value, note, external, highlight, long }: 
       } ${
         highlight
           ? 'bg-deep-800 text-ivory shadow-[var(--shadow-lift)] hover:bg-deep-700'
-          : 'bg-ivory text-deep-900 ring-1 ring-cream-200 hover:shadow-[var(--shadow-soft)]'
+          : 'bg-ivory text-deep-900 shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-soft)]'
       }`}
     >
       <span
         className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full sm:h-12 sm:w-12 ${
-          highlight ? 'bg-ivory/15' : 'bg-cream-50 text-deep-800'
+          highlight ? 'bg-ivory/15' : 'bg-mist-100 text-deep-800'
         }`}
       >
         {icon}
@@ -120,7 +120,7 @@ function OfficeMap() {
   const [index, setIndex] = useState(0)
   const place = SHOWROOMS[index]
   return (
-    <div className="overflow-hidden rounded-[2rem] bg-ivory ring-1 ring-cream-200 shadow-[var(--shadow-soft)]">
+    <div className="overflow-hidden rounded-[2rem] bg-ivory shadow-[var(--shadow-soft)]">
       <iframe
         key={place.id}
         title={`Bản đồ ${place.kind} Ecopillo, ${place.address}`}
@@ -169,7 +169,7 @@ export function ContactPage() {
   return (
     <div className="pb-24">
       {/* Đầu trang: lời mời + các kênh liên hệ nhanh */}
-      <section aria-labelledby="contact-title" className="border-b border-cream-200 bg-cream-50">
+      <section aria-labelledby="contact-title">
         <Container className="grid gap-10 pt-10 pb-14 sm:pt-14 sm:pb-20 lg:grid-cols-12 lg:gap-14">
           <div className="lg:col-span-5">
             <nav aria-label="Đường dẫn" className="flex items-center gap-2 text-sm text-ink-soft">
@@ -218,7 +218,7 @@ export function ContactPage() {
       <Container className="mt-12 grid gap-8 sm:mt-16 lg:grid-cols-12 lg:gap-10">
         <section
           aria-labelledby="message-title"
-          className="rounded-[2rem] bg-ivory p-6 shadow-[var(--shadow-soft)] ring-1 ring-cream-200 sm:p-10 lg:col-span-7"
+          className="rounded-[2rem] bg-ivory p-6 shadow-[var(--shadow-soft)] sm:p-10 lg:col-span-7"
         >
           <p className="eyebrow">Để lại lời nhắn</p>
           <h2 id="message-title" className="font-display mt-3 text-[1.9rem] leading-tight text-deep-900 sm:text-[2.3rem]">
@@ -231,7 +231,7 @@ export function ContactPage() {
         <aside className="flex flex-col gap-6 lg:col-span-5">
           <OfficeMap />
 
-          <div className="rounded-[2rem] bg-cream-50 p-6 ring-1 ring-cream-200 sm:p-8">
+          <div className="rounded-[2rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] sm:p-8">
             <h2 className="font-display text-[1.4rem] text-deep-900">Hỏi nhanh</h2>
             <ul className="mt-4 space-y-2.5 text-[0.93rem]">
               {[
@@ -249,7 +249,7 @@ export function ContactPage() {
                 </li>
               ))}
             </ul>
-            <div className="mt-6 border-t border-cream-200 pt-5">
+            <div className="mt-6 border-t border-line pt-5">
               <p className="mb-3 text-sm text-ink-soft">Theo dõi Ecopillo</p>
               <SocialIcons tone="light" />
             </div>

@@ -253,7 +253,7 @@ export function DistributionPage() {
       <LocalBusinessData />
 
       {/* Đầu trang: tìm kiếm gọn, trên điện thoại nằm trong màn hình đầu tiên */}
-      <section aria-labelledby="page-title" className="border-b border-cream-200 bg-cream-50">
+      <section aria-labelledby="page-title">
         <Container className="pt-6 pb-7 sm:pt-12 sm:pb-12">
           <Breadcrumb items={[{ label: 'Hệ thống phân phối' }]} />
           <h1 id="page-title" className="font-display mt-4 text-[2rem] sm:mt-6 leading-[1.1] text-balance text-deep-900 sm:text-[2.8rem]">
@@ -367,7 +367,7 @@ export function DistributionPage() {
             )}
 
             {view.mode === 'list' && view.total === 0 && (
-              <div className="rounded-[1.5rem] bg-cream-50 p-6 ring-1 ring-cream-200">
+              <div className="rounded-[1.5rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)]">
                 <p className="text-deep-900">
                   Không thấy điểm nào có “{query}”{province ? ` tại ${province.name}` : ''}.
                 </p>
@@ -419,7 +419,7 @@ export function DistributionPage() {
                       aria-pressed={r.dealer.id === mapDealer?.id}
                       onClick={() => setSelectedId(r.dealer.id)}
                       className={`h-10 shrink-0 rounded-full px-3.5 text-[0.82rem] whitespace-nowrap transition ${
-                        r.dealer.id === mapDealer?.id ? 'bg-deep-800 text-ivory' : 'bg-cream-50 text-deep-900 ring-1 ring-cream-200'
+                        r.dealer.id === mapDealer?.id ? 'bg-deep-800 text-ivory' : 'bg-cream-50 text-deep-900 shadow-[var(--shadow-soft)]'
                       }`}
                     >
                       {r.dealer.ten.replace(/^Ecopillo /, '')}

@@ -74,13 +74,13 @@ export function CategoryPage() {
         )}
 
         {guide && (
-          <section aria-labelledby="guide-title" className="mt-16 rounded-[2rem] bg-cream-50 p-6 ring-1 ring-cream-200 sm:mt-20 sm:p-10">
+          <section aria-labelledby="guide-title" className="mt-16 rounded-[2rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] sm:mt-20 sm:p-10">
             <h2 id="guide-title" className="font-display text-[1.6rem] leading-tight text-deep-900 sm:text-[2rem]">
               {guide.title}
             </h2>
             <dl className="mt-6 grid gap-x-10 gap-y-5 sm:grid-cols-2">
               {guide.points.map((point) => (
-                <div key={point.title} className="border-t border-cream-200 pt-4">
+                <div key={point.title} className="border-t border-line pt-4">
                   <dt className="font-medium text-deep-900">{point.title}</dt>
                   <dd className="mt-1 text-[0.95rem] leading-relaxed text-ink-soft">{point.text}</dd>
                 </div>

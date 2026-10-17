@@ -41,7 +41,7 @@ export function ProductReviews({ product }: { product: Product }) {
       </div>
 
       <div className="mt-6 grid gap-5 lg:grid-cols-[320px_1fr]">
-        <div className="rounded-[1.5rem] bg-cream-50 p-6 ring-1 ring-cream-200 sm:p-7">
+        <div className="rounded-[1.5rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] sm:p-7">
           <p className="flex items-baseline gap-2">
             <span className="tabular font-display text-5xl leading-none text-deep-900">{oneDecimal(overall)}</span>
             <span className="text-sm text-ink-soft">/ 5 · {reviews.length} nhận xét</span>
@@ -64,7 +64,7 @@ export function ProductReviews({ product }: { product: Product }) {
 
         <ul className="grid gap-4 sm:grid-cols-2">
           {reviews.map((r) => (
-            <li key={r.name} className="flex flex-col rounded-[1.5rem] bg-ivory p-6 ring-1 ring-cream-200">
+            <li key={r.name} className="flex flex-col rounded-[1.5rem] bg-ivory p-6 shadow-[var(--shadow-soft)]">
               <div className="flex items-center justify-between">
                 <Stars value={r.stars} />
                 <Icon name="quote" size={22} className="text-mist-300" />

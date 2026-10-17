@@ -10,7 +10,7 @@ export function ExploreMore({ groups, className = '' }: { groups: readonly Relat
   const shown = groups.filter((g) => g.links.length > 0)
   if (shown.length === 0) return null
   return (
-    <nav aria-labelledby="explore-title" className={`mt-16 border-t border-cream-200 pt-10 sm:mt-20 sm:pt-12 ${className}`}>
+    <nav aria-labelledby="explore-title" className={`mt-16 border-t border-line pt-10 sm:mt-20 sm:pt-12 ${className}`}>
       <h2 id="explore-title" className="font-display text-[1.6rem] leading-tight text-deep-900 sm:text-[2rem]">
         Khám phá <span className="text-mist-600 italic">thêm</span>
       </h2>
@@ -18,7 +18,7 @@ export function ExploreMore({ groups, className = '' }: { groups: readonly Relat
         {shown.map((group) => (
           <section key={group.title} aria-label={group.title}>
             <h3 className="eyebrow">{group.title}</h3>
-            <ul className="mt-3 divide-y divide-cream-200 border-y border-cream-200">
+            <ul className="mt-3 divide-y divide-line border-y border-line">
               {group.links.map((link) => (
                 <li key={link.to}>
                   <Link

@@ -60,7 +60,7 @@ export function BrandVideo() {
   }
 
   return (
-    <section aria-labelledby="video-title" className="bg-cream-50 py-14 sm:py-28">
+    <section aria-labelledby="video-title" className="py-14 sm:py-28">
       <Container className="grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
         <div className="lg:col-span-4">
           <SectionHeading

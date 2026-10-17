@@ -41,7 +41,7 @@ export function Stepper({ current, onGoTo }: StepperProps) {
                         ? 'bg-mist-200 text-deep-900 group-hover:bg-mist-300'
                         : active
                           ? 'bg-deep-800 text-ivory'
-                          : 'bg-cream-100 text-ink-faint'
+                          : 'bg-mist-100 text-ink-faint'
                     }`}
                   >
                     {done ? <Icon name="check" size={13} strokeWidth={2.2} /> : step.n}

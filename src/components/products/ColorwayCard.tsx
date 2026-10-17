@@ -9,7 +9,7 @@ export function ColorwayCard({ colorway }: { colorway: Colorway }) {
   const { collection, pattern, story } = colorway
   const from = Math.min(...SIZES.map((size) => patternPrice(collection, pattern, size.id)))
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-cream-50 ring-1 ring-cream-200 transition duration-500 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] sm:rounded-[1.5rem]">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-ivory shadow-[var(--shadow-soft)] transition duration-500 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] sm:rounded-[1.5rem]">
       <div className="aspect-[4/3] overflow-hidden">
         <Placeholder
           className="h-full w-full !rounded-none transition-transform duration-700 ease-[var(--ease-soft)] group-hover:scale-[1.05]"

@@ -16,7 +16,7 @@ export function MobileTabBar<T extends string>({ label, tabs, value, onChange, c
     <div
       role="group"
       aria-label={label}
-      className={`-mx-5 flex gap-5 overflow-x-auto border-b border-cream-200 px-5 [scrollbar-width:none] sm:hidden ${className}`}
+      className={`-mx-5 flex gap-5 overflow-x-auto border-b border-line px-5 [scrollbar-width:none] sm:hidden ${className}`}
     >
       {tabs.map((tab) => {
         const active = tab.id === value

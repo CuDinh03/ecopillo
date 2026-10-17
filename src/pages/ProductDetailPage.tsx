@@ -131,7 +131,7 @@ function ProductDetail({ product }: { product: Product }) {
                 </p>
               )}
               {specs.length > 0 && (
-                <dl className="grid grid-cols-2 gap-3 rounded-2xl bg-cream-50 p-4 ring-1 ring-cream-200">
+                <dl className="grid grid-cols-2 gap-3 rounded-2xl bg-cream-50 p-4 shadow-[var(--shadow-soft)]">
                   {specs.map((spec) => (
                     <div key={spec.label}>
                       <dt className="text-[0.7rem] tracking-[0.12em] text-ink-faint uppercase">{spec.label}</dt>

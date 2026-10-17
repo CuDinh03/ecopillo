@@ -13,7 +13,7 @@ export function OrderSummary({ summary, showShipping }: OrderSummaryProps) {
   const { line, subtotal, shippingFee, total, priceOnCall } = summary
 
   return (
-    <section aria-label="Tóm tắt đơn hàng" className="rounded-[1.75rem] bg-cream-50 p-5 ring-1 ring-cream-200 sm:p-6">
+    <section aria-label="Tóm tắt đơn hàng" className="rounded-[1.75rem] bg-cream-50 p-5 shadow-[var(--shadow-soft)] sm:p-6">
       <h2 className="font-display text-2xl text-deep-900">Đơn của Quý khách</h2>
 
       {!line ? (
@@ -31,7 +31,7 @@ export function OrderSummary({ summary, showShipping }: OrderSummaryProps) {
             </div>
           </div>
 
-          <dl className="mt-5 space-y-2.5 border-t border-cream-200 pt-5 text-sm">
+          <dl className="mt-5 space-y-2.5 border-t border-line pt-5 text-sm">
             <Row label="Kích thước" value={line.sizeLabel ?? '—'} />
             <Row label="Số lượng" value={`${line.quantity} ${line.unit}`} />
             <Row label="Đơn giá" value={line.unitPrice ? formatVND(line.unitPrice) : priceOnCall ? PRICE_ON_CALL : '—'} />
@@ -47,7 +47,7 @@ export function OrderSummary({ summary, showShipping }: OrderSummaryProps) {
             )}
           </dl>
 
-          <dl className="mt-5 space-y-2.5 border-t border-cream-200 pt-5 text-sm">
+          <dl className="mt-5 space-y-2.5 border-t border-line pt-5 text-sm">
             <Row label="Tạm tính" value={subtotal ? formatVND(subtotal) : priceOnCall ? PRICE_ON_CALL : '—'} />
             <Row
               label="Phí giao hàng"

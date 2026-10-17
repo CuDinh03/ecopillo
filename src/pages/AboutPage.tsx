@@ -141,9 +141,9 @@ export function AboutPage() {
           </>
         }
       >
-        <ol className="mt-8 border-b border-cream-200">
+        <ol className="mt-8 border-b border-line">
           {PHILOSOPHY.map((p, i) => (
-            <li key={p.word} data-reveal style={revealDelay(i)} className="grid gap-1 border-t border-cream-200 py-5 sm:grid-cols-[9rem_1fr] sm:items-baseline sm:gap-6">
+            <li key={p.word} data-reveal style={revealDelay(i)} className="grid gap-1 border-t border-line py-5 sm:grid-cols-[9rem_1fr] sm:items-baseline sm:gap-6">
               <p className="font-display text-[3rem] leading-none text-deep-700 italic">{p.word}</p>
               <p className="text-[1rem] leading-relaxed text-ink-soft">{p.text}</p>
             </li>
@@ -224,10 +224,10 @@ export function AboutPage() {
           ))}
         </div>
         <p className="eyebrow mt-10">Giá trị cốt lõi</p>
-        <ul className="mt-3 border-b border-cream-200">
+        <ul className="mt-3 border-b border-line">
           {CORE_VALUES.map((v, i) => (
-            <li key={v.title} className="flex gap-4 border-t border-cream-200 py-4">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-mist-50 text-deep-700">
+            <li key={v.title} className="flex gap-4 border-t border-line py-4">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-mist-100 text-deep-700">
                 <Icon name={VALUE_ICONS[i]} size={18} />
               </span>
               <span>
@@ -265,7 +265,7 @@ export function AboutPage() {
 /** Bìa: chữ bên trái, ảnh chị Phương tại VTV3 bên phải (owner chọn 16/10/2026) */
 function Cover() {
   return (
-    <header aria-labelledby="page-title" className="grid grid-cols-1 border-b border-cream-200 lg:min-h-[min(40rem,calc(100svh-4.5rem))] lg:grid-cols-[7fr_5fr]">
+    <header aria-labelledby="page-title" className="grid grid-cols-1 border-b border-line lg:min-h-[min(40rem,calc(100svh-4.5rem))] lg:grid-cols-[7fr_5fr]">
       <div className="relative aspect-[4/3] overflow-hidden bg-cream-100 lg:order-2 lg:aspect-auto">
         <img
           src={FOUNDER_IMAGE.src}
@@ -308,7 +308,7 @@ function Cover() {
 
 function TableOfContents() {
   return (
-    <nav id="muc-luc" aria-label="Mục lục" className="scroll-mt-[4.5rem] border-b border-cream-200 py-8 sm:py-10">
+    <nav id="muc-luc" aria-label="Mục lục" className="scroll-mt-[4.5rem] border-b border-line py-8 sm:py-10">
       <div className="mx-auto grid w-full max-w-[1240px] gap-4 px-5 sm:px-8 lg:grid-cols-[12rem_1fr] lg:gap-8 lg:px-10">
         <p className="eyebrow flex items-center gap-2">
           <Icon name="list" size={15} className="text-deep-700" /> Mục lục
@@ -316,7 +316,7 @@ function TableOfContents() {
         <ol className="sm:columns-2 sm:gap-10">
           {TOC.map((t) => (
             <li key={t.id} className="break-inside-avoid">
-              <a href={`#${t.id}`} className="group grid grid-cols-[2.8rem_1fr_auto] items-center border-t border-cream-200 py-2.5">
+              <a href={`#${t.id}`} className="group grid grid-cols-[2.8rem_1fr_auto] items-center border-t border-line py-2.5">
                 <span className="font-display text-[1.15rem] text-deep-700 italic">
                   {t.numeral || <Icon name={t.icon} size={15} className="text-deep-700" />}
                 </span>
@@ -357,7 +357,7 @@ function Recognition() {
       </figure>
       <ul className="mt-8 grid gap-3">
         {CERTIFICATES.map((c, i) => (
-          <li key={c.name} data-reveal style={revealDelay(i)} className="flex items-center gap-4 rounded-2xl bg-cream-50 p-4 ring-1 ring-cream-200 sm:p-5">
+          <li key={c.name} data-reveal style={revealDelay(i)} className="flex items-center gap-4 rounded-2xl bg-cream-50 p-4 shadow-[var(--shadow-soft)] sm:p-5">
             <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-white p-1.5 shadow-[var(--shadow-soft)]">
               {c.logo ? (
                 <img src={c.logo} alt={`Chứng nhận ${c.name}`} loading="lazy" className="max-h-full max-w-full object-contain" />

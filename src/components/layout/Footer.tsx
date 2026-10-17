@@ -19,7 +19,7 @@ const CONTACT_LINK = 'flex items-center gap-2.5 whitespace-nowrap hover:text-dee
 
 export function Footer() {
   return (
-    <footer className="border-t border-cream-200 bg-ivory pt-20 pb-32 text-ink-soft md:pb-14">
+    <footer className="border-t border-line bg-ivory pt-20 pb-32 text-ink-soft md:pb-14">
       <Container>
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.3fr_0.85fr_0.95fr_1.1fr_1.2fr] lg:gap-10">
           <div>
@@ -132,7 +132,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col gap-6 border-t border-cream-200 pt-8 text-xs text-ink-faint md:flex-row md:items-center md:justify-between">
+        <div className="mt-16 flex flex-col gap-6 border-t border-line pt-8 text-xs text-ink-faint md:flex-row md:items-center md:justify-between">
           <div className="space-y-1.5">
             <p>© {new Date().getFullYear()} {BRAND.company}. Đạt chứng nhận ISO 9001:2015 và TQC.</p>
             <p>Chỉ đổi hàng, không trả hàng hoàn tiền · Kiểm hàng khi nhận · Thanh toán khi nhận hàng toàn quốc</p>

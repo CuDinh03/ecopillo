@@ -91,7 +91,7 @@ export function HotelPage() {
 /** Đầu trang: chữ bên trái, ảnh phòng tràn nửa phải (điện thoại: ảnh trên, chữ dưới) */
 function HotelHero() {
   return (
-    <section aria-labelledby="page-title" className="grid grid-cols-1 border-b border-cream-200 lg:min-h-[min(40rem,calc(100svh-4.5rem))] lg:grid-cols-2">
+    <section aria-labelledby="page-title" className="grid grid-cols-1 border-b border-line lg:min-h-[min(40rem,calc(100svh-4.5rem))] lg:grid-cols-2">
       <div className="relative aspect-[4/3] overflow-hidden lg:order-2 lg:aspect-auto">
         <img
           src={HERO_IMAGE.src}
@@ -134,7 +134,7 @@ function HotelHero() {
 
 function Partners() {
   return (
-    <section aria-label="Khách sạn đã đồng hành" className="border-b border-cream-200 py-6 sm:py-8">
+    <section aria-label="Khách sạn đã đồng hành" className="border-b border-line py-6 sm:py-8">
       <Container className="grid gap-4 lg:grid-cols-[12rem_1fr] lg:items-center">
         <p className="eyebrow">Đã đồng hành cùng</p>
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -175,11 +175,11 @@ function BedLayers() {
               Một chiếc giường, <em className="text-deep-700">bốn lớp êm</em>
             </h2>
           </header>
-          <ol className="mt-6 border-b border-cream-200">
+          <ol className="mt-6 border-b border-line">
             {LAYERS.map((l, i) => {
               const isActive = i === active
               return (
-                <li key={l.title} className="border-t border-cream-200">
+                <li key={l.title} className="border-t border-line">
                   <div className="grid grid-cols-[2.6rem_1fr_auto] items-baseline gap-x-3 py-4">
                     <button
                       type="button"
@@ -261,7 +261,7 @@ function Steps() {
               key={s.title}
               data-reveal
               style={revealDelay(i)}
-              className="grid grid-cols-[3.4rem_1fr] gap-x-3 border-t border-cream-200 py-4 lg:grid-cols-1 lg:border-t-2 lg:border-deep-800 lg:pt-5"
+              className="grid grid-cols-[3.4rem_1fr] gap-x-3 border-t border-line py-4 lg:grid-cols-1 lg:border-t-2 lg:border-deep-800 lg:pt-5"
             >
               <span className="font-display text-[2.3rem] leading-none text-deep-700 italic lg:mb-3 lg:text-[3.2rem]">{twoDigits(i + 1)}</span>
               <div>
@@ -304,7 +304,7 @@ function Quote() {
             Ghi số phòng, cỡ giường và món cần may. Bộ phận dự án gọi lại, gửi mẫu vải và báo giá riêng.
           </p>
         </header>
-        <div className="mt-8 rounded-[1.5rem] bg-ivory p-5 ring-1 ring-cream-200 sm:p-8">
+        <div className="mt-8 rounded-[1.5rem] bg-ivory p-5 shadow-[var(--shadow-soft)] sm:p-8">
           <MessageForm
             defaultTopic="Khách sạn, nhà nghỉ"
             placeholder="Ví dụ: khách sạn 40 phòng ở Đà Nẵng, 20 giường 1m6 và 20 giường 1m8, cần ga bọc, vỏ chăn, ruột gối…"

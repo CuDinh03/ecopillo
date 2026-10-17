@@ -47,7 +47,7 @@ export function ChapterRail({ collection, chapters, current, volumes, volume, on
                   aria-pressed={active}
                   onClick={() => onVolume(v)}
                   className={`inline-flex h-10 shrink-0 items-center rounded-full px-4 text-sm whitespace-nowrap transition ${
-                    active ? 'bg-deep-800 text-ivory' : 'bg-ivory text-ink-soft ring-1 ring-cream-200 hover:text-deep-900'
+                    active ? 'bg-deep-800 text-ivory' : 'bg-ivory text-ink-soft shadow-[var(--shadow-soft)] hover:text-deep-900'
                   }`}
                 >
                   Tập {v}
@@ -80,7 +80,7 @@ export function ChapterRail({ collection, chapters, current, volumes, volume, on
                 onPointerLeave={() => onPreview(null)}
                 onFocus={() => preloadImage(image)}
                 className={`block h-full w-full rounded-2xl p-1.5 pb-3 text-left transition duration-300 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] ${
-                  active ? 'bg-deep-900 text-ivory' : 'bg-cream-50 text-deep-900 ring-1 ring-cream-200'
+                  active ? 'bg-deep-900 text-ivory' : 'bg-cream-50 text-deep-900 shadow-[var(--shadow-soft)]'
                 }`}
               >
                 <span className={`block aspect-[4/3] overflow-hidden rounded-xl ${soldOut ? 'opacity-50' : ''}`}>
