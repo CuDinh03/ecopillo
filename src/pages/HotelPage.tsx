@@ -114,12 +114,9 @@ function HotelHero() {
         <h1 id="page-title" className="font-display mt-4 text-[2.6rem] leading-[1.02] text-balance text-deep-900 sm:text-[3.4rem] xl:text-[4rem]">
           Giấc ngủ năm sao <em className="block text-deep-700">cho khách lưu trú</em>
         </h1>
-        <p className="mt-5 text-[0.8rem] font-semibold tracking-[0.12em] text-deep-700 uppercase">{HOTEL_INTRO_HEADING}</p>
-        <div className="mt-3 max-w-lg space-y-3 text-[1rem] leading-relaxed text-ink-soft">
-          {HOTEL_INTRO.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
-        </div>
+        <p className="mt-5 max-w-lg text-[0.8rem] font-semibold tracking-[0.12em] text-balance text-deep-700 uppercase">{HOTEL_INTRO_HEADING}</p>
+        {/* Chỉ đoạn đầu: đủ 3 đoạn thì phần đầu cao thêm, ảnh bị cắt lệch (owner báo 17/10/2026). Đoạn 2, 3 ở phần nền chàm */}
+        <p className="mt-3 max-w-md text-[1.02rem] leading-relaxed text-ink-soft">{HOTEL_INTRO[0]}</p>
         <div className="mt-8 flex flex-wrap gap-3">
           <a href="#bao-gia" className={buttonClass('primary', 'lg')}>
             Nhận báo giá
@@ -220,15 +217,22 @@ function BedLayers() {
   )
 }
 
-/** Câu trích lớn trên nền chàm, bốn lợi ích (chữ Ecopillo gửi, mục 39) xếp hai cột */
+/** Câu trích lớn trên nền chàm kèm đoạn 2, 3 của chữ giới thiệu; bốn lợi ích (chữ Ecopillo gửi, mục 39) xếp hai cột */
 function Reasons() {
   return (
     <section aria-labelledby="reason-title" className="grain relative overflow-hidden bg-deep-900 py-16 text-ivory sm:py-24">
       <Container className="relative grid gap-10 lg:grid-cols-[5fr_7fr] lg:gap-16">
-        <h2 id="reason-title" data-reveal="left" className="font-display text-[2.1rem] leading-[1.12] italic sm:text-[3.1rem]">
-          “Bền cho vận hành, <em className="text-mist-300">êm cho khách nghỉ.</em>”
-        </h2>
-        <ul className="grid gap-7 sm:grid-cols-2 sm:gap-x-9">
+        <div data-reveal="left">
+          <h2 id="reason-title" className="font-display text-[2.1rem] leading-[1.12] italic sm:text-[3.1rem]">
+            “Bền cho vận hành, <em className="text-mist-300">êm cho khách nghỉ.</em>”
+          </h2>
+          <div className="mt-6 space-y-3 text-[0.95rem] leading-relaxed text-mist-200/90">
+            {HOTEL_INTRO.slice(1).map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+        </div>
+        <ul className="grid content-start gap-7 sm:grid-cols-2 sm:gap-x-9 lg:self-center">
           {HOTEL_BENEFITS.map((benefit, i) => (
             <li key={benefit} data-reveal style={revealDelay(i)} className="flex gap-3 border-t border-ivory/25 pt-4">
               <Icon name="check" size={18} strokeWidth={2.2} className="mt-1 shrink-0 text-mist-300" />
