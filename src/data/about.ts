@@ -45,6 +45,13 @@ export const CORE_VALUES = [
   { icon: 'community', title: 'Kết nối cộng đồng xanh', text: 'Lan toả lối sống và tiêu dùng bền vững.' },
 ] as const
 
+/**
+ * Mục 12 (khách 16/10/2026: bốn khối "phải đồng nhất cấu trúc"), owner chọn kiểu A 17/10: thẻ Giá trị cốt lõi cũng có ảnh.
+ * Tạm dùng ảnh đội ngũ Ecopillo tại văn phòng Hà Nội cho tới khi Ecopillo gửi ảnh riêng (câu hỏi 11 trong Excel).
+ */
+export const VALUES_IMAGE = staticImage('/images/stores/ha-noi-1.webp', 'Đội ngũ Ecopillo tại văn phòng 273 Xã Đàn, Hà Nội')
+export const VALUES_IMAGE_NOTE = '[ECOPILLO GỬI ẢNH RIÊNG CHO GIÁ TRỊ CỐT LÕI]'
+
 export const AWARD_NAME = 'Thương hiệu dẫn đầu Việt Nam 2025'
 export const AWARD_IMAGE = staticImage('/images/about/thuong-hieu-dan-dau.webp', 'Ecopillo tại lễ công bố Thương hiệu dẫn đầu Việt Nam 2025')
 

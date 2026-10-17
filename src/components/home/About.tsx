@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import {
   BRAND_PROMISE,
@@ -14,6 +14,8 @@ import {
   VISION_IMAGE,
   AWARD_IMAGE,
   AWARD_NAME,
+  VALUES_IMAGE,
+  VALUES_IMAGE_NOTE,
 } from '../../data/about'
 import type { ImageSource } from '../../data/catalog'
 import { PATHS } from '../../data/links'
@@ -109,67 +111,51 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
 
         {/* Điện thoại: sứ mệnh, tầm nhìn, giá trị cốt lõi nằm sau nút (vẫn có trong trang) */}
         <MobileMore label="Sứ mệnh, tầm nhìn, giá trị cốt lõi" buttonClassName="mt-6">
-        <div className="m-rail mt-12 grid gap-5 sm:mt-20 lg:grid-cols-2">
-          <MissionCard
-            label="Sứ mệnh"
-            text={MISSION}
-            image={MISSION_IMAGE}
-          />
-          <MissionCard
-            label="Tầm nhìn"
-            text={VISION}
-            image={VISION_IMAGE}
-            position="50% 0%"
-          />
-        </div>
-
-        <div className="mt-5 grid gap-5 lg:grid-cols-[1.25fr_1fr]">
-          <div data-reveal className="rounded-[1.75rem] bg-cream-50 p-7 shadow-[var(--shadow-soft)] sm:p-9">
-            <p className="eyebrow">Giá trị cốt lõi</p>
-            <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+        {/* Mục 12 (owner chọn kiểu A 17/10/2026): bốn thẻ cùng một khuôn, lưới 2×2. Mẫu: docs/de-xuat-bon-khoi-ve-chung-toi.html */}
+        <div
+          tabIndex={0}
+          role="group"
+          aria-label="Sứ mệnh, tầm nhìn, giá trị cốt lõi, danh hiệu"
+          className="m-rail mt-12 grid gap-5 focus-visible:outline-2 focus-visible:outline-deep-700 sm:mt-20 lg:grid-cols-2"
+        >
+          <MissionCard label="Sứ mệnh" image={MISSION_IMAGE}>
+            <MissionText>{MISSION}</MissionText>
+          </MissionCard>
+          <MissionCard label="Tầm nhìn" image={VISION_IMAGE} position="50% 0%">
+            <MissionText>{VISION}</MissionText>
+          </MissionCard>
+          <MissionCard label="Giá trị cốt lõi" image={VALUES_IMAGE} position="50% 35%" note={VALUES_IMAGE_NOTE}>
+            <ul className="mt-4 grid grid-cols-1 gap-x-6 gap-y-3.5 sm:grid-cols-2">
               {CORE_VALUES.map((v) => (
-                <li key={v.title} className="flex gap-3.5">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-mist-100 text-mist-600">
-                    <Icon name={v.icon} size={18} />
+                <li key={v.title} className="flex gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ivory/12 text-mist-300">
+                    <Icon name={v.icon} size={17} />
                   </span>
                   <span>
-                    <span className="block font-medium text-deep-900">{v.title}</span>
-                    <span className="mt-0.5 hidden text-[0.85rem] leading-snug text-ink-soft sm:block">{v.text}</span>
+                    <span className="block font-medium">{v.title}</span>
+                    <span className="mt-0.5 hidden text-[0.82rem] leading-snug text-ivory/80 sm:block">{v.text}</span>
                   </span>
                 </li>
               ))}
             </ul>
-          </div>
-
-          <figure data-reveal style={revealDelay(1)} className="overflow-hidden rounded-[1.75rem] bg-deep-900 text-ivory">
-            <div className="aspect-[2/1]">
-              <Placeholder
-                className="h-full w-full !rounded-none"
-                note="Ảnh lễ trao danh hiệu"
-                image={AWARD_IMAGE}
+          </MissionCard>
+          <MissionCard label="Danh hiệu" image={AWARD_IMAGE}>
+            <MissionText>{AWARD_NAME}</MissionText>
+            <span className="mt-5 flex items-center gap-2">
+              <img
+                src="/images/partners/iso-9001.webp"
+                alt="Chứng nhận ISO 9001:2015"
+                loading="lazy"
+                className="h-12 w-12 rounded-lg bg-white object-contain p-1"
               />
-            </div>
-            <figcaption className="flex flex-wrap items-center justify-between gap-4 p-6">
-              <span>
-                <span className="block text-[0.7rem] tracking-[0.16em] text-mist-300 uppercase">Danh hiệu</span>
-                <span className="font-display mt-1 block text-xl">{AWARD_NAME}</span>
-              </span>
-              <span className="flex items-center gap-2">
-                <img
-                  src="/images/partners/iso-9001.webp"
-                  alt="Chứng nhận ISO 9001:2015"
-                  loading="lazy"
-                  className="h-12 w-12 rounded-lg bg-white object-contain p-1"
-                />
-                <img
-                  src="/images/partners/tqc.webp"
-                  alt="Chứng nhận TQC"
-                  loading="lazy"
-                  className="h-12 w-auto rounded-lg bg-white object-contain p-1"
-                />
-              </span>
-            </figcaption>
-          </figure>
+              <img
+                src="/images/partners/tqc.webp"
+                alt="Chứng nhận TQC"
+                loading="lazy"
+                className="h-12 w-auto rounded-lg bg-white object-contain p-1"
+              />
+            </span>
+          </MissionCard>
         </div>
         </MobileMore>
       </Container>
@@ -179,29 +165,41 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
 
 interface MissionCardProps {
   label: string
-  text: string
   image: ImageSource
   position?: string
+  /** Nhãn chờ Ecopillo khi ảnh đang là ảnh tạm */
+  note?: string
+  children: ReactNode
+}
+
+function MissionText({ children }: { children: ReactNode }) {
+  return <p className="font-display mt-3 max-w-lg text-[1.35rem] leading-snug sm:text-[1.55rem]">{children}</p>
 }
 
 /**
- * Hai ảnh là banner có chữ viết tay nên khung giữ tỉ lệ 3:2: ảnh Sứ mệnh (3:2) hiện trọn,
+ * Một khuôn chung cho cả bốn thẻ: ảnh 3:2 phía trên, nền chàm, nhãn nhỏ, chữ trắng.
+ * Ảnh Sứ mệnh, Tầm nhìn là banner có chữ viết tay nên khung giữ 3:2: ảnh Sứ mệnh (3:2) hiện trọn,
  * ảnh Tầm nhìn (vuông) neo mép trên để dòng chữ trong ảnh không bị cắt.
  */
-function MissionCard({ label, text, image, position }: MissionCardProps) {
+function MissionCard({ label, image, position, note, children }: MissionCardProps) {
   return (
     <article data-reveal className="group flex flex-col overflow-hidden rounded-[1.75rem] bg-deep-900 text-ivory">
-      <div className="ecm-parallax aspect-[3/2] overflow-hidden">
+      <div className="ecm-parallax relative aspect-[3/2] overflow-hidden">
         <Placeholder
           className="h-full w-full !rounded-none transition-transform duration-700 ease-[var(--ease-soft)] group-hover:scale-[1.03]"
           note={label}
           image={image}
           position={position}
         />
+        {note && (
+          <span className="absolute top-3 left-3">
+            <FillIn>{note}</FillIn>
+          </span>
+        )}
       </div>
-      <div className="p-7 sm:p-9">
+      <div className="flex-1 p-7 sm:p-9">
         <p className="eyebrow !text-mist-300">{label}</p>
-        <p className="font-display mt-3 max-w-lg text-[1.35rem] leading-snug sm:text-[1.55rem]">{text}</p>
+        {children}
       </div>
     </article>
   )
