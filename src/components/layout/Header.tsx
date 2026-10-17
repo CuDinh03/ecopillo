@@ -187,9 +187,13 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          {/*
+            Mục 9 (khách yêu cầu 16/10/2026: "sđt để xanh như đặt hàng"): nút nền, cùng cỡ nút "Đặt hàng".
+            Nền chàm sáng, "Đặt hàng" nền chàm đậm, để hai nút xanh cạnh nhau vẫn phân biệt được.
+          */}
           <a
             href={CONTACT.hotlineTel}
-            className="hidden items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-deep-800 transition-colors hover:bg-mist-100 md:inline-flex lg:hidden xl:inline-flex"
+            className="hidden h-10 items-center gap-2 rounded-full bg-brand-blue px-4 text-sm font-medium text-ivory shadow-[var(--shadow-soft)] transition duration-300 hover:bg-deep-800 hover:shadow-[var(--shadow-lift)] active:scale-[0.98] md:inline-flex lg:hidden xl:inline-flex"
           >
             <Icon name="phone" size={17} />
             <span className="tabular whitespace-nowrap">{CONTACT.hotlineDisplay}</span>
