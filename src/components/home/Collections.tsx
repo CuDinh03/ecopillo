@@ -290,6 +290,8 @@ const ANATOMY = [
       ['Vỏ chăn 4 mùa, khoá kéo', '200×220'],
       ['2 vỏ gối đầu', '45×65'],
       ['1 vỏ gối ôm', '80×100'],
+      // Chỉ Eco Doris có gối tựa (mục 29). Mục 28 (ga chun chần) còn chờ khách, sẽ sửa tiếp thẻ này
+      ['1 vỏ gối tựa (riêng Eco Doris)', '45×45'],
     ],
   },
   {

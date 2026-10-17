@@ -100,6 +100,9 @@ const SET_PHU_CONTENTS = [
   '1 vỏ gối ôm 80×100',
 ] as const
 
+/** Eco Doris có thêm vỏ gối tựa: 6 món (khách yêu cầu 16/10/2026, mục 29) */
+const DORIS_CONTENTS = [...SET_PHU_CONTENTS, '1 vỏ gối tựa 45×45'] as const
+
 const SET_CHUN_CONTENTS = [
   'Ga chun theo kích thước giường',
   'Vỏ chăn 4 mùa 200×220',
@@ -136,8 +139,8 @@ export const COLLECTIONS: readonly Collection[] = [
     prices: price(3_500_000, 3_650_000, 3_800_000),
     gift: 'om',
     contents: SET_CHUN_CONTENTS,
-    imageNote: 'Ảnh phòng ngủ trải bộ Eco Flora EF09',
-    cover: 'EF09',
+    imageNote: 'Ảnh phòng ngủ trải bộ Eco Flora EF06',
+    cover: 'EF06',
     patterns: [
       real('EF06', 'Sọc xanh nước biển', '#b6cfde', { soldOut: ['160x200'] }),
       real('EF09', 'Lá dương xỉ nền trắng', '#e6e7e3'),
@@ -161,9 +164,10 @@ export const COLLECTIONS: readonly Collection[] = [
     prices: price(4_950_000, 5_320_000, 5_690_000),
     gift: 'one-plus',
     contents: SET_PHU_CONTENTS,
-    imageNote: 'Ảnh phòng ngủ trải bộ Eco Rosa ER42',
-    cover: 'ER42',
+    imageNote: 'Ảnh phòng ngủ trải bộ Eco Rosa ER48',
+    cover: 'ER48',
     patterns: [
+      real('ER48', 'Lá xanh nền trắng', '#e1e2e0', { isNew: true, prices: ROSA_NEW }),
       real('ER06', 'Hoa hồng nền trắng', '#efeeed'),
       real('ER08', 'Kẻ ô xanh denim', '#bdcbdd'),
       real('ER09', 'Lá xanh nhạt', '#cdd3e5'),
@@ -195,7 +199,6 @@ export const COLLECTIONS: readonly Collection[] = [
       real('ER45', 'Gấu hồng', '#e6d3d9', { isNew: true, prices: ROSA_NEW }),
       real('ER46', 'Tàu thuyền xanh', '#bacbe3', { isNew: true, prices: ROSA_NEW }),
       real('ER47', 'Hoa nhí hồng', '#e1dde0', { isNew: true, prices: ROSA_NEW, soldOut: ['180x200'] }),
-      real('ER48', 'Lá xanh nền trắng', '#e1e2e0', { isNew: true, prices: ROSA_NEW }),
       real('ER49', 'Trắng xám', '#ccccc6', { isNew: true, prices: ROSA_NEW }),
     ],
   },
@@ -232,11 +235,11 @@ export const COLLECTIONS: readonly Collection[] = [
     prices: price(5_600_000, 5_690_000, 5_790_000),
     gift: 'one-plus',
     contents: SET_PHU_CONTENTS,
-    imageNote: 'Ảnh bộ Eco Vera EV03',
-    cover: 'EV03',
+    imageNote: 'Ảnh bộ Eco Vera EV02',
+    cover: 'EV02',
     patterns: [
-      real('EV01', 'Lá vàng nền kem', '#d3d0c5'),
       real('EV02', 'Lá xanh nhạt', '#c9cfdb'),
+      real('EV01', 'Lá vàng nền kem', '#d3d0c5'),
       real('EV03', 'Hoa tím nền kem', '#f5eee4', { soldOut: ['200x220'] }),
       real('EV04', 'Hoa tím hồng', '#f2e3eb'),
       real('EV05', 'Hình học xám', '#b9b8be'),
@@ -294,7 +297,7 @@ export const COLLECTIONS: readonly Collection[] = [
     badge: 'Dòng cao nhất',
     prices: price(10_000_000, 10_180_000, 10_360_000),
     gift: 'two-plus',
-    contents: SET_PHU_CONTENTS,
+    contents: DORIS_CONTENTS,
     imageNote: 'Ảnh bộ Eco Doris ED25',
     cover: 'ED25',
     patterns: [
