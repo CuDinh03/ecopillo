@@ -49,9 +49,16 @@ export function Showrooms() {
           {SHOWROOMS.map((s, i) => (
             <article key={s.id} data-reveal style={revealDelay(i)} className="overflow-hidden rounded-[2rem] bg-ivory ring-1 ring-cream-200">
               <div className="flex h-full flex-col">
-                {/* Khung chờ ảnh (chưa có ảnh thật): điện thoại ẩn cho gọn */}
-                <div className="aspect-[2/1] max-sm:hidden sm:aspect-[16/9]">
-                  <Placeholder className="h-full w-full !rounded-none border-0" tone={i === 0 ? 'mist' : 'cream'} note={s.imageNote} />
+                {/* Có ảnh thật thì hiện cả trên điện thoại; chưa có thì khung chờ ảnh, điện thoại ẩn cho gọn */}
+                <div className={`aspect-[2/1] sm:aspect-[16/9] ${s.photo ? '' : 'max-sm:hidden'}`}>
+                  <Placeholder
+                    className="h-full w-full !rounded-none border-0"
+                    tone={i === 0 ? 'mist' : 'cream'}
+                    note={s.imageNote}
+                    image={s.photo}
+                    sizes="(min-width: 1024px) 600px, 100vw"
+                    position={s.id === 'tp-hcm' ? 'center 22%' : undefined}
+                  />
                 </div>
                 <div className="flex flex-1 flex-col p-7 sm:p-9">
                   <p className="eyebrow">{s.kind}</p>

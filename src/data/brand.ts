@@ -68,6 +68,8 @@ export interface Showroom {
   hotline?: string
   mapsUrl: string
   imageNote: string
+  /** Ảnh thật: bản rộng cho thẻ trang chủ và bản nhỏ cho thẻ đại lý. Bỏ trống thì hiện khung chờ ảnh */
+  photo?: { src: string; srcSet: string; alt: string }
 }
 
 /** Bản đồ nhúng (không cần khoá API) cho một địa chỉ */
@@ -97,6 +99,12 @@ export const SHOWROOMS: readonly Showroom[] = [
     lng: 105.8303755,
     mapsUrl: directionsUrl('273 Xã Đàn, Đống Đa, Hà Nội'),
     imageNote: 'Ảnh mặt tiền và bên trong văn phòng 273 Xã Đàn (chờ Ecopillo gửi)',
+    // Khách chọn ảnh chính 16/10/2026 (yêu cầu sửa mục 14)
+    photo: {
+      src: '/images/stores/ha-noi-1.webp',
+      srcSet: '/images/stores/ha-noi-1-sm.webp 640w, /images/stores/ha-noi-1.webp 1200w',
+      alt: 'Đội ngũ Ecopillo tại văn phòng 273 Xã Đàn, Hà Nội',
+    },
   },
   {
     id: 'tp-hcm',
@@ -109,6 +117,12 @@ export const SHOWROOMS: readonly Showroom[] = [
     hotline: '0869 088 508',
     mapsUrl: directionsUrl('257A6 Nguyễn Văn Lượng, Gò Vấp, TP. HCM'),
     imageNote: 'Ảnh mặt tiền và không gian trưng bày chi nhánh Gò Vấp (chờ Ecopillo gửi)',
+    // Khách chọn 16/10/2026 (mục 15): ảnh dọc, thẻ ngang chỉ hiện phần biển hiệu và cửa
+    photo: {
+      src: '/images/stores/tp-hcm-1.webp',
+      srcSet: '/images/stores/tp-hcm-1-sm.webp 360w, /images/stores/tp-hcm-1.webp 674w',
+      alt: 'Mặt tiền chi nhánh Ecopillo, 257A6 Nguyễn Văn Lượng, Gò Vấp',
+    },
   },
 ]
 

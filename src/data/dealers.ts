@@ -123,9 +123,29 @@ const OFFICIAL: readonly Dealer[] = SHOWROOMS.map((s) => ({
   gio_mo: '08:30',
   gio_dong: '22:00',
   ngay_nghi: [],
-  anh: [],
+  anh: s.photo ? [s.photo.src.replace('.webp', '-sm.webp')] : [],
   ghi_chu: 'Có trưng bày đệm, gối để nằm thử',
 }))
+
+/**
+ * Ảnh cửa hàng Ecopillo gửi qua Zalo 16/10/2026 (yêu cầu sửa mục 16–23), ảnh đầu là ảnh đại diện.
+ * Nén bằng tools/nen-anh-khach-gui-2026-10-16.py. Điểm chưa có ảnh dùng DEFAULT_DEALER_PHOTO.
+ * [XÁC NHẬN]: Đà Nẵng (2 ảnh trong nằm ở mép ảnh chụp tin nhắn), Quyết Hương (khách ghi "Hải dương"),
+ * Thu Vũ (khách ghi "Hải phòng") là ghép theo tin nhắn, chờ Ecopillo xác nhận.
+ * Hiên Long (khách ghi "Bắc ninh"): ảnh chưa lưu về máy, chờ owner gửi.
+ */
+const storePhotos = (id: string, count: number): string[] =>
+  Array.from({ length: count }, (_, i) => `/images/stores/${id}-${i + 1}-sm.webp`)
+
+const AGENT_PHOTOS: Readonly<Record<string, readonly string[]>> = {
+  'phu-ly': storePhotos('phu-ly', 2),
+  'quoc-oai': storePhotos('quoc-oai', 2),
+  'nguyen-hue': storePhotos('nguyen-hue', 2),
+  'da-nang': storePhotos('da-nang', 3),
+  'quy-nhon': storePhotos('quy-nhon', 1),
+  'quyet-huong': storePhotos('quyet-huong', 1),
+  'thu-vu': storePhotos('thu-vu', 1),
+}
 
 /** Thứ tự mặc định: Văn phòng Hà Nội, Chi nhánh TP. HCM, rồi các đại lý theo tỉnh từ Bắc vào Nam */
 export const sortDefault = (list: readonly Dealer[]): Dealer[] => {
@@ -175,7 +195,7 @@ const AGENTS: readonly Dealer[] = (
   lng,
   dien_thoai,
   ngay_nghi: [],
-  anh: [],
+  anh: AGENT_PHOTOS[id] ?? [],
 }))
 
 /** Danh sách dựng sẵn (dự phòng khi WordPress không trả lời) */

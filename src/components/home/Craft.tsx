@@ -125,22 +125,38 @@ export function BrandStory() {
               </div>
             </article>
 
+            {/* Hai ô có ảnh minh hoạ (khách yêu cầu 16/10/2026, mục 7 và 8). Máy tính: ảnh trái, chữ phải để hai ô cao bằng ô "Chần thêu"; điện thoại: ảnh trên như ô "Chần thêu" */}
             <div className="contents sm:col-span-3 sm:grid sm:gap-4">
-              <article data-reveal style={revealDelay(2)} className="relative overflow-hidden rounded-[1.75rem] bg-mist-100 p-6">
-                <Icon name="stitch" size={150} strokeWidth={1} className="absolute -right-6 -bottom-6 text-mist-300/60 sm:hidden" />
-                <Icon name="stitch" size={22} className="relative text-mist-600" />
-                <h3 className="font-display relative mt-3 text-2xl text-deep-900">Đường may 4 mũi/cm</h3>
-                <p className="relative mt-2 text-sm leading-relaxed text-ink-soft">
-                  Mép vải được khoá chắc, không sổ chỉ, giữ form đẹp sau nhiều năm.
-                </p>
+              <article data-reveal style={revealDelay(2)} className="flex flex-col overflow-hidden rounded-[1.75rem] sm:grid sm:grid-cols-[2fr_3fr] bg-mist-100">
+                <Placeholder
+                  className="aspect-[5/3] w-full rounded-b-[1.75rem] sm:aspect-auto sm:h-full sm:min-h-36 sm:rounded-none"
+                  note="Ảnh cận đường may"
+                  image={staticImage('/images/details/duong-may-ed25.webp', 'Cận mép chăn và đường chần bộ Eco Doris ED25')}
+                  sizes="(min-width: 1024px) 160px, (min-width: 640px) 40vw, 300px"
+                />
+                <div className="p-5">
+                  <Icon name="stitch" size={20} className="text-mist-600" />
+                  <h3 className="font-display mt-2 text-[1.35rem] leading-tight text-deep-900">Đường may 4 mũi/cm</h3>
+                  <p className="mt-1.5 text-[0.85rem] leading-relaxed text-ink-soft">
+                    Mép vải được khoá chắc, không sổ chỉ, giữ form đẹp sau nhiều năm.
+                  </p>
+                </div>
               </article>
-              <article data-reveal style={revealDelay(3)} className="relative overflow-hidden rounded-[1.75rem] bg-ivory p-6 ring-1 ring-cream-200">
-                <Icon name="weave" size={150} strokeWidth={1} className="absolute -right-6 -bottom-6 text-brass-100 sm:hidden" />
-                <Icon name="weave" size={22} className="relative text-brass-500" />
-                <h3 className="font-display relative mt-3 text-2xl text-deep-900">Dệt Jacquard</h3>
-                <p className="relative mt-2 text-sm leading-relaxed text-ink-soft">
-                  Ở dòng Eco Sweet, hoa văn được dệt thẳng vào sợi, nổi khối tinh tế.
-                </p>
+              <article data-reveal style={revealDelay(3)} className="flex flex-col overflow-hidden rounded-[1.75rem] sm:grid sm:grid-cols-[2fr_3fr] bg-ivory ring-1 ring-cream-200">
+                <Placeholder
+                  className="aspect-[5/3] w-full rounded-b-[1.75rem] sm:aspect-auto sm:h-full sm:min-h-36 sm:rounded-none"
+                  note="Ảnh cận hoa văn dệt Jacquard"
+                  image={staticImage('/images/details/jacquard-es06.webp', 'Logo Ecopillo thêu trên vải dệt Jacquard hoa văn chìm, bộ Eco Sweet ES06')}
+                  sizes="(min-width: 1024px) 160px, (min-width: 640px) 40vw, 300px"
+                  position="30% center"
+                />
+                <div className="p-5">
+                  <Icon name="weave" size={20} className="text-brass-500" />
+                  <h3 className="font-display mt-2 text-[1.35rem] leading-tight text-deep-900">Dệt Jacquard</h3>
+                  <p className="mt-1.5 text-[0.85rem] leading-relaxed text-ink-soft">
+                    Ở dòng Eco Sweet, hoa văn được dệt thẳng vào sợi, nổi khối tinh tế.
+                  </p>
+                </div>
               </article>
             </div>
           </div>
