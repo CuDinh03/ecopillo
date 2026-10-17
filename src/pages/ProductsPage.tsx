@@ -7,7 +7,7 @@ import { Select } from '../components/ui/Select'
 import { buttonClass, Container, FillIn } from '../components/ui/primitives'
 import { BEDDING_SETS, collectionRange, type Collection } from '../data/catalog'
 import { CATEGORIES, inPriceBand, LEGACY_CATEGORY, priceBandsOf, PRODUCTS, type CategoryId, type PriceBand } from '../data/products'
-import { COLORWAYS, STORIES_APPROVED, toneById, TONES, type Colorway, type Tone } from '../data/stories'
+import { COLORWAYS, STORIES_APPROVED, toneById, type Colorway } from '../data/stories'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 
@@ -19,16 +19,17 @@ const SORTS = [
 
 type SortId = (typeof SORTS)[number]['id']
 
-/** Hai cách tìm bộ chăn ga: theo gam màu hoặc theo bộ sưu tập (thanh lọc mẫu 3, owner chọn 14/10/2026) */
-type BrowseMode = 'gam' | 'bo'
-
 const CATEGORY_PARAM = 'danh-muc'
 const COLLECTION_PARAM = 'bo-suu-tap'
 const SORT_PARAM = 'sap-xep'
+/**
+ * Lọc theo gam màu: bỏ hàng ô gam màu theo yêu cầu khách 16/10/2026 (mục 30: "bỏ đi", trang "lộn xộn khó xem"),
+ * chỉ giữ chọn theo bộ sưu tập. Link có ?gam= (nút "Xem cả gam …" ở trang bộ sưu tập) vẫn lọc đúng gam.
+ */
 const TONE_PARAM = 'gam'
 /** Mức giá: ?gia=5-10-trieu, mốc khác nhau theo loại (PRICE_BANDS trong data/products.ts) */
 const PRICE_PARAM = 'gia'
-/** Số phối màu hiện mỗi lần khi lọc theo gam hoặc bộ; bấm "Xem thêm" để hiện tiếp */
+/** Số phối màu hiện mỗi lần khi lọc theo bộ (hoặc gam qua link); bấm "Xem thêm" để hiện tiếp */
 const COLORWAY_PAGE = 12
 /** Số chấm màu nhỏ trên ô bộ sưu tập */
 const TILE_DOTS = 5
@@ -50,13 +51,11 @@ export function ProductsPage() {
   const bands = priceBandsOf(category)
   const band = bands.find((b) => b.id === params.get(PRICE_PARAM))
 
-  // Chỉ bộ chăn ga và chăn hè mới có phối màu; chăn hè là một bộ duy nhất nên không có cách tìm "theo bộ sưu tập"
+  // Chỉ bộ chăn ga và chăn hè mới có phối màu; chăn hè là một bộ duy nhất nên không có hàng chọn bộ sưu tập
   const hasColorways = category === null || category === 'bo-chan-ga' || category === 'chan'
   const canBrowseByCollection = hasColorways && category !== 'chan'
   const tone = hasColorways ? toneById(params.get(TONE_PARAM)) : undefined
   const collection = canBrowseByCollection ? BEDDING_SETS.find((c) => c.id === params.get(COLLECTION_PARAM)) : undefined
-  const [modeChoice, setModeChoice] = useState<BrowseMode>('gam')
-  const mode: BrowseMode = !canBrowseByCollection || tone ? 'gam' : collection ? 'bo' : modeChoice
   const [colorwayLimit, setColorwayLimit] = useState(COLORWAY_PAGE)
 
   // Phối màu thuộc nhóm đang xem: bộ chăn ga, chăn hè, hoặc cả hai khi xem "Tất cả"
@@ -85,13 +84,11 @@ export function ProductsPage() {
       ),
     [productsAnyPrice, band, sort],
   )
-  /** Số trên nút mức giá: đếm đúng thứ đang hiện bên dưới (phối màu khi đang lọc gam/bộ, còn lại là sản phẩm) */
+  /** Số trên nút mức giá: đếm đúng thứ đang hiện bên dưới (phối màu khi đang lọc bộ hoặc gam, còn lại là sản phẩm) */
   const countInBand = (b: PriceBand) =>
     isShowingColorways
       ? colorwaysAnyPrice.filter((c) => inPriceBand(collectionRange(c.collection), b)).length
       : productsAnyPrice.filter((p) => inPriceBand(p, b)).length
-  /** Ô gam màu, ô bộ sưu tập chỉ đếm, chỉ bật những gì có trong mức giá đang chọn */
-  const scopeInBand = useMemo(() => (band ? scope.filter((c) => inPriceBand(collectionRange(c.collection), band)) : scope), [scope, band])
 
   const update = (patch: Record<string, string | null>) => {
     const next = new URLSearchParams(params)
@@ -110,10 +107,6 @@ export function ProductsPage() {
       [PRICE_PARAM]: null,
       ...(id === 'goi' || id === 'dem' ? { [TONE_PARAM]: null } : {}),
     })
-  const switchMode = (next: BrowseMode) => {
-    setModeChoice(next)
-    update({ [TONE_PARAM]: null, [COLLECTION_PARAM]: null })
-  }
 
   const baseLabel = !isShowingColorways
     ? `${products.length} sản phẩm`
@@ -181,56 +174,24 @@ export function ProductsPage() {
           onPick={(b) => update({ [PRICE_PARAM]: band?.id === b.id ? null : b.id })}
         />
 
-        {/* Hàng 2: câu hỏi + công tắc; hàng 3: lưới ô đều nhau, chia cột cố định nên không rớt dòng */}
-        {hasColorways && (
+        {/* Hàng chọn bộ sưu tập: lưới ô đều nhau, chia cột cố định nên không rớt dòng */}
+        {canBrowseByCollection && (
           <section aria-labelledby="browse-title" className="mt-7 sm:mt-9">
-            <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
-              <h2 id="browse-title" className="font-display text-[1.45rem] leading-tight text-deep-900 sm:text-[1.8rem]">
-                Quý khách tìm theo <span className="text-mist-600 italic">{mode === 'gam' ? 'gam màu' : 'bộ sưu tập'}</span>
-              </h2>
-              {canBrowseByCollection && (
-                <div role="group" aria-label="Cách tìm" className="inline-flex rounded-full bg-cream-50 p-1 ring-1 ring-cream-200">
-                  {(['gam', 'bo'] as const).map((m) => (
-                    <button
-                      key={m}
-                      type="button"
-                      aria-pressed={mode === m}
-                      onClick={() => switchMode(m)}
-                      className={`h-10 rounded-full px-4 text-sm transition ${mode === m ? 'bg-deep-800 text-ivory' : 'text-deep-900'}`}
-                    >
-                      {m === 'gam' ? 'Gam màu' : 'Bộ sưu tập'}
-                    </button>
-                  ))}
-                </div>
-              )}
+            <h2 id="browse-title" className="font-display text-[1.45rem] leading-tight text-deep-900 sm:text-[1.8rem]">
+              Quý khách tìm theo <span className="text-mist-600 italic">bộ sưu tập</span>
+            </h2>
+            <div role="group" aria-label="Bộ sưu tập" className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3 lg:grid-cols-8">
+              <Tile active={!collection} onPick={() => update({ [COLLECTION_PARAM]: null })} title="Tất cả bộ" note={`${BEDDING_SETS.length} bộ sưu tập`} />
+              {BEDDING_SETS.map((c) => (
+                <CollectionTile
+                  key={c.id}
+                  collection={c}
+                  disabled={band !== undefined && !inPriceBand(collectionRange(c), band) && collection?.id !== c.id}
+                  active={collection?.id === c.id}
+                  onPick={() => update({ [COLLECTION_PARAM]: collection?.id === c.id ? null : c.id, [TONE_PARAM]: null })}
+                />
+              ))}
             </div>
-
-            {mode === 'gam' ? (
-              <div role="group" aria-label="Gam màu" className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-6 sm:gap-3">
-                {TONES.map((t) => (
-                  <ToneTile
-                    key={t.id}
-                    tone={t}
-                    count={scopeInBand.filter((c) => c.story.tone === t.id).length}
-                    active={tone?.id === t.id}
-                    onPick={() => update({ [TONE_PARAM]: tone?.id === t.id ? null : t.id, [COLLECTION_PARAM]: null })}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div role="group" aria-label="Bộ sưu tập" className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3 lg:grid-cols-8">
-                <Tile active={!collection} onPick={() => update({ [COLLECTION_PARAM]: null })} title="Tất cả bộ" note={`${BEDDING_SETS.length} bộ sưu tập`} />
-                {BEDDING_SETS.map((c) => (
-                  <CollectionTile
-                    key={c.id}
-                    collection={c}
-                    disabled={band !== undefined && !inPriceBand(collectionRange(c), band) && collection?.id !== c.id}
-                    active={collection?.id === c.id}
-                    onPick={() => update({ [COLLECTION_PARAM]: collection?.id === c.id ? null : c.id, [TONE_PARAM]: null })}
-                  />
-                ))}
-              </div>
-            )}
           </section>
         )}
 
@@ -250,7 +211,7 @@ export function ProductsPage() {
               Xoá lọc giá
             </button>
           )}
-          {hasColorways && mode === 'gam' && !STORIES_APPROVED && <FillIn>[ECOPILLO DUYỆT CÁCH CHIA GAM MÀU]</FillIn>}
+          {tone && !STORIES_APPROVED && <FillIn>[ECOPILLO DUYỆT CÁCH CHIA GAM MÀU]</FillIn>}
         </p>
 
         {isShowingColorways ? (
@@ -284,7 +245,7 @@ interface TileProps {
   title: string
   note: string
   disabled?: boolean
-  /** Phần màu phía trên ô (dải gam màu hoặc các chấm màu của bộ) */
+  /** Phần màu phía trên ô (các chấm màu của bộ) */
   children?: ReactNode
 }
 
@@ -304,14 +265,6 @@ function Tile({ active, onPick, title, note, disabled, children }: TileProps) {
       <span className="mt-auto block w-full px-3 pt-2.5 text-[0.85rem] leading-tight font-medium text-deep-900 sm:px-3.5 sm:text-[0.92rem]">{title}</span>
       <span className="block w-full px-3 pb-2.5 text-[0.7rem] text-ink-faint sm:px-3.5 sm:text-[0.74rem]">{note}</span>
     </button>
-  )
-}
-
-function ToneTile({ tone, count, active, onPick }: { tone: Tone; count: number; active: boolean; onPick: () => void }) {
-  return (
-    <Tile active={active} onPick={onPick} title={tone.label} note={`${count} phối màu`} disabled={count === 0}>
-      <span aria-hidden="true" className="block h-9 w-full sm:h-11" style={{ background: tone.swatch }} />
-    </Tile>
   )
 }
 
