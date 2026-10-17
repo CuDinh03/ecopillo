@@ -34,7 +34,7 @@ bắt đầu từ [`00-phien-sau-doc-truoc.md`](docs/viec-can-lam/00-phien-sau-d
   Với JSX dùng `<FillIn>` (`src/components/ui/primitives.tsx`), với chữ dài dùng `RichText`.
   Đừng tự bịa số liệu, giá, địa chỉ, chính sách.
 - Màu: chỉ dùng bộ nhận diện trong `src/index.css` (`@theme`): chàm `#2D2E8D`, chàm sáng `#333DBA`,
-  xanh nhạt `#D3EFFF`/`#E9F8FF`, trắng, vàng `#FFC271` (chỉ cho quà tặng, ưu đãi).
+  xanh nhạt `#D3EFFF`/`#E9F8FF`, trắng, vàng `#FFC271` (chỉ cho quà tặng, ưu đãi; ngoại lệ duy nhất: khung "Hệ sinh thái sản phẩm" ở đầu trang chủ, owner duyệt 17/10/2026).
   Tên token cũ (`deep-*`, `mist-*`, `cream-*`, `ivory`) vẫn giữ và đã trỏ về các màu này.
 - Font: Be Vietnam Pro (chữ thường) + Noto Serif Display (tiêu đề, lớp `font-display`).
 - **Không dùng `<select>` của trình duyệt** (danh sách xổ xuống màu xám của macOS, owner chê 15/10/2026): dùng `Select` trong `src/components/ui/Select.tsx`.

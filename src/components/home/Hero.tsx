@@ -10,6 +10,10 @@ import { productsUrl } from '../../data/links'
  * không phủ lớp mờ; chữ nằm vào khoảng trời bên trái ảnh (màn hình rộng) hoặc ngay trên ảnh (điện thoại).
  *
  * Thứ bậc: 1 câu chính "Nâng niu giấc mơ xanh" → 1 dòng nghiêng "Chốn yên…" → 2 nút.
+ *
+ * [ECOPILLO GỬI FONT LOGO] Mục 2 (yêu cầu 16/10/2026): câu chính sẽ viết bằng đúng font viết tay của dòng slogan trong logo.
+ * Owner chốt 17/10/2026: chờ Ecopillo gửi tên hoặc file font, chưa đổi. Mẫu thử 3 font gần giống (Ephesis, Ms Madi, Allura):
+ * docs/de-xuat-dau-trang-chu-goi-4.html. Khi có font: chỉ áp cho hai thẻ <h1> bên dưới, và đo lại CLS vì font về muộn làm câu chính nhảy.
  * Hai ý còn lại của Bảng EC (Hệ sinh thái sản phẩm; Vì một giấc ngủ chất lượng hơn) gom vào
  * MỘT dải trắng ngay dưới ảnh.
  */
@@ -87,17 +91,22 @@ function BangEcBar() {
       style={delay(320)}
       className="grid gap-5 rounded-[1.5rem] bg-ivory/92 p-4 shadow-[var(--shadow-lift)] ring-1 ring-ivory backdrop-blur-md sm:p-5 lg:grid-cols-[1.25fr_auto_1fr] lg:items-center lg:gap-7 lg:px-7 lg:py-5"
     >
-      <section aria-labelledby="hero-ecosystem">
-        <h2 id="hero-ecosystem" className={BAR_LABEL}>
+      {/*
+        Mục 4 (khách yêu cầu 16/10/2026), kiểu B owner chọn 17/10/2026 (mẫu: docs/de-xuat-dau-trang-chu-goi-4.html):
+        một khung vàng bao cả bốn ô, tiêu đề nằm trên dải vàng ở đầu khung, bốn ô to hơn trước.
+        Vàng #FFC271 ngoài quà tặng, ưu đãi: ngoại lệ owner duyệt cho riêng dải này.
+      */}
+      <section aria-labelledby="hero-ecosystem" className="overflow-hidden rounded-2xl border-2 border-brand-gold">
+        <h2 id="hero-ecosystem" className="bg-brand-gold px-3.5 py-1.5 text-[0.7rem] font-semibold tracking-[0.14em] text-deep-900 uppercase sm:px-4">
           Hệ sinh thái sản phẩm<span className="hidden sm:inline"> · cho giấc ngủ trọn vẹn</span>
         </h2>
-        <ul className="mt-3 grid grid-cols-4 gap-2 sm:flex sm:flex-wrap">
+        <ul className="grid grid-cols-4 gap-2 bg-brand-gold/10 p-2 sm:gap-2.5 sm:p-2.5">
           {ECOSYSTEM.map((item) => (
             <li key={item.name}>
               <Link
                 to={item.to}
                 title={item.text}
-                className="group flex flex-col items-center gap-1.5 rounded-xl text-center text-[0.85rem] font-medium text-deep-900 transition sm:flex-row sm:gap-2.5 sm:bg-cream-50 sm:py-1.5 sm:pr-4 sm:pl-1.5 sm:hover:bg-cream-200"
+                className="group flex flex-col items-center gap-1.5 rounded-xl bg-ivory p-1.5 pb-2 text-center text-[0.95rem] font-medium text-deep-900 shadow-[0_6px_14px_-10px_rgb(45_46_141/0.45)] transition hover:-translate-y-0.5 hover:text-deep-700"
               >
                 <img
                   src={item.thumb}
@@ -106,7 +115,7 @@ function BangEcBar() {
                   height={480}
                   loading="lazy"
                   decoding="async"
-                  className="h-14 w-full rounded-xl object-cover sm:h-10 sm:w-10 sm:rounded-lg"
+                  className="h-14 w-full rounded-lg object-cover"
                 />
                 {item.name}
               </Link>

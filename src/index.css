@@ -96,7 +96,8 @@
   /*
    * Bộ màu nhận diện thương hiệu Ecopillo — CHỈ dùng 6 mã này (cộng màu đỏ bổ sung bên dưới):
    * #2D2E8D chàm đậm · #333DBA chàm sáng · #D3EFFF xanh nhạt · #E9F8FF xanh rất nhạt
-   * #FFFFFF trắng · #FFC271 vàng (chỉ cho quà tặng, ưu đãi — không làm màu chính)
+   * #FFFFFF trắng · #FFC271 vàng (chỉ cho quà tặng, ưu đãi — không làm màu chính;
+   *   ngoại lệ: khung "Hệ sinh thái sản phẩm" ở đầu trang chủ, owner duyệt 17/10/2026)
    * Tên token cũ được giữ để không phải sửa từng component.
    */
   --color-brand-navy: #2d2e8d;
