@@ -2,7 +2,8 @@ import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { Icon, type IconName } from '../ui/Icon'
 import { buttonClass, Container } from '../ui/primitives'
-import { PATHS, productsUrl } from '../../data/links'
+import { CONTACT } from '../../data/brand'
+import { productsUrl } from '../../data/links'
 
 /**
  * Phần đầu trang chủ — bản chốt 12/10/2026, phương án "ảnh trọn khung": ảnh Bảng EC hiện đủ, rõ,
@@ -65,11 +66,10 @@ function HeroPicture({ className }: { className: string }) {
 
 const delay = (ms: number) => ({ '--reveal-delay': `${ms}ms` }) as CSSProperties
 
-/** Dòng đỏ — cùng màu chữ "ETERNAL" trong logo */
+/** Dòng đỏ, cùng màu chữ "ETERNAL" trong logo. Bỏ vạch đầu, chữ to gấp đôi (khách yêu cầu 16/10/2026, mục 1) */
 function Tagline() {
   return (
-    <p data-reveal className="flex items-center gap-3 text-[0.72rem] font-semibold tracking-[0.2em] text-tagline uppercase">
-      <span className="h-px w-8 bg-tagline" aria-hidden="true" />
+    <p data-reveal className="text-[clamp(1.05rem,5.2vw,1.44rem)] leading-tight font-semibold tracking-[0.06em] sm:tracking-[0.12em] text-tagline uppercase">
       Chăn ga gối đệm cao cấp
     </p>
   )
@@ -176,9 +176,11 @@ function MobileTop() {
           <a href="#bo-suu-tap" className={buttonClass('primary', 'md')}>
             Xem bộ sưu tập
           </a>
-          <Link to={PATHS.order} className={buttonClass('light', 'md')}>
-            Đặt hàng online
-          </Link>
+          {/* Mục 3: thay "Đặt hàng online"; điện thoại rút còn "Gọi ngay" để hai nút vẫn một hàng (owner chốt 17/10/2026) */}
+          <a href={CONTACT.hotlineTel} className={buttonClass('light', 'md')}>
+            <Icon name="phone" size={16} />
+            Gọi ngay
+          </a>
         </div>
       </div>
     </div>
@@ -236,9 +238,10 @@ export function Hero() {
                 Xem bộ sưu tập
                 <Icon name="arrowRight" size={18} />
               </a>
-              <Link to={PATHS.order} className={buttonClass('secondary', 'lg')}>
-                Đặt hàng online
-              </Link>
+              <a href={CONTACT.hotlineTel} className={buttonClass('secondary', 'lg')}>
+                <Icon name="phone" size={18} />
+                Gọi ngay cho chúng tôi
+              </a>
             </div>
           </div>
         </Container>
