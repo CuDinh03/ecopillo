@@ -1,18 +1,12 @@
 import { Link } from 'react-router-dom'
 import { patternImage } from '../../data/catalog'
 import { HOTEL_PARTNERS } from '../../data/content'
+import { HOTEL_BENEFITS, HOTEL_EYEBROW, HOTEL_INTRO, HOTEL_INTRO_HEADING } from '../../data/hotel'
 import { PATHS } from '../../data/links'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { ContactButtons, Container, SectionHeading } from '../ui/primitives'
-
-const BENEFITS = [
-  'May theo kích thước giường của từng hạng phòng',
-  'Đồng bộ mẫu, màu cho toàn bộ dự án',
-  'Báo giá riêng cho đơn số lượng lớn',
-  'Tư vấn chất liệu theo công suất phòng',
-] as const
 
 export function Hospitality() {
   return (
@@ -26,16 +20,22 @@ export function Hospitality() {
           <SectionHeading
             id="hotel-title"
             tone="dark"
-            eyebrow="Khách sạn · Resort · Nhà nghỉ"
+            eyebrow={HOTEL_EYEBROW}
             title={
               <>
                 Giấc ngủ năm sao <span className="text-mist-300 italic">cho khách lưu trú</span>
               </>
             }
-            lead="Ecopillo cung cấp chăn ga gối số lượng lớn cho khách sạn, resort và nhà nghỉ, với chất liệu Lyocell và đường may 4 mũi/cm bền đẹp."
+            lead={
+              // Trang chủ chỉ giữ đoạn đầu cho gọn; đủ ba đoạn ở trang Khách sạn và dự án (mục 38)
+              <>
+                <span className="block text-[0.78rem] font-semibold tracking-[0.12em] text-mist-300 uppercase">{HOTEL_INTRO_HEADING}</span>
+                <span className="mt-3 block">{HOTEL_INTRO[0]}</span>
+              </>
+            }
           />
           <ul data-reveal className="mt-9 grid gap-3 sm:grid-cols-2">
-            {BENEFITS.map((b) => (
+            {HOTEL_BENEFITS.map((b) => (
               <li key={b} className="flex gap-3 text-[0.92rem] text-mist-100">
                 <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-deep-700 text-mist-300">
                   <Icon name="check" size={12} strokeWidth={2.2} />

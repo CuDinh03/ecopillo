@@ -8,6 +8,7 @@ import { buttonClass, Container, FillIn } from '../components/ui/primitives'
 import { CONTACT } from '../data/brand'
 import { patternImage, productImage, type ImageSource } from '../data/catalog'
 import { HOTEL_PARTNERS } from '../data/content'
+import { HOTEL_BENEFITS, HOTEL_EYEBROW, HOTEL_INTRO, HOTEL_INTRO_HEADING } from '../data/hotel'
 import { productsUrl } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
@@ -54,13 +55,6 @@ const LAYERS: readonly Layer[] = [
   },
 ]
 
-const REASONS: readonly { title: string; text: string }[] = [
-  { title: 'May theo kích thước', text: 'Đo và may đúng cỡ giường của từng hạng phòng, kể cả giường kích thước lạ.' },
-  { title: 'Bền qua nhiều lần giặt', text: 'Đường may 4 mũi/cm chắc, phẳng; chọn vải hợp với tần suất giặt công nghiệp.' },
-  { title: 'Vải Lyocell mát, mềm', text: 'Khách lưu trú cảm nhận rõ độ mềm mát, thoáng khí ngay đêm đầu tiên.' },
-  { title: 'Đồng bộ toàn dự án', text: 'Một mẫu, một màu cho toàn bộ phòng; bổ sung thêm về sau vẫn đúng màu.' },
-]
-
 const STEPS: readonly { title: string; text: string }[] = [
   { title: 'Khảo sát, tư vấn', text: 'Nhận số phòng, cỡ giường, phong cách; gửi mẫu vải để chọn.' },
   { title: 'Báo giá, may mẫu', text: 'Báo giá theo số lượng, may một bộ mẫu để duyệt chất liệu và màu.' },
@@ -78,7 +72,7 @@ const twoDigits = (n: number) => String(n).padStart(2, '0')
 export function HotelPage() {
   usePageMeta(
     'Chăn ga gối khách sạn và dự án',
-    'Ecopillo may chăn ga gối đệm theo kích thước cho khách sạn, resort, nhà nghỉ và dự án: vải Lyocell, đường may 4 mũi/cm, đồng bộ toàn dự án, báo giá riêng.',
+    'Ecopillo chuyên cung cấp chăn, ga, gối, đệm số lượng lớn cho khách sạn, resort, nhà nghỉ và dự án lưu trú: đường may 4 mũi/cm, giải pháp đồng bộ, báo giá ưu đãi theo số lượng.',
   )
 
   return (
@@ -116,13 +110,16 @@ function HotelHero() {
       {/* Lề trái bằng lề Container của trang để chữ thẳng hàng với các phần bên dưới */}
       <div className="flex flex-col justify-center px-5 pt-7 pb-10 sm:px-8 lg:py-16 lg:pr-12 lg:pl-[max(2.5rem,calc((100vw-1240px)/2+2.5rem))]">
         <Breadcrumb items={[{ label: 'Khách sạn và dự án' }]} />
-        <p className="eyebrow mt-8">Khách sạn · Resort · Dự án</p>
+        <p className="eyebrow mt-8">{HOTEL_EYEBROW}</p>
         <h1 id="page-title" className="font-display mt-4 text-[2.6rem] leading-[1.02] text-balance text-deep-900 sm:text-[3.4rem] xl:text-[4rem]">
           Giấc ngủ năm sao <em className="block text-deep-700">cho khách lưu trú</em>
         </h1>
-        <p className="mt-5 max-w-md text-[1.02rem] leading-relaxed text-ink-soft">
-          Ecopillo cung cấp chăn ga gối đệm số lượng lớn cho khách sạn, resort, nhà nghỉ và dự án, may theo kích thước từng hạng phòng.
-        </p>
+        <p className="mt-5 text-[0.8rem] font-semibold tracking-[0.12em] text-deep-700 uppercase">{HOTEL_INTRO_HEADING}</p>
+        <div className="mt-3 max-w-lg space-y-3 text-[1rem] leading-relaxed text-ink-soft">
+          {HOTEL_INTRO.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
         <div className="mt-8 flex flex-wrap gap-3">
           <a href="#bao-gia" className={buttonClass('primary', 'lg')}>
             Nhận báo giá
@@ -223,7 +220,7 @@ function BedLayers() {
   )
 }
 
-/** Câu trích lớn trên nền chàm, bốn lý do chọn Ecopillo xếp hai cột */
+/** Câu trích lớn trên nền chàm, bốn lợi ích (chữ Ecopillo gửi, mục 39) xếp hai cột */
 function Reasons() {
   return (
     <section aria-labelledby="reason-title" className="grain relative overflow-hidden bg-deep-900 py-16 text-ivory sm:py-24">
@@ -231,14 +228,14 @@ function Reasons() {
         <h2 id="reason-title" data-reveal="left" className="font-display text-[2.1rem] leading-[1.12] italic sm:text-[3.1rem]">
           “Bền cho vận hành, <em className="text-mist-300">êm cho khách nghỉ.</em>”
         </h2>
-        <dl className="grid gap-7 sm:grid-cols-2 sm:gap-x-9">
-          {REASONS.map((r, i) => (
-            <div key={r.title} data-reveal style={revealDelay(i)} className="border-t border-ivory/25 pt-4">
-              <dt className="font-display text-[1.2rem] leading-snug">{r.title}</dt>
-              <dd className="mt-2 text-[0.9rem] leading-relaxed text-mist-200/90">{r.text}</dd>
-            </div>
+        <ul className="grid gap-7 sm:grid-cols-2 sm:gap-x-9">
+          {HOTEL_BENEFITS.map((benefit, i) => (
+            <li key={benefit} data-reveal style={revealDelay(i)} className="flex gap-3 border-t border-ivory/25 pt-4">
+              <Icon name="check" size={18} strokeWidth={2.2} className="mt-1 shrink-0 text-mist-300" />
+              <span className="font-display text-[1.2rem] leading-snug">{benefit}</span>
+            </li>
           ))}
-        </dl>
+        </ul>
       </Container>
     </section>
   )
