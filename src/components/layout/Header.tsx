@@ -40,14 +40,18 @@ export const NAV_ITEMS: readonly NavItem[] = [
 const PRIMARY_ITEMS = NAV_ITEMS.filter((item) => item.primary)
 const MORE_ITEMS = NAV_ITEMS.filter((item) => !item.primary)
 
+/**
+ * Mục 10 (khách 16/10/2026: chữ menu "nhạt lắm k rõ"), owner chọn kiểu A 17/10: chữ đủ màu chàm, nét 500, không thêm nền.
+ * Giữ cỡ 0.9rem: to hơn hoặc giãn khoảng cách thì thanh đầu trang tràn ngang ở 1024px. Mẫu: docs/de-xuat-menu-dam-hon.html
+ */
 const NAV_LINK =
-  'relative inline-flex items-center rounded-full px-3.5 py-2 text-[0.9rem] whitespace-nowrap transition-colors hover:bg-mist-100 hover:text-deep-900'
+  'relative inline-flex items-center rounded-full px-3.5 py-2 text-[0.9rem] font-medium whitespace-nowrap text-deep-900 transition-colors hover:bg-mist-100'
 
 /** Mục đang chọn: nền nhạt + gạch chân chàm */
 const NAV_ACTIVE =
-  'bg-mist-100 font-medium text-deep-900 after:absolute after:inset-x-3.5 after:bottom-1 after:h-0.5 after:rounded-full after:bg-deep-800'
+  'bg-mist-100 after:absolute after:inset-x-3.5 after:bottom-1 after:h-0.5 after:rounded-full after:bg-deep-800'
 
-const navClass = (active: boolean) => `${NAV_LINK} ${active ? NAV_ACTIVE : 'text-ink-soft'}`
+const navClass = (active: boolean) => `${NAV_LINK} ${active ? NAV_ACTIVE : ''}`
 
 const SECTION_IDS = NAV_ITEMS.filter((i) => i.href.startsWith('/#')).map((i) => i.href.slice(2))
 
@@ -95,7 +99,7 @@ function MoreMenu({ activeHref }: { activeHref: string | null }) {
         aria-expanded={isOpen}
         aria-controls="more-menu"
         onClick={() => setIsOpen((open) => !open)}
-        className={`${navClass(MORE_ITEMS.some((i) => i.href === activeHref))} gap-1 ${isOpen ? 'bg-mist-100 text-deep-900' : ''}`}
+        className={`${navClass(MORE_ITEMS.some((i) => i.href === activeHref))} gap-1 ${isOpen ? 'bg-mist-100' : ''}`}
       >
         Thêm
         <Icon name="chevronDown" size={15} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -111,8 +115,8 @@ function MoreMenu({ activeHref }: { activeHref: string | null }) {
                 to={item.href}
                 onClick={() => setIsOpen(false)}
                 aria-current={item.href === activeHref ? 'location' : undefined}
-                className={`flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[0.9rem] transition-colors hover:bg-mist-100 hover:text-deep-900 ${
-                  item.href === activeHref ? 'bg-mist-100 font-medium text-deep-900' : 'text-ink-soft'
+                className={`flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[0.9rem] font-medium text-deep-900 transition-colors hover:bg-mist-100 ${
+                  item.href === activeHref ? 'bg-mist-100' : ''
                 }`}
               >
                 {item.label}
