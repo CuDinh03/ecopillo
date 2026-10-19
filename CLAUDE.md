@@ -79,6 +79,7 @@ pnpm lint       # đang có 4 cảnh báo cũ react-refresh, không phải lỗi
 | Trang bộ sưu tập (bìa, chương, hàng chương, cùng gam màu) | `src/components/collection/` |
 | Bài viết | `src/data/posts.ts` |
 | Đánh giá, nội dung mẫu trang chủ | `src/data/content.ts` |
+| Sự kiện Ecopillo đồng hành (cuối phần Về chúng tôi trang chủ) | `src/data/events.ts`, khối `src/components/home/EventsStrip.tsx`; nén ảnh: `tools/nen-anh-su-kien-2026-10-20.py` |
 | Chữ khối khách sạn (nhãn, giới thiệu, 4 lợi ích) dùng chung trang chủ và trang Khách sạn và dự án | `src/data/hotel.ts` |
 | Menu, chân trang, thanh liên hệ, nút lên đầu trang | `src/components/layout/` |
 | Đường link, chuyển hướng link cũ | `src/data/links.ts` (bộ định tuyến `src/App.tsx` dựng từ đó); quy tắc và bảng 221 link web cũ: `docs/giu-link-web-cu.md` |

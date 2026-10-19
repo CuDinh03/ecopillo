@@ -21,6 +21,7 @@ import type { ImageSource } from '../../data/catalog'
 import { PATHS } from '../../data/links'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
+import { EventsStrip } from './EventsStrip'
 import { MobileMore } from '../ui/MobileMore'
 import { Placeholder } from '../ui/Placeholder'
 import { Container, FillIn, SectionHeading } from '../ui/primitives'
@@ -158,6 +159,9 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
           </MissionCard>
         </div>
         </MobileMore>
+
+        {/* Mục 35: sự kiện đồng hành, hiện cả trên điện thoại */}
+        <EventsStrip />
       </Container>
     </section>
   )
