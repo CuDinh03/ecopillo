@@ -1,6 +1,8 @@
 import { useMemo, useRef, type CSSProperties, type ReactNode } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { ColorwayCard } from '../components/products/ColorwayCard'
+import { FilterPanel, SORTS, type FilterPanelProps, type SortId } from '../components/products/FilterPanel'
+import { MobileFilterBar } from '../components/products/MobileFilterBar'
 import { ProductCard } from '../components/products/ProductCard'
 import { Icon } from '../components/ui/Icon'
 import { Select } from '../components/ui/Select'
@@ -18,18 +20,10 @@ import {
   type PriceBand,
   type Product,
 } from '../data/products'
-import { COLORWAYS, STORIES_APPROVED, toneById, type Colorway } from '../data/stories'
+import { COLORWAYS, STORIES_APPROVED, toneById, type Colorway, type Tone } from '../data/stories'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 import { scrollToElement } from '../lib/scroll'
-
-const SORTS = [
-  { id: 'noi-bat', label: 'Nổi bật' },
-  { id: 'gia-tang', label: 'Giá thấp đến cao' },
-  { id: 'gia-giam', label: 'Giá cao đến thấp' },
-] as const
-
-type SortId = (typeof SORTS)[number]['id']
 
 const CATEGORY_PARAM = 'danh-muc'
 const COLLECTION_PARAM = 'bo-suu-tap'
@@ -77,28 +71,16 @@ export function ProductsPage() {
    * bộ chăn ga và chăn hè hiện mỗi phối màu một thẻ thay cho một thẻ gộp cả bộ; gối, đệm, chăn lẻ vẫn một thẻ mỗi sản phẩm.
    * Thứ tự "Nổi bật": phối màu theo thứ tự bộ trong catalog.ts, rồi các sản phẩm lẻ. Mẫu: docs/de-xuat-trang-san-pham-khong-gop.html
    */
-  const itemsAnyPrice = useMemo(
-    () =>
-      PRODUCTS.filter((p) => !category || p.category === category).flatMap((p): GridItem[] =>
-        p.collection
-          ? COLORWAYS.filter(
-              (c) =>
-                c.collection.id === p.collection?.id &&
-                (!tone || c.story.tone === tone.id) &&
-                (!collection || c.collection.id === collection.id),
-            ).map((colorway) => ({ kind: 'colorway', colorway }))
-          : tone || collection
-            ? []
-            : [{ kind: 'product', product: p }],
-      ),
-    [category, tone, collection],
-  )
+  const itemsAnyPrice = useMemo(() => gridItems(category, tone, collection), [category, tone, collection])
   const items = useMemo(
     () => bySort(itemsAnyPrice.filter((item) => !band || inPriceBand(rangeOf(item), band)), sort, (item) => rangeOf(item).min),
     [itemsAnyPrice, band, sort],
   )
   /** Số trên nút mức giá: đếm đúng số thẻ sẽ hiện bên dưới */
   const countInBand = (b: PriceBand) => itemsAnyPrice.filter((item) => inPriceBand(rangeOf(item), b)).length
+  /** Số trên dòng bộ sưu tập trong khối lọc: tính cả mức giá đang chọn */
+  const countInCollection = (c: Collection | undefined) =>
+    gridItems(category, tone, c).filter((item) => !band || inPriceBand(rangeOf(item), band)).length
 
   const pageCount = Math.max(1, Math.ceil(items.length / PAGE_SIZE))
   const rawPage = Number(params.get(PAGE_PARAM))
@@ -115,7 +97,15 @@ export function ProductsPage() {
       else next.delete(key)
     }
     setParams(next, { replace: true })
+    revealGrid()
   }
+  // Lọc từ cột phải hay bảng lọc khi đang ở dưới sâu: đưa đầu lưới lên dưới thanh đầu trang (đợi trang vẽ lại rồi mới đo)
+  const revealGrid = () =>
+    requestAnimationFrame(() => {
+      const grid = gridRef.current
+      if (document.querySelector('dialog[open]')) return
+      if (grid && grid.getBoundingClientRect().top < parseFloat(getComputedStyle(grid).scrollMarginTop)) scrollToElement(grid)
+    })
   // Mốc giá mỗi loại khác nhau nên đổi loại thì bỏ mức giá
   const pickCategory = (id: CategoryId | null) =>
     update({
@@ -134,6 +124,24 @@ export function ProductsPage() {
   }
 
   const isFiltered = Boolean(tone || collection)
+  const clearAll = () => update({ [CATEGORY_PARAM]: null, [PRICE_PARAM]: null, [COLLECTION_PARAM]: null, [TONE_PARAM]: null })
+  const panel: Omit<FilterPanelProps, 'idPrefix'> = {
+    category,
+    categoryCount: cardCount,
+    onCategory: pickCategory,
+    bands,
+    band,
+    bandCount: countInBand,
+    onBand: (b) => update({ [PRICE_PARAM]: band?.id === b.id ? null : b.id }),
+    collections: canBrowseByCollection ? BEDDING_SETS : null,
+    collection,
+    collectionCount: countInCollection,
+    onCollection: (c) => update({ [COLLECTION_PARAM]: c?.id ?? null, [TONE_PARAM]: null }),
+    sort,
+    onSort: (v) => update({ [SORT_PARAM]: v === 'noi-bat' ? null : v }),
+    onClear: category || band || isFiltered ? clearAll : undefined,
+  }
+  const activeCount = [band, collection, tone].filter(Boolean).length + (sort === 'noi-bat' ? 0 : 1)
   const unit = isFiltered ? 'phối màu' : 'sản phẩm'
   const scopeLabel =
     collection && tone ? ` ${collection.name}, ${tone.phrase}` : collection ? ` của ${collection.name}` : tone ? ` ${tone.phrase}` : ''
@@ -172,103 +180,125 @@ export function ProductsPage() {
         </Container>
       </section>
 
-      <Container className="pt-6 sm:pt-8">
-        {/* Hàng 1: loại sản phẩm (tab gạch chân) bên trái, sắp xếp bên phải */}
-        <div className="flex flex-col gap-x-8 gap-y-3 sm:flex-row sm:items-end">
-          <div
-            role="group"
-            aria-label="Danh mục"
-            className="-mx-5 flex min-w-0 flex-1 gap-6 overflow-x-auto border-b border-line px-5 [scrollbar-width:none] sm:mx-0 sm:px-0"
-          >
-            {[{ id: null, label: 'Tất cả' } as const, ...CATEGORIES].map((c) => {
-              const active = category === c.id
-              return (
-                <button
-                  key={c.label}
-                  type="button"
-                  aria-pressed={active}
-                  onClick={() => pickCategory(c.id)}
-                  className={`-mb-px inline-flex h-11 shrink-0 items-center gap-1.5 border-b-2 text-[0.95rem] whitespace-nowrap transition-colors ${
-                    active ? 'border-deep-800 font-medium text-deep-900' : 'border-transparent text-ink-faint hover:text-deep-900'
-                  }`}
-                >
-                  {c.label}
-                  <span className="tabular text-xs">{cardCount(c.id)}</span>
-                </button>
-              )
-            })}
+      <Container className="pt-2 sm:pt-8">
+        {/* Điện thoại: thanh lọc dính dưới thanh đầu trang (cách A) */}
+        <MobileFilterBar panel={{ ...panel, idPrefix: 'loc-dt' }} activeCount={activeCount} resultCount={items.length} onClose={revealGrid} />
+
+        {/* 640–1279px: khối lọc phía trên lưới như trước. Từ 1280px khối lọc là cột dính bên phải (bên dưới) */}
+        <div className="hidden sm:block xl:hidden">
+          {/* Hàng 1: loại sản phẩm (tab gạch chân) bên trái, sắp xếp bên phải */}
+          <div className="flex flex-col gap-x-8 gap-y-3 sm:flex-row sm:items-end">
+            <div
+              role="group"
+              aria-label="Danh mục"
+              className="-mx-5 flex min-w-0 flex-1 gap-6 overflow-x-auto border-b border-line px-5 [scrollbar-width:none] sm:mx-0 sm:px-0"
+            >
+              {[{ id: null, label: 'Tất cả' } as const, ...CATEGORIES].map((c) => {
+                const active = category === c.id
+                return (
+                  <button
+                    key={c.label}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => pickCategory(c.id)}
+                    className={`-mb-px inline-flex h-11 shrink-0 items-center gap-1.5 border-b-2 text-[0.95rem] whitespace-nowrap transition-colors ${
+                      active ? 'border-deep-800 font-medium text-deep-900' : 'border-transparent text-ink-faint hover:text-deep-900'
+                    }`}
+                  >
+                    {c.label}
+                    <span className="tabular text-xs">{cardCount(c.id)}</span>
+                  </button>
+                )
+              })}
+            </div>
+            <SortSelect value={sort} onChange={(v) => update({ [SORT_PARAM]: v === 'noi-bat' ? null : v })} />
           </div>
-          <SortSelect value={sort} onChange={(v) => update({ [SORT_PARAM]: v === 'noi-bat' ? null : v })} />
+
+          <PriceBands
+            bands={bands}
+            active={band}
+            countOf={countInBand}
+            onPick={(b) => update({ [PRICE_PARAM]: band?.id === b.id ? null : b.id })}
+          />
+
+          {/* Hàng chọn bộ sưu tập: lưới ô đều nhau, chia cột cố định nên không rớt dòng */}
+          {canBrowseByCollection && (
+            <section aria-labelledby="browse-title" className="mt-7 sm:mt-9">
+              <h2 id="browse-title" className="font-display text-[1.45rem] leading-tight text-deep-900 sm:text-[1.8rem]">
+                Quý khách tìm theo <span className="text-mist-600 italic">bộ sưu tập</span>
+              </h2>
+              <div role="group" aria-label="Bộ sưu tập" className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3 lg:grid-cols-8">
+                <Tile active={!collection} onPick={() => update({ [COLLECTION_PARAM]: null })} title="Tất cả bộ" note={`${BEDDING_SETS.length} bộ sưu tập`} />
+                {BEDDING_SETS.map((c) => (
+                  <CollectionTile
+                    key={c.id}
+                    collection={c}
+                    disabled={band !== undefined && !inPriceBand(collectionRange(c), band) && collection?.id !== c.id}
+                    active={collection?.id === c.id}
+                    onPick={() => update({ [COLLECTION_PARAM]: collection?.id === c.id ? null : c.id, [TONE_PARAM]: null })}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
         </div>
 
-        <PriceBands
-          bands={bands}
-          active={band}
-          countOf={countInBand}
-          onPick={(b) => update({ [PRICE_PARAM]: band?.id === b.id ? null : b.id })}
-        />
+        {/*
+          Từ 1280px: lưới bên trái, cột lọc bên phải dính dưới thanh đầu trang (owner duyệt 20/10/2026).
+          Khối lưới này chỉ chứa kết quả và cột lọc, nên cột dính chỉ đi hết phần kết quả (bẫy sticky trong lưới: CLAUDE.md).
+          Cột lọc đứng trước kết quả trong HTML (bàn phím, trình đọc màn hình đi qua bộ lọc trước), CSS đặt sang phải.
+        */}
+        <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_18rem] xl:items-start xl:gap-x-8">
+          <aside
+            aria-label="Bộ lọc"
+            data-lenis-prevent
+            className="hidden xl:sticky xl:top-[5.75rem] xl:col-start-2 xl:row-start-1 xl:mt-6 xl:block xl:max-h-[calc(100vh-5.75rem-6.5rem)] xl:overflow-y-auto xl:overscroll-contain xl:rounded-[1.5rem] xl:bg-ivory xl:p-5 xl:shadow-[var(--shadow-lift)]"
+          >
+            <FilterPanel {...panel} idPrefix="loc-cot" />
+          </aside>
+          <div className="min-w-0 xl:col-start-1 xl:row-start-1">
+            <p ref={gridRef} className="mt-6 flex scroll-mt-[5.5rem] flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-ink-soft">
+              <span aria-live="polite">{resultLabel}</span>
+              {isFiltered && (
+                <button
+                  type="button"
+                  onClick={() => update({ [TONE_PARAM]: null, [COLLECTION_PARAM]: null })}
+                  className="-my-2 py-2 font-medium text-deep-900 underline underline-offset-4"
+                >
+                  {band ? 'Xoá lọc màu' : 'Xoá lọc'}
+                </button>
+              )}
+              {band && (
+                <button type="button" onClick={() => update({ [PRICE_PARAM]: null })} className="-my-2 py-2 font-medium text-deep-900 underline underline-offset-4">
+                  Xoá lọc giá
+                </button>
+              )}
+              {tone && !STORIES_APPROVED && <FillIn>[ECOPILLO DUYỆT CÁCH CHIA GAM MÀU]</FillIn>}
+            </p>
 
-        {/* Hàng chọn bộ sưu tập: lưới ô đều nhau, chia cột cố định nên không rớt dòng */}
-        {canBrowseByCollection && (
-          <section aria-labelledby="browse-title" className="mt-7 sm:mt-9">
-            <h2 id="browse-title" className="font-display text-[1.45rem] leading-tight text-deep-900 sm:text-[1.8rem]">
-              Quý khách tìm theo <span className="text-mist-600 italic">bộ sưu tập</span>
-            </h2>
-            <div role="group" aria-label="Bộ sưu tập" className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3 lg:grid-cols-8">
-              <Tile active={!collection} onPick={() => update({ [COLLECTION_PARAM]: null })} title="Tất cả bộ" note={`${BEDDING_SETS.length} bộ sưu tập`} />
-              {BEDDING_SETS.map((c) => (
-                <CollectionTile
-                  key={c.id}
-                  collection={c}
-                  disabled={band !== undefined && !inPriceBand(collectionRange(c), band) && collection?.id !== c.id}
-                  active={collection?.id === c.id}
-                  onPick={() => update({ [COLLECTION_PARAM]: collection?.id === c.id ? null : c.id, [TONE_PARAM]: null })}
-                />
-              ))}
-            </div>
-          </section>
-        )}
-
-        <p ref={gridRef} className="mt-6 flex scroll-mt-[5.5rem] flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-ink-soft">
-          <span aria-live="polite">{resultLabel}</span>
-          {isFiltered && (
-            <button
-              type="button"
-              onClick={() => update({ [TONE_PARAM]: null, [COLLECTION_PARAM]: null })}
-              className="-my-2 py-2 font-medium text-deep-900 underline underline-offset-4"
-            >
-              {band ? 'Xoá lọc màu' : 'Xoá lọc'}
-            </button>
-          )}
-          {band && (
-            <button type="button" onClick={() => update({ [PRICE_PARAM]: null })} className="-my-2 py-2 font-medium text-deep-900 underline underline-offset-4">
-              Xoá lọc giá
-            </button>
-          )}
-          {tone && !STORIES_APPROVED && <FillIn>[ECOPILLO DUYỆT CÁCH CHIA GAM MÀU]</FillIn>}
-        </p>
-
-        {items.length === 0 ? (
-          <div className="mt-6 rounded-[1.5rem] border border-dashed border-line p-10 text-center text-ink-soft">
-            Không có sản phẩm phù hợp.{' '}
-            <button type="button" onClick={() => setParams({}, { replace: true })} className="font-medium text-deep-900 underline">
-              Xoá bộ lọc
-            </button>
+            {items.length === 0 ? (
+              <div className="mt-6 rounded-[1.5rem] border border-dashed border-line p-10 text-center text-ink-soft">
+                Không có sản phẩm phù hợp.{' '}
+                <button type="button" onClick={() => setParams({}, { replace: true })} className="font-medium text-deep-900 underline">
+                  Xoá bộ lọc
+                </button>
+              </div>
+            ) : (
+              <>
+                <ul className="mt-5 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
+                  {pageItems.map((item, i) => (
+                    <li key={itemKey(item)} data-reveal style={revealDelay(i, 70)} className="flex">
+                      <div className="flex w-full flex-col [&>article]:flex-1">
+                        {item.kind === 'colorway' ? <ColorwayCard colorway={item.colorway} /> : <ProductCard product={item.product} />}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                {pageCount > 1 && <Pagination page={page} count={pageCount} onPick={goToPage} />}
+              </>
+            )}
           </div>
-        ) : (
-          <>
-            <ul className="mt-5 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
-              {pageItems.map((item, i) => (
-                <li key={itemKey(item)} data-reveal style={revealDelay(i, 70)} className="flex">
-                  <div className="flex w-full flex-col [&>article]:flex-1">
-                    {item.kind === 'colorway' ? <ColorwayCard colorway={item.colorway} /> : <ProductCard product={item.product} />}
-                  </div>
-                </li>
-              ))}
-            </ul>
-            {pageCount > 1 && <Pagination page={page} count={pageCount} onPick={goToPage} />}
-          </>
-        )}
+        </div>
       </Container>
     </div>
   )
@@ -335,6 +365,19 @@ type GridItem = { kind: 'colorway'; colorway: Colorway } | { kind: 'product'; pr
 
 const rangeOf = (item: GridItem): { min: number; max: number } =>
   item.kind === 'colorway' ? collectionRange(item.colorway.collection) : item.product
+
+/** Thẻ của lưới theo loại, gam, bộ sưu tập (chưa xét mức giá). Gối, đệm, chăn lẻ không có gam, bộ nên bị loại khi lọc theo hai thứ đó */
+const gridItems = (category: CategoryId | null, tone: Tone | undefined, collection: Collection | undefined): GridItem[] =>
+  PRODUCTS.filter((p) => !category || p.category === category).flatMap((p): GridItem[] =>
+    p.collection
+      ? COLORWAYS.filter(
+          (c) =>
+            c.collection.id === p.collection?.id && (!tone || c.story.tone === tone.id) && (!collection || c.collection.id === collection.id),
+        ).map((colorway) => ({ kind: 'colorway', colorway }))
+      : tone || collection
+        ? []
+        : [{ kind: 'product', product: p }],
+  )
 
 const itemKey = (item: GridItem): string =>
   item.kind === 'colorway' ? `${item.colorway.collection.id}/${item.colorway.pattern.code}` : item.product.slug

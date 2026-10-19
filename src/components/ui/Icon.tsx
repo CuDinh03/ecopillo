@@ -45,6 +45,7 @@ import {
   House,
   Compass,
   Feather,
+  SlidersHorizontal,
 } from 'lucide-react'
 
 /** Bộ icon Lucide, đặt tên theo nghĩa dùng trên web */
@@ -96,6 +97,8 @@ const ICONS = {
   home: House,
   compass: Compass,
   feather: Feather,
+  // Nút "Bộ lọc" trang Sản phẩm trên điện thoại
+  filter: SlidersHorizontal,
 } satisfies Record<string, LucideIcon>
 
 const BRAND_PATHS = {
