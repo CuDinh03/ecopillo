@@ -313,7 +313,7 @@ export function DistributionPage() {
                   setLimit(PAGE_SIZE)
                 }}
                 placeholder="Gõ tên đường, phường, quận cũ…"
-                className="h-[3.25rem] w-full rounded-full bg-ivory pr-5 pl-11 text-[0.98rem] text-deep-900 ring-1 ring-cream-200 transition outline-none placeholder:text-ink-faint focus:ring-2 focus:ring-deep-700"
+                className="h-[3.25rem] w-full rounded-full bg-ivory pr-5 pl-11 text-base text-deep-900 ring-1 ring-cream-200 transition outline-none placeholder:text-ink-faint focus:ring-2 focus:ring-deep-700"
               />
             </label>
           </div>

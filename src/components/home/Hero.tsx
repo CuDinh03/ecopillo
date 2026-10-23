@@ -162,7 +162,7 @@ function BangEcBar() {
  */
 function MobileTop() {
   return (
-    <div className="relative h-[min(660px,82svh)] md:hidden">
+    <div className="relative flex min-h-[min(660px,82svh)] flex-col md:hidden">
       <HeroPicture className="absolute inset-0 h-full w-full object-cover object-[88%_center]" />
       <div className="relative px-5 pt-[6.25rem]">
         <Tagline />
@@ -177,11 +177,12 @@ function MobileTop() {
           <span className="text-mist-600 italic">giấc mơ xanh</span>
         </h1>
       </div>
-      <div className="absolute inset-x-5 bottom-5">
+      {/* Xếp bằng flex, không dùng absolute: khách bật chữ to (200%) thì khung tự cao theo, chữ không chồng lên nhau */}
+      <div className="relative mt-auto px-5 pt-6 pb-5">
         <p data-reveal style={delay(160)} className="font-display text-[clamp(1rem,4.5vw,1.1rem)] text-deep-700 italic">
           {SUBLINE}
         </p>
-        <div data-reveal style={delay(240)} className="mt-3 grid grid-cols-2 gap-2.5">
+        <div data-reveal style={delay(240)} className="mt-3 flex flex-wrap gap-2.5 [&>a]:flex-1 [&>a]:basis-[9rem]">
           <a href="#bo-suu-tap" className={buttonClass('primary', 'md')}>
             Xem bộ sưu tập
           </a>

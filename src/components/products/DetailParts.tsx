@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
-import type { Pattern, SizeId } from '../../data/catalog'
+import { patternRange, type Pattern, type SizeId } from '../../data/catalog'
 import { NEAR_ME_URL } from '../../data/dealers'
 import { PATHS, productsUrl } from '../../data/links'
 import { categoryLabel, orderUrl, priceLabel, PRODUCTS, type Product } from '../../data/products'
-import { formatVND } from '../../lib/format'
+import { formatRange, formatVND } from '../../lib/format'
 import { Icon, ZaloMark } from '../ui/Icon'
 import { FillIn } from '../ui/primitives'
 import { ProductCard } from './ProductCard'
@@ -170,13 +170,17 @@ interface MobileBuyBarProps {
   isSoldOut?: boolean
 }
 
-const BUY_BAR_LINK = 'flex h-12 min-w-0 flex-1 items-center justify-between gap-2 rounded-2xl bg-deep-800 pr-3 pl-4 text-ivory'
+const BUY_BAR_LINK = 'flex min-h-12 min-w-0 flex-1 items-center justify-between gap-2 rounded-2xl bg-deep-800 pr-3 pl-4 text-ivory'
 
 /** Thanh mua cố định trên điện thoại: gọi / Zalo / giá / Đặt mua */
 export function MobileBuyBar({ product, pattern, size, unitPrice, singleUrl, isSoldOut = false }: MobileBuyBarProps) {
   const collection = product.collection
   const url = collection ? orderUrl(collection, pattern, size) : singleUrl
-  const price = unitPrice ? formatVND(unitPrice) : priceLabel(product)
+  // Chưa chọn cỡ: khoảng giá của đúng phối màu đang xem (không phải của cả bộ).
+  // Khổ dưới 360px không đủ chỗ cho cả khoảng, nên chỉ hiện "từ …" như thẻ sản phẩm, không cắt số.
+  const range = collection && pattern ? patternRange(collection, pattern) : { min: product.min, max: product.max }
+  const price = unitPrice ? formatVND(unitPrice) : collection ? formatRange(range.min, range.max) : priceLabel(product)
+  const shortPrice = unitPrice || range.min === range.max ? price : `từ ${formatVND(range.min)}`
   return (
     <div className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ivory/95 px-3 pt-2.5 backdrop-blur-md lg:hidden">
       <div className="flex items-center gap-2">
@@ -204,7 +208,10 @@ export function MobileBuyBar({ product, pattern, size, unitPrice, singleUrl, isS
           url && (
             <Link to={url} className={BUY_BAR_LINK}>
               <span className="min-w-0 leading-tight">
-                <span className="block truncate text-[0.68rem] text-mist-200">{price}</span>
+                <span className="tabular block text-[0.68rem] text-mist-200">
+                  <span className="max-[359px]:hidden">{price}</span>
+                  <span className="min-[360px]:hidden">{shortPrice}</span>
+                </span>
                 <span className="block truncate text-[0.92rem] font-medium">Đặt mua {pattern?.code ?? ''}</span>
               </span>
               <Icon name="arrowRight" size={18} className="shrink-0" />

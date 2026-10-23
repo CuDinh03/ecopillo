@@ -1,7 +1,7 @@
-import { REVIEWS } from '../../data/content'
+import { REVIEW_SAMPLE_NOTE, REVIEWS } from '../../data/content'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
-import { Container, SectionHeading } from '../ui/primitives'
+import { Container, FillIn, SectionHeading } from '../ui/primitives'
 
 function Stars() {
   return (
@@ -29,6 +29,8 @@ export function Reviews() {
               </>
             }
           />
+          {/* Nhận xét đang là nội dung mẫu (src/data/content.ts), ghi rõ như trang sản phẩm */}
+          <FillIn>{REVIEW_SAMPLE_NOTE}</FillIn>
         </div>
       </Container>
 

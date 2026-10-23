@@ -21,7 +21,7 @@ export function ProductCard({ product }: { product: Product }) {
     product.gallery?.[0] ?? (product.collection ? otherPatternImage(product.collection, product.image?.src) : undefined)
 
   return (
-    <article className="ecm-card group relative flex flex-col overflow-hidden rounded-2xl sm:rounded-[1.5rem] bg-ivory shadow-[var(--shadow-soft)] transition duration-500 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]">
+    <article className="ecm-card group relative flex flex-col overflow-hidden rounded-2xl sm:rounded-[1.5rem] bg-ivory shadow-[var(--shadow-soft)] transition duration-500 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] has-[:focus-visible]:-translate-y-1 has-[:focus-visible]:shadow-[var(--shadow-lift)] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-4 has-[:focus-visible]:outline-mist-600">
       <div className="ecm-swap relative aspect-[4/3] overflow-hidden">
         <Placeholder
           className="absolute inset-0 h-full w-full !rounded-none border-0 transition-transform duration-700 ease-[var(--ease-soft)] group-hover:scale-[1.04]"

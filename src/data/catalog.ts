@@ -343,6 +343,12 @@ export const collectionById = (id: string | null | undefined): Collection | unde
 export const patternPrice = (collection: Collection, pattern: Pattern, size: SizeId): number =>
   (pattern.prices ?? collection.prices)[size]
 
+/** Khoảng giá của một phối màu qua mọi kích thước */
+export const patternRange = (collection: Collection, pattern: Pattern): { min: number; max: number } => {
+  const values = SIZES.map((s) => patternPrice(collection, pattern, s.id))
+  return { min: Math.min(...values), max: Math.max(...values) }
+}
+
 export const isSizeSoldOut = (pattern: Pattern, size: SizeId): boolean =>
   pattern.soldOut?.includes(size) ?? false
 

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { ImageSource } from '../../data/catalog'
 import { Icon } from './Icon'
 
@@ -40,9 +41,23 @@ export function Placeholder({
   priority,
   position,
 }: PlaceholderProps) {
+  // Ảnh tải hỏng (mạng chập chờn, CDN lỗi): giữ nguyên khung với nền nhạt, không hiện biểu tượng ảnh vỡ và chữ alt của trình duyệt.
+  // Nhớ theo đường dẫn ảnh, để đổi sang ảnh khác (rê chuột, đổi mẫu) thì thử tải lại.
+  const [failedSrc, setFailedSrc] = useState<string | null>(null)
+  if (image && failedSrc === image.src) {
+    return (
+      <span
+        role="img"
+        aria-label={image.alt}
+        style={tint ? { backgroundColor: tint } : undefined}
+        className={`block rounded-[inherit] bg-cream-100 ${className}`}
+      />
+    )
+  }
   if (image) {
     return (
       <img
+        onError={() => setFailedSrc(image.src)}
         src={image.src}
         srcSet={image.srcSet || undefined}
         sizes={image.srcSet ? sizes : undefined}

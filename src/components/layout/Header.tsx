@@ -135,6 +135,9 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const location = useLocation()
+  const headerRef = useRef<HTMLElement>(null)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > SCROLL_THRESHOLD)
@@ -159,11 +162,29 @@ export function Header() {
     }
   }, [isMenuOpen])
 
+  // Menu phủ cả màn hình: phần trang phía dưới (nội dung, chân trang, thanh liên hệ) không cho Tab tới (rà 23/10/2026:
+  // trước đó còn 137 phần tử bị che vẫn nhận focus). Đóng menu khi focus đang trong menu thì trả focus về nút menu.
+  useEffect(() => {
+    if (!isMenuOpen) return
+    const header = headerRef.current
+    const behind = Array.from(header?.parentElement?.children ?? []).filter((el): el is HTMLElement => el !== header && el instanceof HTMLElement)
+    behind.forEach((el) => (el.inert = true))
+    const menu = menuRef.current
+    const menuButton = menuButtonRef.current
+    return () => {
+      behind.forEach((el) => (el.inert = false))
+      // Lúc này menu đã bị gỡ khỏi trang nên focus trong menu rơi về <body>
+      const active = document.activeElement
+      if (!active || active === document.body || menu?.contains(active)) menuButton?.focus()
+    }
+  }, [isMenuOpen])
+
   const solid = isScrolled || isMenuOpen
   const activeHref = useActiveHref()
 
   return (
     <header
+      ref={headerRef}
       className={`sticky top-0 z-40 transition-[background-color,box-shadow,backdrop-filter] duration-500 ${
         solid
           ? 'bg-page/95 shadow-[0_1px_0_rgb(45_46_141/0.1)] backdrop-blur-md'
@@ -209,6 +230,7 @@ export function Header() {
             </NavLink>
           </span>
           <button
+            ref={menuButtonRef}
             type="button"
             className="inline-flex h-11 w-11 items-center justify-center rounded-full text-deep-900 transition-colors hover:bg-mist-100 lg:hidden"
             aria-expanded={isMenuOpen}
@@ -224,8 +246,10 @@ export function Header() {
         // Đưa ra ngoài <header>: header có backdrop-blur nên phần tử fixed bên trong bị cắt theo header
         createPortal(
           <div
+            ref={menuRef}
             id="mobile-menu"
-            className="reveal fixed inset-x-0 top-[4.5rem] bottom-0 z-50 overflow-y-auto bg-page lg:hidden"
+            data-lenis-prevent
+            className="reveal fixed inset-x-0 top-[4.5rem] bottom-0 z-50 overflow-y-auto overscroll-contain bg-page lg:hidden"
           >
             <Container className="flex min-h-full flex-col py-6">
               <nav aria-label="Menu di động">
@@ -238,7 +262,7 @@ export function Header() {
                         className={`flex items-baseline gap-4 py-4 ${item.href === activeHref ? 'text-mist-600' : 'text-deep-900'}`}
                         onClick={() => setIsMenuOpen(false)}
                       >
-                        <span className="tabular text-xs text-ink-faint">0{index + 1}</span>
+                        <span className="tabular text-xs text-ink-faint">{String(index + 1).padStart(2, '0')}</span>
                         <span className="font-display text-[1.6rem]">{item.label}</span>
                         {item.href === activeHref && <span className="ml-auto h-2 w-2 self-center rounded-full bg-mist-600" />}
                       </Link>
@@ -246,7 +270,7 @@ export function Header() {
                   ))}
                 </ul>
               </nav>
-              <div className="mt-auto space-y-3 pt-8 pb-10">
+              <div className="mt-auto space-y-3 pt-8 pb-[max(2.5rem,env(safe-area-inset-bottom))]">
                 <Link to={PATHS.order} className={buttonClass('primary', 'lg', 'w-full')} onClick={() => setIsMenuOpen(false)}>
                   Đặt hàng online
                   <Icon name="arrowRight" size={18} />

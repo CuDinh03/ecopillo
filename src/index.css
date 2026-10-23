@@ -188,9 +188,18 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-mist-600);
+    outline: 2px solid var(--focus-ring, var(--color-mist-600));
     outline-offset: 3px;
     border-radius: 6px;
+  }
+
+  /* Viền focus theo nền nơi nó hiện ra: chàm sáng trên chàm chỉ đạt 1,33:1 (rà 23/10/2026), nên trong khối chàm dùng trắng.
+     Đặt biến trên phần tử con (> *) để nút nền chàm nằm trong khối trắng vẫn lấy màu của khối trắng bao ngoài. */
+  :is(.bg-deep-800, .bg-deep-900, .bg-deep-950) > * {
+    --focus-ring: var(--color-ivory);
+  }
+  :is(.bg-ivory, .bg-cream-50, .bg-cream-100, .bg-mist-50, .bg-mist-100, .bg-page) > * {
+    --focus-ring: var(--color-mist-600);
   }
 
   /* Khung ảnh theo tỉ lệ: không cho ảnh làm khung cao thêm khi tải xong (tránh xô lệch khi cuộn) */

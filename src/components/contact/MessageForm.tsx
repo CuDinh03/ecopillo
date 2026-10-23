@@ -44,7 +44,7 @@ const validate = (f: ContactForm): ContactErrors => {
 }
 
 const INPUT =
-  'mt-2 block w-full rounded-xl border bg-ivory px-4 py-3.5 text-[1rem] text-deep-900 placeholder:text-ink-faint transition focus:border-deep-700 focus:ring-4 focus:ring-cream-200 focus:outline-none'
+  'mt-2 block w-full rounded-xl border bg-ivory px-4 py-3.5 text-[1rem] text-deep-900 placeholder:text-ink-faint transition focus:border-deep-700 focus:ring-2 focus:ring-deep-700 focus:outline-none'
 
 const inputClass = (hasError: boolean) => `${INPUT} ${hasError ? 'border-alert ring-4 ring-alert-soft' : 'border-line'}`
 

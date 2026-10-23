@@ -5,6 +5,7 @@ import {
   GIFTS,
   isSizeSoldOut,
   patternPrice,
+  patternRange,
   SIZES,
   type Collection,
   type ImageSource,
@@ -112,12 +113,12 @@ interface ChapterBuyProps {
 }
 
 export function ChapterBuy({ collection, pattern, size, onSize, isSoldOut, className = '' }: ChapterBuyProps) {
-  const prices = SIZES.map((s) => patternPrice(collection, pattern, s.id))
+  const range = patternRange(collection, pattern)
   const gift = collection.gift !== 'none' ? GIFTS[collection.gift] : undefined
   return (
     <div className={className}>
       <p className="tabular font-display text-[1.9rem] leading-none text-deep-900">
-        {size ? formatVND(patternPrice(collection, pattern, size)) : formatRange(Math.min(...prices), Math.max(...prices))}
+        {size ? formatVND(patternPrice(collection, pattern, size)) : formatRange(range.min, range.max)}
       </p>
 
       <fieldset className="mt-6">
