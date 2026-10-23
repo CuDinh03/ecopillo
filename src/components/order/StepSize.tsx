@@ -1,24 +1,89 @@
 import { CONTACT } from '../../data/brand'
-import { GIFT_PROGRAM_NOTE, isSizeSoldOut, patternPrice, SIZES, unitOf, type SizeId } from '../../data/catalog'
+import {
+  GIFT_PROGRAM_NOTE,
+  isSizeSoldOut,
+  setPrice,
+  SHEET_LABELS,
+  SIZES,
+  unitOf,
+  type SheetStyle,
+  type SizeId,
+} from '../../data/catalog'
 import { formatVND } from '../../lib/format'
-import { MAX_QUANTITY, type OrderSummaryData } from '../../lib/order'
+import { MAX_QUANTITY, PRICE_ON_CALL, type OrderSummaryData } from '../../lib/order'
 import { Icon } from '../ui/Icon'
 import { QuantityStepper } from '../ui/QuantityStepper'
 import { FillIn } from '../ui/primitives'
 
 interface StepSizeProps {
   summary: OrderSummaryData
+  sheet: SheetStyle
+  onSelectSheet: (sheet: SheetStyle) => void
   onSelectSize: (size: SizeId) => void
   onChangeQuantity: (quantity: number) => void
 }
 
-export function StepSize({ summary, onSelectSize, onChangeQuantity }: StepSizeProps) {
-  const { collection, pattern, size, quantity, gift, giftCount, subtotal } = summary
+// Chỉ tả kiểu ga chung, không thêm chi tiết sản phẩm chưa được Ecopillo xác nhận
+const SHEET_NOTES: Readonly<Record<SheetStyle, string>> = {
+  phu: 'Trải phủ mặt đệm, buông xuống quanh thành đệm',
+  chun: 'Bo chun ôm quanh đệm, không xô lệch',
+}
+
+export function StepSize({ summary, sheet, onSelectSheet, onSelectSize, onChangeQuantity }: StepSizeProps) {
+  const { collection, pattern, size, quantity, gift, giftCount, subtotal, priceOnCall } = summary
   if (!collection || !pattern) return null
   const unit = unitOf(collection)
+  const activeSheet: SheetStyle = collection.hasFittedOption ? sheet : 'phu'
 
   return (
     <div className="space-y-12">
+      {/* Mục 28 (Ecopillo trả lời 23/10/2026): Rosa, Tera, Vera chọn ga phủ chần hoặc ga chun chần, giá riêng */}
+      {collection.hasFittedOption && (
+        <fieldset>
+          <legend className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">Kiểu ga</legend>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            {(['phu', 'chun'] as const).map((id) => {
+              const checked = activeSheet === id
+              return (
+                <label
+                  key={id}
+                  className={`flex cursor-pointer items-start justify-between gap-3 rounded-2xl p-5 ring-1 transition duration-300 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-mist-600 ${
+                    checked ? 'bg-mist-50 shadow-[var(--shadow-soft)] ring-2 ring-deep-800' : 'bg-ivory ring-cream-200 hover:ring-mist-400'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="sheet"
+                    value={id}
+                    checked={checked}
+                    onChange={() => onSelectSheet(id)}
+                    className="sr-only"
+                  />
+                  <span>
+                    <span className="font-display block text-[1.35rem] leading-tight text-deep-900">{SHEET_LABELS[id]}</span>
+                    <span className="mt-1 block text-sm text-ink-soft">{SHEET_NOTES[id]}</span>
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className={`mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
+                      checked ? 'border-deep-800 bg-deep-800 text-ivory' : 'border-line'
+                    }`}
+                  >
+                    {checked && <Icon name="check" size={12} strokeWidth={2.4} />}
+                  </span>
+                </label>
+              )
+            })}
+          </div>
+          {activeSheet === 'chun' && !pattern.fittedPrices && (
+            <p className="mt-4 text-sm text-ink-soft">
+              Mẫu {pattern.code} chưa có giá ga chun chần: nhân viên báo giá khi gọi xác nhận.{' '}
+              <FillIn>[ĐIỀN GIÁ GA CHUN CHẦN {pattern.code}]</FillIn>
+            </p>
+          )}
+        </fieldset>
+      )}
+
       <fieldset id="chon-kich-thuoc" className="scroll-mt-28">
         <legend className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">Chọn kích thước</legend>
         <p className="mt-1 text-sm text-ink-soft">
@@ -74,7 +139,7 @@ export function StepSize({ summary, onSelectSize, onChangeQuantity }: StepSizePr
                     </span>
                   ) : (
                     <span className="tabular font-medium text-deep-900">
-                      {formatVND(patternPrice(collection, pattern, s.id))}
+                      {formatPrice(setPrice(collection, pattern, s.id, activeSheet))}
                     </span>
                   )}
                 </span>
@@ -131,9 +196,13 @@ export function StepSize({ summary, onSelectSize, onChangeQuantity }: StepSizePr
       {size && (
         <p className="flex items-baseline justify-between border-t border-ivory pt-6">
           <span className="text-ink-soft">Tạm tính ({quantity} {unit})</span>
-          <span className="tabular font-display text-3xl text-deep-900">{formatVND(subtotal)}</span>
+          <span className="tabular font-display text-3xl text-deep-900">
+            {priceOnCall ? <span className="text-lg">{PRICE_ON_CALL}</span> : formatVND(subtotal)}
+          </span>
         </p>
       )}
     </div>
   )
 }
+
+const formatPrice = (price: number | undefined) => (price === undefined ? PRICE_ON_CALL : formatVND(price))

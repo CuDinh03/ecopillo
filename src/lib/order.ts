@@ -4,7 +4,8 @@ import {
   imageOfPattern,
   isPatternSoldOut,
   isSizeSoldOut,
-  patternPrice,
+  setPrice,
+  SHEET_LABELS,
   sizeById,
   SIZES,
   unitOf,
@@ -12,6 +13,7 @@ import {
   type Gift,
   type ImageSource,
   type Pattern,
+  type SheetStyle,
   type SizeId,
 } from '../data/catalog'
 import { categoryLabel, isValidSingleChoice, singleUnitPrice, type Product } from '../data/products'
@@ -35,6 +37,8 @@ export interface OrderDraft {
   collectionId: string | null
   patternCode: string | null
   size: SizeId | null
+  /** Ga phủ chần hay ga chun chần; chỉ đổi được ở bộ có hasFittedOption (mục 28) */
+  sheet: SheetStyle
   quantity: number
   customer: CustomerInfo
 }
@@ -57,6 +61,7 @@ export const createDraft = (
   collectionId: string | null,
   patternCode: string | null = null,
   size: string | null = null,
+  sheet: string | null = null,
 ): OrderDraft => {
   const collection = collectionById(collectionId)
   const pattern = collection?.patterns.find((p) => p.code === patternCode && !isPatternSoldOut(p))
@@ -65,6 +70,7 @@ export const createDraft = (
     collectionId: collection ? collection.id : null,
     patternCode: pattern ? pattern.code : null,
     size: pattern && sizeId && !isSizeSoldOut(pattern, sizeId) ? sizeId : null,
+    sheet: collection?.hasFittedOption && sheet === 'chun' ? 'chun' : 'phu',
     quantity: 1,
     customer: EMPTY_CUSTOMER,
   }
@@ -147,7 +153,10 @@ export const summarize = (draft: OrderDraft): OrderSummaryData => {
   const collection = collectionById(draft.collectionId)
   const pattern = collection?.patterns.find((p) => p.code === draft.patternCode)
   const size = pattern && draft.size && !isSizeSoldOut(pattern, draft.size) ? draft.size : null
-  const unitPrice = collection && pattern && size ? patternPrice(collection, pattern, size) : 0
+  const sheet: SheetStyle = collection?.hasFittedOption ? draft.sheet : 'phu'
+  const price = collection && pattern && size ? setPrice(collection, pattern, size, sheet) : undefined
+  const priceOnCall = Boolean(size) && price === undefined
+  const unitPrice = price ?? 0
   const subtotal = unitPrice * draft.quantity
   const gift = collection && collection.gift !== 'none' ? GIFTS[collection.gift] : undefined
   const giftCount = gift ? gift.perSet * draft.quantity : 0
@@ -155,7 +164,9 @@ export const summarize = (draft: OrderDraft): OrderSummaryData => {
     ? {
         kindLabel: collection.kindLabel,
         name: collection.name,
-        detail: pattern ? `${pattern.code} · ${pattern.colorName}` : 'Chưa chọn mẫu',
+        detail: pattern
+          ? [pattern.code, pattern.colorName, collection.hasFittedOption ? SHEET_LABELS[sheet] : null].filter(Boolean).join(' · ')
+          : 'Chưa chọn mẫu',
         image: imageOfPattern(collection, pattern),
         tint: pattern?.swatch,
         imageNote: pattern ? `Ảnh ${pattern.code}` : 'Ảnh bộ sưu tập',
@@ -177,7 +188,7 @@ export const summarize = (draft: OrderDraft): OrderSummaryData => {
       quantity: draft.quantity,
       unitPrice,
       subtotal,
-      priceOnCall: false,
+      priceOnCall,
       gift,
       giftCount,
     },

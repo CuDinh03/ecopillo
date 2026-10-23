@@ -9,7 +9,7 @@ import { Stepper, type StepNumber } from '../components/order/Stepper'
 import { Icon } from '../components/ui/Icon'
 import { buttonClass, Container } from '../components/ui/primitives'
 import { CONTACT } from '../data/brand'
-import { collectionById, isSizeSoldOut, type SizeId } from '../data/catalog'
+import { collectionById, isSizeSoldOut, type SheetStyle, type SizeId } from '../data/catalog'
 import { productBySlug } from '../data/products'
 import {
   createDraft,
@@ -30,6 +30,7 @@ const COLLECTION_PARAM = 'bo-suu-tap'
 const MOBILE_QUERY = '(max-width: 1023px)'
 const PATTERN_PARAM = 'mau'
 const SIZE_PARAM = 'kich-thuoc'
+const SHEET_PARAM = 'kieu-ga'
 
 type View = StepNumber | 'done'
 
@@ -61,6 +62,7 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
       searchParams.get(COLLECTION_PARAM) ?? initialCollection,
       searchParams.get(PATTERN_PARAM),
       searchParams.get(SIZE_PARAM),
+      searchParams.get(SHEET_PARAM),
     ),
   )
   // Đến từ trang chi tiết đã chọn mẫu: vào thẳng bước kích thước & số lượng
@@ -117,6 +119,7 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
   }
 
   const selectSize = (size: SizeId) => setDraft((d) => ({ ...d, size }))
+  const selectSheet = (sheet: SheetStyle) => setDraft((d) => ({ ...d, sheet }))
   const changeQuantity = (quantity: number) =>
     setDraft((d) => ({ ...d, quantity: Math.min(MAX_QUANTITY, Math.max(1, quantity)) }))
   const changeCustomer = (patch: Partial<CustomerInfo>) => {
@@ -241,7 +244,7 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
                 onSelectPattern={selectPattern}
               />
             )}
-            {view === 2 && <StepSize summary={summary} onSelectSize={selectSize} onChangeQuantity={changeQuantity} />}
+            {view === 2 && <StepSize summary={summary} sheet={draft.sheet} onSelectSheet={selectSheet} onSelectSize={selectSize} onChangeQuantity={changeQuantity} />}
             {view === 3 && (
               <StepCustomer
                 customer={draft.customer}

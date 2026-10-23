@@ -286,10 +286,12 @@ const ANATOMY = [
     note: 'Eco Rosa, Tera, Vera, Sweet, Liora, Doris',
     items: [
       ['Ga phủ chần', '160×200 · 180×200 · 200×220'],
+      // Mục 28 (Ecopillo trả lời 23/10/2026): Rosa, Tera, Vera chọn được ga chun chần thay ga phủ, giá riêng
+      ['hoặc ga chun chần (Rosa, Tera, Vera)', 'cùng kích thước'],
       ['Vỏ chăn 4 mùa, khoá kéo', '200×220'],
       ['2 vỏ gối đầu', '45×65'],
       ['1 vỏ gối ôm', '80×100'],
-      // Chỉ Eco Doris có gối tựa (mục 29). Mục 28 (ga chun chần) còn chờ khách, sẽ sửa tiếp thẻ này
+      // Chỉ Eco Doris có gối tựa (mục 29)
       ['1 vỏ gối tựa (riêng Eco Doris)', '45×45'],
     ],
   },

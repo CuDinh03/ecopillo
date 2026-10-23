@@ -72,7 +72,14 @@ export interface Pattern {
   soldOut?: readonly SizeId[]
   /** Giá riêng nếu mẫu khác giá chung của bộ sưu tập */
   prices?: PriceTable
+  /** Giá bộ ga chun chần (thay ga phủ chần), theo web cũ; không có thì mẫu này chưa đặt được ga chun chần */
+  fittedPrices?: PriceTable
 }
+
+/** Kiểu ga trong bộ: ga phủ chần (mặc định) hoặc ga chun chần (mục 28) */
+export type SheetStyle = 'phu' | 'chun'
+
+export const SHEET_LABELS: Readonly<Record<SheetStyle, string>> = { phu: 'Ga phủ chần', chun: 'Ga chun chần' }
 
 export type CollectionKind = 'ga-phu' | 'ga-chun' | 'chan-ga' | 'chan-he'
 
@@ -87,6 +94,8 @@ export interface Collection {
   prices: PriceTable
   gift: GiftTier
   contents: readonly string[]
+  /** Có lựa chọn ga chun chần thay ga phủ (Rosa, Tera, Vera; mục 28, Ecopillo: giá riêng) */
+  hasFittedOption?: boolean
   patterns: readonly Pattern[]
   imageNote: string
   /** Mã mẫu dùng làm ảnh đại diện bộ sưu tập (phải có hasImage) */
@@ -103,6 +112,9 @@ const SET_PHU_CONTENTS = [
 /** Eco Doris có thêm vỏ gối tựa: 6 món (khách yêu cầu 16/10/2026, mục 29) */
 const DORIS_CONTENTS = [...SET_PHU_CONTENTS, '1 vỏ gối tựa 45×45'] as const
 
+/** Rosa, Tera, Vera: chọn ga phủ chần hoặc ga chun chần (mục 28, Ecopillo trả lời 23/10/2026) */
+const SET_PHU_OR_CHUN_CONTENTS = ['Ga phủ chần hoặc ga chun chần theo kích thước giường', ...SET_PHU_CONTENTS.slice(1)] as const
+
 const SET_CHUN_CONTENTS = [
   'Ga chun theo kích thước giường',
   'Vỏ chăn 4 mùa 200×220',
@@ -117,6 +129,12 @@ const price = (a: number, b: number, c: number): PriceTable => ({
 
 const ROSA_NEW = price(5_080_000, 5_440_000, 5_800_000)
 const TERA_ET06 = price(5_540_000, 5_630_000, 5_720_000)
+
+/* Giá bộ ga chun chần theo trang từng mẫu trên web cũ (lấy 23/10/2026). Mẫu không ghi ở đây: web cũ không bán ga chun chần,
+   trang đặt hàng hiện ô [ĐIỀN GIÁ]. ER46 (2m2) và ER48 (1m8) ghi 5.800.000đ, lệch nhịp với ER45, ER47: giữ đúng web cũ, chờ Ecopillo xác nhận */
+const ROSA_ER39_CHUN = price(4_700_000, 4_950_000, 5_300_000)
+const ROSA_NEW_CHUN = price(5_080_000, 5_200_000, 5_400_000)
+const TERA_CHUN = price(5_040_000, 5_180_000, 5_380_000)
 
 /** Mẫu có ảnh thật */
 const real = (code: string, colorName: string, swatch: string, extra: Partial<Pattern> = {}): Pattern => ({
@@ -163,11 +181,12 @@ export const COLLECTIONS: readonly Collection[] = [
     badge: 'Nhiều mẫu nhất',
     prices: price(4_950_000, 5_320_000, 5_690_000),
     gift: 'one-plus',
-    contents: SET_PHU_CONTENTS,
+    contents: SET_PHU_OR_CHUN_CONTENTS,
+    hasFittedOption: true,
     imageNote: 'Ảnh phòng ngủ trải bộ Eco Rosa ER48',
     cover: 'ER48',
     patterns: [
-      real('ER48', 'Lá xanh nền trắng', '#e1e2e0', { isNew: true, prices: ROSA_NEW }),
+      real('ER48', 'Lá xanh nền trắng', '#e1e2e0', { isNew: true, prices: ROSA_NEW, fittedPrices: price(5_080_000, 5_800_000, 5_400_000) }),
       real('ER06', 'Hoa hồng nền trắng', '#efeeed'),
       real('ER08', 'Kẻ ô xanh denim', '#bdcbdd'),
       real('ER09', 'Lá xanh nhạt', '#cdd3e5'),
@@ -194,11 +213,11 @@ export const COLLECTIONS: readonly Collection[] = [
       real('ER34', 'Hình học xanh hồng', '#a8a3ab'),
       real('ER35', 'Hoa kem be', '#cbc6c3'),
       real('ER37', 'Lá xanh lam', '#a6b1c1'),
-      real('ER39', 'Lá xanh tím', '#a4abbf'),
+      real('ER39', 'Lá xanh tím', '#a4abbf', { fittedPrices: ROSA_ER39_CHUN }),
       real('ER42', 'Hoa hồng đỏ', '#ded0d5'),
-      real('ER45', 'Gấu hồng', '#e6d3d9', { isNew: true, prices: ROSA_NEW }),
-      real('ER46', 'Tàu thuyền xanh', '#bacbe3', { isNew: true, prices: ROSA_NEW }),
-      real('ER47', 'Hoa nhí hồng', '#e1dde0', { isNew: true, prices: ROSA_NEW, soldOut: ['180x200'] }),
+      real('ER45', 'Gấu hồng', '#e6d3d9', { isNew: true, prices: ROSA_NEW, fittedPrices: ROSA_NEW_CHUN }),
+      real('ER46', 'Tàu thuyền xanh', '#bacbe3', { isNew: true, prices: ROSA_NEW, fittedPrices: price(5_080_000, 5_200_000, 5_800_000) }),
+      real('ER47', 'Hoa nhí hồng', '#e1dde0', { isNew: true, prices: ROSA_NEW, soldOut: ['180x200'], fittedPrices: ROSA_NEW_CHUN }),
       real('ER49', 'Trắng xám', '#ccccc6', { isNew: true, prices: ROSA_NEW }),
     ],
   },
@@ -212,15 +231,16 @@ export const COLLECTIONS: readonly Collection[] = [
       'Lyocell trơn một màu với ánh lụa nhẹ, viền chần nổi quanh ga phủ. Sáu gam màu từ xanh da trời, hồng phấn đến kem và xám.',
     prices: price(5_040_000, 5_380_000, 5_720_000),
     gift: 'one-plus',
-    contents: SET_PHU_CONTENTS,
+    contents: SET_PHU_OR_CHUN_CONTENTS,
+    hasFittedOption: true,
     imageNote: 'Ảnh bộ Eco Tera ET04',
     cover: 'ET04',
     patterns: [
-      real('ET01', 'Xanh da trời', '#a2bfe1'),
-      real('ET02', 'Hồng phấn', '#f0d2d8', { soldOut: ['160x200'] }),
-      real('ET03', 'Xám bạc', '#bdbdbe'),
-      real('ET04', 'Vàng kem', '#e5d8c8'),
-      real('ET05', 'Trắng ngà', '#f4f3e9', { soldOut: ['160x200', '180x200', '200x220'] }),
+      real('ET01', 'Xanh da trời', '#a2bfe1', { fittedPrices: TERA_CHUN }),
+      real('ET02', 'Hồng phấn', '#f0d2d8', { soldOut: ['160x200'], fittedPrices: TERA_CHUN }),
+      real('ET03', 'Xám bạc', '#bdbdbe', { fittedPrices: TERA_CHUN }),
+      real('ET04', 'Vàng kem', '#e5d8c8', { fittedPrices: TERA_CHUN }),
+      real('ET05', 'Trắng ngà', '#f4f3e9', { soldOut: ['160x200', '180x200', '200x220'], fittedPrices: TERA_CHUN }),
       real('ET06', 'Xám ghi', '#818284', { prices: TERA_ET06 }),
     ],
   },
@@ -234,7 +254,8 @@ export const COLLECTIONS: readonly Collection[] = [
       'Họa tiết hoa lá và hình học mềm mại trên nền Lyocell pastel, hợp phòng ngủ sáng màu và nhiều ánh nắng.',
     prices: price(5_600_000, 5_690_000, 5_790_000),
     gift: 'one-plus',
-    contents: SET_PHU_CONTENTS,
+    contents: SET_PHU_OR_CHUN_CONTENTS,
+    hasFittedOption: true,
     imageNote: 'Ảnh bộ Eco Vera EV02',
     cover: 'EV02',
     patterns: [
@@ -342,6 +363,10 @@ export const collectionById = (id: string | null | undefined): Collection | unde
 
 export const patternPrice = (collection: Collection, pattern: Pattern, size: SizeId): number =>
   (pattern.prices ?? collection.prices)[size]
+
+/** Giá bộ theo kiểu ga. Ga chun chần chưa có giá (web cũ không bán mẫu này) thì undefined: nhân viên báo khi gọi */
+export const setPrice = (collection: Collection, pattern: Pattern, size: SizeId, sheet: SheetStyle): number | undefined =>
+  sheet === 'chun' ? pattern.fittedPrices?.[size] : patternPrice(collection, pattern, size)
 
 /** Khoảng giá của một phối màu qua mọi kích thước */
 export const patternRange = (collection: Collection, pattern: Pattern): { min: number; max: number } => {
