@@ -103,7 +103,7 @@ function HotelHero() {
           className="absolute inset-0 h-full w-full object-cover object-left"
         />
         {/* Góc phải: góc trái dưới ảnh có dấu mã mẫu in sẵn. Ảnh neo mép trái để vòng mã nằm trọn, không bị cắt nửa */}
-        <span className="absolute right-4 bottom-3 rounded-full bg-ivory/90 px-3 py-1 text-[0.72rem] text-deep-900 lg:right-6 lg:bottom-5">
+        <span className="absolute right-4 bottom-3 rounded-full bg-ivory/90 px-3 py-1 text-label text-deep-900 lg:right-6 lg:bottom-5">
           Eco Doris ED10 · Trắng tinh
         </span>
       </div>
@@ -114,9 +114,9 @@ function HotelHero() {
         <h1 id="page-title" className="font-display mt-4 text-[2.6rem] leading-[1.02] text-balance text-deep-900 sm:text-[3.4rem] xl:text-[4rem]">
           Giấc ngủ năm sao <em className="block text-deep-700">cho khách lưu trú</em>
         </h1>
-        <p className="mt-5 max-w-lg text-[0.8rem] font-medium tracking-[0.12em] text-balance text-deep-700 uppercase">{HOTEL_INTRO_HEADING}</p>
+        <p className="mt-5 max-w-lg text-meta font-medium tracking-[0.12em] text-balance text-deep-700 uppercase">{HOTEL_INTRO_HEADING}</p>
         {/* Chỉ đoạn đầu: đủ 3 đoạn thì phần đầu cao thêm, ảnh bị cắt lệch (owner báo 17/10/2026). Đoạn 2, 3 ở phần nền chàm */}
-        <p className="mt-3 max-w-md text-[1.02rem] leading-relaxed text-ink-soft">{HOTEL_INTRO[0]}</p>
+        <p className="mt-3 max-w-md text-body leading-relaxed text-ink-soft">{HOTEL_INTRO[0]}</p>
         <div className="mt-8 flex flex-wrap gap-3">
           <a href="#bao-gia" className={buttonClass('primary', 'lg')}>
             Nhận báo giá
@@ -195,7 +195,7 @@ function BedLayers() {
                       >
                         {l.title}
                       </span>
-                      <span className="col-start-2 mt-1 text-[0.86rem] text-ink-soft">{l.text}</span>
+                      <span className="col-start-2 mt-1 text-small text-ink-soft">{l.text}</span>
                     </button>
                     <Link
                       to={l.to}
@@ -226,7 +226,7 @@ function Reasons() {
           <h2 id="reason-title" className="font-display text-[2.1rem] leading-[1.12] italic sm:text-[3.1rem]">
             “Bền cho vận hành, <em className="text-mist-300">êm cho khách nghỉ.</em>”
           </h2>
-          <div className="mt-6 space-y-3 text-[0.95rem] leading-relaxed text-mist-200/90">
+          <div className="mt-6 space-y-3 text-body-sm leading-relaxed text-mist-200/90">
             {HOTEL_INTRO.slice(1).map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
@@ -266,7 +266,7 @@ function Steps() {
               <span className="font-display text-[2.3rem] leading-none text-deep-700 italic lg:mb-3 lg:text-[3.2rem]">{twoDigits(i + 1)}</span>
               <div>
                 <h3 className="font-medium text-deep-900">{s.title}</h3>
-                <p className="mt-1 text-[0.88rem] leading-relaxed text-ink-soft">{s.text}</p>
+                <p className="mt-1 text-small leading-relaxed text-ink-soft">{s.text}</p>
               </div>
             </li>
           ))}
@@ -300,7 +300,7 @@ function Quote() {
           <h2 id="quote-title" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.6rem]">
             Gửi yêu cầu cho <em className="text-deep-700">dự án của Quý khách</em>
           </h2>
-          <p className="mt-4 max-w-xl text-[0.98rem] leading-relaxed text-ink-soft">
+          <p className="mt-4 max-w-xl text-body-sm leading-relaxed text-ink-soft">
             Ghi số phòng, cỡ giường và món cần may. Bộ phận dự án gọi lại, gửi mẫu vải và báo giá riêng.
           </p>
         </header>
@@ -311,7 +311,7 @@ function Quote() {
             submitLabel="Gửi yêu cầu báo giá"
           />
         </div>
-        <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-[0.95rem]">
+        <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-body-sm">
           <li>
             <a href={CONTACT.hotlineTel} className="inline-flex items-center gap-2 text-deep-900 hover:underline">
               <Icon name="phone" size={17} className="text-deep-700" />

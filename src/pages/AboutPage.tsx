@@ -145,7 +145,7 @@ export function AboutPage() {
           {PHILOSOPHY.map((p, i) => (
             <li key={p.word} data-reveal style={revealDelay(i)} className="grid gap-1 border-t border-line py-5 sm:grid-cols-[9rem_1fr] sm:items-baseline sm:gap-6">
               <p className="font-display text-[3rem] leading-none text-deep-700 italic">{p.word}</p>
-              <p className="text-[1rem] leading-relaxed text-ink-soft">{p.text}</p>
+              <p className="text-body leading-relaxed text-ink-soft">{p.text}</p>
             </li>
           ))}
         </ol>
@@ -182,7 +182,7 @@ export function AboutPage() {
                 <Icon name="leaf" size={15} className="text-deep-700" />
                 {t.title}
               </dt>
-              <dd className="mt-1 text-[0.88rem] leading-relaxed text-ink-soft">{t.text}</dd>
+              <dd className="mt-1 text-small leading-relaxed text-ink-soft">{t.text}</dd>
             </div>
           ))}
         </dl>
@@ -232,7 +232,7 @@ export function AboutPage() {
               </span>
               <span>
                 <span className="block font-medium text-deep-900">{v.title}</span>
-                <span className="mt-0.5 block text-[0.9rem] text-ink-soft">{v.text}</span>
+                <span className="mt-0.5 block text-small text-ink-soft">{v.text}</span>
               </span>
             </li>
           ))}
@@ -277,7 +277,7 @@ function Cover() {
           style={{ objectPosition: '30% 30%' }}
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <span className="absolute right-4 bottom-3 rounded-full bg-ivory/90 px-3 py-1 text-[0.72rem] text-deep-900 lg:right-6 lg:bottom-5">
+        <span className="absolute right-4 bottom-3 rounded-full bg-ivory/90 px-3 py-1 text-label text-deep-900 lg:right-6 lg:bottom-5">
           Chị Phạm Thị Phương tại VTV3
         </span>
       </div>
@@ -289,7 +289,7 @@ function Cover() {
         <h1 id="page-title" className="font-display mt-4 text-[2.6rem] leading-[1.02] text-balance text-deep-900 sm:text-[3.4rem] xl:text-[3.9rem]">
           Hơn 15 năm <em className="block text-deep-700">nâng niu giấc ngủ Việt</em>
         </h1>
-        <p className="mt-5 max-w-md text-[1.02rem] leading-relaxed text-ink-soft">
+        <p className="mt-5 max-w-md text-body leading-relaxed text-ink-soft">
           Ecopillo Eternal Việt Nam làm chăn ga gối đệm từ chất liệu thiên nhiên, với một mong muốn giản dị: mỗi gia đình có một chốn yên để ngủ ngon.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
@@ -320,7 +320,7 @@ function TableOfContents() {
                 <span className="font-display text-[1.15rem] text-deep-700 italic">
                   {t.numeral || <Icon name={t.icon} size={15} className="text-deep-700" />}
                 </span>
-                <span className="font-display text-[1.05rem] text-deep-900 transition-colors group-hover:text-deep-700">{t.title}</span>
+                <span className="font-display text-lead text-deep-900 transition-colors group-hover:text-deep-700">{t.title}</span>
                 <Icon name="arrowRight" size={15} className="text-deep-700 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" />
               </a>
             </li>
@@ -340,7 +340,7 @@ function Recognition() {
             <p className="font-display text-[1.9rem] leading-none whitespace-nowrap text-deep-900 sm:text-[2.4rem]">
               <CountUp value={s.value} />
             </p>
-            <p className="mt-2 text-[0.76rem] leading-snug text-ink-soft sm:text-[0.85rem]">{s.label}</p>
+            <p className="mt-2 text-label leading-snug text-ink-soft sm:text-small">{s.label}</p>
           </li>
         ))}
       </ul>
@@ -353,7 +353,7 @@ function Recognition() {
           decoding="async"
           className="aspect-[2/1] w-full rounded-[0.35rem] bg-cream-100 object-cover"
         />
-        <figcaption className="font-display mt-3 text-center text-[0.95rem] text-ink-faint italic">Lễ công bố {AWARD_NAME}.</figcaption>
+        <figcaption className="font-display mt-3 text-center text-body-sm text-ink-faint italic">Lễ công bố {AWARD_NAME}.</figcaption>
       </figure>
       <ul className="mt-8 grid gap-3">
         {CERTIFICATES.map((c, i) => (
@@ -367,7 +367,7 @@ function Recognition() {
             </span>
             <span>
               <span className="font-display block text-[1.15rem] leading-tight text-deep-900">{c.name}</span>
-              <span className="mt-1 block text-[0.88rem] leading-relaxed text-ink-soft">{c.text}</span>
+              <span className="mt-1 block text-small leading-relaxed text-ink-soft">{c.text}</span>
             </span>
           </li>
         ))}

@@ -24,7 +24,7 @@ export function NotFoundPage() {
           <li key={s.to}>
             <Link
               to={s.to}
-              className="inline-flex items-center gap-1 rounded-full bg-cream-50 px-4 py-2 text-[0.9rem] text-deep-900 ring-1 ring-cream-200 transition hover:ring-deep-700/40"
+              className="inline-flex items-center gap-1 rounded-full bg-cream-50 px-4 py-2 text-small text-deep-900 ring-1 ring-cream-200 transition hover:ring-deep-700/40"
             >
               {s.label}
               <Icon name="arrowRight" size={13} className="opacity-60" />

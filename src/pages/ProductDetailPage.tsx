@@ -134,7 +134,7 @@ function ProductDetail({ product }: { product: Product }) {
                 <dl className="grid grid-cols-2 gap-3 rounded-2xl bg-cream-50 p-4 shadow-[var(--shadow-soft)]">
                   {specs.map((spec) => (
                     <div key={spec.label}>
-                      <dt className="text-[0.7rem] tracking-[0.12em] text-ink-faint uppercase">{spec.label}</dt>
+                      <dt className="text-label tracking-[0.12em] text-ink-faint uppercase">{spec.label}</dt>
                       <dd className="mt-0.5 text-sm font-medium text-deep-900">{spec.value}</dd>
                     </div>
                   ))}
@@ -220,12 +220,12 @@ function ProductStory({ sections }: { sections: readonly InfoSection[] }) {
           <div key={section.title}>
             <h3 className="eyebrow">{section.title}</h3>
             {section.body?.map((line) => (
-              <p key={line} className="mt-3 text-[0.95rem] leading-relaxed text-ink-soft">
+              <p key={line} className="mt-3 text-body-sm leading-relaxed text-ink-soft">
                 {line}
               </p>
             ))}
             {section.list && (
-              <ul className="mt-3 space-y-2.5 text-[0.95rem] leading-relaxed text-ink-soft">
+              <ul className="mt-3 space-y-2.5 text-body-sm leading-relaxed text-ink-soft">
                 {section.list.map((line) => (
                   <li key={line} className="flex gap-3">
                     <span aria-hidden className="mt-[0.6rem] h-1.5 w-1.5 shrink-0 rounded-full bg-mist-600" />

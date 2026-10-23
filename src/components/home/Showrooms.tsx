@@ -63,7 +63,7 @@ export function Showrooms() {
                 <div className="flex flex-1 flex-col p-7 sm:p-9">
                   <p className="eyebrow">{s.kind}</p>
                   <h3 className="font-display mt-3 text-[1.85rem] text-deep-900">{s.city}</h3>
-                  <ul className="mt-5 space-y-3 text-[0.92rem]">
+                  <ul className="mt-5 space-y-3 text-body-sm">
                     <li className="flex gap-3">
                       <Icon name="pin" size={18} className="mt-0.5 shrink-0 text-mist-600" />
                       <span className="text-deep-900">{s.address}</span>
@@ -142,7 +142,7 @@ export function Faq({ standalone = false, compact = false }: { standalone?: bool
                       <Icon name="plus" size={18} />
                     </span>
                   </summary>
-                  <div className="space-y-3 pr-12 pb-7 pl-8 text-[0.97rem] leading-relaxed text-ink-soft sm:pl-9">
+                  <div className="space-y-3 pr-12 pb-7 pl-8 text-body-sm leading-relaxed text-ink-soft sm:pl-9">
                     {f.a.map((line) => (
                       <p key={line}>
                         <RichLine text={line} />

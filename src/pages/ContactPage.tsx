@@ -49,12 +49,12 @@ function Channel({ href, icon, label, value, note, external, highlight, long }: 
         {icon}
       </span>
       <span className="min-w-0 flex-1 leading-tight">
-        <span className={`block text-[0.72rem] font-medium tracking-[0.12em] uppercase ${highlight ? 'text-ivory/75' : 'text-mist-600'}`}>
+        <span className={`block text-label font-medium tracking-[0.12em] uppercase ${highlight ? 'text-ivory/75' : 'text-mist-600'}`}>
           {label}
         </span>
         {/* Email: chỉ cho xuống dòng ngay sau @ (trước bẻ giữa chữ "…com.v / n"). Số điện thoại xuống dòng chứ không cắt
             khi khách bật chữ to (rà 23/10/2026: "không bao giờ cắt số") */}
-        <span className={`tabular mt-1 block font-medium ${long ? 'text-[1.02rem]' : highlight ? 'text-[1.25rem]' : 'text-[1.02rem] sm:text-[1.25rem]'}`}>
+        <span className={`tabular mt-1 block font-medium ${long ? 'text-body' : highlight ? 'text-[1.25rem]' : 'text-body sm:text-[1.25rem]'}`}>
           {long && value.includes('@') ? (
             <>
               {value.slice(0, value.indexOf('@') + 1)}
@@ -65,7 +65,7 @@ function Channel({ href, icon, label, value, note, external, highlight, long }: 
             value
           )}
         </span>
-        <span className={`mt-0.5 text-[0.8rem] ${highlight ? 'block text-ivory/80' : 'hidden text-ink-soft sm:block'}`}>{note}</span>
+        <span className={`mt-0.5 text-meta ${highlight ? 'block text-ivory/80' : 'hidden text-ink-soft sm:block'}`}>{note}</span>
       </span>
       <Icon name="arrowRight" size={18} className={`${highlight ? '' : 'hidden sm:block'} shrink-0 opacity-60 transition group-hover:translate-x-0.5 group-hover:opacity-100`} />
     </a>
@@ -149,7 +149,7 @@ function OfficeMap() {
               type="button"
               aria-pressed={i === index}
               onClick={() => setIndex(i)}
-              className={`rounded-full px-3.5 py-1.5 text-[0.82rem] transition ${
+              className={`rounded-full px-3.5 py-1.5 text-meta transition ${
                 i === index ? 'bg-deep-800 text-ivory' : 'bg-cream-50 text-deep-900 ring-1 ring-cream-200 hover:ring-deep-700/40'
               }`}
             >
@@ -197,11 +197,11 @@ export function ContactPage() {
               <br />
               <em className="text-deep-700">lắng nghe Quý khách</em>
             </h1>
-            <p className="mt-5 max-w-md text-[1.02rem] leading-relaxed text-ink-soft">
+            <p className="mt-5 max-w-md text-body leading-relaxed text-ink-soft">
               Có bất cứ thắc mắc gì, Quý khách gọi, nhắn tin hoặc để lại lời nhắn. Bộ phận Chăm sóc khách hàng của
               Ecopillo Việt Nam sẽ phản hồi trong giờ làm việc.
             </p>
-            <ul className="mt-8 space-y-3 text-[0.95rem]">
+            <ul className="mt-8 space-y-3 text-body-sm">
               <li className="flex gap-3">
                 <Icon name="pin" size={19} className="mt-0.5 shrink-0 text-mist-600" />
                 <span className="text-deep-900">
@@ -245,7 +245,7 @@ export function ContactPage() {
 
           <div className="rounded-[2rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] sm:p-8">
             <h2 className="font-display text-[1.4rem] text-deep-900">Hỏi nhanh</h2>
-            <ul className="mt-4 space-y-2.5 text-[0.93rem]">
+            <ul className="mt-4 space-y-2.5 text-body-sm">
               {[
                 ['Giao hàng, thanh toán khi nhận', policyPath('chinh-sach-van-chuyen')],
                 ['Kiểm hàng, đổi hàng', policyPath('chinh-sach-doi-tra-hang-va-hoan-tien')],

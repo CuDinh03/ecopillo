@@ -69,7 +69,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
             <p data-reveal className="mt-5">
               <FillIn>{STORY_REVIEW_NOTE}</FillIn>
             </p>
-            <div data-reveal style={revealDelay(1)} className="mt-5 max-w-2xl space-y-5 text-[1.02rem] leading-relaxed text-ink-soft">
+            <div data-reveal style={revealDelay(1)} className="mt-5 max-w-2xl space-y-5 text-body leading-relaxed text-ink-soft">
               <p>{STORY_OPENING}</p>
               <div className={isExpanded ? 'space-y-5' : 'hidden space-y-5 sm:block'}>
                 <p>
@@ -95,14 +95,14 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
               {PHILOSOPHY.map((p, i) => (
                 <li key={p.word} data-reveal style={revealDelay(i)} className="rounded-[1.25rem] bg-mist-50 p-5 shadow-[var(--shadow-soft)]">
                   <p className="font-display text-[2rem] leading-none text-mist-600 italic">{p.word}</p>
-                  <p className="mt-3 text-[0.85rem] leading-relaxed text-ink-soft">{p.text}</p>
+                  <p className="mt-3 text-small leading-relaxed text-ink-soft">{p.text}</p>
                 </li>
               ))}
             </ol>
             {moreLink && (
               <Link
                 to={PATHS.about}
-                className="mt-5 -mb-2 inline-flex items-center gap-1.5 py-2 text-[0.95rem] font-medium text-deep-800 underline-offset-4 hover:underline"
+                className="mt-5 -mb-2 inline-flex items-center gap-1.5 py-2 text-body-sm font-medium text-deep-800 underline-offset-4 hover:underline"
               >
                 Xem trang Giới thiệu đầy đủ <Icon name="arrowRight" size={16} />
               </Link>
@@ -134,7 +134,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
                   </span>
                   <span>
                     <span className="block font-medium">{v.title}</span>
-                    <span className="mt-0.5 hidden text-[0.82rem] leading-snug text-ivory/80 sm:block">{v.text}</span>
+                    <span className="mt-0.5 hidden text-meta leading-snug text-ivory/80 sm:block">{v.text}</span>
                   </span>
                 </li>
               ))}

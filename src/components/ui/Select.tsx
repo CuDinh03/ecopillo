@@ -41,9 +41,9 @@ interface SelectProps {
 }
 
 const TRIGGER: Readonly<Record<Variant, string>> = {
-  pill: 'h-[3.25rem] w-full rounded-full bg-ivory pr-11 pl-5 text-[0.98rem] ring-1 ring-cream-200 focus-visible:ring-2 focus-visible:ring-deep-700',
+  pill: 'h-[3.25rem] w-full rounded-full bg-ivory pr-11 pl-5 text-body-sm ring-1 ring-cream-200 focus-visible:ring-2 focus-visible:ring-deep-700',
   field:
-    'mt-2 w-full rounded-xl border bg-ivory py-3.5 pr-11 pl-4 text-[1rem] focus-visible:border-deep-700 focus-visible:ring-4 focus-visible:ring-mist-200',
+    'mt-2 w-full rounded-xl border bg-ivory py-3.5 pr-11 pl-4 text-body focus-visible:border-deep-700 focus-visible:ring-4 focus-visible:ring-mist-200',
   inline: 'h-11 rounded-lg pr-6 font-medium focus-visible:ring-2 focus-visible:ring-deep-700',
 }
 
@@ -240,13 +240,13 @@ export function Select({
                 onMouseDown={(e) => e.preventDefault()}
                 onMouseMove={() => active !== i && setActive(i)}
                 onClick={() => choose(i)}
-                className={`flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-[0.92rem] whitespace-nowrap ${
+                className={`flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-body-sm whitespace-nowrap ${
                   i === active ? 'bg-mist-100' : ''
                 } ${selected ? 'font-medium text-deep-900' : o.value === '' ? 'text-ink-soft' : 'text-deep-900'}`}
               >
                 <Icon name="check" size={15} className={`shrink-0 text-deep-700 ${selected ? '' : 'invisible'}`} />
                 <span className="flex-1">{o.label}</span>
-                {o.note && <span className="tabular text-[0.78rem] text-ink-faint">{o.note}</span>}
+                {o.note && <span className="tabular text-meta text-ink-faint">{o.note}</span>}
               </li>
             )
           })}

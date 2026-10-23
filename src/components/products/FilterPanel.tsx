@@ -47,7 +47,7 @@ export function FilterPanel(props: FilterPanelProps) {
       <div className="flex items-baseline justify-between gap-3">
         <h2 className="font-display text-[1.35rem] leading-none text-deep-900">Bộ lọc</h2>
         {onClear && (
-          <button type="button" onClick={onClear} className="-my-2 py-2 text-[0.8rem] font-medium text-ink-soft underline underline-offset-4 hover:text-deep-900">
+          <button type="button" onClick={onClear} className="-my-2 py-2 text-meta font-medium text-ink-soft underline underline-offset-4 hover:text-deep-900">
             Xoá lọc
           </button>
         )}
@@ -73,12 +73,12 @@ export function FilterPanel(props: FilterPanelProps) {
                 aria-pressed={isActive}
                 disabled={count === 0 && !isActive}
                 onClick={() => onBand(b)}
-                className={`inline-flex h-9 items-center gap-1 rounded-full px-3 text-[0.82rem] whitespace-nowrap transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+                className={`inline-flex h-9 items-center gap-1 rounded-full px-3 text-meta whitespace-nowrap transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
                   isActive ? 'bg-deep-800 text-ivory' : 'bg-mist-100 text-deep-900 enabled:hover:bg-mist-200'
                 }`}
               >
                 {b.label}
-                <span className={`tabular text-[0.7rem] ${isActive ? 'text-ivory/75' : 'text-ink-faint'}`}>{count}</span>
+                <span className={`tabular text-label ${isActive ? 'text-ivory/75' : 'text-ink-faint'}`}>{count}</span>
               </button>
             )
           })}
@@ -116,7 +116,7 @@ export function FilterPanel(props: FilterPanelProps) {
               aria-pressed={sort === s.id}
               aria-label={s.label}
               onClick={() => onSort(s.id)}
-              className={`h-9 rounded-[0.6rem] text-[0.8rem] transition ${
+              className={`h-9 rounded-[0.6rem] text-meta transition ${
                 sort === s.id ? 'bg-ivory font-medium text-deep-900 shadow-[var(--shadow-soft)]' : 'text-ink-soft hover:text-deep-900'
               }`}
             >
@@ -139,7 +139,7 @@ interface FilterGroupProps {
 function FilterGroup({ id, label, isFirst, children }: FilterGroupProps) {
   return (
     <div role="group" aria-labelledby={id} className={isFirst ? 'mt-4' : 'mt-4 border-t border-line pt-4'}>
-      <p id={id} className="eyebrow mb-2 !text-[0.66rem]">
+      <p id={id} className="eyebrow mb-2">
         {label}
       </p>
       {children}
@@ -163,7 +163,7 @@ function ChoiceRow({ isActive, count, disabled, onPick, children }: ChoiceRowPro
       aria-pressed={isActive}
       disabled={disabled}
       onClick={onPick}
-      className={`-mx-2 flex min-h-10 w-[calc(100%+1rem)] items-center gap-2.5 rounded-xl px-2 text-left text-[0.9rem] text-deep-900 transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+      className={`-mx-2 flex min-h-10 w-[calc(100%+1rem)] items-center gap-2.5 rounded-xl px-2 text-left text-small text-deep-900 transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
         isActive ? 'bg-mist-100 font-medium' : 'enabled:hover:bg-mist-100'
       }`}
     >
@@ -174,7 +174,7 @@ function ChoiceRow({ isActive, count, disabled, onPick, children }: ChoiceRowPro
         }`}
       />
       <span className="flex min-w-0 items-center">{children}</span>
-      <span className="tabular ml-auto text-[0.76rem] font-normal text-ink-faint">{count}</span>
+      <span className="tabular ml-auto text-label font-normal text-ink-faint">{count}</span>
     </button>
   )
 }

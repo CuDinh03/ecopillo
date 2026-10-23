@@ -44,7 +44,7 @@ const validate = (f: ContactForm): ContactErrors => {
 }
 
 const INPUT =
-  'mt-2 block w-full rounded-xl border bg-ivory px-4 py-3.5 text-[1rem] text-deep-900 placeholder:text-ink-faint transition focus:border-deep-700 focus:ring-2 focus:ring-deep-700 focus:outline-none'
+  'mt-2 block w-full rounded-xl border bg-ivory px-4 py-3.5 text-body text-deep-900 placeholder:text-ink-faint transition focus:border-deep-700 focus:ring-2 focus:ring-deep-700 focus:outline-none'
 
 const inputClass = (hasError: boolean) => `${INPUT} ${hasError ? 'border-alert ring-4 ring-alert-soft' : 'border-line'}`
 
@@ -56,7 +56,7 @@ function Field({ id, label, error, children }: { id: string; label: string; erro
       </label>
       {children}
       {error && (
-        <p id={`c-${id}-error`} role="alert" className="mt-1.5 inline-flex items-center gap-1.5 rounded-lg bg-alert-soft px-2 py-1 text-[0.82rem] text-alert">
+        <p id={`c-${id}-error`} role="alert" className="mt-1.5 inline-flex items-center gap-1.5 rounded-lg bg-alert-soft px-2 py-1 text-meta text-alert">
           <Icon name="info" size={14} /> {error}
         </p>
       )}
@@ -144,7 +144,7 @@ export function MessageForm({
                 type="button"
                 aria-pressed={active}
                 onClick={() => change({ topic: t })}
-                className={`rounded-full px-4 py-2 text-[0.88rem] transition ${
+                className={`rounded-full px-4 py-2 text-small transition ${
                   active ? 'bg-deep-800 text-ivory' : 'bg-cream-50 text-deep-900 ring-1 ring-cream-200 hover:ring-deep-700/40'
                 }`}
               >
@@ -198,7 +198,7 @@ export function MessageForm({
       </Field>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="max-w-sm text-[0.8rem] leading-relaxed text-ink-faint">
+        <p className="max-w-sm text-meta leading-relaxed text-ink-faint">
           Ecopillo chỉ dùng thông tin này để liên hệ lại, theo{' '}
           <Link to={PATHS.privacy} className="underline underline-offset-2 hover:text-deep-900">
             chính sách bảo vệ thông tin

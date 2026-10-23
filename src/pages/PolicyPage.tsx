@@ -23,7 +23,7 @@ export function PolicyPage() {
             <p className="font-display text-[1.6rem] leading-tight text-deep-900">
               <RichText text={h.value} />
             </p>
-            <p className="mt-1.5 text-[0.85rem] leading-snug text-ink-soft">{h.label}</p>
+            <p className="mt-1.5 text-small leading-snug text-ink-soft">{h.label}</p>
           </li>
         ))}
       </ul>
@@ -53,7 +53,7 @@ export function PolicyPage() {
               <ol className="mt-5 space-y-4">
                 {section.steps.map((step, i) => (
                   <li key={step.title} className="flex gap-4">
-                    <span className="font-display flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-deep-800 text-[1.05rem] text-ivory">
+                    <span className="font-display flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-deep-800 text-lead text-ivory">
                       {i + 1}
                     </span>
                     <span className="pt-1.5">

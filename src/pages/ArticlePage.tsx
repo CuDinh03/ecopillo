@@ -55,7 +55,7 @@ export function ArticlePage() {
       <Container className="pt-10 sm:pt-14">
         <div className="mx-auto max-w-3xl">
           <Breadcrumb items={[{ label: 'Tin tức', to: PATHS.blog }, { label: post.category }]} />
-          <p className="mt-8 flex items-center gap-2 text-[0.8rem] text-ink-soft">
+          <p className="mt-8 flex items-center gap-2 text-meta text-ink-soft">
             <Link to={`${PATHS.blog}?chu-de=${encodeURIComponent(post.category)}`} className="font-medium tracking-[0.12em] text-mist-600 uppercase hover:underline">
               {post.category}
             </Link>
@@ -63,7 +63,7 @@ export function ArticlePage() {
             <span>{post.readMinutes} phút đọc</span>
           </p>
           <h1 className="font-display mt-4 text-[2.2rem] leading-[1.1] text-deep-900 sm:text-[3rem]">{post.title}</h1>
-          <p className="mt-5 text-[1.1rem] leading-relaxed text-ink-soft">{post.excerpt}</p>
+          <p className="mt-5 text-lead leading-relaxed text-ink-soft">{post.excerpt}</p>
         </div>
 
         <div className="mx-auto mt-10 max-w-5xl overflow-hidden rounded-[2rem]">
@@ -72,7 +72,7 @@ export function ArticlePage() {
           </div>
         </div>
 
-        <div className="mx-auto mt-4 max-w-3xl text-[1.05rem] leading-[1.8] text-ink">
+        <div className="mx-auto mt-4 max-w-3xl text-lead leading-[1.8] text-ink">
           {post.body.map((block, i) => (
             <Block key={i} block={block} />
           ))}
@@ -85,7 +85,7 @@ export function ArticlePage() {
                   <li key={r.to}>
                     <Link
                       to={r.to}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-cream-100 px-4 py-2 text-[0.92rem] text-deep-800 transition-colors hover:bg-mist-200"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-cream-100 px-4 py-2 text-body-sm text-deep-800 transition-colors hover:bg-mist-200"
                     >
                       {r.label}
                       <Icon name="arrowRight" size={14} />
@@ -98,7 +98,7 @@ export function ArticlePage() {
 
           <div className="mt-10 rounded-[1.75rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] sm:p-8">
             <p className="font-display text-[1.4rem] leading-tight text-deep-900">Cần tư vấn thêm?</p>
-            <p className="mt-1.5 text-[0.95rem] text-ink-soft">Gửi ảnh phòng, số đo giường qua Zalo, Ecopillo gợi ý mẫu hợp nhất.</p>
+            <p className="mt-1.5 text-body-sm text-ink-soft">Gửi ảnh phòng, số đo giường qua Zalo, Ecopillo gợi ý mẫu hợp nhất.</p>
             <ContactButtons size="md" stretch className="mt-5" />
           </div>
         </div>

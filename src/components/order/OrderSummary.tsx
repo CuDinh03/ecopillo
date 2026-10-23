@@ -25,7 +25,7 @@ export function OrderSummary({ summary, showShipping }: OrderSummaryProps) {
               <Placeholder compact className="h-full w-full" tint={line.tint} note={line.imageNote} image={line.image} sizes="96px" />
             </div>
             <div className="min-w-0">
-              <p className="text-[0.7rem] tracking-[0.12em] text-mist-600 uppercase">{line.kindLabel}</p>
+              <p className="text-label tracking-[0.12em] text-mist-600 uppercase">{line.kindLabel}</p>
               <p className="font-display text-xl leading-tight text-deep-900">{line.name}</p>
               <p className="mt-1 text-sm text-ink-soft">{line.detail}</p>
             </div>

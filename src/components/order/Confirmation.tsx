@@ -48,7 +48,7 @@ export function Confirmation({ orderCode, summary, customer, onNewOrder }: Confi
         </span>
         <p className="eyebrow mt-7">Đã nhận đơn · Mã {orderCode}</p>
         <h1 className="font-display mt-3 text-[1.85rem] text-deep-900 sm:text-5xl">Ecopillo cảm ơn Quý khách!</h1>
-        <p className="mx-auto mt-4 max-w-md text-[1.05rem] font-medium text-deep-800">
+        <p className="mx-auto mt-4 max-w-md text-lead font-medium text-deep-800">
           Nhân viên Ecopillo sẽ gọi điện xác nhận đơn trong thời gian sớm nhất.
         </p>
         <p className="mt-2 text-sm text-ink-soft">Quý khách chưa cần thanh toán gì lúc này.</p>
@@ -72,7 +72,7 @@ export function Confirmation({ orderCode, summary, customer, onNewOrder }: Confi
               <span className="tabular text-xs text-ink-faint">Bước {i + 1}</span>
             </span>
             <p className="mt-3 font-medium text-deep-900">{step.title}</p>
-            <p className="mt-1 text-[0.85rem] leading-relaxed text-ink-soft">{step.text}</p>
+            <p className="mt-1 text-small leading-relaxed text-ink-soft">{step.text}</p>
           </li>
         ))}
       </ol>
@@ -83,7 +83,7 @@ export function Confirmation({ orderCode, summary, customer, onNewOrder }: Confi
             <Placeholder compact className="h-full w-full" tint={line.tint} note={line.imageNote} image={line.image} sizes="160px" />
           </div>
           <div>
-            <p className="text-[0.72rem] tracking-[0.14em] text-mist-600 uppercase">{line.kindLabel}</p>
+            <p className="text-label tracking-[0.14em] text-mist-600 uppercase">{line.kindLabel}</p>
             <h2 className="font-display text-3xl leading-tight text-deep-900">{line.name}</h2>
             <p className="mt-1 text-sm text-ink-soft">{line.detail}</p>
           </div>
@@ -155,7 +155,7 @@ export function Confirmation({ orderCode, summary, customer, onNewOrder }: Confi
 function Item({ label, value, highlight }: { label: string; value: ReactNode; highlight?: boolean }) {
   return (
     <div>
-      <dt className="text-[0.72rem] tracking-[0.12em] text-ink-faint uppercase">{label}</dt>
+      <dt className="text-label tracking-[0.12em] text-ink-faint uppercase">{label}</dt>
       <dd className={`mt-1 ${highlight ? 'font-medium text-mist-600' : 'text-deep-900'}`}>{value}</dd>
     </div>
   )

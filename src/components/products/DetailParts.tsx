@@ -62,7 +62,7 @@ export function NearMeLine() {
 
 export function TrustList() {
   return (
-    <ul className="mt-8 grid gap-2.5 border-t border-ivory pt-6 text-[0.85rem] text-ink-soft sm:grid-cols-2">
+    <ul className="mt-8 grid gap-2.5 border-t border-ivory pt-6 text-small text-ink-soft sm:grid-cols-2">
       {TRUST_POINTS.map((t) => (
         <li key={t} className="flex items-center gap-2">
           <Icon name="check" size={15} className="text-mist-600" /> {t}
@@ -74,7 +74,7 @@ export function TrustList() {
 
 function InfoCard({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="rounded-[1.5rem] bg-cream-50 p-6 text-[0.9rem] leading-relaxed text-ink-soft shadow-[var(--shadow-soft)] sm:p-7">
+    <section className="rounded-[1.5rem] bg-cream-50 p-6 text-small leading-relaxed text-ink-soft shadow-[var(--shadow-soft)] sm:p-7">
       <h2 className="font-display mb-4 text-[1.35rem] text-deep-900">{title}</h2>
       {children}
     </section>
@@ -211,18 +211,18 @@ export function MobileBuyBar({ product, pattern, size, unitPrice, singleUrl, isS
           <ZaloMark />
         </a>
         {isSoldOut ? (
-          <span className="flex h-12 min-w-0 flex-1 items-center justify-center rounded-2xl bg-mist-100 text-[0.92rem] font-medium text-ink-faint ring-1 ring-cream-200">
+          <span className="flex h-12 min-w-0 flex-1 items-center justify-center rounded-2xl bg-mist-100 text-body-sm font-medium text-ink-faint ring-1 ring-cream-200">
             {pattern?.code} tạm hết hàng
           </span>
         ) : (
           url && (
             <Link to={url} className={BUY_BAR_LINK}>
               <span className="min-w-0 leading-tight">
-                <span className="tabular block text-[0.68rem] text-mist-200">
+                <span className="tabular block text-label text-mist-200">
                   <span className="max-[359px]:hidden">{price}</span>
                   <span className="min-[360px]:hidden">{shortPrice}</span>
                 </span>
-                <span className="block truncate text-[0.92rem] font-medium">Đặt mua {pattern?.code ?? ''}</span>
+                <span className="block truncate text-body-sm font-medium">Đặt mua {pattern?.code ?? ''}</span>
               </span>
               <Icon name="arrowRight" size={18} className="shrink-0" />
             </Link>

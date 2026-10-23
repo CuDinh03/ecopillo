@@ -20,7 +20,7 @@ export function ContactDock({ mobileBar = true }: { mobileBar?: boolean }) {
               className="flex h-12 flex-col items-center justify-center rounded-2xl bg-mist-100 text-deep-900 active:bg-mist-200"
             >
               <Icon name="phone" size={18} />
-              <span className="mt-0.5 text-[0.7rem] font-medium">Gọi ngay</span>
+              <span className="mt-0.5 text-label font-medium">Gọi ngay</span>
             </a>
             <a
               href={CONTACT.zaloUrl}
@@ -29,7 +29,7 @@ export function ContactDock({ mobileBar = true }: { mobileBar?: boolean }) {
               className="flex h-12 flex-col items-center justify-center rounded-2xl bg-mist-100 text-deep-900 active:bg-mist-200"
             >
               <ZaloMark />
-              <span className="mt-0.5 text-[0.7rem] font-medium">Nhắn Zalo</span>
+              <span className="mt-0.5 text-label font-medium">Nhắn Zalo</span>
             </a>
             <a
               href={CONTACT.messengerUrl}
@@ -38,7 +38,7 @@ export function ContactDock({ mobileBar = true }: { mobileBar?: boolean }) {
               className="flex h-12 flex-col items-center justify-center rounded-2xl bg-mist-100 text-deep-900 active:bg-mist-200"
             >
               <Icon name="messenger" size={18} />
-              <span className="mt-0.5 text-[0.7rem] font-medium">Messenger</span>
+              <span className="mt-0.5 text-label font-medium">Messenger</span>
             </a>
             <Link
               to={PATHS.order}

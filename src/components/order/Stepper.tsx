@@ -36,7 +36,7 @@ export function Stepper({ current, onGoTo }: StepperProps) {
                 />
                 <span className="flex items-center gap-2">
                   <span
-                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[0.72rem] font-medium transition-colors ${
+                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-label font-medium transition-colors ${
                       done
                         ? 'bg-mist-200 text-deep-900 group-hover:bg-mist-300'
                         : active
@@ -47,7 +47,7 @@ export function Stepper({ current, onGoTo }: StepperProps) {
                     {done ? <Icon name="check" size={13} strokeWidth={2.2} /> : step.n}
                   </span>
                   <span
-                    className={`text-[0.78rem] leading-tight sm:text-sm ${
+                    className={`text-meta leading-tight sm:text-sm ${
                       active ? 'font-medium text-deep-900' : done ? 'text-deep-800' : 'text-ink-faint'
                     }`}
                   >

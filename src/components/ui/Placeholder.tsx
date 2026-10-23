@@ -96,7 +96,7 @@ export function Placeholder({
         >
           <Icon name="image" size={compact ? 11 : 13} />
         </span>
-        <span className={`placeholder-note leading-snug ${compact ? 'text-[0.62rem]' : ''}`}>{note}</span>
+        <span className={`placeholder-note leading-snug ${compact ? 'text-label' : ''}`}>{note}</span>
       </figcaption>
     </figure>
   )

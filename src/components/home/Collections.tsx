@@ -43,7 +43,7 @@ function SwatchTip({ pattern }: { pattern: Pattern }) {
   return (
     <span
       role="tooltip"
-      className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-2 -translate-x-1/2 translate-y-1 rounded-lg bg-deep-900 px-2.5 py-1.5 text-[0.7rem] whitespace-nowrap text-ivory opacity-0 shadow-[var(--shadow-soft)] transition duration-200 group-hover/sw:translate-y-0 group-hover/sw:opacity-100 group-focus-visible/sw:translate-y-0 group-focus-visible/sw:opacity-100"
+      className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-2 -translate-x-1/2 translate-y-1 rounded-lg bg-deep-900 px-2.5 py-1.5 text-label whitespace-nowrap text-ivory opacity-0 shadow-[var(--shadow-soft)] transition duration-200 group-hover/sw:translate-y-0 group-hover/sw:opacity-100 group-focus-visible/sw:translate-y-0 group-focus-visible/sw:opacity-100"
     >
       <span className="font-medium">{pattern.code}</span> · {pattern.colorName}
       {isPatternSoldOut(pattern) && <span className="text-mist-300"> · tạm hết</span>}
@@ -123,8 +123,8 @@ function Swatches({ collection, selected, onSelect, onPreview }: SwatchesProps) 
         </Link>
       )}
       {selected && (
-        <span key={selected.code} className="fade-in w-full pt-1 text-[0.75rem] text-ink-soft">
-          <span className="font-display text-[0.9rem] text-mist-600 italic">{chapterTitle(collection, selected)}</span> · {selected.colorName} ·{' '}
+        <span key={selected.code} className="fade-in w-full pt-1 text-label text-ink-soft">
+          <span className="font-display text-small text-mist-600 italic">{chapterTitle(collection, selected)}</span> · {selected.colorName} ·{' '}
           {selected.code}
         </span>
       )}
@@ -172,7 +172,7 @@ function CollectionCard({ collection, wide, index = 0 }: { collection: Collectio
         )}
         {collection.badge && (
           <span
-            className={`absolute top-4 left-4 rounded-full px-3 py-1 text-[0.7rem] font-medium tracking-wide uppercase ${
+            className={`absolute top-4 left-4 rounded-full px-3 py-1 text-label font-medium tracking-wide uppercase ${
               isTop ? 'bg-deep-900 text-brass-100' : 'bg-ivory text-deep-800'
             }`}
           >
@@ -182,7 +182,7 @@ function CollectionCard({ collection, wide, index = 0 }: { collection: Collectio
       </div>
 
       <div className={`flex flex-1 flex-col p-5 sm:p-7 ${wide ? 'lg:p-10' : ''}`}>
-        <p className="text-[0.75rem] font-medium tracking-[0.14em] text-mist-600 uppercase">
+        <p className="text-label font-medium tracking-[0.14em] text-mist-600 uppercase">
           {collection.kindLabel}
         </p>
         <h3 className={`font-display mt-2 text-deep-900 ${wide ? 'text-[1.75rem] sm:text-[2.2rem] lg:text-[2.6rem]' : 'text-[1.75rem] sm:text-[1.8rem]'}`}>
@@ -190,11 +190,11 @@ function CollectionCard({ collection, wide, index = 0 }: { collection: Collectio
             {collection.name}
           </Link>
         </h3>
-        <p className="mt-1 line-clamp-2 text-[0.88rem] text-ink-soft italic sm:line-clamp-none sm:text-[0.95rem]">{collection.tagline}</p>
+        <p className="mt-1 line-clamp-2 text-small text-ink-soft italic sm:line-clamp-none sm:text-body-sm">{collection.tagline}</p>
 
         {wide && <p className="mt-5 hidden max-w-md text-sm leading-relaxed text-ink-soft sm:block">{collection.description}</p>}
 
-        <p className="mt-4 hidden text-[0.82rem] leading-snug text-ink-soft sm:block">
+        <p className="mt-4 hidden text-meta leading-snug text-ink-soft sm:block">
           <span className="text-ink-faint">Gồm: </span>
           {collection.contents.join(' · ')}
         </p>
@@ -204,10 +204,10 @@ function CollectionCard({ collection, wide, index = 0 }: { collection: Collectio
         </div>
 
         <div className="mt-auto pt-5 sm:pt-6">
-          <p className="hidden text-[0.72rem] tracking-wide text-ink-faint uppercase sm:block">1m6 → 2m2</p>
-          <p className="tabular mt-1 text-[1.05rem] font-medium text-deep-900">{formatRange(min, max)}</p>
+          <p className="hidden text-label tracking-wide text-ink-faint uppercase sm:block">1m6 → 2m2</p>
+          <p className="tabular mt-1 text-lead font-medium text-deep-900">{formatRange(min, max)}</p>
           {gift.perSet > 0 && (
-            <p className="mt-2 flex items-center gap-2 text-[0.82rem] text-brass-600">
+            <p className="mt-2 flex items-center gap-2 text-meta text-brass-600">
               <Icon name="gift" size={15} />
               {gift.label}
             </p>
@@ -319,7 +319,7 @@ function SetAnatomy() {
                 <dt className="text-deep-900 sm:flex sm:flex-1 sm:items-baseline sm:gap-3 sm:after:block sm:after:flex-1 sm:after:translate-y-[-3px] sm:after:text-cream-300 sm:after:content-[''] sm:after:h-px sm:after:[background-image:linear-gradient(to_right,currentColor_50%,transparent_0)] sm:after:[background-size:10px_1px] sm:after:bg-repeat-x">
                   {name}
                 </dt>
-                <dd className="tabular text-[0.82rem] text-ink-soft sm:text-right sm:text-sm">{size}</dd>
+                <dd className="tabular text-meta text-ink-soft sm:text-right sm:text-sm">{size}</dd>
               </div>
             ))}
           </dl>

@@ -58,12 +58,12 @@ export function MobileFilterBar({ panel, activeCount, resultCount, onClose }: Mo
             setHasOpened(true)
             setIsOpen(true)
           }}
-          className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-deep-800 px-3.5 text-[0.85rem] font-medium text-ivory"
+          className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-deep-800 px-3.5 text-small font-medium text-ivory"
         >
           <Icon name="filter" size={15} />
           Bộ lọc
           {activeCount > 0 && (
-            <span className="tabular flex h-5 min-w-5 items-center justify-center rounded-full bg-ivory px-1 text-[0.7rem] text-deep-900">
+            <span className="tabular flex h-5 min-w-5 items-center justify-center rounded-full bg-ivory px-1 text-label text-deep-900">
               <span className="sr-only">, đang bật </span>
               {activeCount}
             </span>
@@ -89,7 +89,7 @@ export function MobileFilterBar({ panel, activeCount, resultCount, onClose }: Mo
               <button
                 type="button"
                 onClick={() => dialogRef.current?.close()}
-                className="tabular h-12 w-full rounded-full bg-deep-800 text-[0.95rem] font-medium text-ivory"
+                className="tabular h-12 w-full rounded-full bg-deep-800 text-body-sm font-medium text-ivory"
               >
                 Xem {resultCount} sản phẩm
               </button>
@@ -114,7 +114,7 @@ function CategoryPill({ id, label, isActive, onPick }: CategoryPillProps) {
       type="button"
       aria-pressed={isActive}
       onClick={() => onPick(id)}
-      className={`h-9 shrink-0 rounded-full px-3.5 text-[0.82rem] whitespace-nowrap transition-colors ${
+      className={`h-9 shrink-0 rounded-full px-3.5 text-meta whitespace-nowrap transition-colors ${
         isActive ? 'bg-deep-800 font-medium text-ivory' : 'bg-ivory text-deep-900 shadow-[var(--shadow-soft)]'
       }`}
     >

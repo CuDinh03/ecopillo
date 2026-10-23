@@ -85,7 +85,7 @@ function Tagline() {
 
 const SUBLINE = 'Chốn yên, bắt đầu từ giấc ngủ ngon'
 
-const BAR_LABEL = 'text-[0.68rem] font-medium tracking-[0.18em] text-mist-600 uppercase'
+const BAR_LABEL = 'text-label font-medium tracking-[0.12em] text-mist-600 uppercase'
 
 /** Dải trắng duy nhất: Hệ sinh thái sản phẩm | Vì một giấc ngủ chất lượng hơn */
 function BangEcBar() {
@@ -100,7 +100,7 @@ function BangEcBar() {
         Vàng #FFC271 ngoài quà tặng, ưu đãi: ngoại lệ owner duyệt cho riêng dải này.
       */}
       <section aria-labelledby="hero-ecosystem" className="overflow-hidden rounded-2xl border-2 border-brand-gold">
-        <h2 id="hero-ecosystem" className="bg-brand-gold px-3.5 py-1.5 text-[0.7rem] font-medium tracking-[0.14em] text-deep-900 uppercase sm:px-4">
+        <h2 id="hero-ecosystem" className="bg-brand-gold px-3.5 py-1.5 text-label font-medium tracking-[0.14em] text-deep-900 uppercase sm:px-4">
           Hệ sinh thái sản phẩm<span className="hidden sm:inline"> · cho giấc ngủ trọn vẹn</span>
         </h2>
         <ul className="grid grid-cols-4 gap-2 bg-brand-gold/10 p-2 sm:gap-2.5 sm:p-2.5">
@@ -109,7 +109,7 @@ function BangEcBar() {
               <Link
                 to={item.to}
                 title={item.text}
-                className="group flex flex-col items-center gap-1.5 rounded-xl bg-ivory p-1.5 pb-2 text-center text-[0.95rem] font-medium text-deep-900 shadow-[0_6px_14px_-10px_rgb(45_46_141/0.45)] transition hover:-translate-y-0.5 hover:text-deep-700"
+                className="group flex flex-col items-center gap-1.5 rounded-xl bg-ivory p-1.5 pb-2 text-center text-body-sm font-medium text-deep-900 shadow-[0_6px_14px_-10px_rgb(45_46_141/0.45)] transition hover:-translate-y-0.5 hover:text-deep-700"
               >
                 <img
                   src={item.thumb}
@@ -145,7 +145,7 @@ function BangEcBar() {
             </span>
           ))}
         </p>
-        <ul className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1.5 text-[0.8rem] text-ink-soft">
+        <ul className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1.5 text-meta text-ink-soft">
           {BENEFITS.map((b) => (
             <li key={b.text} className="inline-flex items-center gap-1.5">
               <Icon name={b.icon} size={15} className="text-mist-600" />

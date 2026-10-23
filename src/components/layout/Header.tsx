@@ -45,7 +45,7 @@ const MORE_ITEMS = NAV_ITEMS.filter((item) => !item.primary)
  * Giữ cỡ 0.9rem: to hơn hoặc giãn khoảng cách thì thanh đầu trang tràn ngang ở 1024px. Mẫu: docs/de-xuat-menu-dam-hon.html
  */
 const NAV_LINK =
-  'relative inline-flex items-center rounded-full px-3.5 py-2 text-[0.9rem] font-medium whitespace-nowrap text-deep-900 transition-colors hover:bg-mist-100'
+  'relative inline-flex items-center rounded-full px-3.5 py-2 text-small font-medium whitespace-nowrap text-deep-900 transition-colors hover:bg-mist-100'
 
 /** Mục đang chọn: nền nhạt + gạch chân chàm */
 const NAV_ACTIVE =
@@ -115,7 +115,7 @@ function MoreMenu({ activeHref }: { activeHref: string | null }) {
                 to={item.href}
                 onClick={() => setIsOpen(false)}
                 aria-current={item.href === activeHref ? 'location' : undefined}
-                className={`flex items-center justify-between rounded-xl px-3.5 py-2.5 text-[0.9rem] font-medium text-deep-900 transition-colors hover:bg-mist-100 ${
+                className={`flex items-center justify-between rounded-xl px-3.5 py-2.5 text-small font-medium text-deep-900 transition-colors hover:bg-mist-100 ${
                   item.href === activeHref ? 'bg-mist-100' : ''
                 }`}
               >

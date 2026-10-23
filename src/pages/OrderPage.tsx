@@ -219,7 +219,7 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_340px] lg:gap-12 xl:grid-cols-[1fr_380px]">
           <div key={view} className="reveal min-w-0">
             {missingNote && !canContinue && (
-              <p role="alert" className="mb-6 rounded-2xl bg-alert-soft px-4 py-3 text-[0.95rem] text-alert">
+              <p role="alert" className="mb-6 rounded-2xl bg-alert-soft px-4 py-3 text-body-sm text-alert">
                 {missingNote}
               </p>
             )}

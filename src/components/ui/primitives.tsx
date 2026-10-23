@@ -28,7 +28,7 @@ const BTN_VARIANTS = {
 
 const BTN_SIZES = {
   sm: 'h-10 px-4 text-sm',
-  md: 'h-12 px-6 text-[0.95rem]',
+  md: 'h-12 px-6 text-body-sm',
   lg: 'h-14 px-7 text-base',
 } as const
 
@@ -129,7 +129,7 @@ export function SectionHeading({
       </h2>
       {lead && (
         <p
-          className={`mt-5 text-[1.02rem] leading-relaxed ${dark ? 'text-mist-200/90' : 'text-ink-soft'} ${
+          className={`mt-5 text-body leading-relaxed ${dark ? 'text-mist-200/90' : 'text-ink-soft'} ${
             centered ? 'mx-auto' : ''
           } max-w-xl`}
         >

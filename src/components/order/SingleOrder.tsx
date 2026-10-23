@@ -215,7 +215,7 @@ function ChoiceGroup({ label, options, value, onChange, priceOnCallNote }: Choic
             >
               <span className="text-sm font-medium text-deep-900">{o.label}</span>
               {(o.price !== undefined || priceOnCallNote) && (
-                <span className="tabular mt-0.5 text-[0.78rem] text-ink-soft">
+                <span className="tabular mt-0.5 text-meta text-ink-soft">
                   {o.price !== undefined ? formatVND(o.price) : 'Báo giá khi gọi'}
                 </span>
               )}

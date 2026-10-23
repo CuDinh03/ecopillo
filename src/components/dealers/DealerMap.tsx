@@ -32,7 +32,7 @@ export function DealerMap({ dealer, className = '' }: DealerMapProps) {
         <div className="p-5 sm:p-6">
           <p className="eyebrow">{KIND_LABEL[dealer.loai]}</p>
           <p className="font-display mt-1.5 text-[1.3rem] leading-tight text-deep-900">{dealer.ten}</p>
-          <p className="mt-1 text-[0.92rem] text-ink-soft">{dealer.dia_chi}</p>
+          <p className="mt-1 text-body-sm text-ink-soft">{dealer.dia_chi}</p>
           <div className="mt-4 flex flex-wrap gap-2">
             <a href={directionsUrl(dealer.dia_chi)} target="_blank" rel="noopener noreferrer" className={buttonClass('primary', 'sm')}>
               <Icon name="pin" size={16} /> Chỉ đường

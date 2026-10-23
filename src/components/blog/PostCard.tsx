@@ -20,7 +20,7 @@ export function PostCard({ post, feature = false }: { post: Post; feature?: bool
         />
       </div>
       <div className={`flex flex-1 flex-col ${feature ? 'p-7 sm:p-10 lg:justify-center' : 'p-6 sm:p-7'}`}>
-        <p className="flex items-center gap-2 text-[0.78rem] text-ink-soft">
+        <p className="flex items-center gap-2 text-meta text-ink-soft">
           <span className="font-medium tracking-[0.12em] text-mist-600 uppercase">{post.category}</span>
           <span aria-hidden>·</span>
           <span>{post.readMinutes} phút đọc</span>
@@ -32,8 +32,8 @@ export function PostCard({ post, feature = false }: { post: Post; feature?: bool
             {post.title}
           </Link>
         </h3>
-        <p className={`mt-3 leading-relaxed text-ink-soft ${feature ? 'text-[1rem]' : 'line-clamp-3 text-[0.92rem]'}`}>{post.excerpt}</p>
-        <span className="mt-auto inline-flex items-center gap-1 pt-5 text-[0.88rem] font-medium text-deep-800">
+        <p className={`mt-3 leading-relaxed text-ink-soft ${feature ? 'text-body' : 'line-clamp-3 text-body-sm'}`}>{post.excerpt}</p>
+        <span className="mt-auto inline-flex items-center gap-1 pt-5 text-small font-medium text-deep-800">
           Đọc bài <Icon name="arrowRight" size={15} className="transition group-hover:translate-x-0.5" />
         </span>
       </div>

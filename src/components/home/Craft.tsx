@@ -39,8 +39,8 @@ export function TrustStrip() {
                 <Icon name={item.icon} size={19} />
               </span>
               <span className="block">
-                <span className="block text-[0.84rem] font-medium text-balance text-deep-900 sm:text-[0.9rem]">{item.title}</span>
-                <span className="mx-auto mt-1 hidden max-w-[14rem] text-[0.8rem] leading-snug text-balance text-ink-soft sm:block">
+                <span className="block text-meta font-medium text-balance text-deep-900 sm:text-small">{item.title}</span>
+                <span className="mx-auto mt-1 hidden max-w-[14rem] text-meta leading-snug text-balance text-ink-soft sm:block">
                   {item.text}
                 </span>
               </span>
@@ -94,7 +94,7 @@ export function BrandStory() {
                         <Icon name="leaf" size={14} className="text-mist-300" />
                         {t.title}
                       </dt>
-                      <dd className="mt-1 hidden text-[0.8rem] leading-snug text-mist-200/85 sm:block">{t.text}</dd>
+                      <dd className="mt-1 hidden text-meta leading-snug text-mist-200/85 sm:block">{t.text}</dd>
                     </div>
                   ))}
                 </dl>
@@ -137,7 +137,7 @@ export function BrandStory() {
                 <div className="p-5">
                   <Icon name="stitch" size={20} className="text-mist-600" />
                   <h3 className="font-display mt-2 text-[1.35rem] leading-tight text-deep-900">Đường may 4 mũi/cm</h3>
-                  <p className="mt-1.5 text-[0.85rem] leading-relaxed text-ink-soft">
+                  <p className="mt-1.5 text-small leading-relaxed text-ink-soft">
                     Mép vải được khoá chắc, không sổ chỉ, giữ form đẹp sau nhiều năm.
                   </p>
                 </div>
@@ -153,7 +153,7 @@ export function BrandStory() {
                 <div className="p-5">
                   <Icon name="weave" size={20} className="text-brass-500" />
                   <h3 className="font-display mt-2 text-[1.35rem] leading-tight text-deep-900">Dệt Jacquard</h3>
-                  <p className="mt-1.5 text-[0.85rem] leading-relaxed text-ink-soft">
+                  <p className="mt-1.5 text-small leading-relaxed text-ink-soft">
                     Ở dòng Eco Sweet, hoa văn được dệt thẳng vào sợi, nổi khối tinh tế.
                   </p>
                 </div>

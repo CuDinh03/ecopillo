@@ -83,13 +83,13 @@ export function GiftsPage() {
                   </div>
                   <div className="flex flex-1 flex-col p-6 sm:p-7">
                     <h3 className="font-display text-[1.5rem] leading-tight text-deep-900">{o.title}</h3>
-                    <p className="mt-2 text-[0.92rem] leading-relaxed text-ink-soft">{o.text}</p>
+                    <p className="mt-2 text-body-sm leading-relaxed text-ink-soft">{o.text}</p>
                     <div className="mt-auto flex flex-wrap gap-2 pt-5">
                       {o.ids.map((id) => (
                         <Link
                           key={id}
                           to={collectionPathById(id)}
-                          className="inline-flex min-h-10 items-center gap-1 rounded-full bg-cream-100 px-3.5 py-1.5 text-[0.85rem] text-deep-800 transition-colors hover:bg-mist-200 active:bg-mist-200"
+                          className="inline-flex min-h-10 items-center gap-1 rounded-full bg-cream-100 px-3.5 py-1.5 text-small text-deep-800 transition-colors hover:bg-mist-200 active:bg-mist-200"
                         >
                           {collectionById(id)?.name}
                           <Icon name="arrowRight" size={13} />
@@ -121,7 +121,7 @@ export function GiftsPage() {
                 </span>
                 <span>
                   <span className="block font-medium text-deep-900">{s.title}</span>
-                  <span className="mt-1 block text-[0.9rem] leading-relaxed text-ink-soft">{s.text}</span>
+                  <span className="mt-1 block text-small leading-relaxed text-ink-soft">{s.text}</span>
                 </span>
               </li>
             ))}

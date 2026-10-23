@@ -43,7 +43,7 @@ export function BlogPage() {
               type="button"
               aria-pressed={active === c}
               onClick={() => choose(c)}
-              className={`rounded-full px-4 py-2 text-[0.9rem] transition ${
+              className={`rounded-full px-4 py-2 text-small transition ${
                 active === c ? 'bg-deep-800 text-ivory' : 'bg-cream-50 text-deep-900 ring-1 ring-cream-200 hover:ring-deep-700/40'
               }`}
             >

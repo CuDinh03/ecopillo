@@ -20,16 +20,16 @@ export function ColorwayCard({ colorway }: { colorway: Colorway }) {
         />
       </div>
       <div className="flex flex-1 flex-col p-3.5 sm:p-5">
-        <h3 className="font-display text-[1.1rem] leading-tight text-mist-600 italic sm:text-[1.35rem]">
+        <h3 className="font-display text-lead leading-tight text-mist-600 italic sm:text-[1.35rem]">
           {/* Liên kết phủ cả ô */}
           <Link to={patternPath(collection, pattern)} className="after:absolute after:inset-0 focus-visible:outline-none">
             {story.title}
           </Link>
         </h3>
-        <p className="mt-1 text-[0.72rem] text-ink-faint sm:text-[0.78rem]">
+        <p className="mt-1 text-label text-ink-faint sm:text-meta">
           {collection.name} · {pattern.code}
         </p>
-        <p className="tabular mt-auto pt-3 text-[0.8rem] font-medium text-deep-900 sm:text-[0.92rem]">từ {formatVND(from)}</p>
+        <p className="tabular mt-auto pt-3 text-meta font-medium text-deep-900 sm:text-body-sm">từ {formatVND(from)}</p>
       </div>
     </article>
   )

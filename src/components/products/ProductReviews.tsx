@@ -69,7 +69,7 @@ export function ProductReviews({ product }: { product: Product }) {
                 <Stars value={r.stars} />
                 <Icon name="quote" size={22} className="text-mist-300" />
               </div>
-              <blockquote className="mt-4 flex-1 text-[0.95rem] leading-relaxed text-deep-900">“{r.quote}”</blockquote>
+              <blockquote className="mt-4 flex-1 text-body-sm leading-relaxed text-deep-900">“{r.quote}”</blockquote>
               <footer className="mt-5 border-t border-deep-900/10 pt-4 text-sm leading-tight">
                 <span className="block font-medium text-deep-900">{r.name}</span>
                 <span className="mt-0.5 block text-ink-soft">

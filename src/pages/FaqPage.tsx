@@ -27,7 +27,7 @@ export function FaqPage() {
             <li key={p.to}>
               <Link
                 to={p.to}
-                className="inline-flex items-center gap-1 rounded-full bg-ivory px-4 py-2 text-[0.88rem] text-deep-900 ring-1 ring-cream-200 transition hover:ring-deep-700/40"
+                className="inline-flex items-center gap-1 rounded-full bg-ivory px-4 py-2 text-small text-deep-900 ring-1 ring-cream-200 transition hover:ring-deep-700/40"
               >
                 {p.label}
                 <Icon name="arrowRight" size={13} className="opacity-60" />

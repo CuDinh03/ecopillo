@@ -33,7 +33,7 @@ export function SocialStrip() {
                 </span>
                 <span className="min-w-0 leading-tight">
                   <span className="block text-sm font-medium text-deep-900">{s.label}</span>
-                  <span className="block truncate text-[0.75rem] text-ink-soft">{s.handle}</span>
+                  <span className="block truncate text-label text-ink-soft">{s.handle}</span>
                 </span>
               </a>
             </li>

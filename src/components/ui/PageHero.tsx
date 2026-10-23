@@ -73,7 +73,7 @@ export function PageHero({ crumbs, eyebrow, title, lead, aside, children, tone =
             {title}
           </h1>
           {lead && (
-            <p className={`mt-5 max-w-xl text-[1.02rem] leading-relaxed ${deep ? 'text-mist-200/90' : 'text-ink-soft'}`}>{lead}</p>
+            <p className={`mt-5 max-w-xl text-body leading-relaxed ${deep ? 'text-mist-200/90' : 'text-ink-soft'}`}>{lead}</p>
           )}
           {children}
         </div>

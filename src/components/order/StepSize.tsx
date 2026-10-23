@@ -51,7 +51,7 @@ export function StepSize({ summary, onSelectSize, onChangeQuantity }: StepSizePr
                 />
                 <span className="flex items-start justify-between gap-3">
                   <span>
-                    <span className={`block text-[0.72rem] tracking-[0.14em] uppercase ${soldOut ? '' : 'text-mist-600'}`}>
+                    <span className={`block text-label tracking-[0.14em] uppercase ${soldOut ? '' : 'text-mist-600'}`}>
                       {s.bed}
                     </span>
                     <span className={`font-display mt-1 block text-[1.35rem] leading-tight ${soldOut ? 'line-through decoration-1' : 'text-deep-900'}`}>
@@ -69,7 +69,7 @@ export function StepSize({ summary, onSelectSize, onChangeQuantity }: StepSizePr
                 </span>
                 <span className="mt-4 flex items-center justify-between gap-2">
                   {soldOut ? (
-                    <span className="rounded-full bg-alert-soft px-2.5 py-1 text-[0.72rem] font-medium text-alert">
+                    <span className="rounded-full bg-alert-soft px-2.5 py-1 text-label font-medium text-alert">
                       Tạm hết hàng
                     </span>
                   ) : (
@@ -117,7 +117,7 @@ export function StepSize({ summary, onSelectSize, onChangeQuantity }: StepSizePr
             <Icon name="gift" size={26} />
           </span>
           <div className="mt-4 sm:mt-0">
-            <p className="text-[0.72rem] tracking-[0.14em] text-brass-600 uppercase">Quà tặng kèm · Tri ân 15.000 khách hàng</p>
+            <p className="text-label tracking-[0.14em] text-brass-600 uppercase">Quà tặng kèm · Tri ân 15.000 khách hàng</p>
             <p className="font-display mt-1 text-[1.35rem] leading-tight text-deep-900">
               {giftCount} {gift.unit} {gift.item}
             </p>

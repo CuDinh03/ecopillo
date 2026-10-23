@@ -18,7 +18,7 @@ export function EventsStrip() {
         <h3 id="events-title" className="font-display mt-3 text-[1.75rem] text-deep-900 sm:text-[2.2rem]">
           Ecopillo <span className="text-mist-600 italic">đồng hành</span>
         </h3>
-        <p className="mt-3 max-w-xl text-[0.98rem] leading-relaxed text-ink-soft">
+        <p className="mt-3 max-w-xl text-body-sm leading-relaxed text-ink-soft">
           Những chương trình, sự kiện Ecopillo góp mặt cùng cộng đồng và các đơn vị bạn.
         </p>
       </header>
@@ -62,11 +62,11 @@ function FeaturedCard({ event }: { event: BrandEvent }) {
           {event.when && ` · ${event.when}`}
         </p>
         <h4 className="font-display mt-3 text-[1.45rem] leading-snug text-deep-900 sm:text-[1.75rem]">{event.title}</h4>
-        {event.summary && <p className="mt-3 text-[0.98rem] leading-relaxed text-ink-soft">{event.summary}</p>}
+        {event.summary && <p className="mt-3 text-body-sm leading-relaxed text-ink-soft">{event.summary}</p>}
         {post && (
           <Link
             to={postPath(post)}
-            className="mt-4 -mb-2 inline-flex items-center gap-1.5 py-2 text-[0.95rem] font-medium text-deep-800 underline-offset-4 hover:underline"
+            className="mt-4 -mb-2 inline-flex items-center gap-1.5 py-2 text-body-sm font-medium text-deep-800 underline-offset-4 hover:underline"
           >
             Đọc bài viết <Icon name="arrowRight" size={16} />
           </Link>
@@ -107,9 +107,9 @@ function SmallCard({ event, index, isWide }: SmallCardProps) {
       </picture>
       {/* Lớp chàm dưới chân ảnh để chữ trắng đọc được trên mọi ảnh */}
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-deep-900/95 from-35% to-deep-900/0 px-4 pt-14 pb-4 sm:px-5 sm:pb-5">
-        <p className="text-[0.62rem] font-medium tracking-[0.14em] text-mist-300 uppercase">{event.kind}</p>
-        <h4 className="font-display mt-1.5 text-[1.05rem] leading-snug sm:text-[1.12rem]">{event.title}</h4>
-        {event.when && <p className="mt-1.5 text-[0.78rem] text-ivory/80">{event.when}</p>}
+        <p className="text-label font-medium tracking-[0.14em] text-mist-300 uppercase">{event.kind}</p>
+        <h4 className="font-display mt-1.5 text-lead leading-snug sm:text-lead">{event.title}</h4>
+        {event.when && <p className="mt-1.5 text-meta text-ivory/80">{event.when}</p>}
       </div>
     </li>
   )

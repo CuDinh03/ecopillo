@@ -33,7 +33,7 @@ export function PolicyLayout({ title, intro, meta, children }: PolicyLayoutProps
                   <NavLink
                     to={item.to}
                     className={({ isActive }) =>
-                      `block rounded-full px-4 py-2 text-[0.9rem] whitespace-nowrap transition lg:rounded-xl lg:px-4 lg:py-2.5 ${
+                      `block rounded-full px-4 py-2 text-small whitespace-nowrap transition lg:rounded-xl lg:px-4 lg:py-2.5 ${
                         isActive
                           ? 'bg-deep-800 font-medium text-ivory'
                           : 'bg-cream-50 text-deep-900 ring-1 ring-cream-200 hover:ring-deep-700/40 lg:bg-transparent lg:ring-0 lg:hover:bg-mist-100'

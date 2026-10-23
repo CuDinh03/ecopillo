@@ -23,11 +23,11 @@ export function ExploreMore({ groups, className = '' }: { groups: readonly Relat
                 <li key={link.to}>
                   <Link
                     to={link.to}
-                    className="group flex min-h-10 items-center justify-between gap-3 py-2.5 text-[0.92rem] text-deep-900 transition-colors hover:text-deep-700"
+                    className="group flex min-h-10 items-center justify-between gap-3 py-2.5 text-body-sm text-deep-900 transition-colors hover:text-deep-700"
                   >
                     <span className="min-w-0">
                       <span className="block leading-snug group-hover:underline group-hover:underline-offset-4">{link.label}</span>
-                      {link.note && <span className="mt-0.5 block text-[0.75rem] text-ink-faint">{link.note}</span>}
+                      {link.note && <span className="mt-0.5 block text-label text-ink-faint">{link.note}</span>}
                     </span>
                     <Icon
                       name="arrowRight"

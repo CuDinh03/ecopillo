@@ -15,7 +15,7 @@ interface StepCustomerProps {
 }
 
 const INPUT =
-  'mt-2 block w-full rounded-xl border bg-ivory px-4 py-3.5 text-[1rem] text-deep-900 placeholder:text-ink-faint transition focus:border-deep-700 focus:ring-2 focus:ring-deep-700 focus:outline-none'
+  'mt-2 block w-full rounded-xl border bg-ivory px-4 py-3.5 text-body text-deep-900 placeholder:text-ink-faint transition focus:border-deep-700 focus:ring-2 focus:ring-deep-700 focus:outline-none'
 
 const PROVINCE_OPTIONS = PROVINCES.map((p) => ({ value: p.id, label: p.name }))
 
@@ -40,11 +40,11 @@ function Field({ id, label, error, hint, optional, children, className = '' }: F
       </label>
       {children}
       {error ? (
-        <p id={`f-${id}-error`} className="mt-1.5 inline-flex items-center gap-1.5 rounded-lg bg-alert-soft px-2 py-1 text-[0.82rem] text-alert" role="alert">
+        <p id={`f-${id}-error`} className="mt-1.5 inline-flex items-center gap-1.5 rounded-lg bg-alert-soft px-2 py-1 text-meta text-alert" role="alert">
           <Icon name="info" size={14} /> {error}
         </p>
       ) : (
-        hint && <p className="mt-1.5 text-[0.8rem] text-ink-faint">{hint}</p>
+        hint && <p className="mt-1.5 text-meta text-ink-faint">{hint}</p>
       )}
     </div>
   )
@@ -138,7 +138,7 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
                 {shipFee === null ? 'Miễn phí giao từ 500.000đ' : shipFee === 0 ? 'Miễn phí giao hàng' : `Phí giao ${formatVND(shipFee)}`}
               </span>
             </p>
-            <p className="mt-1 text-[0.85rem] leading-relaxed text-ink-soft">
+            <p className="mt-1 text-small leading-relaxed text-ink-soft">
               Áp dụng toàn quốc, không thu phí thu hộ. Quý khách kiểm hàng, trải thử lên giường rồi mới thanh toán cho nhân
               viên giao hàng.
             </p>

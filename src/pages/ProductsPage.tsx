@@ -174,7 +174,7 @@ export function ProductsPage() {
             {/* Điện thoại: bốn cam kết gộp trong một khối trắng cho đầu trang ngắn lại */}
             <ul aria-label="Ecopillo cam kết" className="grid gap-x-2 gap-y-2.5 rounded-2xl bg-ivory p-4 shadow-[var(--shadow-soft)] sm:grid-cols-2 sm:gap-y-2 sm:bg-transparent sm:p-0 sm:shadow-none">
               {PRODUCTS_PROMISES.map((promise) => (
-                <li key={promise} className="flex gap-2 text-[0.85rem] leading-snug text-ink-soft sm:rounded-2xl sm:bg-ivory sm:px-3.5 sm:py-3 sm:shadow-[var(--shadow-soft)]">
+                <li key={promise} className="flex gap-2 text-small leading-snug text-ink-soft sm:rounded-2xl sm:bg-ivory sm:px-3.5 sm:py-3 sm:shadow-[var(--shadow-soft)]">
                   <Icon name="check" size={16} className="mt-0.5 shrink-0 text-mist-600" />
                   {promise}
                 </li>
@@ -205,7 +205,7 @@ export function ProductsPage() {
                     type="button"
                     aria-pressed={active}
                     onClick={() => pickCategory(c.id)}
-                    className={`-mb-px inline-flex h-11 shrink-0 items-center gap-1.5 border-b-2 text-[0.95rem] whitespace-nowrap transition-colors ${
+                    className={`-mb-px inline-flex h-11 shrink-0 items-center gap-1.5 border-b-2 text-body-sm whitespace-nowrap transition-colors ${
                       active ? 'border-deep-800 font-medium text-deep-900' : 'border-transparent text-ink-faint hover:text-deep-900'
                     }`}
                   >
@@ -336,8 +336,8 @@ function Tile({ active, onPick, title, note, disabled, children }: TileProps) {
       }`}
     >
       {children}
-      <span className="mt-auto block w-full px-3 pt-2.5 text-[0.85rem] leading-tight font-medium text-deep-900 sm:px-3.5 sm:text-[0.92rem]">{title}</span>
-      <span className="block w-full px-3 pb-2.5 text-[0.7rem] text-ink-faint sm:px-3.5 sm:text-[0.74rem]">{note}</span>
+      <span className="mt-auto block w-full px-3 pt-2.5 text-small leading-tight font-medium text-deep-900 sm:px-3.5 sm:text-body-sm">{title}</span>
+      <span className="block w-full px-3 pb-2.5 text-label text-ink-faint sm:px-3.5 sm:text-label">{note}</span>
     </button>
   )
 }
@@ -393,7 +393,7 @@ const itemKey = (item: GridItem): string =>
 
 /** Số trang như web cũ: nút trước, các số trang, nút sau */
 function Pagination({ page, count, onPick }: { page: number; count: number; onPick: (page: number) => void }) {
-  const pageButton = 'inline-flex h-11 min-w-11 items-center justify-center rounded-full px-3 text-[0.92rem] transition'
+  const pageButton = 'inline-flex h-11 min-w-11 items-center justify-center rounded-full px-3 text-body-sm transition'
   return (
     <nav aria-label="Trang" className="mt-10 flex flex-wrap justify-center gap-2">
       <button
@@ -462,12 +462,12 @@ function PriceBands({ bands, active, countOf, onPick }: PriceBandsProps) {
               aria-pressed={isActive}
               disabled={count === 0 && !isActive}
               onClick={() => onPick(b)}
-              className={`inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full px-4 text-[0.86rem] whitespace-nowrap transition duration-300 ease-[var(--ease-soft)] disabled:cursor-not-allowed disabled:opacity-40 ${
+              className={`inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full px-4 text-small whitespace-nowrap transition duration-300 ease-[var(--ease-soft)] disabled:cursor-not-allowed disabled:opacity-40 ${
                 isActive ? 'bg-deep-800 text-ivory' : 'bg-ivory text-deep-900 ring-1 ring-cream-200 enabled:hover:ring-deep-700'
               }`}
             >
               {b.label}
-              <span className={`tabular text-[0.72rem] ${isActive ? 'text-ivory/70' : 'text-ink-faint'}`}>{count}</span>
+              <span className={`tabular text-label ${isActive ? 'text-ivory/70' : 'text-ink-faint'}`}>{count}</span>
             </button>
           )
         })}

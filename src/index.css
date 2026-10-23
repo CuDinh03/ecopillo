@@ -163,6 +163,21 @@
   --color-hero-sky-bottom: #e6f3fc;
 
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Thang cỡ chữ (rà 23/10/2026: trước có 64 cỡ tự đặt, nhiều chữ 9,6–11,5px).
+     Sàn 12px cho mọi chữ người đọc cần đọc; tên màu, kích thước, giá từ 13px. Tiêu đề lớn đặt riêng theo từng mẫu đã duyệt. */
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.35;
+  --text-meta: 0.8125rem;
+  --text-meta--line-height: 1.4;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.5;
+  --text-body-sm: 0.9375rem;
+  --text-body-sm--line-height: 1.6;
+  --text-body: 1rem;
+  --text-body--line-height: 1.65;
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.55;
   /* Chuyển động giao diện (rà theo Emil Kowalski 23/10/2026): thao tác hay dùng thì ngắn.
      Khối hiện dần khi cuộn vẫn giữ nhịp 0,7s owner đã chốt (--ecm-dur trong public/hieu-ung/). */
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
@@ -279,8 +294,9 @@
     line-height: 1.08;
   }
 
+  /* Nhãn in hoa: 12px, giãn chữ 0,14em (trước 11,5px giãn 0,22em, khó đọc với người lớn tuổi; rà 23/10/2026) */
   .eyebrow {
-    @apply text-[0.72rem] font-medium tracking-[0.22em] uppercase text-mist-600;
+    @apply text-label font-medium tracking-[0.14em] uppercase text-mist-600;
   }
 
   /* Vân vải dệt nhẹ cho khung ảnh tạm và nền */
@@ -314,7 +330,7 @@
   }
 
   .placeholder-note {
-    @apply text-[0.7rem] font-medium tracking-wide;
+    @apply text-label font-medium tracking-wide;
   }
 }
 

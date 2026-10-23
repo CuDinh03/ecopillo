@@ -113,7 +113,7 @@ export function BrandVideo() {
                   </span>
                 </span>
                 <span className="absolute inset-x-6 bottom-5 hidden text-ivory sm:block">
-                  <span className="block text-[0.7rem] tracking-[0.16em] text-mist-200 uppercase">YouTube · Ecopillo Việt Nam</span>
+                  <span className="block text-label tracking-[0.12em] text-mist-200 uppercase">YouTube · Ecopillo Việt Nam</span>
                   <span className="font-display mt-1 block text-xl sm:text-2xl">{BRAND_VIDEO.title}</span>
                 </span>
               </button>

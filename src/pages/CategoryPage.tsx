@@ -82,7 +82,7 @@ export function CategoryPage() {
               {guide.points.map((point) => (
                 <div key={point.title} className="border-t border-line pt-4">
                   <dt className="font-medium text-deep-900">{point.title}</dt>
-                  <dd className="mt-1 text-[0.95rem] leading-relaxed text-ink-soft">{point.text}</dd>
+                  <dd className="mt-1 text-body-sm leading-relaxed text-ink-soft">{point.text}</dd>
                 </div>
               ))}
             </dl>

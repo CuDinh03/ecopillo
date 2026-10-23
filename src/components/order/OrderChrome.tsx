@@ -12,7 +12,7 @@ export function OrderAssurances({ deliveryTime }: { deliveryTime?: string }) {
           Giao dự kiến: <span className="font-medium text-deep-900">{deliveryTime}</span>
         </p>
       )}
-      <ul className="mt-5 space-y-2 px-2 text-[0.8rem] text-ink-soft">
+      <ul className="mt-5 space-y-2 px-2 text-meta text-ink-soft">
         {[
           'Nhân viên gọi xác nhận trước khi giao',
           'Thanh toán khi nhận, miễn phí giao từ 500.000đ',
@@ -66,10 +66,10 @@ export function MobileOrderBar({ amount, amountLabel, nextLabel, hint, canContin
           className={`flex h-12 min-w-0 flex-1 items-center justify-between gap-2 rounded-2xl pr-3 pl-4 text-left text-ivory transition active:bg-deep-700 ${canContinue ? 'bg-deep-800' : 'bg-deep-800/45'}`}
         >
           <span className="min-w-0 leading-tight">
-            <span className="block truncate text-[0.68rem] text-mist-200">
+            <span className="block truncate text-label text-mist-200">
               {hint ?? (amount ? `${amountLabel} ${formatVND(amount)}` : amountLabel)}
             </span>
-            <span className="block truncate text-[0.92rem] font-medium">{nextLabel}</span>
+            <span className="block truncate text-body-sm font-medium">{nextLabel}</span>
           </span>
           <Icon name="arrowRight" size={18} className="shrink-0" />
         </button>

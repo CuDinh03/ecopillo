@@ -102,21 +102,21 @@ export function StepPattern({ collectionId, patternCode, onSelectCollection, onS
                         </span>
                       )}
                       {p.isNew && !soldOut && (
-                        <span className="absolute top-2 left-2 rounded-full bg-ivory px-2 py-0.5 text-[0.65rem] font-medium tracking-wide text-deep-800 uppercase">
+                        <span className="absolute top-2 left-2 rounded-full bg-ivory px-2 py-0.5 text-label font-medium tracking-wide text-deep-800 uppercase">
                           Mới
                         </span>
                       )}
                       {soldOut && (
-                        <span className="absolute inset-x-2 top-2 rounded-full bg-deep-900/85 px-2 py-1 text-center text-[0.68rem] font-medium text-ivory">
+                        <span className="absolute inset-x-2 top-2 rounded-full bg-deep-900/85 px-2 py-1 text-center text-label font-medium text-ivory">
                           Tạm hết hàng
                         </span>
                       )}
                     </div>
                     <span className="px-1.5 pt-3 pb-1.5">
                       <span className="block font-medium tracking-wide text-deep-900">{p.code}</span>
-                      <span className="block text-[0.8rem] leading-snug text-ink-soft">{p.colorName}</span>
+                      <span className="block text-meta leading-snug text-ink-soft">{p.colorName}</span>
                       {someSoldOut && (
-                        <span className="mt-1 block text-[0.7rem] text-alert">Một số kích thước tạm hết</span>
+                        <span className="mt-1 block text-label text-alert">Một số kích thước tạm hết</span>
                       )}
                     </span>
                   </label>
@@ -168,17 +168,17 @@ function CollectionOption({ collection, checked, onSelect }: CollectionOptionPro
       }`}
     >
       <input type="radio" name="collection" checked={checked} onChange={onSelect} className="sr-only" />
-      <span className={`text-[0.65rem] tracking-[0.12em] uppercase ${checked ? 'text-mist-300' : 'text-mist-600'}`}>
+      <span className={`text-label tracking-[0.12em] uppercase ${checked ? 'text-mist-300' : 'text-mist-600'}`}>
         {collection.kindLabel}
       </span>
       <span className={`font-display mt-1 text-[1.2rem] leading-tight ${checked ? 'text-ivory' : 'text-deep-900'}`}>
         {collection.name}
       </span>
-      <span className={`tabular mt-2 text-[0.82rem] ${checked ? 'text-mist-100' : 'text-ink-soft'}`}>
+      <span className={`tabular mt-2 text-meta ${checked ? 'text-mist-100' : 'text-ink-soft'}`}>
         từ {formatMillions(min)}
       </span>
       {gift.perSet > 0 && (
-        <span className={`mt-1.5 flex items-center gap-1 text-[0.72rem] ${checked ? 'text-brass-100' : 'text-brass-600'}`}>
+        <span className={`mt-1.5 flex items-center gap-1 text-label ${checked ? 'text-brass-100' : 'text-brass-600'}`}>
           <Icon name="gift" size={12} /> Có quà
         </span>
       )}

@@ -86,10 +86,10 @@ export function ChapterRail({ collection, chapters, current, volumes, volume, on
                 <span className={`block aspect-[4/3] overflow-hidden rounded-xl ${soldOut ? 'opacity-50' : ''}`}>
                   <Placeholder compact className="h-full w-full" tint={pattern.swatch} note={pattern.code} image={image} sizes="170px" />
                 </span>
-                <span className="font-display mt-2.5 block px-1.5 text-[1.02rem] leading-tight italic">
+                <span className="font-display mt-2.5 block px-1.5 text-body leading-tight italic">
                   {chapterTitle(collection, pattern)}
                 </span>
-                <span className={`mt-1 block px-1.5 text-[0.7rem] leading-snug ${active ? 'text-ivory/75' : 'text-ink-faint'}`}>
+                <span className={`mt-1 block px-1.5 text-label leading-snug ${active ? 'text-ivory/75' : 'text-ink-faint'}`}>
                   {pattern.colorName} · {pattern.code}
                   {soldOut && ' · tạm hết'}
                 </span>

@@ -51,7 +51,7 @@ export function PreviewNotice() {
         {PREVIEW_NOTICE.title}
       </h2>
       <p className="mt-3 text-ink-soft">{PREVIEW_NOTICE.intro}</p>
-      <ul className="mt-4 space-y-2 text-[0.92rem] text-ink-soft">
+      <ul className="mt-4 space-y-2 text-body-sm text-ink-soft">
         {PREVIEW_NOTICE.points.map((point) => (
           <li key={point} className="flex gap-2.5">
             <span className="mt-[0.55em] h-1.5 w-1.5 shrink-0 rounded-full bg-deep-700" aria-hidden />

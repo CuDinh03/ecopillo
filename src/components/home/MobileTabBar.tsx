@@ -26,7 +26,7 @@ export function MobileTabBar<T extends string>({ label, tabs, value, onChange, c
             type="button"
             aria-pressed={active}
             onClick={() => onChange(tab.id)}
-            className={`-mb-px h-11 shrink-0 border-b-2 text-[0.92rem] whitespace-nowrap transition-colors ${
+            className={`-mb-px h-11 shrink-0 border-b-2 text-body-sm whitespace-nowrap transition-colors ${
               active ? 'border-deep-800 font-medium text-deep-900' : 'border-transparent text-ink-faint'
             }`}
           >

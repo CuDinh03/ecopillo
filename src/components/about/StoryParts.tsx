@@ -49,7 +49,7 @@ export function Prose({ children, dropCap = false }: { children: ReactNode; drop
   return (
     <p
       data-reveal
-      className={`mt-5 text-[1.02rem] leading-[1.8] text-ink-soft sm:text-[1.08rem] [&_strong]:font-medium [&_strong]:text-deep-900 ${
+      className={`mt-5 text-body leading-[1.8] text-ink-soft sm:text-lead [&_strong]:font-medium [&_strong]:text-deep-900 ${
         dropCap
           ? 'first-letter:font-display first-letter:float-left first-letter:pt-1.5 first-letter:pr-2.5 first-letter:text-[4.4em] first-letter:leading-[0.78] first-letter:text-deep-900'
           : ''
@@ -76,7 +76,7 @@ export function StoryFigure({ image, caption, aspect = 'aspect-[16/10]', positio
           className="h-full w-full object-cover"
         />
       </div>
-      <figcaption className="font-display mt-3 text-center text-[0.95rem] text-ink-faint italic">{caption}</figcaption>
+      <figcaption className="font-display mt-3 text-center text-body-sm text-ink-faint italic">{caption}</figcaption>
     </figure>
   )
 }

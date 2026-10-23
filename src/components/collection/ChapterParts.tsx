@@ -47,7 +47,7 @@ export function ChapterImage({ image, shown, note, onPrev, onNext, className = '
         {/* Góc trái trên: góc trái dưới ảnh gốc có vòng mã in sẵn, chip đặt ở đó thì đè lên vòng (rà 23/10/2026) */}
         <span
           key={shown.code}
-          className="fade-in absolute top-4 left-4 rounded-full bg-ivory/95 px-3.5 py-1.5 text-[0.78rem] font-medium text-deep-900 shadow-[var(--shadow-soft)]"
+          className="fade-in absolute top-4 left-4 rounded-full bg-ivory/95 px-3.5 py-1.5 text-meta font-medium text-deep-900 shadow-[var(--shadow-soft)]"
         >
           {shown.code} · {shown.colorName}
         </span>
@@ -80,7 +80,7 @@ export function ChapterStory({ pattern, story, title, index, total, volume, clas
     <div className={className}>
       <p className="flex flex-wrap items-baseline gap-x-2.5 font-display text-mist-600 italic">
         <span className="text-[3.4rem] leading-[0.85]">{String(index + 1).padStart(2, '0')}</span>
-        <span className="text-[1.05rem]">
+        <span className="text-lead">
           chương / {total}
           {volume && ` · tập ${volume}`}
         </span>
@@ -93,7 +93,7 @@ export function ChapterStory({ pattern, story, title, index, total, volume, clas
         <p className="mt-2 text-sm font-medium text-deep-900">
           {pattern.colorName} · {pattern.code}
         </p>
-        {story && <p className="mt-4 max-w-xl text-[1.02rem] leading-relaxed text-ink-soft">{story.text}</p>}
+        {story && <p className="mt-4 max-w-xl text-body leading-relaxed text-ink-soft">{story.text}</p>}
         {story && !STORIES_APPROVED && (
           <p className="mt-3">
             <FillIn>[ECOPILLO DUYỆT CÂU CHUYỆN PHỐI MÀU]</FillIn>
@@ -143,9 +143,9 @@ export function ChapterBuy({ collection, pattern, size, onSize, isSoldOut, class
                       : 'bg-ivory ring-1 ring-cream-200 hover:ring-deep-700'
                 }`}
               >
-                <span className="text-[0.68rem] tracking-[0.1em] uppercase">{s.bed}</span>
+                <span className="text-label tracking-[0.1em] uppercase">{s.bed}</span>
                 <span className={`mt-0.5 text-sm font-medium ${soldOut ? 'line-through' : 'text-deep-900'}`}>{s.label.replace(' cm', '')}</span>
-                <span className={`tabular mt-1 text-[0.78rem] ${soldOut ? 'text-alert' : 'text-ink-soft'}`}>
+                <span className={`tabular mt-1 text-meta ${soldOut ? 'text-alert' : 'text-ink-soft'}`}>
                   {soldOut ? 'Tạm hết hàng' : formatVND(patternPrice(collection, pattern, s.id))}
                 </span>
               </button>

@@ -51,7 +51,7 @@ export function Reviews() {
                   <Stars />
                   <Icon name="quote" size={26} className="text-mist-300" />
                 </div>
-                <blockquote className="mt-5 flex-1 text-[0.97rem] leading-relaxed text-deep-900">
+                <blockquote className="mt-5 flex-1 text-body-sm leading-relaxed text-deep-900">
                   “{r.quote}”
                 </blockquote>
                 <footer className="mt-7 flex items-start gap-3 border-t border-deep-900/10 pt-5">
@@ -64,7 +64,7 @@ export function Reviews() {
                   <span className="text-sm leading-tight">
                     <span className="block font-medium text-deep-900">{r.name}</span>
                     <span className="block text-ink-soft">{r.place}</span>
-                    <span className="mt-1.5 inline-block rounded-full bg-mist-100 px-2.5 py-0.5 text-[0.72rem] text-deep-800">
+                    <span className="mt-1.5 inline-block rounded-full bg-mist-100 px-2.5 py-0.5 text-label text-deep-800">
                       {r.product}
                     </span>
                   </span>

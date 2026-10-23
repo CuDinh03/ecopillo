@@ -28,7 +28,7 @@ export function AgentSignup() {
         />
         <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
           {AGENT_BENEFITS.map((b) => (
-            <li key={b} className="flex gap-3 text-[0.95rem] text-deep-900">
+            <li key={b} className="flex gap-3 text-body-sm text-deep-900">
               <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-deep-800 text-ivory">
                 <Icon name="check" size={12} strokeWidth={2.2} />
               </span>
@@ -36,7 +36,7 @@ export function AgentSignup() {
             </li>
           ))}
         </ul>
-        <p className="mt-7 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.95rem] text-deep-900">
+        <p className="mt-7 flex flex-wrap items-center gap-x-2 gap-y-1 text-body-sm text-deep-900">
           Liên hệ mở đại lý:
           <a
             href={CONTACT.hotlineTel}

@@ -26,7 +26,7 @@ export function CollectionCover({ collection }: { collection: Collection }) {
           {collection.kindLabel} · {collection.patterns.length} chương màu
         </p>
         <h1 className="font-display mt-2 text-[2.4rem] leading-none sm:mt-3 sm:text-[4.2rem]">{collection.name}</h1>
-        <p className="mt-3 max-w-md text-[0.9rem] leading-relaxed text-ivory/85 sm:mt-4 sm:text-[1.02rem]">{story ?? collection.description}</p>
+        <p className="mt-3 max-w-md text-small leading-relaxed text-ivory/85 sm:mt-4 sm:text-body">{story ?? collection.description}</p>
         {story && !STORIES_APPROVED && (
           <p className="mt-3">
             <FillIn>[ECOPILLO DUYỆT CÂU CHUYỆN BỘ SƯU TẬP]</FillIn>

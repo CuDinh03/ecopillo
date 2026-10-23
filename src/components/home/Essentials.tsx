@@ -90,16 +90,16 @@ export function Essentials({ withTabs = false }: EssentialsProps) {
                     <li key={item.name} className="py-3.5">
                       <div className="flex flex-wrap items-baseline justify-between gap-x-4">
                         <ItemName name={item.name} />
-                        <span className="tabular ml-auto shrink-0 text-right text-[0.92rem] text-deep-800">
+                        <span className="tabular ml-auto shrink-0 text-right text-body-sm text-deep-800">
                           {formatRange(item.min, item.max)}
                         </span>
                       </div>
                       <div className="mt-0.5 flex items-center justify-between gap-4">
-                        <span className="text-[0.8rem] text-ink-soft">{item.note}</span>
+                        <span className="text-meta text-ink-soft">{item.note}</span>
                         <Link
                           to={essentialOrderUrl(item.name)}
                           aria-label={`Đặt mua ${item.name}`}
-                          className="-my-2.5 inline-flex shrink-0 items-center gap-1 py-2.5 text-[0.8rem] font-medium text-mist-600 underline-offset-4 hover:underline"
+                          className="-my-2.5 inline-flex shrink-0 items-center gap-1 py-2.5 text-meta font-medium text-mist-600 underline-offset-4 hover:underline"
                         >
                           Đặt mua <Icon name="arrowRight" size={13} />
                         </Link>
@@ -186,7 +186,7 @@ function Mattresses() {
           return (
           <li key={m.name} className="relative bg-mist-50 p-5 transition-colors hover:bg-ivory sm:p-7">
             <Icon name="bed" size={22} className="text-mist-600" />
-            <p className="mt-4 text-[0.92rem] leading-snug font-medium text-deep-900 sm:text-base">
+            <p className="mt-4 text-body-sm leading-snug font-medium text-deep-900 sm:text-base">
               {product ? (
                 <Link to={productPath(product)} className="after:absolute after:inset-0">
                   {m.name}
@@ -195,11 +195,11 @@ function Mattresses() {
                 m.name
               )}
             </p>
-            <p className="mt-1 hidden text-[0.82rem] leading-snug text-ink-soft sm:block">{m.note}</p>
+            <p className="mt-1 hidden text-meta leading-snug text-ink-soft sm:block">{m.note}</p>
             <p className="tabular mt-4 text-sm text-deep-800">
               từ <span className="block text-base font-medium sm:inline sm:text-lg">{formatVND(m.from)}</span>
             </p>
-            <span className="mt-3 inline-flex items-center gap-1 text-[0.8rem] font-medium text-mist-600">
+            <span className="mt-3 inline-flex items-center gap-1 text-meta font-medium text-mist-600">
               Xem và đặt mua <Icon name="arrowRight" size={13} />
             </span>
           </li>
@@ -281,15 +281,15 @@ export function Gifts({ standalone = false }: GiftsProps) {
                 </div>
                 <div className="min-w-0 flex-1 lg:mt-4">
                   <p className="font-medium text-deep-900 first-letter:uppercase">{tier.gift}</p>
-                  <p className="mt-0.5 text-[0.8rem] text-ink-soft">{tier.value}</p>
+                  <p className="mt-0.5 text-meta text-ink-soft">{tier.value}</p>
                   <div className="stitch my-4 text-cream-300" aria-hidden="true" />
-                  <p className="text-[0.68rem] tracking-[0.14em] text-ink-faint uppercase">Khi mua</p>
+                  <p className="text-label tracking-[0.14em] text-ink-faint uppercase">Khi mua</p>
                   <ul className="mt-2 flex flex-wrap gap-1.5">
                     {tier.ids.map((id) => (
                       <li key={id}>
                         <Link
                           to={orderLink(id)}
-                          className="inline-block rounded-full bg-cream-100 px-3 py-1 text-[0.8rem] text-deep-800 transition-colors hover:bg-mist-200"
+                          className="inline-block rounded-full bg-cream-100 px-3 py-1 text-meta text-deep-800 transition-colors hover:bg-mist-200"
                         >
                           {nameOf(id)}
                         </Link>

@@ -84,7 +84,7 @@ function NoDealerNearby({ place }: { place?: string }) {
       <p className="font-display text-[1.5rem] leading-tight sm:text-[1.75rem]">
         {place ? `${place} chưa có đại lý Ecopillo` : 'Khu vực của Quý khách chưa có đại lý Ecopillo'}
       </p>
-      <p className="mt-3 max-w-xl text-[0.95rem] text-mist-200/90">
+      <p className="mt-3 max-w-xl text-body-sm text-mist-200/90">
         Ecopillo giao hàng toàn quốc, thanh toán khi nhận, miễn phí giao từ 500.000đ. Nhắn Zalo để được tư vấn mẫu qua video.
       </p>
       <div className="mt-6 flex flex-wrap gap-3">
@@ -259,7 +259,7 @@ export function DistributionPage() {
           <h1 id="page-title" className="font-display mt-4 text-[2rem] sm:mt-6 leading-[1.1] text-balance text-deep-900 sm:text-[2.8rem]">
             Tìm Ecopillo <em className="text-deep-700">gần Quý khách</em>
           </h1>
-          <p className="mt-2 text-[1.02rem] text-ink-soft sm:mt-3">Nằm thử gối, đệm và chạm tay vào vải Lyocell.</p>
+          <p className="mt-2 text-body text-ink-soft sm:mt-3">Nằm thử gối, đệm và chạm tay vào vải Lyocell.</p>
 
           <div className="mt-5 grid gap-3 sm:mt-6 lg:grid-cols-[auto_minmax(0,0.8fr)_minmax(0,1fr)] lg:items-center">
             <div>
@@ -318,7 +318,7 @@ export function DistributionPage() {
             </label>
           </div>
 
-          <div aria-live="polite" className="mt-3 text-[0.85rem]">
+          <div aria-live="polite" className="mt-3 text-small">
             {geo === 'failed' ? (
               <p className="font-medium text-deep-900">Không lấy được vị trí. Quý khách chọn tỉnh/thành bên dưới nhé.</p>
             ) : (
@@ -418,7 +418,7 @@ export function DistributionPage() {
                       type="button"
                       aria-pressed={r.dealer.id === mapDealer?.id}
                       onClick={() => setSelectedId(r.dealer.id)}
-                      className={`h-10 shrink-0 rounded-full px-3.5 text-[0.82rem] whitespace-nowrap transition ${
+                      className={`h-10 shrink-0 rounded-full px-3.5 text-meta whitespace-nowrap transition ${
                         r.dealer.id === mapDealer?.id ? 'bg-deep-800 text-ivory' : 'bg-cream-50 text-deep-900 shadow-[var(--shadow-soft)]'
                       }`}
                     >

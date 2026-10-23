@@ -29,14 +29,14 @@ export function Hospitality() {
             lead={
               // Trang chủ chỉ giữ đoạn đầu cho gọn; đủ ba đoạn ở trang Khách sạn và dự án (mục 38)
               <>
-                <span className="block text-[0.78rem] font-medium tracking-[0.12em] text-mist-300 uppercase">{HOTEL_INTRO_HEADING}</span>
+                <span className="block text-meta font-medium tracking-[0.12em] text-mist-300 uppercase">{HOTEL_INTRO_HEADING}</span>
                 <span className="mt-3 block">{HOTEL_INTRO[0]}</span>
               </>
             }
           />
           <ul data-reveal className="mt-9 grid gap-3 sm:grid-cols-2">
             {HOTEL_BENEFITS.map((b) => (
-              <li key={b} className="flex gap-3 text-[0.92rem] text-mist-100">
+              <li key={b} className="flex gap-3 text-body-sm text-mist-100">
                 <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-deep-700 text-mist-300">
                   <Icon name="check" size={12} strokeWidth={2.2} />
                 </span>
@@ -54,7 +54,7 @@ export function Hospitality() {
           />
           <Link
             to={PATHS.hotel}
-            className="mt-4 -mb-2 inline-flex items-center gap-1.5 py-2 text-[0.95rem] font-medium text-mist-200 underline-offset-4 hover:text-ivory hover:underline"
+            className="mt-4 -mb-2 inline-flex items-center gap-1.5 py-2 text-body-sm font-medium text-mist-200 underline-offset-4 hover:text-ivory hover:underline"
           >
             Xem giải pháp cho khách sạn <Icon name="arrowRight" size={16} />
           </Link>
