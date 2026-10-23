@@ -90,7 +90,7 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
     <div className="pb-36 lg:pb-24">
       <Container className="pt-8 sm:pt-10">
         <DetailBreadcrumb product={product} />
-        <CollectionCover collection={collection} />
+        <CollectionCover collection={collection} isCompactOnMobile={Boolean(patternParam)} />
 
         {/*
           Điện thoại: ảnh → câu chuyện → hàng chương → mua (các khối bọc dùng `contents` để xếp lại thứ tự).

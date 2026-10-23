@@ -1,7 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type PointerEvent } from 'react'
 import { CATEGORIES, type CategoryId } from '../../data/products'
 import { Icon } from '../ui/Icon'
 import { FilterPanel, type FilterPanelProps } from './FilterPanel'
+
+/** Vuốt để đóng (B4, owner duyệt 24/10/2026): kéo quá 1/4 chiều cao bảng, hoặc vuốt nhanh hơn 0,11 px/ms thì đóng */
+const DISMISS_FRACTION = 0.25
+const DISMISS_VELOCITY = 0.11
+
+/** Kéo lên quá đỉnh: cho nhích một chút, càng kéo càng nặng, thay vì đứng khựng */
+const resist = (dy: number) => (dy >= 0 ? dy : -Math.pow(-dy, 0.6))
 
 interface MobileFilterBarProps {
   panel: FilterPanelProps
@@ -22,6 +29,8 @@ export function MobileFilterBar({ panel, activeCount, resultCount, onClose }: Mo
   const [hasOpened, setHasOpened] = useState(false)
   const dialogRef = useRef<HTMLDialogElement>(null)
   const openerRef = useRef<HTMLButtonElement>(null)
+  // Điểm bắt đầu kéo; null = không kéo. Chỉ nhận một ngón: ngón thứ hai bị bỏ qua
+  const dragRef = useRef<{ id: number; y: number; t: number } | null>(null)
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -40,6 +49,33 @@ export function MobileFilterBar({ panel, activeCount, resultCount, onClose }: Mo
     setIsOpen(false)
     openerRef.current?.focus()
     onClose()
+  }
+
+  // Kéo bằng thanh nắm (touch-action: none chỉ ở thanh này, phần nội dung vẫn cuộn bình thường).
+  // Đặt translate thẳng lên bảng, không qua biến CSS, để không tính lại style cả cây bên trong
+  const startDrag = (e: PointerEvent<HTMLDivElement>) => {
+    if (dragRef.current) return
+    e.currentTarget.setPointerCapture(e.pointerId)
+    dragRef.current = { id: e.pointerId, y: e.clientY, t: performance.now() }
+    if (dialogRef.current) dialogRef.current.style.transition = 'none'
+  }
+  const moveDrag = (e: PointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current
+    if (!drag || drag.id !== e.pointerId || !dialogRef.current) return
+    dialogRef.current.style.translate = `0 ${resist(e.clientY - drag.y)}px`
+  }
+  const endDrag = (e: PointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current
+    const dialog = dialogRef.current
+    if (!drag || drag.id !== e.pointerId || !dialog) return
+    dragRef.current = null
+    const dy = e.clientY - drag.y
+    const velocity = dy / Math.max(1, performance.now() - drag.t)
+    const shouldClose = e.type === 'pointerup' && dy > 0 && (dy >= dialog.offsetHeight * DISMISS_FRACTION || velocity > DISMISS_VELOCITY)
+    // Trả lại transition của lớp .sheet rồi mới đổi vị trí: bảng trượt tiếp từ chỗ ngón tay thả ra
+    dialog.style.transition = ''
+    dialog.style.translate = ''
+    if (shouldClose) dialog.close()
   }
 
   return (
@@ -81,8 +117,18 @@ export function MobileFilterBar({ panel, activeCount, resultCount, onClose }: Mo
         {/* Giữ nội dung trong lúc bảng trượt xuống (đóng có hoạt ảnh), chỉ bỏ khi chưa mở lần nào */}
         {(isOpen || hasOpened) && (
           <>
-            <div className="px-5 pt-3">
-              <span aria-hidden="true" className="mx-auto mb-3 block h-1 w-10 rounded-full bg-line" />
+            {/* Thanh nắm: vùng chạm cao 28px, kéo xuống để đóng. Bàn phím đóng bằng Esc hoặc nút cuối bảng */}
+            <div
+              aria-hidden="true"
+              onPointerDown={startDrag}
+              onPointerMove={moveDrag}
+              onPointerUp={endDrag}
+              onPointerCancel={endDrag}
+              className="sticky top-0 z-10 flex h-7 cursor-grab touch-none items-center justify-center bg-ivory active:cursor-grabbing"
+            >
+              <span className="block h-1 w-10 rounded-full bg-line" />
+            </div>
+            <div className="px-5">
               <FilterPanel {...panel} idPrefix="loc-dt" />
             </div>
             <div className="pb-safe sticky bottom-0 mt-5 border-t border-line bg-ivory px-5 pt-3">

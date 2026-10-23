@@ -110,7 +110,8 @@ function HotelHero() {
         <h1 id="page-title" className="font-display mt-4 text-[2.6rem] leading-[1.02] text-balance text-deep-900 sm:text-[3.4rem] xl:text-[4rem]">
           Giấc ngủ năm sao <em className="block text-deep-700">cho khách lưu trú</em>
         </h1>
-        <p className="mt-5 max-w-lg text-meta font-medium tracking-[0.12em] text-balance text-deep-700 uppercase">{HOTEL_INTRO_HEADING}</p>
+        {/* Viết thường như câu dẫn, trước in hoa giãn chữ chạy hai dòng khó đọc (B10, owner duyệt 24/10/2026) */}
+        <p className="mt-5 max-w-sm text-lead leading-snug font-medium text-balance text-deep-800">{HOTEL_INTRO_HEADING}</p>
         {/* Chỉ đoạn đầu: đủ 3 đoạn thì phần đầu cao thêm, ảnh bị cắt lệch (owner báo 17/10/2026). Đoạn 2, 3 ở phần nền chàm */}
         <p className="mt-3 max-w-md text-body leading-relaxed text-ink-soft">{HOTEL_INTRO[0]}</p>
         <div className="mt-8 flex flex-wrap gap-3">

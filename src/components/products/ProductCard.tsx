@@ -54,7 +54,8 @@ export function ProductCard({ product }: { product: Product }) {
           {categoryLabel(product.category)}
           {patternCount > 1 && <span className="text-ink-faint"> · {patternCount} mẫu</span>}
         </p>
-        <h3 className="font-display mt-1.5 text-lead leading-snug text-deep-900 sm:mt-2 sm:text-[1.35rem]">
+        {/* Tên dài (khi lấy từ WordPress) cắt còn 2 dòng để thẻ cùng hàng cao bằng nhau (B8, owner duyệt 24/10/2026) */}
+        <h3 title={product.name} className="font-display mt-1.5 line-clamp-2 text-lead leading-snug text-deep-900 sm:mt-2 sm:text-[1.35rem]">
           {/* Liên kết phủ cả thẻ */}
           <Link to={productPath(product)} className="after:absolute after:inset-0 focus-visible:outline-none">
             {product.name}

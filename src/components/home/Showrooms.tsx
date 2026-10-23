@@ -134,15 +134,13 @@ export function Faq({ standalone = false, compact = false }: { standalone?: bool
               <li key={f.q} className={isHidden(i) ? 'max-sm:hidden' : ''}>
                 <details className="group" open={i === 0 && !compact}>
                   <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-6 text-left">
-                    <span className="flex gap-4">
-                      <span className="tabular pt-1 text-xs text-ink-faint">{String(i + 1).padStart(2, '0')}</span>
-                      <span className="font-display text-[1.15rem] leading-snug text-deep-900 sm:text-[1.3rem]">{f.q}</span>
-                    </span>
+                    {/* Không đánh số: các câu hỏi không có thứ tự (B7, owner duyệt 24/10/2026) */}
+                    <span className="font-display text-[1.15rem] leading-snug text-deep-900 sm:text-[1.3rem]">{f.q}</span>
                     <span className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-mist-100 text-deep-800 transition-transform duration-300 group-open:rotate-45">
                       <Icon name="plus" size={18} />
                     </span>
                   </summary>
-                  <div className="space-y-3 pr-12 pb-7 pl-8 text-body-sm leading-relaxed text-ink-soft sm:pl-9">
+                  <div className="space-y-3 pr-12 pb-7 text-body-sm leading-relaxed text-ink-soft">
                     {f.a.map((line) => (
                       <p key={line}>
                         <RichLine text={line} />
