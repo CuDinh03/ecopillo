@@ -107,7 +107,7 @@ function MoreMenu({ activeHref }: { activeHref: string | null }) {
       {isOpen && (
         <ul
           id="more-menu"
-          className="reveal absolute top-full right-0 mt-2 w-52 rounded-2xl bg-ivory p-2 shadow-[var(--shadow-lift)]"
+          className="pop-in absolute top-full right-0 mt-2 w-52 origin-top-right rounded-2xl bg-ivory p-2 shadow-[var(--shadow-lift)]"
         >
           {MORE_ITEMS.map((item) => (
             <li key={item.href}>
@@ -185,7 +185,7 @@ export function Header() {
   return (
     <header
       ref={headerRef}
-      className={`sticky top-0 z-40 transition-[background-color,box-shadow,backdrop-filter] duration-500 ${
+      className={`sticky top-0 z-40 transition-[background-color,box-shadow] duration-200 ${
         solid
           ? 'bg-page/95 shadow-[0_1px_0_rgb(45_46_141/0.1)] backdrop-blur-md'
           : 'bg-transparent'
@@ -249,7 +249,8 @@ export function Header() {
             ref={menuRef}
             id="mobile-menu"
             data-lenis-prevent
-            className="reveal fixed inset-x-0 top-[4.5rem] bottom-0 z-50 overflow-y-auto overscroll-contain bg-page lg:hidden"
+            style={{ animationDuration: '220ms' }}
+            className="fade-in fixed inset-x-0 top-[4.5rem] bottom-0 z-50 overflow-y-auto overscroll-contain bg-page lg:hidden"
           >
             <Container className="flex min-h-full flex-col py-6">
               <nav aria-label="Menu di động">

@@ -19,6 +19,7 @@ interface MobileFilterBarProps {
  */
 export function MobileFilterBar({ panel, activeCount, resultCount, onClose }: MobileFilterBarProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [hasOpened, setHasOpened] = useState(false)
   const dialogRef = useRef<HTMLDialogElement>(null)
   const openerRef = useRef<HTMLButtonElement>(null)
 
@@ -53,7 +54,10 @@ export function MobileFilterBar({ panel, activeCount, resultCount, onClose }: Mo
           ref={openerRef}
           type="button"
           aria-haspopup="dialog"
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            setHasOpened(true)
+            setIsOpen(true)
+          }}
           className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-deep-800 px-3.5 text-[0.85rem] font-medium text-ivory"
         >
           <Icon name="filter" size={15} />
@@ -72,9 +76,10 @@ export function MobileFilterBar({ panel, activeCount, resultCount, onClose }: Mo
         aria-label="Bộ lọc sản phẩm"
         onClose={handleClose}
         onClick={(e) => e.target === e.currentTarget && dialogRef.current?.close()}
-        className="reveal fixed inset-x-0 top-auto bottom-0 m-0 max-h-[85svh] w-full max-w-full overflow-y-auto overscroll-contain rounded-t-[1.5rem] bg-ivory p-0 text-deep-900 backdrop:bg-deep-900/35 sm:hidden"
+        className="sheet fixed inset-x-0 top-auto bottom-0 m-0 max-h-[85svh] w-full max-w-full overflow-y-auto overscroll-contain rounded-t-[1.5rem] bg-ivory p-0 text-deep-900 backdrop:bg-deep-900/35 sm:hidden"
       >
-        {isOpen && (
+        {/* Giữ nội dung trong lúc bảng trượt xuống (đóng có hoạt ảnh), chỉ bỏ khi chưa mở lần nào */}
+        {(isOpen || hasOpened) && (
           <>
             <div className="px-5 pt-3">
               <span aria-hidden="true" className="mx-auto mb-3 block h-1 w-10 rounded-full bg-line" />

@@ -15,7 +15,7 @@ export function FillIn({ children, className = '' }: { children: ReactNode; clas
 }
 
 const BTN_BASE =
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-medium transition duration-300 ease-[var(--ease-soft)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45'
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-medium transition duration-300 ease-[var(--ease-soft)] active:scale-[0.98] active:duration-[var(--dur-press)] disabled:cursor-not-allowed disabled:opacity-45'
 
 const BTN_VARIANTS = {
   primary:

@@ -6,7 +6,7 @@
  */
 
 :root {
-  --ecm-ease: cubic-bezier(0.22, 1, 0.36, 1); /* chậm dần về cuối, giống --ease-soft của bản web mới */
+  --ecm-ease: var(--ease-soft, cubic-bezier(0.22, 1, 0.36, 1)); /* chậm dần về cuối: dùng chung --ease-soft của bản web mới */
   --ecm-dur: 0.7s;
   --ecm-dist: 24px;   /* hiện dần: nhích lên bao nhiêu */
   --ecm-side: 32px;   /* chữ trượt vào từ bên trái / phải */
@@ -109,7 +109,8 @@ html {
 .ecm-swap > img {
   display: block;
   width: 100%;
-  transition: opacity var(--ecm-dur) var(--ecm-ease), scale 1.1s var(--ecm-ease);
+  /* Rê chuột là thao tác hay dùng: phóng ảnh 0,5s (trước 1,1s, rà 23/10/2026) */
+  transition: opacity var(--ecm-dur) var(--ecm-ease), scale 0.5s var(--ecm-ease);
 }
 
 .ecm-swap > .ecm-swap__alt {

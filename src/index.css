@@ -163,6 +163,14 @@
   --color-hero-sky-bottom: #e6f3fc;
 
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Chuyển động giao diện (rà theo Emil Kowalski 23/10/2026): thao tác hay dùng thì ngắn.
+     Khối hiện dần khi cuộn vẫn giữ nhịp 0,7s owner đã chốt (--ecm-dur trong public/hieu-ung/). */
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur-press: 160ms;
+  --dur-pop: 180ms;
+  --dur-hover: 250ms;
+  --dur-drawer: 360ms;
 
   --shadow-soft: 0 1px 2px rgb(45 46 141 / 0.04), 0 8px 24px -12px rgb(45 46 141 / 0.18);
   --shadow-lift: 0 2px 4px rgb(45 46 141 / 0.05), 0 22px 48px -20px rgb(45 46 141 / 0.32);
@@ -294,8 +302,54 @@
     padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
   }
 
+  /* Chuyển cảnh trong trang (đổi bước đặt hàng, màn cảm ơn) */
   .reveal {
-    animation: reveal 0.7s var(--ease-soft) both;
+    animation: reveal 0.36s var(--ease-out-strong) both;
+  }
+
+  /* Chữ đầu trang chủ: hiện dần ngay khi trang vẽ, không chờ JS; so le bằng --hero-delay */
+  .hero-in {
+    animation: reveal 0.6s var(--ease-soft) var(--hero-delay, 0ms) both;
+  }
+
+  /* Menu bật lên từ nút: mở nhanh, phóng nhẹ từ phía nút (đặt origin-* ngay trên phần tử) */
+  .pop-in {
+    animation: pop-in var(--dur-pop) var(--ease-out-strong) both;
+  }
+
+  /* Bảng trượt từ đáy (<dialog>): trượt cả chiều cao bảng lên, đóng nhanh hơn mở.
+     transition + @starting-style nên ngắt giữa chừng được (bấm đóng khi đang mở). */
+  .sheet {
+    translate: 0 100%;
+    transition:
+      translate var(--dur-press) var(--ease-drawer),
+      display var(--dur-press) allow-discrete,
+      overlay var(--dur-press) allow-discrete;
+  }
+  .sheet[open] {
+    translate: 0 0;
+    transition-duration: var(--dur-drawer);
+  }
+  @starting-style {
+    .sheet[open] {
+      translate: 0 100%;
+    }
+  }
+  .sheet::backdrop {
+    opacity: 0;
+    transition:
+      opacity var(--dur-press) var(--ease-drawer),
+      display var(--dur-press) allow-discrete,
+      overlay var(--dur-press) allow-discrete;
+  }
+  .sheet[open]::backdrop {
+    opacity: 1;
+    transition-duration: var(--dur-drawer);
+  }
+  @starting-style {
+    .sheet[open]::backdrop {
+      opacity: 0;
+    }
   }
 
   .fade-in {
@@ -304,27 +358,6 @@
 
   .tabular {
     font-variant-numeric: tabular-nums;
-  }
-}
-
-/* Hiện dần khi cuộn (useScrollReveal): chỉ ẩn khi JS đã sẵn sàng, tránh mất nội dung nếu lỗi script */
-html.reveal-ready [data-reveal]:not(.is-visible) {
-  opacity: 0;
-}
-
-[data-reveal].is-visible {
-  animation: reveal-up 0.85s var(--ease-soft) both;
-  animation-delay: var(--reveal-delay, 0ms);
-}
-
-@keyframes reveal-up {
-  from {
-    opacity: 0;
-    transform: translateY(26px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
   }
 }
 
@@ -353,7 +386,7 @@ html.reveal-ready [data-reveal]:not(.is-visible) {
 @keyframes reveal {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -361,18 +394,54 @@ html.reveal-ready [data-reveal]:not(.is-visible) {
   }
 }
 
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  /* Tắt chuyển động trượt/phóng; vẫn giữ mờ dần (opacity) vì không gây chóng mặt */
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
+  /* Giảm chuyển động nghĩa là nhẹ đi, không phải tắt hết: bỏ trượt, phóng, nhấc; vẫn giữ mờ dần.
+     Khối hiện dần khi cuộn do public/hieu-ung/ecopillo-hieu-ung.css lo (đổi sang chỉ mờ dần). */
+  .reveal,
+  .pop-in,
+  .hero-in {
+    animation-name: fade-in;
+    animation-duration: 200ms;
+  }
+  .sheet,
+  .sheet[open] {
+    translate: none;
+    transition-property: opacity, display, overlay;
+  }
+  .sheet {
+    opacity: 0;
+  }
+  .sheet[open] {
+    opacity: 1;
+  }
+  @starting-style {
+    .sheet[open] {
+      opacity: 0;
+    }
+  }
+  /* Rê chuột, nhấn, đi Tab: thẻ không nhấc, nút không lún, ảnh không phóng (màu, bóng vẫn đổi).
+     Chỉ nhắm đúng các lớp hiệu ứng, để translate dùng căn giữa phần tử không bị gỡ. */
+  [class*='hover:-translate']:hover,
+  [class*='has-[:focus-visible]:-translate']:has(:focus-visible) {
+    translate: none !important;
+  }
+  [class*='active:scale']:active,
+  .group:hover [class*='group-hover:scale'] {
+    scale: none !important;
   }
 
-  .pulse-ring {
+  .pulse-ring,
+  .animate-ping {
     animation: none;
   }
 }

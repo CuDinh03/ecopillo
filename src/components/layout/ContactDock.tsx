@@ -81,7 +81,7 @@ function DesktopDock() {
   return (
     <div ref={ref} className="fixed right-6 bottom-6 z-40 hidden flex-col items-end gap-2.5 md:flex">
       {isOpen && (
-        <div id="dock-menu" className="reveal flex flex-col items-end gap-2.5">
+        <div id="dock-menu" className="pop-in flex origin-bottom-right flex-col items-end gap-2.5">
             <a
               href={CONTACT.messengerUrl}
               target="_blank"
@@ -107,10 +107,7 @@ function DesktopDock() {
               aria-label={`Gọi hotline ${CONTACT.hotlineDisplay}`}
               className="flex h-13 items-center gap-2 rounded-full bg-deep-800 py-2 pr-5 pl-4 text-sm font-medium text-ivory shadow-[var(--shadow-lift)] transition hover:-translate-y-0.5 hover:bg-deep-700"
             >
-              <span className="relative flex h-6 w-6 items-center justify-center">
-                <span className="absolute inset-0 animate-ping rounded-full bg-mist-400/40 [animation-duration:2.4s]" />
-                <Icon name="phone" size={17} />
-              </span>
+              <Icon name="phone" size={17} />
               <span className="tabular">{CONTACT.hotlineDisplay}</span>
             </a>
         </div>

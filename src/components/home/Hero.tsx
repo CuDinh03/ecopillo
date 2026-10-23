@@ -68,12 +68,16 @@ function HeroPicture({ className }: { className: string }) {
   )
 }
 
-const delay = (ms: number) => ({ '--reveal-delay': `${ms}ms` }) as CSSProperties
+/**
+ * Chữ đầu trang hiện dần ngay khi trang vẽ lần đầu, chỉ bằng CSS (lớp hero-in, src/index.css), không chờ JS hiện dần
+ * nạp xong: trước đó máy chậm phải tới ~1,5s chữ mới đậm đủ (rà 23/10/2026; HIEU-UNG-GHI-CHU.md mục 3.4).
+ */
+const delay = (ms: number) => ({ '--hero-delay': `${ms}ms` }) as CSSProperties
 
 /** Dòng đỏ, cùng màu chữ "ETERNAL" trong logo. Bỏ vạch đầu, chữ to gấp đôi (khách yêu cầu 16/10/2026, mục 1) */
 function Tagline() {
   return (
-    <p data-reveal className="text-[clamp(1.05rem,5.2vw,1.44rem)] leading-tight font-semibold tracking-[0.06em] sm:tracking-[0.12em] text-tagline uppercase">
+    <p className="hero-in text-[clamp(1.05rem,5.2vw,1.44rem)] leading-tight font-semibold tracking-[0.06em] sm:tracking-[0.12em] text-tagline uppercase">
       Chăn ga gối đệm cao cấp
     </p>
   )
@@ -87,9 +91,8 @@ const BAR_LABEL = 'text-[0.68rem] font-medium tracking-[0.18em] text-mist-600 up
 function BangEcBar() {
   return (
     <div
-      data-reveal
-      style={delay(320)}
-      className="grid gap-5 rounded-[1.5rem] bg-ivory/92 p-4 shadow-[var(--shadow-lift)] ring-1 ring-ivory backdrop-blur-md sm:p-5 lg:grid-cols-[1.25fr_auto_1fr] lg:items-center lg:gap-7 lg:px-7 lg:py-5"
+      style={delay(240)}
+      className="hero-in grid gap-5 rounded-[1.5rem] bg-ivory/92 p-4 shadow-[var(--shadow-lift)] ring-1 ring-ivory backdrop-blur-md sm:p-5 lg:grid-cols-[1.25fr_auto_1fr] lg:items-center lg:gap-7 lg:px-7 lg:py-5"
     >
       {/*
         Mục 4 (khách yêu cầu 16/10/2026), kiểu B owner chọn 17/10/2026 (mẫu: docs/de-xuat-dau-trang-chu-goi-4.html):
@@ -168,9 +171,8 @@ function MobileTop() {
         <Tagline />
         <h1
           id="hero-title-m"
-          data-reveal
-          style={delay(90)}
-          className="font-display mt-3 text-[clamp(2.4rem,12.3vw,3rem)] leading-[1.02] text-deep-900"
+          style={delay(60)}
+          className="hero-in font-display mt-3 text-[clamp(2.4rem,12.3vw,3rem)] leading-[1.02] text-deep-900"
         >
           Nâng niu
           <br />
@@ -179,10 +181,10 @@ function MobileTop() {
       </div>
       {/* Xếp bằng flex, không dùng absolute: khách bật chữ to (200%) thì khung tự cao theo, chữ không chồng lên nhau */}
       <div className="relative mt-auto px-5 pt-6 pb-5">
-        <p data-reveal style={delay(160)} className="font-display text-[clamp(1rem,4.5vw,1.1rem)] text-deep-700 italic">
+        <p style={delay(120)} className="hero-in font-display text-[clamp(1rem,4.5vw,1.1rem)] text-deep-700 italic">
           {SUBLINE}
         </p>
-        <div data-reveal style={delay(240)} className="mt-3 flex flex-wrap gap-2.5 [&>a]:flex-1 [&>a]:basis-[9rem]">
+        <div style={delay(180)} className="hero-in mt-3 flex flex-wrap gap-2.5 [&>a]:flex-1 [&>a]:basis-[9rem]">
           <a href="#bo-suu-tap" className={buttonClass('primary', 'md')}>
             Xem bộ sưu tập
           </a>
@@ -232,18 +234,17 @@ export function Hero() {
             <Tagline />
             <h1
               id="hero-title"
-              data-reveal
-              style={delay(90)}
-              className={`font-display mt-5 text-[3.5rem] leading-[1.02] text-deep-900 lg:text-[4rem] ${TITLE_WIDE}`}
+              style={delay(60)}
+              className={`hero-in font-display mt-5 text-[3.5rem] leading-[1.02] text-deep-900 lg:text-[4rem] ${TITLE_WIDE}`}
             >
               Nâng niu
               <br />
               <span className="text-mist-600 italic">giấc mơ xanh</span>
             </h1>
-            <p data-reveal style={delay(160)} className="font-display mt-3 text-[1.35rem] text-deep-700 italic">
+            <p style={delay(120)} className="hero-in font-display mt-3 text-[1.35rem] text-deep-700 italic">
               {SUBLINE}
             </p>
-            <div data-reveal style={delay(240)} className="mt-7 flex gap-3">
+            <div style={delay(180)} className="hero-in mt-7 flex gap-3">
               <a href="#bo-suu-tap" className={buttonClass('primary', 'lg')}>
                 Xem bộ sưu tập
                 <Icon name="arrowRight" size={18} />

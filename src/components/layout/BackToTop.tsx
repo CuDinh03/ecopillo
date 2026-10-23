@@ -61,7 +61,7 @@ export function BackToTop({ raised }: { raised: boolean }) {
       aria-label="Lên đầu trang"
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       tabIndex={isVisible ? 0 : -1}
-      className={`fixed right-3 z-30 flex h-11 w-11 items-center justify-center rounded-full bg-ivory/95 text-deep-900 shadow-[var(--shadow-lift)] ring-1 ring-cream-200 backdrop-blur transition duration-500 ease-[var(--ease-soft)] hover:-translate-y-0.5 hover:bg-white md:right-auto md:bottom-6 md:left-6 ${
+      className={`fixed right-3 z-30 flex h-11 w-11 items-center justify-center rounded-full bg-ivory/95 text-deep-900 shadow-[var(--shadow-lift)] ring-1 ring-cream-200 backdrop-blur transition-[opacity,translate,background-color] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-0.5 hover:bg-white md:right-auto md:bottom-6 md:left-6 ${
         raised ? 'bottom-24' : 'bottom-6'
       } ${isVisible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-3 opacity-0'}`}
     >

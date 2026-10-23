@@ -22,6 +22,7 @@ import {
 } from '../data/products'
 import { COLORWAYS, STORIES_APPROVED, toneById, type Colorway, type Tone } from '../data/stories'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { useFirstRender } from '../hooks/useFirstRender'
 import { revealDelay } from '../lib/reveal'
 import { scrollToElement } from '../lib/scroll'
 
@@ -65,6 +66,9 @@ export function ProductsPage() {
   const tone = hasColorways ? toneById(params.get(TONE_PARAM)) : undefined
   const collection = canBrowseByCollection ? BEDDING_SETS.find((c) => c.id === params.get(COLLECTION_PARAM)) : undefined
   const gridRef = useRef<HTMLParagraphElement>(null)
+  // Hiện dần chỉ chạy lần đầu vào trang. Đổi bộ lọc, sắp xếp, sang trang là thao tác hay dùng:
+  // kết quả phải hiện ngay, không trắng cả lưới rồi hiện lại (rà theo Emil Kowalski 23/10/2026)
+  const isFirstGrid = useFirstRender(params.toString())
 
   /*
    * Mục 31 (khách 16/10/2026: "như web cũ ok hơn", "k gộp đâu", "ít sp lắm"), owner chọn kiểu A 17/10/2026:
@@ -287,7 +291,12 @@ export function ProductsPage() {
               <>
                 <ul className="mt-5 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
                   {pageItems.map((item, i) => (
-                    <li key={itemKey(item)} data-reveal style={revealDelay(i, 70)} className="flex">
+                    <li
+                      key={itemKey(item)}
+                      data-reveal={isFirstGrid ? '' : undefined}
+                      style={isFirstGrid ? revealDelay(i, 70) : undefined}
+                      className="flex"
+                    >
                       <div className="flex w-full flex-col [&>article]:flex-1">
                         {item.kind === 'colorway' ? <ColorwayCard colorway={item.colorway} /> : <ProductCard product={item.product} />}
                       </div>
