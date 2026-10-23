@@ -202,6 +202,82 @@ const GAM_THUAN_KHIET: Product = {
   },
 }
 
+/**
+ * Mục 42 (Ecopillo trả lời 23/10/2026): thêm đệm lò xo Eco Luxe và đệm bông Nano, giá, thông số, ảnh theo web cũ
+ * (/san-pham/dem-lo-xo-tui-cao-cap-eco-luxe/, /san-pham/dem-bong-nano-chan-foam/, lấy ngày 23/10/2026).
+ */
+const ECO_LUXE: Product = {
+  slug: 'dem-lo-xo-tui-cao-cap-eco-luxe',
+  name: 'Đệm lò xo túi cao cấp Eco Luxe',
+  category: 'dem',
+  summary:
+    'Lò xo túi độc lập, mặt Pillow Top êm vừa: hợp đa số người dùng, kể cả trẻ nhỏ, người lớn tuổi và người hay đau lưng.',
+  min: 10_230_000,
+  max: 15_180_000,
+  imageNote: 'Ảnh đệm lò xo Eco Luxe',
+  gallery: [productImage('dem-lo-xo-tui-cao-cap-eco-luxe-2', 'Đệm lò xo túi cao cấp Eco Luxe, mặt Pillow Top')],
+  details: [
+    'Lõi lò xo túi độc lập cao 16 cm, thép 2,5 mm, mỗi lò xo xoắn 6 vòng, đường kính 6,5 cm.',
+    'Lớp topper tăng tiện nghi: foam PU K50 siêu đàn hồi dày 4 cm, vải gấm xốp nhập khẩu 400 g/m² chần PU.',
+    'May viền 4 đai thêu chữ Ecopillo, dễ bê khi di chuyển. Đóng gói hút chân không, cuộn tròn.',
+    'Nhận đặt theo kích thước riêng.',
+  ],
+  specs: [
+    { label: 'Độ dày', value: '28 cm' },
+    { label: 'Mặt đệm', value: 'Pillow Top 3 viền' },
+    { label: 'Lõi', value: 'Lò xo túi độc lập 16 cm' },
+    { label: 'Đóng gói', value: 'Hút chân không, cuộn tròn' },
+  ],
+  variants: {
+    sizes: ['120×190', '160×200', '180×200', '200×220'],
+    thicknesses: ['28 cm'],
+    prices: {
+      '120×190|28 cm': 10_230_000,
+      '160×200|28 cm': 11_860_000,
+      '180×200|28 cm': 12_950_000,
+      '200×220|28 cm': 15_180_000,
+    },
+  },
+}
+
+const NANO_CHAN_FOAM: Product = {
+  slug: 'dem-bong-nano-chan-foam',
+  name: 'Đệm bông Nano chần foam',
+  category: 'dem',
+  summary:
+    'Đệm bông ép gập 2, mặt chần foam: vững như đệm bông truyền thống mà mặt nằm êm hơn, hợp người lớn tuổi và trẻ nhỏ.',
+  min: 4_644_000,
+  max: 9_730_000,
+  imageNote: 'Ảnh đệm bông Nano chần foam',
+  gallery: [productImage('dem-bong-nano-chan-foam-2', 'Đệm bông Nano chần foam trải trên giường')],
+  details: [
+    'Vỏ vải gấm xốp định lượng cao, chần thêm một lớp foam K43 êm.',
+    'Lõi bông Polyester nguyên sinh ép nhiệt cao tần; lớp giữ lõi là bông trải đứng nên đàn hồi và thoáng khí hơn.',
+    'Gập 2, dễ di chuyển và cất gọn. Màu sáng trung tính, dễ vệ sinh, dễ phối chăn ga.',
+    'Đạt ISO 9001:2015 và QCVN 01:2017/BCT.',
+  ],
+  specs: [
+    { label: 'Độ dày', value: '12 cm · 18 cm' },
+    { label: 'Vỏ', value: 'Gấm xốp chần foam K43' },
+    { label: 'Lõi', value: 'Bông ép, trải đứng' },
+    { label: 'Kiểu', value: 'Gập 2' },
+  ],
+  variants: {
+    sizes: ['120×190', '160×200', '180×200', '200×220'],
+    thicknesses: ['12 cm', '18 cm'],
+    prices: {
+      '120×190|12 cm': 4_644_000,
+      '120×190|18 cm': 6_483_000,
+      '160×200|12 cm': 5_562_000,
+      '160×200|18 cm': 7_498_000,
+      '180×200|12 cm': 6_066_000,
+      '180×200|18 cm': 8_103_000,
+      '200×220|12 cm': 7_257_000,
+      '200×220|18 cm': 9_730_000,
+    },
+  },
+}
+
 const MATTRESS_NAMES: Readonly<Record<string, string>> = {
   'Eco Foam đa tầng': 'Đệm Eco Foam đa tầng',
   'Lò xo Eco Royal': 'Đệm lò xo Eco Royal',
@@ -244,6 +320,8 @@ const PRODUCT_PHOTOS = new Set([
   'dem-lo-xo-eco-royal',
   'dem-cao-su-thien-nhien-eco-latex',
   'dem-bong-gam-thuan-khiet',
+  'dem-lo-xo-tui-cao-cap-eco-luxe',
+  'dem-bong-nano-chan-foam',
 ])
 
 const withPhoto = (p: Product): Product =>
@@ -253,7 +331,9 @@ export const PRODUCTS: readonly Product[] = [
   ...COLLECTIONS.map(collectionProduct),
   ...essentialProducts,
   GAM_THUAN_KHIET,
+  NANO_CHAN_FOAM,
   ...mattressProducts,
+  ECO_LUXE,
 ].map(withPhoto)
 
 export const productBySlug = (slug: string | undefined): Product | undefined => PRODUCTS.find((p) => p.slug === slug)

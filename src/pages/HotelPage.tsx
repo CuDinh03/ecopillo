@@ -6,9 +6,9 @@ import { Icon } from '../components/ui/Icon'
 import { Breadcrumb } from '../components/ui/PageHero'
 import { buttonClass, Container, FillIn } from '../components/ui/primitives'
 import { CONTACT } from '../data/brand'
-import { patternImage, productImage, type ImageSource } from '../data/catalog'
+import { productImage, type ImageSource } from '../data/catalog'
 import { HOTEL_PARTNERS } from '../data/content'
-import { HOTEL_BENEFITS, HOTEL_EYEBROW, HOTEL_INTRO, HOTEL_INTRO_HEADING } from '../data/hotel'
+import { HOTEL_BENEFITS, HOTEL_EYEBROW, HOTEL_INTRO, HOTEL_INTRO_HEADING, HOTEL_PHOTOS } from '../data/hotel'
 import { productsUrl } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
@@ -33,7 +33,7 @@ const LAYERS: readonly Layer[] = [
     title: 'Ga bọc, ga phủ',
     text: 'Trắng tinh hoặc màu theo nhận diện khách sạn.',
     to: productsUrl({ 'danh-muc': 'bo-chan-ga' }),
-    image: patternImage('ES06', 'Phòng ngủ trải bộ chăn ga Eco Sweet ES06 trắng ngà'),
+    image: HOTEL_PHOTOS.sheets,
   },
   {
     title: 'Vỏ chăn, ruột chăn',
@@ -63,9 +63,9 @@ const STEPS: readonly { title: string; text: string }[] = [
   { title: 'Bổ sung, bảo hành', text: 'Bổ sung đúng mẫu khi cần, bảo hành theo hợp đồng.' },
 ]
 
-const HERO_IMAGE = patternImage('ED10', 'Bộ ga phủ Eco Doris ED10 trắng tinh, phong cách phòng khách sạn')
+const HERO_IMAGE = HOTEL_PHOTOS.hero
 const DETAIL_IMAGE = { src: '/images/details/vai-ed25.webp', alt: 'Cận chất vải Lyocell của bộ Eco Doris ED25' }
-const QUOTE_IMAGE = patternImage('ET05', 'Phòng ngủ trải bộ chăn ga Eco Tera ET05 trắng ngà')
+const QUOTE_IMAGE = HOTEL_PHOTOS.quote
 
 const twoDigits = (n: number) => String(n).padStart(2, '0')
 
@@ -100,12 +100,8 @@ function HotelHero() {
           alt={HERO_IMAGE.alt}
           fetchPriority="high"
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover object-left"
+          className="absolute inset-0 h-full w-full object-cover"
         />
-        {/* Góc phải: góc trái dưới ảnh có dấu mã mẫu in sẵn. Ảnh neo mép trái để vòng mã nằm trọn, không bị cắt nửa */}
-        <span className="absolute right-4 bottom-3 rounded-full bg-ivory/90 px-3 py-1 text-label text-deep-900 lg:right-6 lg:bottom-5">
-          Eco Doris ED10 · Trắng tinh
-        </span>
       </div>
       {/* Lề trái bằng lề Container của trang để chữ thẳng hàng với các phần bên dưới */}
       <div className="flex flex-col justify-center px-5 pt-7 pb-10 sm:px-8 lg:py-16 lg:pr-12 lg:pl-[max(2.5rem,calc((100vw-1240px)/2+2.5rem))]">

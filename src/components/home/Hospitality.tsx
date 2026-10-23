@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
-import { patternImage } from '../../data/catalog'
 import { HOTEL_PARTNERS } from '../../data/content'
-import { HOTEL_BENEFITS, HOTEL_EYEBROW, HOTEL_INTRO, HOTEL_INTRO_HEADING } from '../../data/hotel'
+import { HOTEL_BENEFITS, HOTEL_EYEBROW, HOTEL_INTRO, HOTEL_INTRO_HEADING, HOTEL_PHOTOS } from '../../data/hotel'
 import { PATHS } from '../../data/links'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
@@ -62,7 +61,7 @@ export function Hospitality() {
               tone="deep"
               className="h-full w-full"
               note="Ảnh phòng khách sạn đối tác sử dụng chăn ga Ecopillo"
-              image={patternImage('ED10', 'Bộ ga phủ Eco Doris ED10 trắng tinh, phong cách phòng khách sạn')}
+              image={HOTEL_PHOTOS.home}
               sizes="(min-width: 1024px) 600px, 100vw"
             />
           </div>

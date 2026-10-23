@@ -30,8 +30,9 @@ def crop_frac(im, l, t, r, b):
 dm = crop_frac(load('1792126765039'), 0.20, 0.13, 0.86, 0.80)
 save(dm, 'details/duong-may-ed25.webp', 900)
 
-# Ô "Dệt Jacquard" (mục 8): ga phủ ES06, cắt bỏ nhãn tròn "ES 06" góc dưới trái
-jq = crop_frac(Image.open(glob.glob(os.path.join(SRC, '*Eco Sweet ES06*'))[0]).convert('RGB'), 0.18, 0.10, 0.98, 0.78)
+# Ô "Dệt Jacquard" (mục 8): ga phủ ES06. Giữ nhãn tròn "ES 06" ở góc dưới trái (Ecopillo trả lời 23/10/2026,
+# thay cho quyết định cắt nhãn 17/10): khung cắt ôm cả vòng nhãn và logo thêu
+jq = crop_frac(Image.open(glob.glob(os.path.join(SRC, '*Eco Sweet ES06*'))[0]).convert('RGB'), 0.02, 0.28, 0.76, 0.98)
 save(jq, 'details/jacquard-es06.webp', 900)
 
 # Văn phòng, chi nhánh, đại lý (mục 14–23). Ảnh đầu là ảnh đại diện.

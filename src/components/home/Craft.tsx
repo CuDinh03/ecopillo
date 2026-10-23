@@ -143,7 +143,8 @@ export function BrandStory() {
                   note="Ảnh cận hoa văn dệt Jacquard"
                   image={staticImage('/images/details/jacquard-es06.webp', 'Logo Ecopillo thêu trên vải dệt Jacquard hoa văn chìm, bộ Eco Sweet ES06')}
                   sizes="(min-width: 1024px) 160px, (min-width: 640px) 40vw, 300px"
-                  position="30% center"
+                  // Giữ nhãn tròn "ES 06" góc dưới trái trong khung (Ecopillo trả lời 23/10/2026)
+                  position="left center"
                 />
                 <div className="p-5">
                   <Icon name="weave" size={20} className="text-brass-500" />

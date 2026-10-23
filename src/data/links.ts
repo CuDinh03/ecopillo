@@ -158,6 +158,8 @@ const PRODUCT_SLUGS: Readonly<Record<string, string>> = {
   'chan-long-vu-tu-nhien': 'chan-long-vu-tu-nhien',
   'topper-micro-fiber': 'tam-topper-micro-fiber',
   'dem-bong-gam-thuan-khiet': 'dem-bong-gam-thuan-khiet',
+  'dem-lo-xo-tui-cao-cap-eco-luxe': 'dem-lo-xo-tui-cao-cap-eco-luxe',
+  'dem-bong-nano-chan-foam': 'dem-bong-nano-chan-foam',
   'dem-lo-xo-tui-doc-lap': 'dem-lo-xo-tui-doc-lap-ecopillo',
   'dem-eco-foam-da-tang': 'dem-eco-foam-da-tang-ecopillo',
   'dem-lo-xo-eco-royal': 'dem-lo-xo-cao-cap-eco-royal',
@@ -242,9 +244,9 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
   },
   '/danh-muc-san-pham/san-pham/dem-lo-xo/': {
     title: 'Đệm lò xo',
-    description: 'Đệm lò xo Ecopillo: lò xo túi độc lập, Eco Royal. Giá theo kích thước và độ dày, nằm thử tại hệ thống phân phối.',
+    description: 'Đệm lò xo Ecopillo: lò xo túi độc lập, Eco Luxe, Eco Royal. Giá theo kích thước và độ dày, nằm thử tại hệ thống phân phối.',
     category: 'dem',
-    products: ['dem-lo-xo-tui-doc-lap', 'dem-lo-xo-eco-royal'],
+    products: ['dem-lo-xo-tui-doc-lap', 'dem-lo-xo-tui-cao-cap-eco-luxe', 'dem-lo-xo-eco-royal'],
   },
   '/danh-muc-san-pham/san-pham/dem-cao-su/': {
     title: 'Đệm cao su',
@@ -254,9 +256,9 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
   },
   '/danh-muc-san-pham/san-pham/dem-bong-ep/': {
     title: 'Đệm bông ép',
-    description: 'Đệm bông ép Gấm Thuần Khiết của Ecopillo, gập 3 gọn gàng. Giá theo kích thước và độ dày.',
+    description: 'Đệm bông ép Ecopillo: Gấm Thuần Khiết gập 3, bông Nano chần foam gập 2. Giá theo kích thước và độ dày.',
     category: 'dem',
-    products: ['dem-bong-gam-thuan-khiet'],
+    products: ['dem-bong-gam-thuan-khiet', 'dem-bong-nano-chan-foam'],
   },
   '/danh-muc-san-pham/san-pham/dem-foam/': {
     title: 'Đệm foam',
@@ -305,11 +307,9 @@ export const OLD_SITE_REDIRECTS: Readonly<Record<string, string>> = {
   '/san-pham/bo-ga-chun-eco-flora-ef126/': COLLECTION_PATHS['eco-flora'],
   // Sản phẩm lẻ web mới chưa có [XÁC NHẬN]
   '/san-pham/dem-foam-cao-cap-nano-comfort/': '/danh-muc-san-pham/san-pham/dem-foam/',
-  '/san-pham/dem-lo-xo-tui-cao-cap-eco-luxe/': '/danh-muc-san-pham/san-pham/dem-lo-xo/',
   '/san-pham/dem-lo-xo-cao-cap-eco-premium/': '/danh-muc-san-pham/san-pham/dem-lo-xo/',
   '/san-pham/dem-lo-xo-eco-fresh/': '/danh-muc-san-pham/san-pham/dem-lo-xo/',
   '/san-pham/dem-bong-ep-cao-cap-mix-latex/': '/danh-muc-san-pham/san-pham/dem-bong-ep/',
-  '/san-pham/dem-bong-nano-chan-foam/': '/danh-muc-san-pham/dem-ecopillo/',
   '/san-pham/dem-tron-cao-cap-ecopillo/': '/danh-muc-san-pham/dem-ecopillo/',
   '/san-pham/ruot-goi-dau-ecopillo/': '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/',
   '/san-pham/chan-he-e-cool-ecopillo/': COLLECTION_PATHS['chan-he-lyocell'],

@@ -1,3 +1,5 @@
+import type { ImageSource } from './catalog'
+
 /**
  * Chữ giới thiệu khối khách sạn, dùng chung cho trang chủ (Hospitality) và trang Khách sạn và dự án (HotelPage).
  * Chữ của Ecopillo gửi 16/10/2026 (yêu cầu sửa mục 37, 38, 39), giữ nguyên văn.
@@ -29,3 +31,25 @@ export const HOTEL_BENEFITS: readonly string[] = [
   'Báo giá ưu đãi theo số lượng và từng hạng mục',
   'Tư vấn chất liệu theo công năng, tần suất sử dụng',
 ]
+
+/**
+ * Mục 39: ảnh phòng khách sạn lấy từ trang khách sạn của web cũ (/danh-muc-san-pham/du-an-khach-san-nha-nghi/),
+ * Ecopillo chỉ định 23/10/2026 thay ảnh bộ chăn ga gia đình. Nén bằng tools/nen-anh-khach-san-2026-10-23.py.
+ * Chưa nêu tên khách sạn: Ecopillo chưa cho phép.
+ */
+const hotelPhoto = (key: string, alt: string): ImageSource => ({
+  src: `/images/hotel/${key}.webp`,
+  srcSet: `/images/hotel/${key}-sm.webp 640w, /images/hotel/${key}.webp 1600w`,
+  alt,
+})
+
+export const HOTEL_PHOTOS = {
+  /** Đầu trang Khách sạn và dự án; tải trước trong index.html, đổi thì sửa cả ở đó */
+  hero: hotelPhoto('phong-king-cua-kinh', 'Phòng khách sạn giường đôi lớn trải chăn ga trắng Ecopillo, cửa kính nhìn ra thành phố'),
+  /** Khối khách sạn ở trang chủ */
+  home: hotelPhoto('phong-king-den-long', 'Phòng khách sạn giường đôi lớn, chăn ga gối trắng Ecopillo viền chỉ'),
+  /** Cạnh form báo giá */
+  quote: hotelPhoto('phong-twin-ho-guom', 'Phòng khách sạn hai giường đơn trải chăn ga trắng Ecopillo'),
+  /** Lớp "Ga bọc, ga phủ" ở trang Khách sạn và dự án */
+  sheets: hotelPhoto('phong-hai-giuong', 'Phòng khách sạn hai giường đôi, ga bọc và chăn trắng Ecopillo có đường viền'),
+} as const

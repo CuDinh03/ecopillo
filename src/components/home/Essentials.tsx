@@ -14,7 +14,7 @@ import { formatRange, formatVND } from '../../lib/format'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { buttonClass, Container, FillIn, SectionHeading } from '../ui/primitives'
-import { PRODUCTS, productForEssential, productPath, singleOrderUrl } from '../../data/products'
+import { PRODUCTS, productBySlug, productForEssential, productPath, singleOrderUrl } from '../../data/products'
 import { PATHS, productsUrl } from '../../data/links'
 import { revealDelay } from '../../lib/reveal'
 import { scrollToElement } from '../../lib/scroll'
@@ -168,6 +168,20 @@ const mattressRow = (m: Mattress): PriceRow => {
   }
 }
 
+/** Đệm thêm theo mục 42 (23/10/2026): dữ liệu ở products.ts, ghi chú ngắn cho bảng giá */
+const productRow = (slug: string, name: string, note: string): PriceRow[] => {
+  const product = productBySlug(slug)
+  if (!product) return []
+  return [{ name, note, price: `từ ${formatVND(product.min)}`, productTo: productPath(product), orderTo: singleOrderUrl(product) }]
+}
+
+const MATTRESS_ROWS: readonly PriceRow[] = [
+  ...MATTRESSES.slice(0, 1).map(mattressRow),
+  ...productRow('dem-lo-xo-tui-cao-cap-eco-luxe', 'Lò xo túi Eco Luxe', 'Mặt Pillow Top, lõi lò xo túi 16 cm, dày 28 cm'),
+  ...MATTRESSES.slice(1).map(mattressRow),
+  ...productRow('dem-bong-nano-chan-foam', 'Bông Nano chần foam', 'Bông ép gập 2, mặt chần foam êm'),
+]
+
 /** Thứ tự: ruột gối, ruột chăn, chăn hè & topper, đệm (khớp hàng tab điện thoại) */
 const PRICE_GROUPS: readonly PriceGroup[] = [
   ...ESSENTIALS.map((g) => ({ id: g.id as EssentialTab, title: g.title, subtitle: g.subtitle, rows: g.items.map(essentialRow) })),
@@ -175,7 +189,7 @@ const PRICE_GROUPS: readonly PriceGroup[] = [
     id: 'dem',
     title: 'Đệm',
     subtitle: 'Đặt online, hoặc nằm thử tại cửa hàng Ecopillo ở Hà Nội và TP. HCM',
-    rows: MATTRESSES.map(mattressRow),
+    rows: MATTRESS_ROWS,
   },
 ]
 
