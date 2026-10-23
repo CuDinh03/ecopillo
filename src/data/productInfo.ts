@@ -261,6 +261,49 @@ export const PRODUCT_INFO: Readonly<Record<string, ProductInfo>> = {
       { title: 'Tiêu chuẩn', list: ['Đạt ISO 9001:2015 và QCVN 01:2017/BCT.', 'Bảo hành 5 năm.'] },
     ],
   },
+  'dem-lo-xo-tui-cao-cap-eco-luxe': {
+    sections: [
+      {
+        title: 'Cấu tạo',
+        list: [
+          'Dày 28 cm, thiết kế Pillow Top 3 viền.',
+          'Lõi lò xo túi độc lập cao 16 cm: thép chịu lực 2,5 mm, mỗi lò xo xoắn 6 vòng, đường kính 6,5 cm.',
+          'Mặt trên: vải cách nhiệt, vải không dệt 30 g/m², foam PU K45 dày 3 cm. Mặt dưới: vải cách nhiệt, vải không dệt 20 g/m², foam PU K45 dày 2 cm.',
+          'Lớp topper: foam PU K50 siêu đàn hồi dày 4 cm, vải gấm xốp nhập khẩu 400 g/m chần PU.',
+          'May viền 4 đai thêu chữ Ecopillo để bê khi di chuyển; đóng gói hút chân không, cuộn tròn.',
+        ],
+      },
+      {
+        title: 'Hợp với ai',
+        list: [
+          'Độ êm vừa phải, hợp đa số người dùng: lõi lò xo nâng đỡ, lớp topper ôm vùng vai, hông và eo.',
+          'Dùng được cho trẻ em, người lớn tuổi và người hay đau lưng.',
+          'Nhận đặt theo kích thước riêng.',
+        ],
+      },
+    ],
+  },
+  'dem-bong-nano-chan-foam': {
+    sections: [
+      {
+        title: 'Cấu tạo',
+        list: [
+          'Vỏ vải gấm xốp định lượng cao, chần thêm một lớp foam K43 êm; màu sáng trung tính, dễ vệ sinh, dễ phối chăn ga.',
+          'Lõi bông Polyester nguyên sinh ép nhiệt cao tần; lớp giữ lõi là bông trải đứng nên đàn hồi và thoáng khí hơn.',
+          'Gập 2, dễ di chuyển và cất gọn khi không dùng.',
+        ],
+      },
+      {
+        title: 'Hợp với ai',
+        list: [
+          'Người thích nằm đệm cứng mà vẫn muốn mặt nằm êm: độ cứng của đệm bông ép, mặt chần foam.',
+          'Người lớn tuổi hay đau lưng, trẻ nhỏ cần mặt đệm vững.',
+          'Hai độ dày 12 cm và 18 cm.',
+        ],
+      },
+      { title: 'Tiêu chuẩn', list: ['Đạt ISO 9001:2015 và QCVN 01:2017/BCT.'] },
+    ],
+  },
   'dem-lo-xo-tui-doc-lap': {
     specs: [
       { label: 'Độ dày', value: '24 cm' },

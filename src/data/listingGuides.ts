@@ -16,9 +16,9 @@ export const LISTING_GUIDES: Readonly<Record<string, ListingGuide>> = {
     title: 'Chọn đệm theo cách Quý khách thích nằm',
     points: [
       { title: 'Thích êm, ôm người', text: 'Đệm Eco Foam đa tầng: foam đàn hồi ôm theo đường cong cơ thể, nằm "đầm" người.' },
-      { title: 'Thích êm mà vẫn đỡ chắc', text: 'Đệm lò xo túi độc lập (24 cm) hoặc Eco Royal (29 cm, có lớp cao su và memory foam).' },
+      { title: 'Thích êm mà vẫn đỡ chắc', text: 'Đệm lò xo túi độc lập (24 cm), Eco Luxe (28 cm, mặt Pillow Top) hoặc Eco Royal (29 cm, có lớp cao su và memory foam).' },
       { title: 'Cần nâng đỡ tốt, bền lâu', text: 'Đệm cao su thiên nhiên Eco Latex: đàn hồi tự nhiên, thoáng, không hầm lưng.' },
-      { title: 'Thích nằm cứng, gấp gọn', text: 'Đệm bông ép Gấm Thuần Khiết: cứng vừa, gập 3, hợp người lớn tuổi và trẻ nhỏ.' },
+      { title: 'Thích nằm cứng, gấp gọn', text: 'Đệm bông ép Gấm Thuần Khiết (gập 3) hoặc bông Nano chần foam (gập 2, mặt êm hơn): hợp người lớn tuổi và trẻ nhỏ.' },
       { title: 'Đệm đang cứng quá', text: 'Trải thêm topper Micro Fiber 9 cm, không phải thay đệm.' },
     ],
   },
@@ -27,6 +27,7 @@ export const LISTING_GUIDES: Readonly<Record<string, ListingGuide>> = {
     points: [
       { title: 'Lò xo túi độc lập', text: 'Mỗi lò xo một túi, hoạt động riêng: người bên cạnh trở mình không làm rung cả đệm.' },
       { title: 'Đệm 24 cm, êm vừa', text: 'Đệm lò xo túi độc lập Ecopillo: hợp đa số người, giá dễ tiếp cận, bảo hành 10 năm.' },
+      { title: 'Đệm 28 cm, mặt Pillow Top', text: 'Eco Luxe: lõi lò xo túi 16 cm, thêm lớp topper foam 4 cm ôm vai, hông, eo. Êm vừa, hợp cả trẻ em và người hay đau lưng.' },
       { title: 'Đệm 29 cm, êm sâu', text: 'Eco Royal: lò xo phân vùng vai, lưng, hông, thêm lớp cao su và memory foam. Hợp người lớn tuổi, người đau lưng.' },
       { title: 'Nằm thử trước khi mua', text: 'Đệm khó chọn qua ảnh: Quý khách nên nằm thử tại văn phòng Hà Nội hoặc chi nhánh TP. HCM.' },
     ],
@@ -45,7 +46,8 @@ export const LISTING_GUIDES: Readonly<Record<string, ListingGuide>> = {
     points: [
       { title: 'Người thích nằm cứng', text: 'Độ cứng vừa phải, nằm phẳng lưng.' },
       { title: 'Người lớn tuổi, trẻ nhỏ', text: 'Mặt đệm vững, không lún, đỡ cột sống.' },
-      { title: 'Nhà cần gọn', text: 'Gập 3, dễ di chuyển và cất khi không dùng. Vỏ gấm màu trung tính, dễ phối chăn ga.' },
+      { title: 'Nhà cần gọn', text: 'Gấm Thuần Khiết gập 3, bông Nano chần foam gập 2: dễ di chuyển và cất khi không dùng. Vỏ gấm màu trung tính, dễ phối chăn ga.' },
+      { title: 'Muốn mặt nằm êm hơn', text: 'Bông Nano chần foam: vỏ chần thêm một lớp foam K43, vẫn giữ độ cứng của đệm bông ép.' },
     ],
   },
   '/danh-muc-san-pham/san-pham/dem-foam/': {

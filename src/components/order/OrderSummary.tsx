@@ -51,7 +51,7 @@ export function OrderSummary({ summary, showShipping }: OrderSummaryProps) {
             <Row label="Tạm tính" value={subtotal ? formatVND(subtotal) : priceOnCall ? PRICE_ON_CALL : '—'} />
             <Row
               label="Phí giao hàng"
-              value={!showShipping ? 'Tính ở bước nhận hàng' : shippingFee === 0 ? 'Miễn phí' : formatVND(shippingFee)}
+              value={shippingLabel(showShipping, Boolean(subtotal || priceOnCall), shippingFee)}
               muted={!showShipping}
             />
             <Row label="Thanh toán" value="Khi nhận hàng" />
@@ -76,4 +76,11 @@ function Row({ label, value, muted }: { label: string; value: string; muted?: bo
       <dd className={`tabular text-right ${muted ? 'text-ink-faint' : 'text-deep-900'}`}>{value}</dd>
     </div>
   )
+}
+
+/** Chưa chọn đủ để có giá thì chưa nói miễn phí hay mất phí (trước đây hiện 50.000đ khi tạm tính còn trống) */
+const shippingLabel = (showShipping: boolean, hasPrice: boolean, fee: number): string => {
+  if (!showShipping) return 'Tính ở bước nhận hàng'
+  if (!hasPrice) return '—'
+  return fee === 0 ? 'Miễn phí' : formatVND(fee)
 }

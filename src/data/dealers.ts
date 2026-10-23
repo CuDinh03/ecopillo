@@ -1,6 +1,6 @@
 /**
- * Điểm bán Ecopillo cho tính năng "Tìm đại lý gần tôi" (thiết kế chốt 13/10/2026,
- * /mnt/project-files/de-xuat/he-thong-phan-phoi/thiet-ke-tim-dai-ly.html).
+ * Điểm bán Ecopillo cho tính năng "Tìm đại lý gần tôi" (thiết kế chốt 13/10/2026; bản thiết kế gốc không còn trong project,
+ * bố cục hiện tại ghi ở mục "Hệ thống phân phối" của docs/ban-do-du-an.md).
  *
  * Trường dữ liệu đặt đúng như endpoint WordPress sẽ trả (/wp-json/ecopillo/v1/dai-ly), để khi nối
  * chỉ cần đổi nguồn. Danh sách dưới đây là bản dựng sẵn, dùng làm dự phòng khi WordPress không trả lời.

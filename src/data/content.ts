@@ -19,7 +19,7 @@ export const REVIEWS: readonly Review[] = [
   {
     name: 'Anh Quốc Huy',
     place: 'Gò Vấp, TP. HCM',
-    product: 'Eco Doris ED01',
+    product: 'Eco Doris ED10',
     quote:
       'Mua làm quà cưới cho em gái, hộp đóng gói rất chỉn chu. Hai vợ chồng em khen mãi vì vải mềm như lụa.',
   },
@@ -33,7 +33,7 @@ export const REVIEWS: readonly Review[] = [
   {
     name: 'Chị Lan Phương',
     place: 'Thủ Đức, TP. HCM',
-    product: 'Eco Sweet ES02',
+    product: 'Eco Sweet ES06',
     quote:
       'Ở ngoài nhìn đẹp hơn trong ảnh, phòng ngủ sang lên hẳn. Được trải thử lên giường lúc nhận nên rất yên tâm.',
   },

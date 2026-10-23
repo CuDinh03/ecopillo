@@ -142,7 +142,7 @@ export function ZaloMark({ tone = 'dark' }: { tone?: 'dark' | 'light' }) {
   return (
     <span
       aria-hidden="true"
-      className={`inline-flex h-5 items-center rounded-[5px] px-1 text-[0.6rem] font-medium leading-none ${colors}`}
+      className={`inline-flex h-5 items-center rounded-[5px] px-1 text-label font-medium leading-none ${colors}`}
     >
       Zalo
     </span>

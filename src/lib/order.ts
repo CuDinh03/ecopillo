@@ -138,7 +138,9 @@ const withShipping = (
   floorValue: number,
 ): OrderSummaryData => {
   const province = provinceById(provinceId)
-  const fee = base.line ? shippingFee(base.subtotal || floorValue) : 0
+  // Chưa chọn đủ để có giá (tạm tính 0, không có giá sàn) thì chưa tính phí giao
+  const value = base.subtotal || floorValue
+  const fee = base.line && value > 0 ? shippingFee(value) : 0
   return {
     ...base,
     province,
@@ -222,7 +224,8 @@ export const summarizeSingle = (draft: SingleDraft): OrderSummaryData => {
   return withShipping(
     { size: null, line, quantity, unitPrice, subtotal, priceOnCall, giftCount: 0 },
     draft.customer.provinceId,
-    product.min * quantity,
+    // Chưa chọn kích thước thì chưa tính phí giao (trước đây hiện 50.000đ khi tạm tính còn trống)
+    hasChoice ? product.min * quantity : 0,
   )
 }
 
