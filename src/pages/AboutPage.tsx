@@ -286,7 +286,7 @@ function Cover() {
         <p className="eyebrow mt-8 flex items-center gap-2">
           <Icon name="book" size={15} className="text-deep-700" /> Câu chuyện Ecopillo
         </p>
-        <h1 id="page-title" className="font-display mt-4 text-[2.6rem] leading-[1.02] text-balance text-deep-900 sm:text-[3.6rem] xl:text-[4.4rem]">
+        <h1 id="page-title" className="font-display mt-4 text-[2.6rem] leading-[1.02] text-balance text-deep-900 sm:text-[3.4rem] xl:text-[3.9rem]">
           Hơn 15 năm <em className="block text-deep-700">nâng niu giấc ngủ Việt</em>
         </h1>
         <p className="mt-5 max-w-md text-[1.02rem] leading-relaxed text-ink-soft">

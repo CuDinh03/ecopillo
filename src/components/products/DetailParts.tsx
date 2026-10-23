@@ -96,7 +96,8 @@ export function ProductInfoCards({ product, className = 'mt-16' }: { product: Pr
   const collection = product.collection
   const warranty = product.specs?.find((spec) => spec.label === 'Bảo hành')?.value ?? WARRANTY_BY_CATEGORY[product.category]
   return (
-    <div className={`grid gap-5 ${collection ? 'lg:grid-cols-3' : 'lg:grid-cols-2'} ${className}`}>
+    // items-start: mỗi thẻ cao theo nội dung, không kéo thẻ 4 dòng cao bằng thẻ 10 dòng rồi để trống nửa dưới
+    <div className={`grid items-start gap-5 ${collection ? 'lg:grid-cols-3' : 'lg:grid-cols-2'} ${className}`}>
       {collection && (
         <InfoCard title="Trong bộ gồm">
           <ul className="space-y-2">
@@ -136,8 +137,17 @@ export function ProductInfoCards({ product, className = 'mt-16' }: { product: Pr
   )
 }
 
-export function RelatedProducts({ product }: { product: Product }) {
-  const related = PRODUCTS.filter((p) => p.category === product.category && p.slug !== product.slug).slice(0, 3)
+interface RelatedProductsProps {
+  product: Product
+  /** Bộ sưu tập đã hiện ngay phía trên (phần "Thêm gam … ở bộ khác"): bỏ qua để không lặp cùng ảnh, cùng giá */
+  excludeCollections?: readonly string[]
+}
+
+export function RelatedProducts({ product, excludeCollections = [] }: RelatedProductsProps) {
+  const candidates = PRODUCTS.filter((p) => p.category === product.category && p.slug !== product.slug)
+  const fresh = candidates.filter((p) => !p.collection || !excludeCollections.includes(p.collection.id))
+  // Bỏ qua hết mà không đủ 3 thì lấy thêm từ phần đã bỏ, vẫn hơn để trống
+  const related = [...fresh, ...candidates.filter((p) => !fresh.includes(p))].slice(0, 3)
   if (related.length === 0) return null
   return (
     <section aria-labelledby="related-title" className="mt-20">

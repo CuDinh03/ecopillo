@@ -344,7 +344,7 @@ export function DistributionPage() {
                 role="tab"
                 aria-selected={mobileView === v}
                 onClick={() => setMobileView(v)}
-                className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm transition ${
+                className={`inline-flex min-h-10 items-center gap-1.5 rounded-full px-4 py-1.5 text-sm transition active:scale-[0.97] ${
                   mobileView === v ? 'bg-deep-800 text-ivory' : 'text-deep-900'
                 }`}
               >
@@ -356,7 +356,7 @@ export function DistributionPage() {
         </div>
 
         <div className="mt-5 grid gap-8 lg:grid-cols-12 lg:gap-10">
-          <div ref={listRef} className={`space-y-4 lg:col-span-7 ${mobileView === 'map' ? 'max-lg:hidden' : ''}`}>
+          <div ref={listRef} className={`min-w-0 space-y-4 lg:col-span-7 ${mobileView === 'map' ? 'max-lg:hidden' : ''}`}>
             {view.mode !== 'list' && (
               <>
                 <NoDealerNearby place={view.mode === 'empty-province' ? province?.name : undefined} />

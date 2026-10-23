@@ -29,7 +29,7 @@ export function Hospitality() {
             lead={
               // Trang chủ chỉ giữ đoạn đầu cho gọn; đủ ba đoạn ở trang Khách sạn và dự án (mục 38)
               <>
-                <span className="block text-[0.78rem] font-semibold tracking-[0.12em] text-mist-300 uppercase">{HOTEL_INTRO_HEADING}</span>
+                <span className="block text-[0.78rem] font-medium tracking-[0.12em] text-mist-300 uppercase">{HOTEL_INTRO_HEADING}</span>
                 <span className="mt-3 block">{HOTEL_INTRO[0]}</span>
               </>
             }

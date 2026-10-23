@@ -24,7 +24,7 @@ function RichLine({ text }: { text: string }) {
 
 export function Showrooms() {
   return (
-    <section id="he-thong-phan-phoi" aria-labelledby="phan-phoi-title" className="py-14 sm:py-32">
+    <section id="he-thong-phan-phoi" aria-labelledby="phan-phoi-title" className="py-14 sm:py-24">
       <Container>
         <SectionHeading
           id="phan-phoi-title"
@@ -74,7 +74,7 @@ export function Showrooms() {
                     </li>
                     <li className="flex gap-3">
                       <Icon name="phone" size={18} className="mt-0.5 shrink-0 text-mist-600" />
-                      <a href={s.hotline ? `tel:${s.hotline.replace(/\D/g, '')}` : CONTACT.hotlineTel} className="tabular text-deep-900 hover:underline">
+                      <a href={s.hotline ? `tel:${s.hotline.replace(/\D/g, '')}` : CONTACT.hotlineTel} className="tabular -my-2.5 inline-block py-2.5 text-deep-900 hover:underline">
                         {s.hotline ?? CONTACT.hotlineDisplay}
                       </a>
                     </li>
@@ -109,7 +109,7 @@ export function Faq({ standalone = false, compact = false }: { standalone?: bool
   const [showAll, setShowAll] = useState(false)
   const isHidden = (i: number) => compact && !showAll && i >= FAQ_COMPACT
   return (
-    <section id="hoi-dap" aria-labelledby="faq-title" className={standalone ? 'py-14 sm:py-24' : 'py-14 sm:py-32'}>
+    <section id="hoi-dap" aria-labelledby="faq-title" className={standalone ? 'py-14 sm:py-24' : 'py-14 sm:py-24'}>
       <Container className="grid gap-8 sm:gap-12 lg:grid-cols-12">
         <div className="lg:col-span-4">
           <div className="lg:sticky lg:top-28">

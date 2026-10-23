@@ -51,7 +51,7 @@ export function Essentials({ withTabs = false }: EssentialsProps) {
   const mobileOnly = (id: EssentialTab) => (shownOnMobile(id) ? '' : 'max-sm:hidden')
   return (
     <>
-    <section id="ruot-chan-goi" aria-labelledby="essentials-title" className={withTabs && tab === 'qua-tang' ? 'pt-14 sm:py-32' : 'py-14 sm:py-32'}>
+    <section id="ruot-chan-goi" aria-labelledby="essentials-title" className={withTabs && tab === 'qua-tang' ? 'pt-14 sm:py-24' : 'py-14 sm:py-24'}>
       <Container>
         <SectionHeading
           id="essentials-title"
@@ -228,7 +228,7 @@ interface GiftsProps {
 
 export function Gifts({ standalone = false }: GiftsProps) {
   return (
-    <section id="qua-tang" aria-labelledby="gifts-title" className={standalone ? 'scroll-mt-24 py-14 sm:py-24' : 'pb-14 sm:pb-32'}>
+    <section id="qua-tang" aria-labelledby="gifts-title" className={standalone ? 'scroll-mt-24 py-14 sm:py-24' : 'pb-14 sm:pb-24'}>
       <Container>
         <div className="grain relative overflow-hidden rounded-[2.25rem] bg-brass-100 px-5 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-16">
           <div

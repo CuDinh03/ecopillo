@@ -52,7 +52,19 @@ function Channel({ href, icon, label, value, note, external, highlight, long }: 
         <span className={`block text-[0.72rem] font-medium tracking-[0.12em] uppercase ${highlight ? 'text-ivory/75' : 'text-mist-600'}`}>
           {label}
         </span>
-        <span className={`tabular mt-1 block font-medium ${long ? 'text-[1.02rem] break-all' : highlight ? 'truncate text-[1.25rem]' : 'truncate text-[1.02rem] sm:text-[1.25rem]'}`}>{value}</span>
+        {/* Email: chỉ cho xuống dòng ngay sau @ (trước bẻ giữa chữ "…com.v / n"). Số điện thoại xuống dòng chứ không cắt
+            khi khách bật chữ to (rà 23/10/2026: "không bao giờ cắt số") */}
+        <span className={`tabular mt-1 block font-medium ${long ? 'text-[1.02rem]' : highlight ? 'text-[1.25rem]' : 'text-[1.02rem] sm:text-[1.25rem]'}`}>
+          {long && value.includes('@') ? (
+            <>
+              {value.slice(0, value.indexOf('@') + 1)}
+              <wbr />
+              <span className="whitespace-nowrap">{value.slice(value.indexOf('@') + 1)}</span>
+            </>
+          ) : (
+            value
+          )}
+        </span>
         <span className={`mt-0.5 text-[0.8rem] ${highlight ? 'block text-ivory/80' : 'hidden text-ink-soft sm:block'}`}>{note}</span>
       </span>
       <Icon name="arrowRight" size={18} className={`${highlight ? '' : 'hidden sm:block'} shrink-0 opacity-60 transition group-hover:translate-x-0.5 group-hover:opacity-100`} />

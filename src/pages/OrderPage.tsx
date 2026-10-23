@@ -24,6 +24,7 @@ import {
 import { SingleOrder } from '../components/order/SingleOrder'
 import { MobileOrderBar, OrderAssurances } from '../components/order/OrderChrome'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { scrollToElement } from '../lib/scroll'
 
 const COLLECTION_PARAM = 'bo-suu-tap'
 const MOBILE_QUERY = '(max-width: 1023px)'
@@ -131,9 +132,20 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
   const canContinue =
     view === 1 ? Boolean(summary.pattern) : view === 2 ? Boolean(summary.size) : view === 3
 
+  // Chưa chọn đủ mà bấm "tiếp": không tắt nút (nút tắt thì trình đọc màn hình bỏ qua, khách không biết vì sao),
+  // mà cuộn tới phần còn thiếu và đọc lời nhắc, như bước 3 đưa focus về ô sai (rà 23/10/2026)
+  const [missingNote, setMissingNote] = useState<string | null>(null)
+  const showMissing = (anchor: string, note: string) => {
+    setMissingNote(note)
+    const target = document.getElementById(anchor)
+    if (target) scrollToElement(target)
+  }
+
   const goNext = () => {
     if (view === 1 && summary.pattern) setView(2)
+    else if (view === 1) showMissing(summary.collection ? 'chon-mau' : 'chon-bo', summary.collection ? 'Quý khách chọn một mẫu để tiếp tục.' : 'Quý khách chọn bộ sưu tập và mẫu để tiếp tục.')
     else if (view === 2 && summary.size) setView(3)
+    else if (view === 2) showMissing('chon-kich-thuoc', 'Quý khách chọn một kích thước còn hàng để tiếp tục.')
     else if (view === 3) submit()
   }
 
@@ -206,6 +218,11 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_340px] lg:gap-12 xl:grid-cols-[1fr_380px]">
           <div key={view} className="reveal min-w-0">
+            {missingNote && !canContinue && (
+              <p role="alert" className="mb-6 rounded-2xl bg-alert-soft px-4 py-3 text-[0.95rem] text-alert">
+                {missingNote}
+              </p>
+            )}
             {view > 1 && (
               <button
                 type="button"
@@ -240,8 +257,8 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
               <button
                 type="button"
                 onClick={goNext}
-                disabled={!canContinue}
-                className={buttonClass('primary', 'lg')}
+                aria-disabled={!canContinue}
+                className={buttonClass('primary', 'lg', canContinue ? '' : 'opacity-45')}
               >
                 {nextLabel}
                 <Icon name="arrowRight" size={18} />

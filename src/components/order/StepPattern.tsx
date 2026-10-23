@@ -34,7 +34,7 @@ export function StepPattern({ collectionId, patternCode, onSelectCollection, onS
 
   return (
     <div className="space-y-12">
-      <fieldset>
+      <fieldset id="chon-bo" className="scroll-mt-28">
         <legend className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">Chọn bộ sưu tập</legend>
         <p className="mt-1 text-sm text-ink-soft">Giá hiển thị từ kích thước nhỏ nhất (1m6).</p>
         <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 xl:grid-cols-4">

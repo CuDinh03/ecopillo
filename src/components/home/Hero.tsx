@@ -77,7 +77,7 @@ const delay = (ms: number) => ({ '--hero-delay': `${ms}ms` }) as CSSProperties
 /** Dòng đỏ, cùng màu chữ "ETERNAL" trong logo. Bỏ vạch đầu, chữ to gấp đôi (khách yêu cầu 16/10/2026, mục 1) */
 function Tagline() {
   return (
-    <p className="hero-in text-[clamp(1.05rem,5.2vw,1.44rem)] leading-tight font-semibold tracking-[0.06em] sm:tracking-[0.12em] text-tagline uppercase">
+    <p className="hero-in text-[clamp(1.05rem,5.2vw,1.44rem)] leading-tight font-medium tracking-[0.06em] sm:tracking-[0.12em] text-tagline uppercase">
       Chăn ga gối đệm cao cấp
     </p>
   )
@@ -100,7 +100,7 @@ function BangEcBar() {
         Vàng #FFC271 ngoài quà tặng, ưu đãi: ngoại lệ owner duyệt cho riêng dải này.
       */}
       <section aria-labelledby="hero-ecosystem" className="overflow-hidden rounded-2xl border-2 border-brand-gold">
-        <h2 id="hero-ecosystem" className="bg-brand-gold px-3.5 py-1.5 text-[0.7rem] font-semibold tracking-[0.14em] text-deep-900 uppercase sm:px-4">
+        <h2 id="hero-ecosystem" className="bg-brand-gold px-3.5 py-1.5 text-[0.7rem] font-medium tracking-[0.14em] text-deep-900 uppercase sm:px-4">
           Hệ sinh thái sản phẩm<span className="hidden sm:inline"> · cho giấc ngủ trọn vẹn</span>
         </h2>
         <ul className="grid grid-cols-4 gap-2 bg-brand-gold/10 p-2 sm:gap-2.5 sm:p-2.5">

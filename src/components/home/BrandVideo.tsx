@@ -30,6 +30,7 @@ const command = (frame: HTMLIFrameElement | null, func: 'playVideo' | 'pauseVide
 export function BrandVideo() {
   const [mode, setMode] = useState<Mode>('cover')
   const [isMuted, setIsMuted] = useState(true)
+  const [isFrameReady, setIsFrameReady] = useState(false)
   const boxRef = useRef<HTMLDivElement>(null)
   const frameRef = useRef<HTMLIFrameElement>(null)
 
@@ -60,7 +61,7 @@ export function BrandVideo() {
   }
 
   return (
-    <section aria-labelledby="video-title" className="py-14 sm:py-28">
+    <section aria-labelledby="video-title" className="py-14 sm:py-24">
       <Container className="grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
         <div className="lg:col-span-4">
           <SectionHeading
@@ -118,9 +119,12 @@ export function BrandVideo() {
               </button>
             ) : (
               <>
+                {/* Ảnh bìa nằm dưới, khung YouTube mờ dần hiện lên khi tải xong: không còn mảng chàm trống lúc chờ */}
+                <Placeholder className="absolute inset-0 h-full w-full" tone="deep" note="Ảnh bìa video" image={COVER} sizes="(min-width: 1024px) 800px, 100vw" position="50% 25%" />
                 <iframe
                   ref={frameRef}
-                  className="absolute inset-0 h-full w-full"
+                  onLoad={() => setIsFrameReady(true)}
+                  className={`absolute inset-0 h-full w-full transition-opacity duration-300 ${isFrameReady ? 'opacity-100' : 'opacity-0'}`}
                   src={embedUrl(mode === 'auto')}
                   title={BRAND_VIDEO.title}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -131,7 +135,7 @@ export function BrandVideo() {
                   <button
                     type="button"
                     onClick={unmute}
-                    className="absolute top-4 right-4 inline-flex items-center gap-2 rounded-full bg-ivory/95 px-4 py-2 text-sm font-medium text-deep-900 shadow-[var(--shadow-soft)] transition hover:bg-ivory"
+                    className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-ivory/95 px-4 py-2 text-sm font-medium text-deep-900 shadow-[var(--shadow-soft)] transition hover:bg-ivory"
                   >
                     <Icon name="volume" size={16} /> Bật tiếng
                   </button>

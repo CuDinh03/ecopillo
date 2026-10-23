@@ -210,6 +210,55 @@
     --focus-ring: var(--color-mist-600);
   }
 
+  /* Điện thoại (rà theo mobile-native 23/10/2026): chạm là bấm ngay, không chờ xem có chạm đúp phóng to không;
+     nhấn giữ nút không bôi chữ trên nút. Link trong đoạn văn và số điện thoại vẫn bôi, sao chép được. */
+  a,
+  button,
+  label,
+  [role='button'] {
+    touch-action: manipulation;
+  }
+  button,
+  [role='button'],
+  [aria-pressed] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  /* Phản hồi khi chạm cho nút chưa có kiểu nhấn riêng: nhạt đi một chút trong lúc ngón tay đặt lên */
+  @media (hover: none) {
+    :is(button, [role='button']):not(:disabled, [class*='active:']):active {
+      opacity: 0.82;
+    }
+  }
+
+  /* Bề mặt trình duyệt theo bộ màu: thanh cuộn, ô chọn, gạch chân */
+  html {
+    scrollbar-color: rgb(45 46 141 / 0.35) transparent;
+    accent-color: var(--color-deep-800);
+  }
+  a {
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
+
+  /* Dải cuộn ngang: vuốt tới cuối dải thì dừng ở đó, không kéo sang cử chỉ lùi trang của Android */
+  .m-rail,
+  .overflow-x-auto {
+    overscroll-behavior-x: contain;
+  }
+
+  /* Tiêu đề chia dòng đều, đoạn văn không để một chữ lẻ ở dòng cuối (rà 23/10/2026) */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p,
+  li,
+  blockquote {
+    text-wrap: pretty;
+  }
+
   /* Khung ảnh theo tỉ lệ: không cho ảnh làm khung cao thêm khi tải xong (tránh xô lệch khi cuộn) */
   [class*='aspect-'] {
     min-height: 0;

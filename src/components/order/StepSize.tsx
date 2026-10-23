@@ -19,7 +19,7 @@ export function StepSize({ summary, onSelectSize, onChangeQuantity }: StepSizePr
 
   return (
     <div className="space-y-12">
-      <fieldset>
+      <fieldset id="chon-kich-thuoc" className="scroll-mt-28">
         <legend className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">Chọn kích thước</legend>
         <p className="mt-1 text-sm text-ink-soft">
           {collection.name} · mẫu <span className="font-medium text-deep-900">{pattern.code}</span> ({pattern.colorName})

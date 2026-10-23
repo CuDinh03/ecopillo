@@ -93,14 +93,14 @@ function Actions({ dealer, className, size = 'sm' }: { dealer: Dealer; className
         href={directionsUrl(dealer.dia_chi)}
         target="_blank"
         rel="noopener noreferrer"
-        className={buttonClass('primary', size, 'flex-1 max-sm:!px-2 max-sm:text-[0.85rem] sm:flex-none')}
+        className={buttonClass('primary', size, 'min-w-0 flex-1 max-sm:!px-2 max-sm:text-[0.85rem] sm:flex-none')}
       >
         <Icon name="navigate" size={15} /> Chỉ đường
       </a>
-      <a href={telHref(dealer)} className={buttonClass('secondary', size, 'flex-1 max-sm:!px-2 max-sm:text-[0.85rem] sm:flex-none')}>
+      <a href={telHref(dealer)} className={buttonClass('secondary', size, 'min-w-0 flex-1 max-sm:!px-2 max-sm:text-[0.85rem] sm:flex-none')}>
         <Icon name="phone" size={15} /> Gọi
       </a>
-      <a href={zaloHref(dealer)} target="_blank" rel="noopener noreferrer" className={buttonClass('secondary', size, 'flex-1 max-sm:!px-2 max-sm:text-[0.85rem] sm:flex-none')}>
+      <a href={zaloHref(dealer)} target="_blank" rel="noopener noreferrer" className={buttonClass('secondary', size, 'min-w-0 flex-1 max-sm:!px-2 max-sm:text-[0.85rem] sm:flex-none')}>
         <ZaloMark /> Zalo
       </a>
     </div>
@@ -131,7 +131,7 @@ export function DealerCard({ dealer, km, selected = false, onSelect, featured = 
       {/* Chỉ khi khách bấm "Tìm đại lý gần tôi": dải chàm đầu thẻ điểm gần nhất (owner yêu cầu 15/10/2026) */}
       {featured && (
         <p className="flex flex-wrap items-center justify-between gap-x-4 gap-y-0.5 bg-deep-800 px-4 py-2.5 text-ivory sm:px-6">
-          <span className="inline-flex items-center gap-2 text-[0.78rem] font-semibold tracking-[0.12em] uppercase">
+          <span className="inline-flex items-center gap-2 text-[0.78rem] font-medium tracking-[0.12em] uppercase">
             <Icon name="locate" size={15} /> Gần Quý khách nhất
           </span>
           {km !== undefined && <span className="tabular text-[0.88rem] font-medium">cách khoảng {formatKm(km)}</span>}
@@ -149,7 +149,7 @@ export function DealerCard({ dealer, km, selected = false, onSelect, featured = 
         <div className={`flex min-w-0 flex-col sm:p-6 ${featured ? 'p-4 pb-0' : ''}`}>
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
             {/* Mọi loại điểm cùng một kiểu nhãn: chưa tìm gần tôi thì các điểm như nhau */}
-            <span className="rounded-full bg-cream-50 px-2.5 py-0.5 text-[0.68rem] font-semibold tracking-[0.12em] text-deep-800 uppercase ring-1 ring-cream-200">
+            <span className="rounded-full bg-cream-50 px-2.5 py-0.5 text-[0.68rem] font-medium tracking-[0.12em] text-deep-800 uppercase ring-1 ring-cream-200">
               {KIND_LABEL[dealer.loai]}
             </span>
             {km !== undefined && !featured && <span className="tabular text-[0.82rem] font-medium text-deep-700">cách khoảng {formatKm(km)}</span>}

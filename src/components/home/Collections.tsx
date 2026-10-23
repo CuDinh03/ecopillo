@@ -239,7 +239,7 @@ export function Collections() {
   const byId = new Map(BEDDING_SETS.map((c) => [c.id, c]))
 
   return (
-    <section id="bo-suu-tap" aria-labelledby="collections-title" className="py-14 sm:py-32">
+    <section id="bo-suu-tap" aria-labelledby="collections-title" className="py-14 sm:py-24">
       <Container>
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <SectionHeading

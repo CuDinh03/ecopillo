@@ -117,10 +117,14 @@ function DesktopDock() {
         aria-expanded={isOpen}
         aria-controls="dock-menu"
         onClick={() => setIsOpen((open) => !open)}
-        className="flex h-14 items-center gap-2 rounded-full bg-deep-800 pr-5 pl-4 text-sm font-medium text-ivory shadow-[var(--shadow-lift)] transition hover:bg-deep-700"
+        aria-label={isOpen ? 'Đóng liên hệ' : 'Liên hệ'}
+        className="flex h-14 min-w-14 items-center justify-center gap-2 rounded-full bg-deep-800 px-4 text-sm font-medium text-ivory shadow-[var(--shadow-lift)] transition hover:bg-deep-700 min-[1440px]:pr-5"
       >
         <Icon name={isOpen ? 'close' : 'messenger'} size={20} />
-        {isOpen ? 'Đóng' : 'Liên hệ'}
+        {/* Dưới 1440px khung nội dung chạm mép phải, nút có chữ đè lên thẻ, đoạn văn (rà 23/10/2026): chỉ để biểu tượng */}
+        <span aria-hidden="true" className="max-[1439px]:hidden">
+          {isOpen ? 'Đóng' : 'Liên hệ'}
+        </span>
       </button>
     </div>
   )

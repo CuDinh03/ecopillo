@@ -256,7 +256,7 @@ export function ProductsPage() {
           <aside
             aria-label="Bộ lọc"
             data-lenis-prevent
-            className="hidden xl:sticky xl:top-[5.75rem] xl:col-start-2 xl:row-start-1 xl:mt-6 xl:block xl:max-h-[calc(100vh-5.75rem-6.5rem)] xl:overflow-y-auto xl:overscroll-contain xl:rounded-[1.5rem] xl:bg-ivory xl:p-5 xl:shadow-[var(--shadow-lift)]"
+            className="hidden xl:sticky xl:top-[5.75rem] xl:col-start-2 xl:row-start-1 xl:mt-6 xl:block xl:max-h-[calc(100dvh-5.75rem-6.5rem)] xl:overflow-y-auto xl:overscroll-contain xl:[scrollbar-width:thin] xl:[scrollbar-color:var(--color-line)_transparent] xl:rounded-[1.5rem] xl:bg-ivory xl:p-5 xl:shadow-[var(--shadow-lift)]"
           >
             <FilterPanel {...panel} idPrefix="loc-cot" />
           </aside>

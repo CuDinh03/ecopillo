@@ -48,8 +48,7 @@ export function GiftsPage() {
         eyebrow="Quà tặng và sự kiện"
         title={
           <>
-            Món quà cho
-            <br />
+            Món quà cho <br className="max-sm:hidden" />
             <em className="text-deep-700">những giấc ngủ thương yêu</em>
           </>
         }
@@ -90,7 +89,7 @@ export function GiftsPage() {
                         <Link
                           key={id}
                           to={collectionPathById(id)}
-                          className="inline-flex items-center gap-1 rounded-full bg-cream-100 px-3.5 py-1.5 text-[0.85rem] text-deep-800 transition-colors hover:bg-mist-200"
+                          className="inline-flex min-h-10 items-center gap-1 rounded-full bg-cream-100 px-3.5 py-1.5 text-[0.85rem] text-deep-800 transition-colors hover:bg-mist-200 active:bg-mist-200"
                         >
                           {collectionById(id)?.name}
                           <Icon name="arrowRight" size={13} />

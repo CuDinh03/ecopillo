@@ -10,7 +10,7 @@ import {
   type SizeId,
 } from '../../data/catalog'
 import type { Product } from '../../data/products'
-import { chapterTitle, patternByParam, patternPath, storyOf, toneById, volumesOf } from '../../data/stories'
+import { chapterTitle, patternByParam, patternPath, sameToneElsewhere, storyOf, toneById, volumesOf } from '../../data/stories'
 import { relatedForProduct } from '../../data/related'
 import { usePageMeta } from '../../hooks/usePageMeta'
 import { ExploreMore } from '../ui/ExploreMore'
@@ -20,7 +20,7 @@ import { Container } from '../ui/primitives'
 import { ChapterBuy, ChapterImage, ChapterStory } from './ChapterParts'
 import { ChapterRail } from './ChapterRail'
 import { CollectionCover } from './CollectionCover'
-import { SameTone } from './SameTone'
+import { SAME_TONE_LIMIT, SameTone } from './SameTone'
 
 interface CollectionDetailProps {
   product: Product
@@ -84,6 +84,7 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
   const validSize = size && !isSizeSoldOut(pattern, size) ? size : null
   const isSoldOut = isPatternSoldOut(pattern)
   const tone = toneById(story?.tone)
+  const sameToneIds = tone ? sameToneElsewhere(collection, tone.id, SAME_TONE_LIMIT).map((c) => c.collection.id) : []
 
   return (
     <div className="pb-36 lg:pb-24">
@@ -138,7 +139,7 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
         <ProductInfoCards product={product} className="mt-6" />
 
         <ProductReviews product={product} />
-        <RelatedProducts product={product} />
+        <RelatedProducts product={product} excludeCollections={sameToneIds} />
         <ExploreMore groups={relatedForProduct(product)} />
       </Container>
 

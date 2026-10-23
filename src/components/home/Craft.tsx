@@ -54,7 +54,7 @@ export function TrustStrip() {
 
 export function BrandStory() {
   return (
-    <section aria-labelledby="story-title" className="py-14 sm:py-32">
+    <section aria-labelledby="story-title" className="py-14 sm:py-24">
       <Container>
         <div className="grid gap-8 sm:gap-14 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-5">

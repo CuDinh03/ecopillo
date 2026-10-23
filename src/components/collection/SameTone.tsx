@@ -5,11 +5,11 @@ import { sameToneElsewhere, type Tone } from '../../data/stories'
 import { ColorwayCard } from '../products/ColorwayCard'
 import { Icon } from '../ui/Icon'
 
-const LIMIT = 4
+export const SAME_TONE_LIMIT = 4
 
 /** Cuối mỗi chương (phần lấy từ hướng C): phối màu cùng gam ở các bộ khác, nhiều mức giá */
 export function SameTone({ collection, tone }: { collection: Collection; tone: Tone }) {
-  const colorways = sameToneElsewhere(collection, tone.id, LIMIT)
+  const colorways = sameToneElsewhere(collection, tone.id, SAME_TONE_LIMIT)
   if (colorways.length === 0) return null
   return (
     <section aria-labelledby="same-tone-title" className="mt-16 sm:mt-20">

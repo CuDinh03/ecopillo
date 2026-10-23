@@ -17,7 +17,7 @@ function Stars() {
 
 export function Reviews() {
   return (
-    <section id="danh-gia" aria-labelledby="reviews-title" className="py-14 sm:py-32">
+    <section id="danh-gia" aria-labelledby="reviews-title" className="py-14 sm:py-24">
       <Container>
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <SectionHeading

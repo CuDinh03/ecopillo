@@ -44,9 +44,10 @@ export function ChapterImage({ image, shown, note, onPrev, onNext, className = '
         ) : (
           <Placeholder className="absolute inset-0 h-full w-full" tone="mist" tint={shown.swatch} note={note} />
         )}
+        {/* Góc trái trên: góc trái dưới ảnh gốc có vòng mã in sẵn, chip đặt ở đó thì đè lên vòng (rà 23/10/2026) */}
         <span
           key={shown.code}
-          className="fade-in absolute bottom-4 left-4 rounded-full bg-ivory/95 px-3.5 py-1.5 text-[0.78rem] font-medium text-deep-900 shadow-[var(--shadow-soft)]"
+          className="fade-in absolute top-4 left-4 rounded-full bg-ivory/95 px-3.5 py-1.5 text-[0.78rem] font-medium text-deep-900 shadow-[var(--shadow-soft)]"
         >
           {shown.code} · {shown.colorName}
         </span>

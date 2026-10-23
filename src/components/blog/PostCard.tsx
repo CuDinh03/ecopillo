@@ -26,7 +26,7 @@ export function PostCard({ post, feature = false }: { post: Post; feature?: bool
           <span>{post.readMinutes} phút đọc</span>
         </p>
         <h3
-          className={`font-display mt-3 leading-tight text-deep-900 ${feature ? 'text-[1.8rem] sm:text-[2.2rem]' : 'text-[1.35rem]'}`}
+          className={`font-display mt-3 leading-tight text-deep-900 ${feature ? 'text-[1.5rem] sm:text-[2.2rem]' : 'text-[1.35rem]'}`}
         >
           <Link to={postPath(post)} className="after:absolute after:inset-0">
             {post.title}

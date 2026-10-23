@@ -33,7 +33,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
   // Điện thoại: chỉ hiện đoạn đầu, bấm để đọc tiếp cho trang ngắn hơn
   const [isExpanded, setIsExpanded] = useState(false)
   return (
-    <section id="ve-chung-toi" aria-labelledby="about-title" className="py-14 sm:py-32">
+    <section id="ve-chung-toi" aria-labelledby="about-title" className="py-14 sm:py-24">
       <Container>
         <div className="grid items-center gap-8 sm:gap-12 lg:grid-cols-12 lg:gap-16">
           <div data-reveal className="relative lg:col-span-5">

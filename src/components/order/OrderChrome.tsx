@@ -62,8 +62,8 @@ export function MobileOrderBar({ amount, amountLabel, nextLabel, hint, canContin
         <button
           type="button"
           onClick={onNext}
-          disabled={!canContinue}
-          className="flex h-12 min-w-0 flex-1 items-center justify-between gap-2 rounded-2xl bg-deep-800 pr-3 pl-4 text-left text-ivory transition active:bg-deep-700 disabled:bg-deep-800/45"
+          aria-disabled={!canContinue}
+          className={`flex h-12 min-w-0 flex-1 items-center justify-between gap-2 rounded-2xl pr-3 pl-4 text-left text-ivory transition active:bg-deep-700 ${canContinue ? 'bg-deep-800' : 'bg-deep-800/45'}`}
         >
           <span className="min-w-0 leading-tight">
             <span className="block truncate text-[0.68rem] text-mist-200">

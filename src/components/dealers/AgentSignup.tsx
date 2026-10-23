@@ -40,7 +40,7 @@ export function AgentSignup() {
           Liên hệ mở đại lý:
           <a
             href={CONTACT.hotlineTel}
-            className="tabular inline-flex items-center gap-1.5 font-semibold text-deep-800 underline decoration-mist-300 underline-offset-4 transition hover:text-mist-600 hover:decoration-mist-600"
+            className="tabular -my-2 inline-flex items-center gap-1.5 py-2 font-medium text-deep-800 underline decoration-mist-300 underline-offset-4 transition hover:text-mist-600 hover:decoration-mist-600"
           >
             <Icon name="phone" size={16} />
             {CONTACT.hotlineDisplay}

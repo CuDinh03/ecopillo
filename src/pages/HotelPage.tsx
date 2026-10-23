@@ -100,9 +100,9 @@ function HotelHero() {
           alt={HERO_IMAGE.alt}
           fetchPriority="high"
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover object-left"
         />
-        {/* Góc phải: góc trái dưới ảnh có dấu mã mẫu in sẵn */}
+        {/* Góc phải: góc trái dưới ảnh có dấu mã mẫu in sẵn. Ảnh neo mép trái để vòng mã nằm trọn, không bị cắt nửa */}
         <span className="absolute right-4 bottom-3 rounded-full bg-ivory/90 px-3 py-1 text-[0.72rem] text-deep-900 lg:right-6 lg:bottom-5">
           Eco Doris ED10 · Trắng tinh
         </span>
@@ -114,7 +114,7 @@ function HotelHero() {
         <h1 id="page-title" className="font-display mt-4 text-[2.6rem] leading-[1.02] text-balance text-deep-900 sm:text-[3.4rem] xl:text-[4rem]">
           Giấc ngủ năm sao <em className="block text-deep-700">cho khách lưu trú</em>
         </h1>
-        <p className="mt-5 max-w-lg text-[0.8rem] font-semibold tracking-[0.12em] text-balance text-deep-700 uppercase">{HOTEL_INTRO_HEADING}</p>
+        <p className="mt-5 max-w-lg text-[0.8rem] font-medium tracking-[0.12em] text-balance text-deep-700 uppercase">{HOTEL_INTRO_HEADING}</p>
         {/* Chỉ đoạn đầu: đủ 3 đoạn thì phần đầu cao thêm, ảnh bị cắt lệch (owner báo 17/10/2026). Đoạn 2, 3 ở phần nền chàm */}
         <p className="mt-3 max-w-md text-[1.02rem] leading-relaxed text-ink-soft">{HOTEL_INTRO[0]}</p>
         <div className="mt-8 flex flex-wrap gap-3">
