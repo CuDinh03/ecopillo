@@ -95,7 +95,8 @@ export function ContactButtons({
 }
 
 interface SectionHeadingProps {
-  eyebrow: string
+  /** Nhãn nhỏ trên tiêu đề: chỉ đặt khi mang thông tin, không nhắc lại tiêu đề (mẫu C trang chủ, owner duyệt 23/10/2026) */
+  eyebrow?: string
   title: ReactNode
   lead?: ReactNode
   align?: 'left' | 'center'
@@ -118,10 +119,10 @@ export function SectionHeading({
   return (
     // Tiêu đề căn trái trượt vào từ trái, căn giữa thì nhích lên (hieu-ung, câu 1B)
     <header data-reveal={centered ? '' : 'left'} className={`${centered ? 'mx-auto text-center' : ''} max-w-2xl ${className}`}>
-      <p className={`eyebrow ${dark ? '!text-mist-300' : ''}`}>{eyebrow}</p>
+      {eyebrow && <p className={`eyebrow ${dark ? '!text-mist-300' : ''}`}>{eyebrow}</p>}
       <h2
         id={id}
-        className={`font-display mt-4 text-[2rem] sm:text-[2.75rem] ${
+        className={`font-display text-[2rem] sm:text-[2.75rem] ${eyebrow ? 'mt-4' : ''} ${
           dark ? 'text-ivory' : 'text-deep-900'
         }`}
       >

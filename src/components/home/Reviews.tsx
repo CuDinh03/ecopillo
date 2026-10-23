@@ -1,6 +1,5 @@
-import { REVIEW_SAMPLE_NOTE, REVIEWS } from '../../data/content'
+import { REVIEW_SAMPLE_NOTE, REVIEWS, type Review } from '../../data/content'
 import { revealDelay } from '../../lib/reveal'
-import { Icon } from '../ui/Icon'
 import { Container, FillIn, SectionHeading } from '../ui/primitives'
 
 function Stars() {
@@ -15,65 +14,54 @@ function Stars() {
   )
 }
 
+/**
+ * Mẫu C trang chủ (owner duyệt 23/10/2026): một câu trích lớn bên trái, ba nhận xét còn lại thành cột lời ngắn bên phải,
+ * thay cho lưới bốn thẻ. Điện thoại: câu trích ở trên, ba nhận xét xếp dưới.
+ * Nhận xét đang là nội dung mẫu (src/data/content.ts): nhãn mẫu nằm sát câu trích.
+ */
 export function Reviews() {
+  const [featured, ...others] = REVIEWS
   return (
     <section id="danh-gia" aria-labelledby="reviews-title" className="py-14 sm:py-24">
       <Container>
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <SectionHeading
-            id="reviews-title"
-            eyebrow="Khách hàng nói gì"
-            title={
-              <>
-                Những giấc ngủ <span className="text-mist-600 italic">được nâng niu</span>
-              </>
-            }
-          />
-          {/* Nhận xét đang là nội dung mẫu (src/data/content.ts), ghi rõ như trang sản phẩm */}
-          <FillIn>{REVIEW_SAMPLE_NOTE}</FillIn>
-        </div>
-      </Container>
+        <SectionHeading id="reviews-title" title="Nhận xét của khách" lead="Những giấc ngủ được nâng niu, kể bằng lời của chính Quý khách." />
 
-      {/* Điện thoại: vuốt ngang · Máy tính: lưới 4 cột */}
-      <div tabIndex={0} aria-label="Nhận xét của khách hàng, cuộn ngang" className="mt-8 overflow-x-auto sm:mt-12 [scrollbar-width:none] focus-visible:outline-2 focus-visible:outline-deep-700 lg:overflow-visible">
-        <Container>
-          <ul className="flex snap-x snap-mandatory gap-4 pb-2 lg:grid lg:grid-cols-4 lg:gap-5">
-            {REVIEWS.map((r, i) => (
-              <li
-                key={r.name}
-                data-reveal
-                style={revealDelay(i)}
-                className={`flex w-[84%] shrink-0 snap-start flex-col rounded-[1.75rem] p-7 sm:w-[46%] lg:w-auto ${
-                  i % 2 === 0 ? 'bg-mist-50 shadow-[var(--shadow-soft)]' : 'bg-cream-50 shadow-[var(--shadow-soft)]'
-                } ${i % 2 === 1 ? 'lg:translate-y-8' : ''}`}
-              >
-                <div className="flex items-center justify-between">
-                  <Stars />
-                  <Icon name="quote" size={26} className="text-mist-300" />
+        <div className="mt-8 grid gap-10 sm:mt-12 lg:grid-cols-12 lg:gap-16">
+          <figure data-reveal className="lg:col-span-7">
+            <FillIn>{REVIEW_SAMPLE_NOTE}</FillIn>
+            <div className="mt-5 flex items-center gap-3">
+              <Stars />
+            </div>
+            <blockquote className="font-display mt-4 max-w-[32ch] text-[1.5rem] leading-[1.3] text-deep-900 italic sm:text-[2rem] lg:text-[2.125rem]">
+              “{featured.quote}”
+            </blockquote>
+            <figcaption className="mt-6">
+              <Reviewer review={featured} />
+            </figcaption>
+          </figure>
+
+          <ul className="divide-y divide-line border-y border-line lg:col-span-5 lg:self-end">
+            {others.map((r, i) => (
+              <li key={r.name} data-reveal style={revealDelay(i + 1)} className="py-5">
+                <blockquote className="text-body-sm leading-relaxed text-deep-900">“{r.quote}”</blockquote>
+                <div className="mt-3">
+                  <Reviewer review={r} compact />
                 </div>
-                <blockquote className="mt-5 flex-1 text-body-sm leading-relaxed text-deep-900">
-                  “{r.quote}”
-                </blockquote>
-                <footer className="mt-7 flex items-start gap-3 border-t border-deep-900/10 pt-5">
-                  <span
-                    aria-hidden="true"
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-mist-100 font-display text-lg text-deep-800"
-                  >
-                    {r.name.split(' ').at(-1)?.[0]}
-                  </span>
-                  <span className="text-sm leading-tight">
-                    <span className="block font-medium text-deep-900">{r.name}</span>
-                    <span className="block text-ink-soft">{r.place}</span>
-                    <span className="mt-1.5 inline-block rounded-full bg-mist-100 px-2.5 py-0.5 text-label text-deep-800">
-                      {r.product}
-                    </span>
-                  </span>
-                </footer>
               </li>
             ))}
           </ul>
-        </Container>
-      </div>
+        </div>
+      </Container>
     </section>
+  )
+}
+
+function Reviewer({ review, compact = false }: { review: Review; compact?: boolean }) {
+  return (
+    <p className={`flex flex-wrap items-center gap-x-2 gap-y-1 leading-tight ${compact ? 'text-meta' : 'text-sm'}`}>
+      <span className="font-medium text-deep-900">{review.name}</span>
+      <span className="text-ink-soft">· {review.place}</span>
+      <span className="rounded-full bg-ivory px-2.5 py-0.5 text-label text-deep-800 shadow-[var(--shadow-soft)]">{review.product}</span>
+    </p>
   )
 }

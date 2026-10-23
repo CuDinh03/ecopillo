@@ -28,9 +28,8 @@ export function Showrooms() {
       <Container>
         <SectionHeading
           id="phan-phoi-title"
-          eyebrow="Hệ thống phân phối"
-          title="Chạm tay vào chất vải tại Ecopillo"
-          lead="Cảm nhận độ mềm mát của vải Lyocell, nằm thử gối và đệm, được tư vấn mẫu hợp với phòng ngủ của Quý khách."
+          title="Hệ thống phân phối"
+          lead="Chạm tay vào chất vải tại Ecopillo: cảm nhận độ mềm mát của vải Lyocell, nằm thử gối và đệm, được tư vấn mẫu hợp với phòng ngủ của Quý khách."
         />
         <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-2xl text-sm">
@@ -115,10 +114,11 @@ export function Faq({ standalone = false, compact = false }: { standalone?: bool
           <div className="lg:sticky lg:top-28">
             <SectionHeading
               id="faq-title"
-              eyebrow="Câu hỏi thường gặp"
-              title={standalone ? 'Câu trả lời nhanh' : 'Mua sắm an tâm'}
+              title={standalone ? 'Câu trả lời nhanh' : 'Câu hỏi thường gặp'}
             />
-            <p className="mt-5 text-ink-soft">Chưa thấy câu trả lời Quý khách cần? Gọi hoặc nhắn Zalo, Ecopillo phản hồi ngay.</p>
+            <p className="mt-5 text-ink-soft">
+              {!standalone && 'Mua sắm an tâm với Ecopillo. '}Chưa thấy câu trả lời Quý khách cần? Gọi hoặc nhắn Zalo, Ecopillo phản hồi ngay.
+            </p>
             <ContactButtons size="md" stretch className="mt-7" />
             {!standalone && (
               <Link to={PATHS.faq} className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-deep-800 hover:underline">

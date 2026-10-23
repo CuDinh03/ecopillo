@@ -21,11 +21,7 @@ export function Hospitality() {
             id="hotel-title"
             tone="dark"
             eyebrow={HOTEL_EYEBROW}
-            title={
-              <>
-                Giấc ngủ năm sao <span className="text-mist-300 italic">cho khách lưu trú</span>
-              </>
-            }
+            title="Giấc ngủ năm sao cho khách lưu trú"
             lead={
               // Trang chủ chỉ giữ đoạn đầu cho gọn; đủ ba đoạn ở trang Khách sạn và dự án (mục 38)
               <>

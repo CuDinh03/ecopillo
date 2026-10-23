@@ -14,9 +14,8 @@ export function EventsStrip() {
   return (
     <section aria-labelledby="events-title" className="mt-14 sm:mt-24">
       <header data-reveal="left" className="max-w-2xl">
-        <p className="eyebrow">Hoạt động</p>
-        <h3 id="events-title" className="font-display mt-3 text-[1.75rem] text-deep-900 sm:text-[2.2rem]">
-          Ecopillo <span className="text-mist-600 italic">đồng hành</span>
+        <h3 id="events-title" className="font-display text-[1.75rem] text-deep-900 sm:text-[2.2rem]">
+          Ecopillo đồng hành
         </h3>
         <p className="mt-3 max-w-xl text-body-sm leading-relaxed text-ink-soft">
           Những chương trình, sự kiện Ecopillo góp mặt cùng cộng đồng và các đơn vị bạn.

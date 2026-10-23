@@ -66,12 +66,7 @@ export function BrandVideo() {
         <div className="lg:col-span-4">
           <SectionHeading
             id="video-title"
-            eyebrow="Phim thương hiệu"
-            title={
-              <>
-                Một giấc ngủ <span className="text-mist-600 italic">được nâng niu</span>
-              </>
-            }
+            title="Một giấc ngủ được nâng niu"
             lead="Ba phút để cảm nhận chất vải Lyocell, đường chần thêu và không gian phòng ngủ Ecopillo."
           />
           <a

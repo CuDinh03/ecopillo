@@ -59,12 +59,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
           <div className="min-w-0 lg:col-span-7">
             <SectionHeading
               id="about-title"
-              eyebrow="Về chúng tôi"
-              title={
-                <>
-                  Từ trái tim một người <span className="text-mist-600 italic">làm nghề lâu năm</span>
-                </>
-              }
+              title="Từ trái tim một người làm nghề lâu năm"
             />
             <p data-reveal className="mt-5">
               <FillIn>{STORY_REVIEW_NOTE}</FillIn>

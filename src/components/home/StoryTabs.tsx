@@ -25,10 +25,7 @@ export function StoryTabs() {
   return (
     <div>
       <Container className="pt-14">
-        <p className="eyebrow">Về Ecopillo</p>
-        <p className="font-display mt-3 text-[2rem] leading-tight text-deep-900">
-          Tốt · Thật · <span className="text-mist-600 italic">Thiện</span>
-        </p>
+        <p className="font-display text-[2rem] leading-tight text-deep-900">Tốt · Thật · Thiện</p>
         <MobileTabBar label="Về Ecopillo" tabs={TABS} value={tab} onChange={setTab} className="mt-5" />
       </Container>
       <div className={panel('cau-chuyen')}>

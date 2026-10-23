@@ -60,12 +60,7 @@ export function BrandStory() {
           <div className="lg:col-span-5">
             <SectionHeading
               id="story-title"
-              eyebrow="Chất liệu & tay nghề"
-              title={
-                <>
-                  Từ thiên nhiên <span className="text-mist-600 italic">đến giấc ngủ</span>
-                </>
-              }
+              title="Từ thiên nhiên đến giấc ngủ"
               lead={LYOCELL_INTRO}
             />
             <blockquote data-reveal style={revealDelay(1)} className="mt-6 border-l-2 sm:mt-8 border-mist-600 pl-5 font-display text-[1.35rem] leading-snug text-deep-800 italic">

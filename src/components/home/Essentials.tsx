@@ -1,11 +1,19 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
-import { COLLECTIONS, ESSENTIALS, GIFT_PROGRAM_NOTE, MATTRESSES, productImage } from '../../data/catalog'
+import {
+  COLLECTIONS,
+  ESSENTIALS,
+  GIFT_PROGRAM_NOTE,
+  MATTRESSES,
+  productImage,
+  type EssentialItem,
+  type Mattress,
+} from '../../data/catalog'
 import { formatRange, formatVND } from '../../lib/format'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
-import { buttonClass, ContactButtons, Container, FillIn, SectionHeading } from '../ui/primitives'
+import { buttonClass, Container, FillIn, SectionHeading } from '../ui/primitives'
 import { PRODUCTS, productForEssential, productPath, singleOrderUrl } from '../../data/products'
 import { PATHS, productsUrl } from '../../data/links'
 import { revealDelay } from '../../lib/reveal'
@@ -49,75 +57,48 @@ export function Essentials({ withTabs = false }: EssentialsProps) {
   }, [withTabs, hash])
   const shownOnMobile = (id: EssentialTab) => !withTabs || tab === id
   const mobileOnly = (id: EssentialTab) => (shownOnMobile(id) ? '' : 'max-sm:hidden')
+  const group = (g: PriceGroup) => <PriceGroupBlock key={g.id} group={g} withTabs={withTabs} className={mobileOnly(g.id)} />
   return (
     <>
     <section id="ruot-chan-goi" aria-labelledby="essentials-title" className={withTabs && tab === 'qua-tang' ? 'pt-14 sm:py-24' : 'py-14 sm:py-24'}>
       <Container>
-        <SectionHeading
-          id="essentials-title"
-          eyebrow="Ruột chăn · ruột gối · topper"
-          title={
-            <>
-              Phần êm ái <span className="text-mist-600 italic">bên trong</span>
-            </>
-          }
-          lead="Chọn độ êm hợp với thói quen ngủ của Quý khách. Đặt online ngay, hoặc ghé cửa hàng Ecopillo để nằm thử từng loại gối."
-        />
+        <div className="lg:grid lg:grid-cols-12 lg:items-end lg:gap-10">
+          <SectionHeading
+            id="essentials-title"
+            className="lg:col-span-7"
+            title="Ruột chăn, ruột gối, topper và đệm"
+            lead="Phần êm ái bên trong. Chọn độ êm hợp với thói quen ngủ của Quý khách: đặt online ngay, hoặc ghé cửa hàng Ecopillo để nằm thử từng loại gối, đệm."
+          />
+          {/* Một ảnh cho cả bảng giá, chỉ trên máy tính (rà mẫu C 23/10: bảng không còn ảnh, chăn và topper không có ảnh nào trên trang chủ) */}
+          <div data-reveal className="hidden aspect-[16/10] overflow-hidden rounded-[1.75rem] shadow-[var(--shadow-soft)] lg:col-span-5 lg:block">
+            <Placeholder
+              className="h-full w-full"
+              note={ESSENTIALS_PHOTO.imageNote}
+              image={ESSENTIALS_PHOTO.imageKey ? productImage(ESSENTIALS_PHOTO.imageKey, ESSENTIALS_PHOTO.title) : undefined}
+              sizes="480px"
+            />
+          </div>
+        </div>
 
         {withTabs && <MobileTabBar label="Nhóm sản phẩm" tabs={ESSENTIAL_TABS} value={tab} onChange={setTab} className="mt-6" />}
 
-        <div className={`mt-8 grid gap-5 sm:mt-14 lg:grid-cols-3 ${withTabs ? 'max-sm:mt-5' : 'm-rail'}`}>
-          {ESSENTIALS.map((group, i) => (
-            <article
-              key={group.id}
-              data-reveal
-              style={revealDelay(i)}
-              className={`flex flex-col rounded-[1.75rem] bg-cream-50 p-3 shadow-[var(--shadow-soft)] ${mobileOnly(group.id as EssentialTab)}`}
-            >
-              <div className="aspect-[16/9] rounded-[1.35rem]">
-                <Placeholder
-                  className="h-full w-full"
-                  note={group.imageNote}
-                  image={group.imageKey ? productImage(group.imageKey, group.title) : undefined}
-                  sizes="(min-width: 1024px) 380px, 100vw"
-                />
-              </div>
-              <div className="flex flex-1 flex-col px-4 pt-6 pb-4">
-                <h3 className="font-display text-[1.7rem] text-deep-900">{group.title}</h3>
-                <p className="mt-1 text-sm text-ink-soft">{group.subtitle}</p>
-                <ul className="mt-6 divide-y divide-line">
-                  {group.items.map((item) => (
-                    <li key={item.name} className="py-3.5">
-                      <div className="flex flex-wrap items-baseline justify-between gap-x-4">
-                        <ItemName name={item.name} />
-                        <span className="tabular ml-auto shrink-0 text-right text-body-sm text-deep-800">
-                          {formatRange(item.min, item.max)}
-                        </span>
-                      </div>
-                      <div className="mt-0.5 flex items-center justify-between gap-4">
-                        <span className="text-meta text-ink-soft">{item.note}</span>
-                        <Link
-                          to={essentialOrderUrl(item.name)}
-                          aria-label={`Đặt mua ${item.name}`}
-                          className="-my-2.5 inline-flex shrink-0 items-center gap-1 py-2.5 text-meta font-medium text-mist-600 underline-offset-4 hover:underline"
-                        >
-                          Đặt mua <Icon name="arrowRight" size={13} />
-                        </Link>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </article>
-          ))}
+        {/* Bảng giá liền thay cho ba thẻ ảnh (mẫu C, owner duyệt 23/10/2026). Hai cột cân số dòng:
+            trái ruột gối + chăn hè & topper, phải ruột chăn + đệm. Điện thoại: một nhóm mỗi tab. */}
+        <div className={`grid gap-x-16 sm:mt-14 lg:grid-cols-2 ${withTabs ? 'mt-2' : 'mt-8'}`}>
+          <div data-reveal className="grid gap-10 sm:gap-12">
+            {[PRICE_GROUPS[0], PRICE_GROUPS[2]].map(group)}
+          </div>
+          <div data-reveal style={revealDelay(1)} className="grid gap-10 sm:gap-12 max-lg:mt-10 max-sm:mt-0">
+            {[PRICE_GROUPS[1], PRICE_GROUPS[3]].map(group)}
+          </div>
         </div>
 
-        <p className={`mt-6 flex items-start gap-2 text-sm text-ink-soft ${withTabs && (tab === 'dem' || tab === 'qua-tang') ? 'max-sm:hidden' : ''}`}>
+        <p className={`mt-8 flex items-start gap-2 text-sm text-ink-soft sm:mt-12 ${withTabs && tab === 'qua-tang' ? 'max-sm:hidden' : ''}`}>
           <Icon name="info" size={16} className="mt-0.5 shrink-0 text-mist-600" />
           {/* Gói chữ vào một khối: không thì mỗi mảnh chữ, link thành một cột riêng của flex và số điện thoại bị bẻ dòng */}
           <span>
-            Ruột gối, ruột chăn, topper và đệm đều đặt online được; nhân viên gọi xác nhận trước khi giao. Cần tư vấn độ
-            êm? Gọi hoặc nhắn Zalo{' '}
+            Ruột gối, ruột chăn, topper và đệm đều đặt online được; nhân viên gọi xác nhận trước khi giao, giá đệm báo chính
+            xác theo độ dày. Cần tư vấn độ êm? Gọi hoặc nhắn Zalo{' '}
             <a
               href={CONTACT.zaloUrl}
               target="_blank"
@@ -129,10 +110,6 @@ export function Essentials({ withTabs = false }: EssentialsProps) {
             .
           </span>
         </p>
-
-        <div className={mobileOnly('dem')}>
-          <Mattresses />
-        </div>
       </Container>
     </section>
     {withTabs && (
@@ -153,58 +130,98 @@ const essentialOrderUrl = (name: string): string => {
 
 const mattressProduct = (note: string) => PRODUCTS.find((p) => p.category === 'dem' && p.summary === note)
 
-function ItemName({ name }: { name: string }) {
-  const product = productForEssential(name)
-  if (!product) return <span className="font-medium whitespace-nowrap text-deep-900">{name}</span>
-  return (
-    <Link
-      to={productPath(product)}
-      className="-my-2 py-2 font-medium whitespace-nowrap text-deep-900 decoration-mist-300 underline-offset-4 hover:underline"
-    >
-      {name}
-    </Link>
-  )
+/** Một dòng của bảng giá: tên (link sang trang sản phẩm nếu có), giá, ghi chú, link đặt mua */
+interface PriceRow {
+  name: string
+  note: string
+  price: string
+  productTo?: string
+  orderTo: string
 }
 
-function Mattresses() {
+interface PriceGroup {
+  id: EssentialTab
+  title: string
+  subtitle: string
+  rows: readonly PriceRow[]
+}
+
+const essentialRow = (item: EssentialItem): PriceRow => {
+  const product = productForEssential(item.name)
+  return {
+    name: item.name,
+    note: item.note,
+    price: formatRange(item.min, item.max),
+    productTo: product ? productPath(product) : undefined,
+    orderTo: essentialOrderUrl(item.name),
+  }
+}
+
+const mattressRow = (m: Mattress): PriceRow => {
+  const product = mattressProduct(m.note)
+  return {
+    name: m.name,
+    note: m.note,
+    price: `từ ${formatVND(m.from)}`,
+    productTo: product ? productPath(product) : undefined,
+    orderTo: product ? singleOrderUrl(product) : PATHS.order,
+  }
+}
+
+/** Thứ tự: ruột gối, ruột chăn, chăn hè & topper, đệm (khớp hàng tab điện thoại) */
+const PRICE_GROUPS: readonly PriceGroup[] = [
+  ...ESSENTIALS.map((g) => ({ id: g.id as EssentialTab, title: g.title, subtitle: g.subtitle, rows: g.items.map(essentialRow) })),
+  {
+    id: 'dem',
+    title: 'Đệm',
+    subtitle: 'Đặt online, hoặc nằm thử tại cửa hàng Ecopillo ở Hà Nội và TP. HCM',
+    rows: MATTRESSES.map(mattressRow),
+  },
+]
+
+/** Ảnh đầu bảng giá: ruột chăn (nhóm chưa có ảnh nào khác trên trang chủ) */
+const ESSENTIALS_PHOTO = ESSENTIALS.find((g) => g.id === 'ruot-chan') ?? ESSENTIALS[0]
+
+interface PriceGroupBlockProps {
+  group: PriceGroup
+  withTabs: boolean
+  className?: string
+}
+
+function PriceGroupBlock({ group, withTabs, className = '' }: PriceGroupBlockProps) {
   return (
-    <div data-reveal className="mt-10 overflow-hidden rounded-[2rem] bg-mist-100 sm:mt-20 lg:grid lg:grid-cols-[0.9fr_1.4fr]">
-      <div className="flex flex-col justify-between gap-6 p-6 sm:gap-8 sm:p-10">
-        <div>
-          <p className="eyebrow">Đệm</p>
-          <h3 className="font-display mt-3 text-[2rem] text-deep-900">Đặt online hoặc nằm thử</h3>
-          <p className="mt-3 max-w-sm text-sm leading-relaxed text-ink-soft">
-            Chọn đệm và kích thước, đặt ngay trên web: nhân viên gọi xác nhận và báo giá chính xác theo độ dày. Muốn
-            nằm thử trước? Ghé cửa hàng Ecopillo tại Hà Nội hoặc TP. HCM.
-          </p>
-        </div>
-        <ContactButtons size="sm" callLabel="Gọi tư vấn đệm" />
-      </div>
-      <ul className="grid grid-cols-2 gap-px bg-mist-200">
-        {MATTRESSES.map((m) => {
-          const product = mattressProduct(m.note)
-          return (
-          <li key={m.name} className="relative bg-mist-50 p-5 transition-colors hover:bg-ivory sm:p-7">
-            <Icon name="bed" size={22} className="text-mist-600" />
-            <p className="mt-4 text-body-sm leading-snug font-medium text-deep-900 sm:text-base">
-              {product ? (
-                <Link to={productPath(product)} className="after:absolute after:inset-0">
-                  {m.name}
+    <div className={className}>
+      {/* Điện thoại có tab: tên nhóm đã nằm trên tab, không nhắc lại */}
+      <h3 className={`font-display text-[1.7rem] text-deep-900 ${withTabs ? 'max-sm:sr-only' : ''}`}>{group.title}</h3>
+      <p className={`text-sm text-ink-soft ${withTabs ? 'max-sm:mt-4' : 'mt-1'} sm:mt-1`}>{group.subtitle}</p>
+      <ul className="mt-4 divide-y divide-line border-t border-line">
+        {group.rows.map((row) => (
+          <li key={row.name} className="py-3.5">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4">
+              {row.productTo ? (
+                <Link
+                  to={row.productTo}
+                  className="-my-2 py-2 font-medium text-deep-900 decoration-mist-300 underline-offset-4 hover:underline"
+                >
+                  {row.name}
                 </Link>
               ) : (
-                m.name
+                <span className="font-medium text-deep-900">{row.name}</span>
               )}
-            </p>
-            <p className="mt-1 hidden text-meta leading-snug text-ink-soft sm:block">{m.note}</p>
-            <p className="tabular mt-4 text-sm text-deep-800">
-              từ <span className="block text-base font-medium sm:inline sm:text-lg">{formatVND(m.from)}</span>
-            </p>
-            <span className="mt-3 inline-flex items-center gap-1 text-meta font-medium text-mist-600">
-              Xem và đặt mua <Icon name="arrowRight" size={13} />
-            </span>
+              <span className="tabular ml-auto shrink-0 text-right text-body-sm text-deep-800">{row.price}</span>
+            </div>
+            <div className="mt-0.5 flex items-center justify-between gap-4">
+              <span className="text-meta text-ink-soft">{row.note}</span>
+              <Link
+                to={row.orderTo}
+                aria-label={`Đặt mua ${row.name}`}
+                className="-my-2.5 inline-flex shrink-0 items-center gap-1 py-2.5 text-meta font-medium text-mist-600 underline-offset-4 hover:underline"
+              >
+                Đặt mua <Icon name="arrowRight" size={13} />
+              </Link>
+            </div>
           </li>
-          )
-        })}
+        ))}
       </ul>
     </div>
   )

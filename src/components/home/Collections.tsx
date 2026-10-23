@@ -244,7 +244,6 @@ export function Collections() {
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <SectionHeading
             id="collections-title"
-            eyebrow="Bộ sưu tập chăn ga"
             title="Bảy bộ sưu tập, một chuẩn mực êm ái"
             lead="Giá thay đổi theo kích thước giường 1m6, 1m8 và 2m2. Bấm “Đặt mua” để chọn mẫu, kích thước và xem quà tặng kèm."
           />
