@@ -16,7 +16,10 @@ export function Logo({ className = 'h-11 sm:h-12' }: LogoProps) {
       ) : (
         <img
           onError={() => setIsBroken(true)}
-          src="/images/brand/logo-ecopillo.png"
+          // WebP nhẹ hơn PNG gốc 75 KB (đo LCP 24/10/2026); PNG gốc giữ cho ảnh chia sẻ, chỗ khác dùng
+          src="/images/brand/logo-ecopillo-720.webp"
+          srcSet="/images/brand/logo-ecopillo-400.webp 400w, /images/brand/logo-ecopillo-720.webp 720w"
+          sizes="(min-width: 640px) 131px, 120px"
           alt="Ecopillo Eternal – Nâng niu giấc mơ xanh"
           width={720}
           height={265}
