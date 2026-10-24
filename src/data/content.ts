@@ -44,12 +44,20 @@ export interface Partner {
   logo: string
 }
 
-// Logo lấy từ trang Giới thiệu của ecopillo.com.vn; tên viết theo catalog Ecopillo 22.07.2026
+/**
+ * Tám đối tác theo catalog Ecopillo 22.07.2026 (trang 5), logo cắt từ catalog (nền trong suốt).
+ * Owner cho phép đưa logo lên web (24/10/2026). May 10, FLC Biscom, DBV Insurance không phải khách sạn:
+ * mọi nhãn đứng trên lưới logo gọi là "Đối tác", không gọi "khách sạn đã đồng hành".
+ */
 export const HOTEL_PARTNERS: readonly Partner[] = [
-  { name: 'FLC', logo: '/images/partners/flc.webp' },
-  { name: 'Hacinco Hotel', logo: '/images/partners/hancinco.webp' },
-  { name: 'Đồ Sơn Resort Hotel', logo: '/images/partners/do-son.webp' },
-  { name: 'Đào Thuỷ Harry Hotel', logo: '/images/partners/dao-thuy.webp' },
+  { name: 'May 10', logo: '/images/partners/may-10.webp' },
+  { name: 'FLC Biscom', logo: '/images/partners/flc-biscom.webp' },
+  { name: 'Flamingo Resorts', logo: '/images/partners/flamingo-resorts.webp' },
+  { name: 'DBV Insurance', logo: '/images/partners/dbv-insurance.webp' },
+  { name: 'Hacinco Hotel', logo: '/images/partners/hacinco-hotel.webp' },
+  { name: 'Cherry Hotel', logo: '/images/partners/cherry-hotel.webp' },
+  { name: 'Đào Thuỷ Harry Hotel', logo: '/images/partners/dao-thuy-harry-hotel.webp' },
+  { name: 'Doson Resort Hotel', logo: '/images/partners/doson-resort-hotel.webp' },
 ]
 
 export interface Faq {

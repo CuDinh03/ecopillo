@@ -24,9 +24,23 @@ export const HOTEL_INTRO: readonly string[] = [
   'Chúng tôi mang đến giải pháp đồng bộ từ chăn ga gối đến đệm, giúp đối tác tối ưu chi phí đầu tư, kéo dài thời gian sử dụng sản phẩm và nâng cao trải nghiệm nghỉ ngơi của khách hàng.',
 ]
 
-/** Mục 13: phần còn chờ Ecopillo gửi cho trang Khách sạn và dự án (không tự bịa tên khách sạn, giấy chứng nhận) */
-export const HOTEL_PROOF_FILL_IN =
-  '[ECOPILLO GỬI: DANH SÁCH KHÁCH SẠN, DỰ ÁN ĐÃ CUNG CẤP (ĐƯỢC NÊU TÊN), SẢN PHẨM DÀNH CHO KHÁCH SẠN, ẢNH GIẤY CHỨNG NHẬN]'
+/**
+ * Ba ý cạnh lưới 8 logo đối tác ở trang Khách sạn và dự án (owner chọn kiểu B 24/10/2026).
+ * Rút từ 4 đoạn chữ trang 5 catalog Ecopillo 22.07.2026, giữ số liệu của catalog.
+ */
+export const HOTEL_PARTNER_POINTS: readonly { value: string; text: string }[] = [
+  { value: '3–5 sao', text: 'Đáp ứng tiêu chuẩn khắt khe của khách sạn, khu nghỉ dưỡng, nhà hàng và spa trên toàn quốc.' },
+  { value: 'Hàng trăm phòng', text: 'Sản xuất chủ động, cung ứng đồng bộ cho dự án từ nhỏ đến lớn, đúng tiến độ, đúng số lượng.' },
+  { value: 'Đồng nhất', text: 'Chất lượng như nhau theo yêu cầu riêng của từng đối tác, minh bạch trong sản xuất.' },
+]
+
+/** Đồ vải khách sạn theo trang 65 catalog: chất liệu từng hạng mục (owner chọn kiểu B 24/10/2026: ghi vào khối "sáu lớp") */
+export const HOTEL_LINEN = {
+  bedding: 'Cotton T250, T255, T300, T400',
+  valance: 'Vải gấm',
+  towels: 'Cotton',
+  sizes: 'Kích thước tiêu chuẩn hoặc may theo yêu cầu.',
+} as const
 
 /** Mục 39: bốn lợi ích, thay bốn dòng cũ khách đã gạch */
 export const HOTEL_BENEFITS: readonly string[] = [
@@ -56,4 +70,10 @@ export const HOTEL_PHOTOS = {
   quote: hotelPhoto('phong-twin-ho-guom', 'Phòng khách sạn hai giường đơn trải chăn ga trắng Ecopillo'),
   /** Lớp "Ga bọc, ga phủ" ở trang Khách sạn và dự án */
   sheets: hotelPhoto('phong-hai-giuong', 'Phòng khách sạn hai giường đôi, ga bọc và chăn trắng Ecopillo có đường viền'),
+  /** Lớp "Khăn tắm, khăn tay, khăn mặt", ảnh trang 65 catalog */
+  towels: {
+    src: '/images/hotel/khan-cotton.webp',
+    srcSet: '/images/hotel/khan-cotton-sm.webp 480w, /images/hotel/khan-cotton.webp 800w',
+    alt: 'Khăn tắm cotton trắng Ecopillo gấp chồng',
+  },
 } as const

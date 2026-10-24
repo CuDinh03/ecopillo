@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { CertificateBadges, PartnerLogos } from '../components/about/Recognition'
 import { MessageForm } from '../components/contact/MessageForm'
 import { CrossfadeImage } from '../components/ui/CrossfadeImage'
 import { Icon } from '../components/ui/Icon'
@@ -7,9 +8,8 @@ import { Breadcrumb } from '../components/ui/PageHero'
 import { buttonClass, Container, FillIn } from '../components/ui/primitives'
 import { CONTACT } from '../data/brand'
 import { productImage, type ImageSource } from '../data/catalog'
-import { CERTIFICATES } from '../data/about'
 import { HOTEL_PARTNERS } from '../data/content'
-import { HOTEL_BENEFITS, HOTEL_EYEBROW, HOTEL_INTRO, HOTEL_INTRO_HEADING, HOTEL_PHOTOS, HOTEL_PROOF_FILL_IN } from '../data/hotel'
+import { HOTEL_BENEFITS, HOTEL_EYEBROW, HOTEL_INTRO, HOTEL_INTRO_HEADING, HOTEL_LINEN, HOTEL_PARTNER_POINTS, HOTEL_PHOTOS } from '../data/hotel'
 import { productsUrl } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
@@ -17,7 +17,7 @@ import { revealDelay } from '../lib/reveal'
 /**
  * Trang Khách sạn và dự án (biên bản mục 30, 48): chăn ga gối cho khách sạn, resort, nhà nghỉ, dự án.
  * Bố cục kiểu tạp chí (mẫu 1, owner chọn 15/10/2026; mẫu: docs/de-xuat-trang-khach-san-du-an.html):
- * ảnh lớn nửa trang, chữ serif lớn, "bốn lớp của một chiếc giường" bấm đổi ảnh, câu trích trên nền chàm,
+ * ảnh lớn nửa trang, chữ serif lớn, "sáu lớp đồ vải của một chiếc giường" bấm đổi ảnh, câu trích trên nền chàm,
  * quy trình 5 số nghiêng, form báo giá cạnh ảnh phòng.
  * Form báo giá dùng chung form Liên hệ, chọn sẵn chủ đề "Khách sạn, nhà nghỉ".
  */
@@ -25,26 +25,31 @@ import { revealDelay } from '../lib/reveal'
 interface Layer {
   title: string
   text: string
-  to: string
-  image: ImageSource
+  /** Chất liệu theo catalog Ecopillo 22.07.2026 (trang 65) */
+  material?: string
+  /** Link sang danh mục sản phẩm; đồ vải chỉ làm cho khách sạn thì không có danh mục, nút dẫn xuống form báo giá */
+  to?: string
+  /** Chưa có ảnh (váy giường: owner cho để trống 24/10/2026) thì giữ ảnh của lớp đang mở trước đó */
+  image?: ImageSource
 }
 
 const LAYERS: readonly Layer[] = [
   {
     title: 'Ga bọc, ga phủ',
     text: 'Trắng tinh hoặc màu theo nhận diện khách sạn.',
+    material: HOTEL_LINEN.bedding,
     to: productsUrl({ 'danh-muc': 'bo-chan-ga' }),
     image: HOTEL_PHOTOS.sheets,
   },
   {
     title: 'Vỏ chăn, ruột chăn',
-    text: 'Ruột chăn nhẹ, ấm, giặt máy được.',
+    text: 'Vỏ chăn cùng bộ với ga. Ruột chăn nhẹ, ấm, giặt máy được.',
     to: productsUrl({ 'danh-muc': 'chan' }),
     image: productImage('chan-long-vu-tu-nhien', 'Ruột chăn lông vũ tự nhiên Ecopillo'),
   },
   {
     title: 'Ruột gối, vỏ gối',
-    text: 'Gối êm vừa, giữ phom sau nhiều lần giặt.',
+    text: 'Vỏ gối cùng bộ. Gối êm vừa, giữ phom sau nhiều lần giặt.',
     to: productsUrl({ 'danh-muc': 'goi' }),
     image: productImage('ruot-goi-long-vu-tu-nhien', 'Ruột gối lông vũ tự nhiên Ecopillo'),
   },
@@ -54,6 +59,9 @@ const LAYERS: readonly Layer[] = [
     to: productsUrl({ 'danh-muc': 'dem' }),
     image: productImage('dem-lo-xo-eco-royal', 'Đệm lò xo Eco Royal'),
   },
+  // Hai lớp thêm theo trang 65 catalog (owner chọn kiểu 5B 24/10/2026)
+  { title: 'Váy giường, tấm trang trí', text: HOTEL_LINEN.sizes, material: HOTEL_LINEN.valance },
+  { title: 'Khăn tắm, khăn tay, khăn mặt', text: HOTEL_LINEN.sizes, material: HOTEL_LINEN.towels, image: HOTEL_PHOTOS.towels },
 ]
 
 const STEPS: readonly { title: string; text: string }[] = [
@@ -69,6 +77,11 @@ const DETAIL_IMAGE = { src: '/images/details/vai-ed25.webp', alt: 'Cận chất 
 const QUOTE_IMAGE = HOTEL_PHOTOS.quote
 
 const twoDigits = (n: number) => String(n).padStart(2, '0')
+
+const layerLinkClass = (isActive: boolean) =>
+  `flex h-10 w-10 items-center justify-center rounded-full text-deep-800 transition hover:bg-mist-100 ${
+    isActive ? 'opacity-100' : 'opacity-40 hover:opacity-100'
+  }`
 
 export function HotelPage() {
   usePageMeta(
@@ -131,54 +144,54 @@ function HotelHero() {
 }
 
 /**
- * Đã đồng hành cùng + chứng nhận, danh hiệu (mục 13, khách yêu cầu 16/10/2026: khách sạn vào trang phải thấy mình đã bán cho ai
- * và có tiêu chuẩn gì). Chứng nhận dùng chung dữ liệu với trang Giới thiệu (src/data/about.ts); danh sách khách sạn đủ chờ Ecopillo.
+ * Đối tác (kiểu 3B, owner chọn 24/10/2026): ba ý chính từ catalog 22.07.2026 cạnh lưới 8 logo; ngay dưới là ba giấy chất lượng
+ * thu nhỏ, bấm xem to (phần C của chứng chỉ). Mục 13: khách sạn vào trang phải thấy Ecopillo đã làm cho ai và có tiêu chuẩn gì.
  */
 function Partners() {
   return (
-    <section aria-label="Khách sạn đã đồng hành, chứng nhận" className="border-b border-line py-6 sm:py-8">
-      <Container className="grid gap-4 lg:grid-cols-[12rem_1fr] lg:items-center">
-        <p className="eyebrow">Đã đồng hành cùng</p>
-        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {HOTEL_PARTNERS.map((p) => (
-            <li key={p.name} className="flex h-16 items-center justify-center rounded-xl bg-ivory px-4 py-2 shadow-[var(--shadow-soft)] sm:h-20">
-              <img src={p.logo} alt={`Logo ${p.name}`} loading="lazy" decoding="async" className="max-h-full max-w-full object-contain" />
-            </li>
-          ))}
-        </ul>
-        <p className="eyebrow lg:mt-2">Chứng nhận, danh hiệu</p>
-        <ul className="grid grid-cols-3 gap-2 sm:gap-3 lg:mt-2">
-          {CERTIFICATES.map((c) => (
-            <li key={c.name} className="flex flex-col items-center gap-2 rounded-xl bg-ivory p-2.5 text-center shadow-[var(--shadow-soft)] sm:flex-row sm:gap-3 sm:p-3 sm:text-left">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-mist-100 p-1 sm:h-11 sm:w-11">
-                {c.logo ? (
-                  <img src={c.logo} alt={`Chứng nhận ${c.name}`} loading="lazy" decoding="async" className="max-h-full max-w-full object-contain" />
-                ) : (
-                  <Icon name="award" size={20} className="text-deep-700" />
-                )}
-              </span>
-              <span className="text-meta leading-snug font-medium text-deep-900 sm:text-body-sm">{c.name}</span>
-            </li>
-          ))}
-        </ul>
-        <p className="text-sm lg:col-start-2">
-          <FillIn>{HOTEL_PROOF_FILL_IN}</FillIn>
-        </p>
+    <section aria-labelledby="partners-title" className="border-b border-line py-14 sm:py-20">
+      <Container className="grid gap-10 lg:grid-cols-[5fr_6fr] lg:items-start lg:gap-16">
+        <div>
+          <header data-reveal="left">
+            <p className="eyebrow">Đối tác của chúng tôi</p>
+            <h2 id="partners-title" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.6rem]">
+              Đối tác tin cậy <em className="text-deep-700">của khách sạn,</em> khu nghỉ dưỡng
+            </h2>
+          </header>
+          <dl className="mt-6 border-b border-line">
+            {HOTEL_PARTNER_POINTS.map((point, i) => (
+              <div key={point.value} data-reveal style={revealDelay(i)} className="grid gap-1 border-t border-line py-4 sm:grid-cols-[9.5rem_1fr] sm:gap-5">
+                <dt className="font-display text-[1.5rem] leading-tight text-deep-900">{point.value}</dt>
+                <dd className="text-small leading-relaxed text-ink-soft sm:pt-1">{point.text}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+        <div className="grid gap-8">
+          <PartnerLogos partners={HOTEL_PARTNERS} itemClassName="h-20 sm:h-24" />
+          <div>
+            <p className="eyebrow">Chứng nhận, danh hiệu</p>
+            <div className="mt-4">
+              <CertificateBadges />
+            </div>
+          </div>
+        </div>
       </Container>
     </section>
   )
 }
 
-/** "Một chiếc giường, bốn lớp êm": bấm lớp nào, ảnh lớn đổi theo; mỗi lớp có link sang danh mục sản phẩm */
+/** "Một chiếc giường, sáu lớp đồ vải": bấm lớp nào, ảnh lớn đổi theo (lớp chưa có ảnh giữ ảnh trước); mỗi lớp có link sang danh mục sản phẩm */
 function BedLayers() {
   const [active, setActive] = useState(0)
-  const layer = LAYERS[active]
+  // Lớp chưa có ảnh thì giữ ảnh của lớp có ảnh gần nhất phía trên
+  const image = [...LAYERS.slice(0, active + 1)].reverse().find((l) => l.image)?.image ?? HOTEL_PHOTOS.sheets
   return (
     <section aria-labelledby="layer-title" className="py-14 sm:py-24">
       <Container className="grid gap-12 lg:grid-cols-[6fr_5fr] lg:items-center lg:gap-20">
         <div className="relative mr-4 lg:mr-10">
           <div className="relative aspect-[4/5] overflow-hidden rounded-[0.35rem] bg-cream-100 sm:aspect-[5/4]">
-            <CrossfadeImage image={layer.image} sizes="(min-width: 1024px) 640px, 100vw" />
+            <CrossfadeImage image={image} sizes="(min-width: 1024px) 640px, 100vw" />
           </div>
           <img
             src={DETAIL_IMAGE.src}
@@ -192,7 +205,7 @@ function BedLayers() {
           <header data-reveal="left">
             <p className="eyebrow">Sản phẩm cho phòng</p>
             <h2 id="layer-title" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.75rem]">
-              Một chiếc giường, <em className="text-deep-700">bốn lớp êm</em>
+              Một chiếc giường, <em className="text-deep-700">sáu lớp</em> đồ vải
             </h2>
           </header>
           <ol className="mt-6 border-b border-line">
@@ -215,17 +228,18 @@ function BedLayers() {
                       >
                         {l.title}
                       </span>
+                      {l.material && <span className="col-start-2 mt-1 text-small font-medium text-deep-800">{l.material}</span>}
                       <span className="col-start-2 mt-1 text-small text-ink-soft">{l.text}</span>
                     </button>
-                    <Link
-                      to={l.to}
-                      aria-label={`Xem ${l.title.toLowerCase()}`}
-                      className={`flex h-10 w-10 items-center justify-center rounded-full text-deep-800 transition hover:bg-mist-100 ${
-                        isActive ? 'opacity-100' : 'opacity-40 hover:opacity-100'
-                      }`}
-                    >
-                      <Icon name="arrowRight" size={18} />
-                    </Link>
+                    {l.to ? (
+                      <Link to={l.to} aria-label={`Xem ${l.title.toLowerCase()}`} className={layerLinkClass(isActive)}>
+                        <Icon name="arrowRight" size={18} />
+                      </Link>
+                    ) : (
+                      <a href="#bao-gia" aria-label={`Nhận báo giá ${l.title.toLowerCase()}`} className={layerLinkClass(isActive)}>
+                        <Icon name="arrowRight" size={18} />
+                      </a>
+                    )}
                   </div>
                 </li>
               )

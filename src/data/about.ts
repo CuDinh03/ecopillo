@@ -95,25 +95,70 @@ export const VALUES_IMAGE_NOTE = '[ECOPILLO GỬI ẢNH RIÊNG CHO GIÁ TRỊ C�
 export const AWARD_NAME = 'Thương hiệu dẫn đầu Việt Nam 2025'
 export const AWARD_IMAGE = staticImage('/images/about/thuong-hieu-dan-dau.webp', 'Ecopillo tại lễ công bố Thương hiệu dẫn đầu Việt Nam 2025')
 
-export const CERTIFICATES = [
+export interface Certificate {
+  name: string
+  /** Tên ngắn cho thẻ nhỏ (trang Khách sạn) */
+  short: string
+  text: string
+  /** Ảnh chụp giấy, cắt từ catalog Ecopillo 22.07.2026: `${image}-sm.webp` cho thẻ, `${image}.webp` khi bấm xem */
+  image: string
+}
+
+const certificateImage = (key: string): string => `/images/certificates/${key}`
+
+/**
+ * Ba giấy về chất lượng, chép đúng chữ trên giấy trong catalog Ecopillo 22.07.2026 (trang 4).
+ * Owner chọn "tủ chứng nhận" kiểu A (24/10/2026); tạm dùng ảnh cắt từ catalog cho tới khi có bản gốc nét hơn.
+ * Trích, nén: tools/trich-anh-catalog-mau-2026-10-24.py rồi tools/nen-anh-catalog-phan-moi-2026-10-24.py
+ */
+export const CERTIFICATES: readonly Certificate[] = [
   {
     name: 'ISO 9001:2015',
-    text: 'Hệ thống quản lý chất lượng trong sản xuất được chứng nhận theo tiêu chuẩn quốc tế.',
-    logo: '/images/partners/iso-9001.webp',
+    short: 'ISO 9001:2015',
+    text: 'Hệ thống quản lý chất lượng. Phạm vi: sản xuất và kinh doanh chăn ga gối đệm.',
+    image: certificateImage('chung-nhan-iso-9001-2015'),
   },
   {
-    name: 'TQC',
-    text: 'Chứng nhận chất lượng sản phẩm, hàng hoá phù hợp tiêu chuẩn.',
-    logo: '/images/partners/tqc.webp',
+    name: 'Hợp quy QCVN 01:2017/BCT',
+    short: 'Hợp quy QCVN 01:2017',
+    text: 'Sản phẩm dệt may được TQC đánh giá phù hợp quy chuẩn kỹ thuật quốc gia.',
+    image: certificateImage('chung-nhan-tqc-qcvn-01-2017-bct'),
   },
   {
-    name: AWARD_NAME,
-    text: 'Danh hiệu ghi nhận chất lượng sản phẩm và uy tín với khách hàng.',
-    logo: null,
+    name: 'Top 10 Thương hiệu dẫn đầu Việt Nam 2025',
+    short: 'Top 10 Thương hiệu dẫn đầu 2025',
+    text: 'Quyết định số 136-VKT, ngày 13/4/2025.',
+    image: certificateImage('chung-nhan-top-10-thuong-hieu-2025'),
   },
-] as const
+]
 
-export const CERTIFICATE_FILL_IN = '[ECOPILLO GỬI BẢN CHỤP GIẤY CHỨNG NHẬN ĐỂ ĐỐI CHIẾU ĐÚNG TÊN, NĂM CẤP]'
+/** Bốn ghi nhận dành cho chị Phạm Thị Phương: để riêng một hàng, không lẫn với giấy chất lượng */
+export const FOUNDER_HONOURS: readonly Certificate[] = [
+  {
+    name: 'Tấm lòng vàng',
+    short: 'Tấm lòng vàng',
+    text: 'Hội Chữ thập đỏ tỉnh Hà Tĩnh, 2025.',
+    image: certificateImage('ghi-nhan-tam-long-vang-chu-thap-do-ha-tinh'),
+  },
+  {
+    name: 'Tấm lòng vàng',
+    short: 'Tấm lòng vàng',
+    text: 'UBND xã Chư Á, Gia Lai: “Tạo sinh kế, trao yêu thương”.',
+    image: certificateImage('ghi-nhan-tam-long-vang-chu-a-gia-lai'),
+  },
+  {
+    name: 'Kỷ niệm chương',
+    short: 'Kỷ niệm chương',
+    text: 'Tạp chí Tinh Hoa Đất Việt, 100 năm Báo chí Cách mạng.',
+    image: certificateImage('ky-niem-chuong-tinh-hoa-dat-viet'),
+  },
+  {
+    name: 'Nhà hoạt động xã hội tiêu biểu',
+    short: 'Nhà hoạt động xã hội tiêu biểu',
+    text: 'Chương trình “Kết nối doanh nhân tâm tài đất Việt”.',
+    image: certificateImage('chung-nhan-ket-noi-doanh-nhan-tam-tai'),
+  },
+]
 
 export const BRAND_STATS = [
   { value: '15+', label: 'năm trong nghề chăn ga gối đệm' },

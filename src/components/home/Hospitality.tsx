@@ -69,14 +69,15 @@ export function Hospitality() {
       </Container>
 
       <Container className="mt-10 sm:mt-20">
-        <p className="eyebrow !text-mist-400">Đã đồng hành cùng</p>
-        <ul className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {/* 8 đối tác theo catalog 22.07.2026; May 10, DBV Insurance không phải khách sạn nên gọi là "Đối tác" */}
+        <p className="eyebrow !text-mist-400">Đối tác</p>
+        <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {HOTEL_PARTNERS.map((partner, i) => (
             <li
               key={partner.name}
               data-reveal
-              style={revealDelay(i)}
-              className="flex h-20 items-center justify-center overflow-hidden rounded-2xl bg-ivory px-4 py-3 sm:h-32 sm:px-5 sm:py-4 shadow-[var(--shadow-soft)] sm:h-32"
+              style={revealDelay(i % 4)}
+              className="flex h-20 items-center justify-center overflow-hidden rounded-2xl bg-ivory px-4 py-3 shadow-[var(--shadow-soft)] sm:h-28 sm:px-5 sm:py-4"
             >
               <img
                 src={partner.logo}

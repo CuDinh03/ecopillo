@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { CertificateCabinet, PartnerLogos, PressQuotes } from '../components/about/Recognition'
 import { Chapter, PullQuote, Prose, STORY_COLUMN, StoryFigure } from '../components/about/StoryParts'
 import { BrandVideo } from '../components/home/BrandVideo'
 import { TrustStrip } from '../components/home/Craft'
@@ -11,8 +12,6 @@ import {
   AWARD_NAME,
   BRAND_PROMISE,
   BRAND_STATS,
-  CERTIFICATE_FILL_IN,
-  CERTIFICATES,
   CORE_VALUES,
   CRAFT_QUOTE,
   FOUNDER_IMAGE,
@@ -362,37 +361,22 @@ function Recognition() {
         />
         <figcaption className="font-display mt-3 text-center text-body-sm text-ink-faint italic">Lễ công bố {AWARD_NAME}.</figcaption>
       </figure>
-      <ul className="mt-8 grid gap-3">
-        {CERTIFICATES.map((c, i) => (
-          <li key={c.name} data-reveal style={revealDelay(i)} className="flex items-center gap-4 rounded-2xl bg-cream-50 p-4 shadow-[var(--shadow-soft)] sm:p-5">
-            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-white p-1.5 shadow-[var(--shadow-soft)]">
-              {c.logo ? (
-                <img src={c.logo} alt={`Chứng nhận ${c.name}`} loading="lazy" className="max-h-full max-w-full object-contain" />
-              ) : (
-                <Icon name="award" size={26} className="text-deep-700" />
-              )}
-            </span>
-            <span>
-              <span className="font-display block text-[1.15rem] leading-tight text-deep-900">{c.name}</span>
-              <span className="mt-1 block text-small leading-relaxed text-ink-soft">{c.text}</span>
-            </span>
-          </li>
-        ))}
-      </ul>
-      <p className="mt-4 text-sm">
-        <FillIn>{CERTIFICATE_FILL_IN}</FillIn>
+      {/* 1A: tủ chứng nhận, ảnh giấy cắt từ catalog 22.07.2026 (owner chọn 24/10/2026) */}
+      <CertificateCabinet />
+      {/* 2A: báo chí, bấm logo đổi câu trích */}
+      <p className="eyebrow mt-14 flex items-center gap-2">
+        <Icon name="quote" size={15} className="text-deep-700" /> Báo chí nói về Ecopillo
       </p>
-      <p className="eyebrow mt-10 flex items-center gap-2">
-        <Icon name="building" size={15} className="text-deep-700" /> Khách sạn, resort đã đồng hành
+      <h3 className="font-display mt-3 text-[1.6rem] leading-tight text-deep-900 sm:text-[2rem]">
+        Người khác <em className="text-deep-700">kể về chúng tôi</em>
+      </h3>
+      <PressQuotes />
+      {/* Đối tác (3A): May 10, DBV Insurance không phải khách sạn nên gọi chung là đối tác */}
+      <p className="eyebrow mt-14 flex items-center gap-2">
+        <Icon name="building" size={15} className="text-deep-700" /> Đối tác
       </p>
-      <Prose>Ngoài các gia đình, Ecopillo may chăn ga gối theo kích thước cho khách sạn, resort và nhà nghỉ trên cả nước.</Prose>
-      <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {HOTEL_PARTNERS.map((p) => (
-          <li key={p.name} className="flex h-16 items-center justify-center rounded-xl bg-ivory px-3 py-2 ring-1 ring-cream-200 sm:h-20">
-            <img src={p.logo} alt={`Logo ${p.name}`} loading="lazy" decoding="async" className="max-h-full max-w-full object-contain" />
-          </li>
-        ))}
-      </ul>
+      <Prose>Ngoài các gia đình, Ecopillo may chăn ga gối theo kích thước cho khách sạn, khu nghỉ dưỡng và doanh nghiệp trên cả nước.</Prose>
+      <PartnerLogos partners={HOTEL_PARTNERS} className="mt-6" />
       <Link to={PATHS.hotel} className={buttonClass('secondary', 'md', 'mt-6')}>
         <Icon name="building" size={17} />
         Khách sạn và dự án

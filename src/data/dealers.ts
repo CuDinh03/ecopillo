@@ -218,6 +218,33 @@ export const AGENT_BENEFITS: readonly string[] = [
   'Chi phí vốn rất thấp',
 ]
 
+/**
+ * Mô hình phân phối theo catalog Ecopillo 22.07.2026 (trang 3), khối ở trang Tuyển đại lý (owner chọn kiểu B 24/10/2026).
+ * Owner cho phép công bố "50 nhà phân phối". Không đặt con số này ở trang Hệ thống phân phối: trang đó liệt kê
+ * các điểm đã có địa chỉ (DEALERS), khách lẻ thấy 50 mà chỉ tìm được 14 điểm sẽ thắc mắc.
+ * Ghim trên bản đồ catalog là tượng trưng, không trùng các điểm thật: chú thích bản đồ ghi rõ.
+ */
+export const DISTRIBUTOR_COUNT = 50
+
+export const SALES_CHANNELS: readonly { title: string; text: string }[] = [
+  {
+    title: 'Mua trực tiếp',
+    text: 'Showroom bán lẻ, Facebook và các sàn thương mại điện tử: tư vấn tận nơi, chính sách thống nhất trên cả hệ thống.',
+  },
+  { title: 'Dự án và lưu trú', text: 'Giải pháp chăn ga gối đệm đồng bộ, bền bỉ cho khách sạn, nhà nghỉ, homestay và resort.' },
+  {
+    title: 'Đại lý, nhà phân phối',
+    text: `Hệ thống ${DISTRIBUTOR_COUNT} nhà phân phối và các đại lý, cửa hàng trên toàn quốc, đồng bộ sản phẩm, hình ảnh và chính sách bán hàng.`,
+  },
+]
+
+export const DISTRIBUTION_MAP = {
+  src: '/images/distribution/ban-do-phan-phoi.webp',
+  alt: 'Bản đồ Việt Nam đánh dấu văn phòng Hà Nội, chi nhánh TP. Hồ Chí Minh và các vùng có nhà phân phối Ecopillo',
+  width: 563,
+  height: 900,
+} as const
+
 /** "Hơn N điểm trên toàn quốc": làm tròn xuống hàng chục khi từ 20 điểm */
 export const dealerCountLabel = (count: number) =>
   count >= 20 ? `Hơn ${Math.floor(count / 10) * 10} điểm trên toàn quốc` : `${count} điểm trên toàn quốc`

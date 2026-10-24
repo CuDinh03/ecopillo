@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { AgentSignup } from '../components/dealers/AgentSignup'
+import { DistributionModel } from '../components/dealers/DistributionModel'
 import { Icon } from '../components/ui/Icon'
 import { PageHero } from '../components/ui/PageHero'
 import { Container } from '../components/ui/primitives'
@@ -8,7 +9,7 @@ import { usePageMeta } from '../hooks/usePageMeta'
 
 /**
  * Trang Tuyển đại lý, ở đúng link của web cũ /tuyen-dai-ly/ (menu "Đăng ký đại lý" của web cũ, Google đang xếp hạng).
- * Nội dung dùng chung khối đăng ký ở cuối trang Hệ thống phân phối.
+ * Nội dung dùng chung khối đăng ký ở cuối trang Hệ thống phân phối. Phía trên form là mô hình phân phối theo catalog 22.07.2026 (kiểu 4B).
  */
 export function RecruitPage() {
   usePageMeta(
@@ -35,6 +36,10 @@ export function RecruitPage() {
       </PageHero>
 
       <Container className="mt-10 sm:mt-14">
+        <DistributionModel />
+      </Container>
+
+      <Container className="mt-14 sm:mt-20">
         <AgentSignup />
       </Container>
     </div>
