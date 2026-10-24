@@ -19,7 +19,8 @@ export function DistributionModel() {
             height={DISTRIBUTION_MAP.height}
             loading="lazy"
             decoding="async"
-            className="mx-auto h-auto max-h-[26rem] w-auto sm:max-h-[32rem]"
+            // Chiều cao cố định, rộng theo tỉ lệ ảnh: giữ chỗ trước khi ảnh tải xong, không xô phần dưới (CLS)
+            className="mx-auto h-[26rem] w-auto max-w-full object-contain sm:h-[32rem]"
           />
           <p className="absolute right-0 bottom-4 rounded-2xl bg-deep-900 px-5 py-4 text-ivory shadow-[var(--shadow-lift)] sm:bottom-8 sm:px-6 sm:py-5">
             <span className="font-display block text-[2.8rem] leading-none sm:text-[3.4rem]">{DISTRIBUTOR_COUNT}</span>
