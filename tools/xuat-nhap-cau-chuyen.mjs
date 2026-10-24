@@ -43,6 +43,7 @@ const { COLLECTION_STORIES, TONES, storyOf } = stories
 const toneLabel = (id) => TONES.find((t) => t.id === id)?.label ?? ''
 let total = 0
 let missing = 0
+let fromCatalog = 0
 
 const collectionBlock = (collection, order) => {
   const rows = collection.patterns
@@ -50,6 +51,7 @@ const collectionBlock = (collection, order) => {
       const story = storyOf(collection, pattern)
       total += 1
       if (!story) missing += 1
+      if (story?.fromCatalog) fromCatalog += 1
       const note = REVIEW_NOTES[`${collection.id}/${pattern.code}`]
       const image = pattern.hasImage ? imageData(pattern.imageKey ?? pattern.code) : ''
       return `<tr>
@@ -58,7 +60,7 @@ const collectionBlock = (collection, order) => {
           <b>${esc(pattern.code)}</b><span>${esc(pattern.colorName)}</span></td>
         <td class="chu">${
           story
-            ? `<h4>${esc(story.title)}</h4><p>${esc(story.text)}</p><p class="phu">Gam: ${esc(toneLabel(story.tone))}${story.volume ? ` · Tập: ${esc(story.volume)}` : ''}</p>`
+            ? `${story.fromCatalog ? '<p class="nguon">Chữ catalog 22.07.2026: chỉ cần duyệt gam màu</p>' : ''}<h4>${esc(story.title)}</h4><p>${esc(story.text)}</p><p class="phu">Gam: ${esc(toneLabel(story.tone))}${story.volume ? ` · Tập: ${esc(story.volume)}` : ''}</p>`
             : '<p class="thieu">Chưa có câu chuyện: web đang hiện tên màu.</p>'
         }${note ? `<p class="luu-y">${esc(note)}</p>` : ''}</td>
         <td class="duyet"><label><input type="checkbox"> Đồng ý</label><div class="sua" contenteditable="true" aria-label="Ecopillo sửa ${esc(pattern.code)}"></div></td>
@@ -70,7 +72,7 @@ const collectionBlock = (collection, order) => {
     <div class="bia"><p class="nhan">Câu chuyện chung của cả bộ (hiện ở phần bìa)</p>
       <p class="ke">${esc(COLLECTION_STORIES[collection.id] ?? 'Chưa có: web đang hiện đoạn mô tả bộ sưu tập.')}</p>
       <label><input type="checkbox"> Đồng ý</label><div class="sua" contenteditable="true" aria-label="Ecopillo sửa câu chuyện ${esc(collection.name)}"></div></div>
-    <table><thead><tr><th>STT</th><th>Phối màu</th><th>Tên câu chuyện và đoạn kể (bản nháp)</th><th>Ecopillo duyệt hoặc sửa</th></tr></thead>
+    <table><thead><tr><th>STT</th><th>Phối màu</th><th>Tên câu chuyện và đoạn kể</th><th>Ecopillo duyệt hoặc sửa</th></tr></thead>
     <tbody>${rows}</tbody></table>
   </section>`
 }
@@ -111,6 +113,7 @@ const html = `<!doctype html>
   .chu h4 { font: italic 400 1.35rem/1.2 'Noto Serif Display', Georgia, serif; color: var(--cham-sang); }
   .chu p { margin-top: 6px; color: var(--chu); }
   .chu .phu { font-size: .78rem; }
+  .chu .nguon { display: inline-block; margin: 0 0 6px; background: var(--xanh); color: var(--cham); border-radius: 999px; padding: 2px 10px; font-size: .72rem; }
   .luu-y, .thieu { background: var(--vang); color: var(--cham) !important; border-radius: 8px; padding: 6px 10px; font-size: .8rem; }
   .duyet { width: 250px; font-size: .85rem; }
   .sua { min-height: 64px; margin-top: 8px; border: 1px dashed var(--cham-sang); border-radius: 10px; padding: 8px 10px; background: var(--xanh-nhat); }
@@ -121,7 +124,7 @@ const html = `<!doctype html>
 </style></head>
 <body><main>
   <h1>Bản nháp <em>câu chuyện phối màu</em></h1>
-  <p class="mo-dau">Gửi Ecopillo duyệt. Xuất ngày ${esc(today)} từ dữ liệu web: ${COLLECTIONS.length} bộ sưu tập, ${total} phối màu${missing ? `, ${missing} phối màu chưa có câu chuyện` : ''}. Mỗi phối màu là một “chương” trên trang bộ sưu tập: có tên câu chuyện và một đoạn kể ngắn. Toàn bộ chữ dưới đây do bên làm web viết nháp theo ảnh mẫu, chưa phải nội dung chính thức.</p>
+  <p class="mo-dau">Gửi Ecopillo duyệt. Xuất ngày ${esc(today)} từ dữ liệu web: ${COLLECTIONS.length} bộ sưu tập, ${total} phối màu${missing ? `, ${missing} phối màu chưa có câu chuyện` : ''}. Mỗi phối màu là một “chương” trên trang bộ sưu tập: có tên câu chuyện và một đoạn kể ngắn. ${fromCatalog} phối màu đã dùng chữ của catalog Ecopillo 22.07.2026 (có nhãn xanh “Chữ catalog”, chỉ cắt chữ chất liệu cũ và sửa lỗi gõ). Phần còn lại, câu chuyện chung của từng bộ, cách chia gam màu và tập là bản nháp bên làm web viết theo ảnh mẫu, chưa phải nội dung chính thức.</p>
   <ol class="cach">
     <li>Đọc từng phối màu. Thấy được thì tích <b>Đồng ý</b>.</li>
     <li>Muốn đổi tên câu chuyện, đoạn kể, gam màu hay tập thì gõ thẳng vào ô <b>Sửa</b> bên phải.</li>
@@ -133,4 +136,4 @@ const html = `<!doctype html>
 `
 
 writeFileSync(OUT, html)
-console.log(`Đã ghi ${OUT.replace(ROOT, '')}: ${total} phối màu, ${missing} chưa có câu chuyện, ${(html.length / 1024 / 1024).toFixed(1)} MB`)
+console.log(`Đã ghi ${OUT.replace(ROOT, '')}: ${total} phối màu (${fromCatalog} chữ catalog), ${missing} chưa có câu chuyện, ${(html.length / 1024 / 1024).toFixed(1)} MB`)

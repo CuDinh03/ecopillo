@@ -226,6 +226,8 @@ const ECO_LUXE: Product = {
     { label: 'Độ dày', value: '28 cm' },
     { label: 'Mặt đệm', value: 'Pillow Top 3 viền' },
     { label: 'Lõi', value: 'Lò xo túi độc lập 16 cm' },
+    // Catalog Ecopillo 22.07.2026
+    { label: 'Bảo hành', value: '10 năm' },
     { label: 'Đóng gói', value: 'Hút chân không, cuộn tròn' },
   ],
   variants: {
@@ -299,7 +301,7 @@ const mattressProducts: Product[] = MATTRESSES.map((m) => {
       m.note,
       'Giá theo kích thước và độ dày: nhân viên báo giá chính xác khi gọi xác nhận đơn. Có thể nằm thử tại hệ thống phân phối Ecopillo ở Hà Nội và TP. HCM.',
     ],
-    specs: [{ label: 'Bảo hành', value: 'Theo dòng đệm, 5–15 năm' }],
+    specs: [{ label: 'Bảo hành', value: m.warranty }],
     choices: sizeChoices(),
   } satisfies Product
 })

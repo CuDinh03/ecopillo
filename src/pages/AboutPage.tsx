@@ -17,7 +17,7 @@ import {
   CRAFT_QUOTE,
   FOUNDER_IMAGE,
   FOUNDER_LETTER,
-  FOUNDER_LETTER_FILL_IN,
+  FOUNDER_LETTER_IMAGES,
   FOUNDER_NAME,
   FOUNDER_QUOTE,
   FOUNDER_SIGNATURE,
@@ -461,25 +461,32 @@ function FounderLetter() {
           Chia sẻ từ người sáng lập
         </h2>
       </header>
-      <p className="mt-4 text-sm">
-        <FillIn>{FOUNDER_LETTER_FILL_IN}</FillIn>
-      </p>
       <blockquote className="mt-2">
         {FOUNDER_LETTER.map((paragraph) => (
           <Prose key={paragraph.slice(0, 24)}>{paragraph}</Prose>
         ))}
       </blockquote>
-      <figure data-reveal className="mt-8 overflow-hidden rounded-[0.35rem] bg-cream-100">
-        <img
-          src={FEATURED_EVENT.image.src}
-          srcSet={FEATURED_EVENT.image.srcSet}
-          sizes="(min-width: 760px) 700px, 100vw"
-          alt={FEATURED_EVENT.image.alt}
-          loading="lazy"
-          decoding="async"
-          className="aspect-[16/10] w-full object-cover"
-        />
-        <figcaption className="font-display bg-ivory px-4 py-3 text-center text-body-sm text-ink-faint italic">{FEATURED_EVENT.title}.</figcaption>
+      {/* Hai ảnh đi kèm thư trong catalog, cùng một chương trình nên chung một chú thích */}
+      <figure data-reveal className="mt-8 overflow-hidden rounded-[0.35rem] bg-ivory shadow-[var(--shadow-soft)]">
+        <div className="grid gap-1 sm:grid-cols-2">
+          {FOUNDER_LETTER_IMAGES.map((image) => (
+            <img
+              key={image.src}
+              src={image.src}
+              srcSet={image.srcSet}
+              sizes="(min-width: 760px) 350px, 100vw"
+              alt={image.alt}
+              width={1200}
+              height={800}
+              loading="lazy"
+              decoding="async"
+              className="aspect-[3/2] w-full object-cover"
+            />
+          ))}
+        </div>
+        <figcaption className="font-display px-4 py-3 text-center text-body-sm text-ink-faint italic">
+          {FEATURED_EVENT.title} · {FEATURED_EVENT.when}.
+        </figcaption>
       </figure>
       <p data-reveal className="font-display mt-10 text-center text-[1.35rem] leading-snug text-deep-800">
         <span className="mx-auto mb-5 block h-px w-40 bg-deep-700/40" aria-hidden="true" />

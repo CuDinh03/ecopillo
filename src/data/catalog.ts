@@ -109,8 +109,16 @@ const SET_PHU_CONTENTS = [
   '1 vỏ gối ôm 80×100',
 ] as const
 
-/** Eco Doris có thêm vỏ gối tựa: 6 món (khách yêu cầu 16/10/2026, mục 29) */
-const DORIS_CONTENTS = [...SET_PHU_CONTENTS, '1 vỏ gối tựa 45×45'] as const
+/**
+ * Eco Doris có thêm vỏ gối tựa: 6 món (khách yêu cầu 16/10/2026, mục 29).
+ * Vỏ chăn Doris to hơn các bộ khác: 210×230 (catalog Ecopillo 22.07.2026).
+ */
+const DORIS_CONTENTS = [
+  SET_PHU_CONTENTS[0],
+  'Vỏ chăn 4 mùa 210×230, có khoá kéo',
+  ...SET_PHU_CONTENTS.slice(2),
+  '1 vỏ gối tựa 45×45',
+] as const
 
 /** Rosa, Tera, Vera: chọn ga phủ chần hoặc ga chun chần (mục 28, Ecopillo trả lời 23/10/2026) */
 const SET_PHU_OR_CHUN_CONTENTS = ['Ga phủ chần hoặc ga chun chần theo kích thước giường', ...SET_PHU_CONTENTS.slice(1)] as const
@@ -162,11 +170,11 @@ export const COLLECTIONS: readonly Collection[] = [
     patterns: [
       real('EF06', 'Sọc xanh nước biển', '#b6cfde', { soldOut: ['160x200'] }),
       real('EF09', 'Lá dương xỉ nền trắng', '#e6e7e3'),
-      real('EF10', 'Hoa nhí xám', '#cdccd1'),
+      real('EF10', 'Cành lá nền xám', '#cdccd1'),
       real('EF11', 'Lá dương xỉ xám', '#cac8c4'),
       real('EF12', 'Hoa xanh nền kem', '#dddfe0'),
-      real('EF16', 'Hoa xanh nhạt', '#dae0e4'),
-      real('EF18', 'Kẻ sọc xám', '#bdbdbe'),
+      real('EF16', 'Lá bạc hà nền trắng ngà', '#dae0e4'),
+      real('EF18', 'Vân đá xám trắng', '#bdbdbe'),
       real('EF19', 'Hồng phấn cho bé', '#f1e2e5'),
     ],
   },
@@ -177,7 +185,8 @@ export const COLLECTIONS: readonly Collection[] = [
     kindLabel: 'Bộ chăn ga Lyocell',
     tagline: 'Dòng nhiều mẫu nhất, hơn 30 thiết kế',
     description:
-      'Bộ chăn ga Lyocell được yêu thích nhất của Ecopillo: hoa lá, hình học, họa tiết cho bé, từ gam trung tính đến pastel. Các mẫu mới ER45–ER49 vừa ra mắt.',
+      // Catalog Ecopillo 22.07.2026: in hoạt tính
+      'Bộ chăn ga Lyocell được yêu thích nhất của Ecopillo: hoa lá, hình học, họa tiết cho bé, từ gam trung tính đến pastel. In hoạt tính nên màu tươi và bền theo thời gian. Các mẫu mới ER45–ER49 vừa ra mắt.',
     badge: 'Nhiều mẫu nhất',
     prices: price(4_950_000, 5_320_000, 5_690_000),
     gift: 'one-plus',
@@ -187,7 +196,7 @@ export const COLLECTIONS: readonly Collection[] = [
     cover: 'ER48',
     patterns: [
       real('ER48', 'Lá xanh nền trắng', '#e1e2e0', { isNew: true, prices: ROSA_NEW, fittedPrices: price(5_080_000, 5_800_000, 5_400_000) }),
-      real('ER06', 'Hoa hồng nền trắng', '#efeeed'),
+      real('ER06', 'Hoa lily hồng nền trắng', '#efeeed'),
       real('ER08', 'Kẻ ô xanh denim', '#bdcbdd'),
       real('ER09', 'Lá xanh nhạt', '#cdd3e5'),
       real('ER10', 'Hình học xám', '#ccc6c7'),
@@ -218,7 +227,7 @@ export const COLLECTIONS: readonly Collection[] = [
       real('ER45', 'Gấu hồng', '#e6d3d9', { isNew: true, prices: ROSA_NEW, fittedPrices: ROSA_NEW_CHUN }),
       real('ER46', 'Tàu thuyền xanh', '#bacbe3', { isNew: true, prices: ROSA_NEW, fittedPrices: price(5_080_000, 5_200_000, 5_800_000) }),
       real('ER47', 'Hoa nhí hồng', '#e1dde0', { isNew: true, prices: ROSA_NEW, soldOut: ['180x200'], fittedPrices: ROSA_NEW_CHUN }),
-      real('ER49', 'Trắng xám', '#ccccc6', { isNew: true, prices: ROSA_NEW }),
+      real('ER49', 'Sọc ngang xanh dịu', '#ccccc6', { isNew: true, prices: ROSA_NEW }),
     ],
   },
   {
@@ -291,9 +300,10 @@ export const COLLECTIONS: readonly Collection[] = [
     name: 'Eco Liora',
     kind: 'chan-ga',
     kindLabel: 'Bộ chăn ga',
-    tagline: 'Sắc pastel loang màu, viền thêu tinh tế',
+    // Catalog Ecopillo 22.07.2026: vải dệt kim sa, sợi kim tuyến
+    tagline: 'Vải dệt kim sa, sợi kim tuyến lấp lánh',
     description:
-      'Gam hồng đào, xám ngọc trai và kem thêu, mềm mại như lụa. Hợp làm quà cưới, quà tân gia cho những người thân yêu.',
+      'Vải dệt kim sa độc quyền, từng sợi kim tuyến lấp lánh nhẹ trên nền hồng đào, xám, vàng ánh kim. Hợp làm quà cưới, quà tân gia cho những người thân yêu.',
     prices: price(8_020_000, 8_150_000, 8_280_000),
     gift: 'two-plus',
     contents: SET_PHU_CONTENTS,
@@ -302,9 +312,9 @@ export const COLLECTIONS: readonly Collection[] = [
     patterns: [
       real('EL06', 'Xám ngọc trai', '#d0c9c8'),
       real('EL08', 'Loang hồng tím', '#e4d4e0', { soldOut: ['160x200'] }),
-      real('EL09', 'Hoa xanh tím', '#bebcc7'),
+      real('EL09', 'Hoa hồng nền ghi xám', '#bebcc7'),
       real('EL10', 'Hồng đào', '#e1d0d1'),
-      real('EL12', 'Thêu vàng kem', '#e4d7cb'),
+      real('EL12', 'Vàng ánh kim', '#e4d7cb'),
     ],
   },
   {
@@ -325,9 +335,9 @@ export const COLLECTIONS: readonly Collection[] = [
       real('ED08', 'Hồng phấn', '#f9ddde'),
       real('ED09', 'Xanh da trời', '#b2d4f7'),
       real('ED10', 'Trắng tinh', '#f4f4f3'),
-      real('ED20', 'Đỏ cam', '#ba544c', { soldOut: ['180x200'] }),
+      real('ED20', 'Đỏ trầm thêu chỉ vàng', '#ba544c', { soldOut: ['180x200'] }),
       real('ED25', 'Kem thêu hoa', '#e5d7c7'),
-      real('ED26', 'Xám bạc', '#b1b8c3'),
+      real('ED26', 'Hoa tuyết nền tím', '#b1b8c3'),
     ],
   },
   {
@@ -451,13 +461,15 @@ export interface Mattress {
   from: number
   /** Giá cao nhất theo kích thước, theo trang web cũ */
   to: number
+  /** Bảo hành theo catalog Ecopillo 22.07.2026 */
+  warranty: string
 }
 
 export const MATTRESSES: readonly Mattress[] = [
-  { name: 'Đệm lò xo túi độc lập', note: 'Mỗi lò xo một túi, nằm cạnh nhau không bị rung', from: 5_880_000, to: 9_060_000 },
-  { name: 'Eco Foam đa tầng', note: 'Nhiều lớp foam ôm theo đường cong cơ thể', from: 8_020_000, to: 15_700_000 },
-  { name: 'Lò xo Eco Royal', note: 'Kết cấu lò xo cao cấp, viền chắc', from: 14_365_000, to: 22_335_000 },
-  { name: 'Cao su thiên nhiên Eco Latex', note: 'Đàn hồi tự nhiên, thoáng và bền', from: 16_100_000, to: 39_000_000 },
+  { name: 'Đệm lò xo túi độc lập', note: 'Mỗi lò xo một túi, nằm cạnh nhau không bị rung', from: 5_880_000, to: 9_060_000, warranty: '10 năm' },
+  { name: 'Eco Foam đa tầng', note: 'Nhiều lớp foam ôm theo đường cong cơ thể', from: 8_020_000, to: 15_700_000, warranty: '10 năm' },
+  { name: 'Lò xo Eco Royal', note: 'Kết cấu lò xo cao cấp, viền chắc', from: 14_365_000, to: 22_335_000, warranty: '10 năm' },
+  { name: 'Cao su thiên nhiên Eco Latex', note: 'Đàn hồi tự nhiên, thoáng và bền', from: 16_100_000, to: 39_000_000, warranty: '15 năm' },
 ]
 
 /** Đơn vị đếm: chăn hè tính "chiếc", còn lại tính "bộ" */

@@ -94,7 +94,7 @@ export function ChapterStory({ pattern, story, title, index, total, volume, clas
           {pattern.colorName} · {pattern.code}
         </p>
         {story && <p className="mt-4 max-w-xl text-body leading-relaxed text-ink-soft">{story.text}</p>}
-        {story && !STORIES_APPROVED && (
+        {story && !story.fromCatalog && !STORIES_APPROVED && (
           <p className="mt-3">
             <FillIn>[ECOPILLO DUYỆT CÂU CHUYỆN PHỐI MÀU]</FillIn>
           </p>

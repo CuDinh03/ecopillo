@@ -111,11 +111,12 @@ export const SHOWROOMS: readonly Showroom[] = [
     kind: 'Chi nhánh',
     city: 'TP. Hồ Chí Minh',
     province: 'TP. Hồ Chí Minh',
-    address: '257A6 Nguyễn Văn Lượng, Gò Vấp, TP. HCM',
+    // Địa chỉ đủ theo catalog Ecopillo 22.07.2026
+    address: '257A6 Nguyễn Văn Lượng, KDC Cityland Park Hills, Phường Gò Vấp, TP. HCM',
     lat: 10.838376,
     lng: 106.6677514,
     hotline: '0869 088 508',
-    mapsUrl: directionsUrl('257A6 Nguyễn Văn Lượng, Gò Vấp, TP. HCM'),
+    mapsUrl: directionsUrl('257A6 Nguyễn Văn Lượng, KDC Cityland Park Hills, Phường Gò Vấp, TP. HCM'),
     imageNote: 'Ảnh mặt tiền và không gian trưng bày chi nhánh Gò Vấp (chờ Ecopillo gửi)',
     // Khách chọn 16/10/2026 (mục 15): ảnh dọc, thẻ ngang chỉ hiện phần biển hiệu và cửa
     photo: {

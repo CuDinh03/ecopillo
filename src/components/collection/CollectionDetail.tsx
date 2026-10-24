@@ -10,7 +10,7 @@ import {
   type SizeId,
 } from '../../data/catalog'
 import type { Product } from '../../data/products'
-import { chapterTitle, patternByParam, patternPath, sameToneElsewhere, storyOf, toneById, volumesOf } from '../../data/stories'
+import { chapterTitle, patternByParam, patternPath, sameToneElsewhere, storyOf, storySummary, toneById, volumesOf } from '../../data/stories'
 import { relatedForProduct } from '../../data/related'
 import { usePageMeta } from '../../hooks/usePageMeta'
 import { ExploreMore } from '../ui/ExploreMore'
@@ -57,7 +57,7 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
   // riêng của chương đó (audit 16/10/2026); trang chương giữ tiêu đề chương
   usePageMeta(
     patternParam && pattern ? `${title} · ${product.name} ${pattern.code}` : product.name,
-    patternParam ? (story?.text ?? product.summary) : product.summary,
+    patternParam && story ? storySummary(story) : product.summary,
   )
 
   if (!pattern) return null

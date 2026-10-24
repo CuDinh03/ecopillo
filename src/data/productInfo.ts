@@ -357,8 +357,9 @@ export const PRODUCT_INFO: Readonly<Record<string, ProductInfo>> = {
   },
   'dem-eco-foam-da-tang': {
     specs: [
-      { label: 'Độ dày', value: '15 · 20 cm' },
-      { label: 'Lõi', value: 'Foam K45 + lớp massage K50' },
+      // Độ dày, cấu tạo theo catalog Ecopillo 22.07.2026
+      { label: 'Độ dày', value: '10 · 15 · 20 · 25 cm' },
+      { label: 'Lõi', value: 'Memory foam lạnh, memory foam massage, foam K50' },
       { label: 'Vải', value: 'Extra Cool 400 g/m' },
       { label: 'Đóng gói', value: 'Hút chân không, cuộn tròn' },
     ],
@@ -366,8 +367,8 @@ export const PRODUCT_INFO: Readonly<Record<string, ProductInfo>> = {
       {
         title: 'Cấu tạo',
         list: [
-          'Lõi foam đàn hồi K45, phía trên là lớp massage K50 giúp lưu thông máu khi nằm.',
-          'Vỏ vải Extra Cool mát, định lượng 400 g/m.',
+          'Foam đa tầng: memory foam lạnh, memory foam massage, dưới cùng là foam nguyên khối K50. Nâng đỡ vừa phải, không quá cứng, không quá mềm.',
+          'Vỏ vải Extra Cool định lượng 400 g/m, cân bằng nhiệt (mát mùa hè, ấm mùa đông), kháng khuẩn, kháng nấm mốc, kháng bụi mịn.',
           'Đệm nguyên tấm, giao cuộn tròn hút chân không.',
         ],
       },
@@ -381,7 +382,7 @@ export const PRODUCT_INFO: Readonly<Record<string, ProductInfo>> = {
     specs: [
       { label: 'Độ dày', value: '10 · 15 · 20 cm' },
       { label: 'Lõi', value: '100% cao su thiên nhiên' },
-      { label: 'Vỏ', value: 'SCool Jacquard, tháo giặt' },
+      { label: 'Vỏ', value: 'Cool Jacquard, tháo giặt' },
       { label: 'Độ êm', value: 'Đàn hồi, nâng đỡ tốt' },
     ],
     sections: [
@@ -390,7 +391,7 @@ export const PRODUCT_INFO: Readonly<Record<string, ProductInfo>> = {
         list: [
           'Ruột 100% mủ cao su thiên nhiên: lỗ vuông lớn ở mặt dưới, lỗ tròn nhỏ khắp mặt trên để khí lưu thông.',
           'Vỏ trong bằng lưới thoáng, khoá kéo dọc thân giữ phom lõi đệm.',
-          'Vỏ ngoài vải lạnh SCool Jacquard 350 g/m: mát, kháng khuẩn, tháo ra giặt được.',
+          'Vỏ ngoài vải lạnh Cool Jacquard 350 g/m: mát, kháng khuẩn, tháo ra giặt được.',
         ],
       },
       {

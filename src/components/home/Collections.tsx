@@ -288,7 +288,8 @@ const ANATOMY = [
       ['Ga phủ chần', '160×200 · 180×200 · 200×220'],
       // Mục 28 (Ecopillo trả lời 23/10/2026): Rosa, Tera, Vera chọn được ga chun chần thay ga phủ, giá riêng
       ['hoặc ga chun chần (Rosa, Tera, Vera)', 'cùng kích thước'],
-      ['Vỏ chăn 4 mùa, khoá kéo', '200×220'],
+      // Catalog 22.07.2026: vỏ chăn Doris to hơn các bộ khác
+      ['Vỏ chăn 4 mùa, khoá kéo', '200×220 · Doris 210×230'],
       ['2 vỏ gối đầu', '45×65'],
       ['1 vỏ gối ôm', '80×100'],
       // Chỉ Eco Doris có gối tựa (mục 29)

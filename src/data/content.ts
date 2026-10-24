@@ -44,12 +44,12 @@ export interface Partner {
   logo: string
 }
 
-// Logo lấy từ trang Giới thiệu của ecopillo.com.vn
+// Logo lấy từ trang Giới thiệu của ecopillo.com.vn; tên viết theo catalog Ecopillo 22.07.2026
 export const HOTEL_PARTNERS: readonly Partner[] = [
   { name: 'FLC', logo: '/images/partners/flc.webp' },
-  { name: 'Hancinco Hotel', logo: '/images/partners/hancinco.webp' },
+  { name: 'Hacinco Hotel', logo: '/images/partners/hancinco.webp' },
   { name: 'Đồ Sơn Resort Hotel', logo: '/images/partners/do-son.webp' },
-  { name: 'Đào Thủy Hotel', logo: '/images/partners/dao-thuy.webp' },
+  { name: 'Đào Thuỷ Harry Hotel', logo: '/images/partners/dao-thuy.webp' },
 ]
 
 export interface Faq {

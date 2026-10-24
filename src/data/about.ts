@@ -10,7 +10,7 @@ export const STORY_REVIEW_NOTE = '[ECOPILLO ĐANG DUYỆT LẠI CÂU CHỮ PHẦ
 
 /**
  * Thư "Chia sẻ từ người sáng lập" (yêu cầu sửa mục 11): chép nguyên văn trang khách gửi 16/10/2026, kể cả cách xưng "bạn"
- * (thư ký tên chị Phương, không đổi sang "Quý khách"). Ecopillo chưa gửi file chữ gốc: chép từ ảnh, chờ đối chiếu.
+ * (thư ký tên chị Phương, không đổi sang "Quý khách"). Đã đối chiếu với trang 2 catalog Ecopillo 22.07.2026: khớp từng chữ.
  */
 export const FOUNDER_LETTER: readonly string[] = [
   'Tôi sinh ra giữa miền quê gió Lào cát trắng – nơi những giấc ngủ trọn vẹn đôi khi chỉ là ước mơ thầm lặng. Tuổi thơ tôi gắn liền với những chiếc giường cũ kỹ, những đêm trằn trọc vì cái nóng, cái lạnh, và những nỗi lo không gọi thành tên. Nhưng cũng từ nơi ấy, trong những thiếu thốn và mỏi mệt, tôi đã nuôi lớn một giấc mơ: Làm sao để mỗi người đều có một chốn yên lành để nghỉ ngơi, để trở về.',
@@ -21,8 +21,22 @@ export const FOUNDER_LETTER: readonly string[] = [
 
 export const FOUNDER_SIGNATURE = ['Phạm Thị Phương', 'Người sáng lập thương hiệu Ecopillo', 'Á hậu Doanh nhân Việt Nam 2025'] as const
 
-export const FOUNDER_LETTER_FILL_IN =
-  '[ECOPILLO GỬI FILE CHỮ GỐC VÀ 2 ẢNH GỐC CỦA THƯ; XÁC NHẬN THƯ ĐỨNG RIÊNG HAY THAY PHẦN CÂU CHUYỆN]'
+/**
+ * Hai ảnh đi kèm thư ở trang 2 catalog 22.07.2026, cùng chương trình "Chăn ấm yêu thương" (Cẩm Xuyên, 3/2025).
+ * Owner chọn đặt trong thư ở trang Về chúng tôi (24/10/2026). Trích, nén: tools/nen-anh-thu-sang-lap-2026-10-24.py
+ */
+export const FOUNDER_LETTER_IMAGES: readonly ImageSource[] = [
+  {
+    src: '/images/about/thu-trao-qua-tan-nha.webp',
+    srcSet: '/images/about/thu-trao-qua-tan-nha-sm.webp 700w, /images/about/thu-trao-qua-tan-nha.webp 1200w',
+    alt: 'Chị Phạm Thị Phương cùng Hội Chữ thập đỏ trao túi quà Ecopillo tận nhà một hộ gia đình',
+  },
+  {
+    src: '/images/about/thu-nhan-thu-cam-on.webp',
+    srcSet: '/images/about/thu-nhan-thu-cam-on-sm.webp 700w, /images/about/thu-nhan-thu-cam-on.webp 1200w',
+    alt: 'Chị Phạm Thị Phương nhận thư cảm ơn tại chương trình trao quà Chăn ấm yêu thương',
+  },
+]
 
 export const STORY_OPENING =
   'Một giấc ngủ không trọn đôi khi chẳng bắt đầu từ điều gì lớn lao: chiếc ga quá thô ráp, đứa trẻ trằn trọc vì chăn bí nóng, hay người lớn mang cả áp lực vào giấc ngủ sau một ngày dài.'
