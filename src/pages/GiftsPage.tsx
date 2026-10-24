@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom'
 import { Gifts } from '../components/home/Essentials'
+import { EventsStrip } from '../components/home/EventsStrip'
 import { Icon } from '../components/ui/Icon'
 import { PageHero } from '../components/ui/PageHero'
 import { Placeholder } from '../components/ui/Placeholder'
 import { buttonClass, ContactButtons, Container, FillIn, SectionHeading } from '../components/ui/primitives'
 import { collectionById, coverOf } from '../data/catalog'
 import { collectionPathById } from '../data/links'
+import { EVENTS_FILL_IN } from '../data/events'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 
@@ -61,6 +63,17 @@ export function GiftsPage() {
       </PageHero>
 
       <Gifts standalone />
+
+      {/* Mục 34 (khách yêu cầu 16/10/2026): các sự kiện có mặt Ecopillo. Dùng chung dữ liệu với trang chủ (src/data/events.ts);
+          Ecopillo gửi thêm sự kiện, ảnh gian hàng thì chỉ thêm vào events.ts */}
+      <section id="su-kien" className="scroll-mt-24 py-14 sm:py-24">
+        <Container>
+          <EventsStrip standalone />
+          <p className="mt-6 text-sm">
+            <FillIn>{EVENTS_FILL_IN}</FillIn>
+          </p>
+        </Container>
+      </section>
 
       <section aria-labelledby="occasion-title" className="py-14 sm:py-24">
         <Container>

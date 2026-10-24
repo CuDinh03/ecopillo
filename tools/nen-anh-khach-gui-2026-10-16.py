@@ -55,3 +55,9 @@ for sid, keys in STORES.items():
         if sid in WIDE:
             save(im, f'stores/{sid}-{i}.webp', 1200)
         save(im, f'stores/{sid}-{i}-sm.webp', 640, 74)
+
+# Hiên Long (mục 19): Ecopillo chưa gửi file gốc, cắt từ ảnh chụp tin nhắn 16/10 11:58:50 (khoảng 600px, đủ cho thẻ đại lý).
+# Có file gốc thì thêm 'hien-long' vào STORES ở trên và bỏ đoạn này.
+CHUP = os.path.join(os.path.dirname(os.path.abspath(SRC)), 'yêu cầu sửa của khách', 'Ảnh màn hình 2026-10-16 lúc 11.58.50.png')
+hl = Image.open(CHUP).convert('RGB').crop((88, 468, 694, 852))
+hl.save(os.path.join(OUT, 'stores/hien-long-1-sm.webp'), 'WEBP', quality=80, method=6)

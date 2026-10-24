@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { VALUES_SHORT } from '../../data/about'
 import { Container } from '../ui/primitives'
 import { About } from './About'
 import { BrandVideo } from './BrandVideo'
@@ -26,6 +27,9 @@ export function StoryTabs() {
     <div>
       <Container className="pt-14">
         <p className="font-display text-[2rem] leading-tight text-deep-900">Tốt · Thật · Thiện</p>
+        <p className="mt-1 text-body-sm text-ink-soft">
+          {VALUES_SHORT.map((v) => `${v.word} ${v.text}`).join(' · ')}
+        </p>
         <MobileTabBar label="Về Ecopillo" tabs={TABS} value={tab} onChange={setTab} className="mt-5" />
       </Container>
       <div className={panel('cau-chuyen')}>

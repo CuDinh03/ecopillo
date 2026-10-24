@@ -1,8 +1,9 @@
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { Icon, type IconName } from '../ui/Icon'
-import { buttonClass, Container } from '../ui/primitives'
+import { buttonClass, Container, FillIn } from '../ui/primitives'
 import { CONTACT } from '../../data/brand'
+import { VALUES_SHORT, VALUES_SHORT_FILL_IN } from '../../data/about'
 import { productsUrl } from '../../data/links'
 
 /**
@@ -25,8 +26,6 @@ const ECOSYSTEM: readonly { name: string; text: string; to: string; thumb: strin
   { name: 'Gối', text: 'Nâng niu từng giấc ngủ', to: productsUrl({ 'danh-muc': 'goi' }), thumb: '/images/products/ruot-goi-micro-plus-sm.webp' },
   { name: 'Đệm', text: 'Nâng đỡ chuẩn cột sống', to: productsUrl({ 'danh-muc': 'dem' }), thumb: '/images/products/dem-lo-xo-tui-doc-lap-sm.webp' },
 ]
-
-const VALUES = ['Tốt', 'Thật', 'Thiện'] as const
 
 // TODO: chờ Ecopillo xác nhận 3 kháng gồm những gì (chữ lấy nguyên từ Bảng EC)
 const BENEFITS: readonly { icon: IconName; text: string }[] = [
@@ -133,17 +132,17 @@ function BangEcBar() {
         <h2 id="hero-quality" className={BAR_LABEL}>
           Vì một giấc ngủ chất lượng hơn
         </h2>
-        <p className="font-display mt-1.5 text-[1.45rem] leading-tight text-deep-900">
-          {VALUES.map((v, i) => (
-            <span key={v}>
-              {i > 0 && (
-                <span aria-hidden="true" className="mx-2 text-mist-600/40">
-                  ·
-                </span>
-              )}
-              {v}
-            </span>
+        {/* Như bảng hiệu: mỗi chữ kèm một câu ngắn bên dưới (mục 5, khách yêu cầu 16/10/2026) */}
+        <ul className="mt-2 grid grid-cols-3 gap-3">
+          {VALUES_SHORT.map((v) => (
+            <li key={v.word}>
+              <span className="font-display block text-[1.45rem] leading-tight text-deep-900">{v.word}</span>
+              <span className="mt-0.5 block text-meta leading-snug text-ink-soft">{v.text}</span>
+            </li>
           ))}
+        </ul>
+        <p className="mt-1.5 text-label">
+          <FillIn>{VALUES_SHORT_FILL_IN}</FillIn>
         </p>
         <ul className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1.5 text-meta text-ink-soft">
           {BENEFITS.map((b) => (

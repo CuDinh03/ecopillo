@@ -10,13 +10,22 @@ import { Icon } from '../ui/Icon'
  * Điện thoại: thẻ lớn ở trên, thẻ nhỏ thành một hàng vuốt ngang. Hiện ngay, không giấu sau nút như bốn thẻ phía trên.
  * Dữ liệu: src/data/events.ts.
  */
-export function EventsStrip() {
+interface EventsStripProps {
+  /**
+   * Trang Quà tặng và sự kiện (mục 34, 24/10/2026): đứng riêng một phần nên tiêu đề là h2, khoảng trên do trang lo.
+   * Trang chủ: nằm cuối phần Về chúng tôi, tiêu đề h3.
+   */
+  standalone?: boolean
+}
+
+export function EventsStrip({ standalone = false }: EventsStripProps) {
+  const Heading = standalone ? 'h2' : 'h3'
   return (
-    <section aria-labelledby="events-title" className="mt-14 sm:mt-24">
+    <section aria-labelledby="events-title" className={standalone ? '' : 'mt-14 sm:mt-24'}>
       <header data-reveal="left" className="max-w-2xl">
-        <h3 id="events-title" className="font-display text-[1.75rem] text-deep-900 sm:text-[2.2rem]">
+        <Heading id="events-title" className={`font-display text-deep-900 ${standalone ? 'text-[2rem] sm:text-[2.75rem]' : 'text-[1.75rem] sm:text-[2.2rem]'}`}>
           Ecopillo đồng hành
-        </h3>
+        </Heading>
         <p className="mt-3 max-w-xl text-body-sm leading-relaxed text-ink-soft">
           Những chương trình, sự kiện Ecopillo góp mặt cùng cộng đồng và các đơn vị bạn.
         </p>

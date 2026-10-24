@@ -16,8 +16,11 @@ import {
   CORE_VALUES,
   CRAFT_QUOTE,
   FOUNDER_IMAGE,
+  FOUNDER_LETTER,
+  FOUNDER_LETTER_FILL_IN,
   FOUNDER_NAME,
   FOUNDER_QUOTE,
+  FOUNDER_SIGNATURE,
   LYOCELL_INTRO,
   LYOCELL_TRAITS,
   MISSION,
@@ -30,6 +33,7 @@ import {
 } from '../data/about'
 import { patternImage, type ImageSource } from '../data/catalog'
 import { HOTEL_PARTNERS } from '../data/content'
+import { FEATURED_EVENT } from '../data/events'
 import { PATHS } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
@@ -50,6 +54,7 @@ interface TocItem {
 
 const TOC: readonly TocItem[] = [
   { id: 'loi-mo', numeral: '', title: 'Lời mở: một giấc ngủ không trọn', icon: 'night' },
+  { id: 'thu-sang-lap', numeral: '', title: 'Chia sẻ từ người sáng lập', icon: 'feather' },
   { id: 'chuong-1', numeral: 'I', title: 'Người làm nghề', icon: 'feather' },
   { id: 'chuong-2', numeral: 'II', title: 'Chốn Yên', icon: 'home' },
   { id: 'chuong-3', numeral: 'III', title: 'Tốt · Thật · Thiện', icon: 'community' },
@@ -93,6 +98,8 @@ export function AboutPage() {
         </p>
         <Prose dropCap>{STORY_OPENING}</Prose>
       </section>
+
+      <FounderLetter />
 
       <Chapter
         id="chuong-1"
@@ -435,6 +442,52 @@ function Closing() {
           className="absolute inset-0 h-full w-full object-cover"
         />
       </div>
+    </section>
+  )
+}
+
+/**
+ * Thư "Chia sẻ từ người sáng lập" (yêu cầu sửa mục 11, khách gửi 16/10/2026): phần riêng ngay sau Lời mở, chữ nguyên văn.
+ * Ảnh: chương trình "Chăn ấm yêu thương" như trang khách gửi (cùng ảnh với sự kiện nổi bật, src/data/events.ts).
+ */
+function FounderLetter() {
+  return (
+    <section id="thu-sang-lap" aria-labelledby="thu-sang-lap-tieu-de" className={`${STORY_COLUMN} scroll-mt-[5.5rem] pt-16 sm:pt-24`}>
+      <header data-reveal="left">
+        <p className="eyebrow flex items-center gap-2">
+          <Icon name="feather" size={15} className="text-deep-700" /> Thư
+        </p>
+        <h2 id="thu-sang-lap-tieu-de" className="font-display mt-3 text-[2rem] leading-[1.1] text-balance text-deep-900 sm:text-[3rem]">
+          Chia sẻ từ người sáng lập
+        </h2>
+      </header>
+      <p className="mt-4 text-sm">
+        <FillIn>{FOUNDER_LETTER_FILL_IN}</FillIn>
+      </p>
+      <blockquote className="mt-2">
+        {FOUNDER_LETTER.map((paragraph) => (
+          <Prose key={paragraph.slice(0, 24)}>{paragraph}</Prose>
+        ))}
+      </blockquote>
+      <figure data-reveal className="mt-8 overflow-hidden rounded-[0.35rem] bg-cream-100">
+        <img
+          src={FEATURED_EVENT.image.src}
+          srcSet={FEATURED_EVENT.image.srcSet}
+          sizes="(min-width: 760px) 700px, 100vw"
+          alt={FEATURED_EVENT.image.alt}
+          loading="lazy"
+          decoding="async"
+          className="aspect-[16/10] w-full object-cover"
+        />
+        <figcaption className="font-display bg-ivory px-4 py-3 text-center text-body-sm text-ink-faint italic">{FEATURED_EVENT.title}.</figcaption>
+      </figure>
+      <p data-reveal className="font-display mt-10 text-center text-[1.35rem] leading-snug text-deep-800">
+        <span className="mx-auto mb-5 block h-px w-40 bg-deep-700/40" aria-hidden="true" />
+        {FOUNDER_SIGNATURE[0]}
+        <span className="mt-1 block text-body-sm text-ink-soft italic">
+          {FOUNDER_SIGNATURE[1]} · {FOUNDER_SIGNATURE[2]}
+        </span>
+      </p>
     </section>
   )
 }

@@ -8,6 +8,22 @@ import { staticImage, type ImageSource } from './catalog'
 
 export const STORY_REVIEW_NOTE = '[ECOPILLO ĐANG DUYỆT LẠI CÂU CHỮ PHẦN CÂU CHUYỆN THƯƠNG HIỆU]'
 
+/**
+ * Thư "Chia sẻ từ người sáng lập" (yêu cầu sửa mục 11): chép nguyên văn trang khách gửi 16/10/2026, kể cả cách xưng "bạn"
+ * (thư ký tên chị Phương, không đổi sang "Quý khách"). Ecopillo chưa gửi file chữ gốc: chép từ ảnh, chờ đối chiếu.
+ */
+export const FOUNDER_LETTER: readonly string[] = [
+  'Tôi sinh ra giữa miền quê gió Lào cát trắng – nơi những giấc ngủ trọn vẹn đôi khi chỉ là ước mơ thầm lặng. Tuổi thơ tôi gắn liền với những chiếc giường cũ kỹ, những đêm trằn trọc vì cái nóng, cái lạnh, và những nỗi lo không gọi thành tên. Nhưng cũng từ nơi ấy, trong những thiếu thốn và mỏi mệt, tôi đã nuôi lớn một giấc mơ: Làm sao để mỗi người đều có một chốn yên lành để nghỉ ngơi, để trở về.',
+  'Ecopillo ra đời từ những suy nghĩ rất đời thường như thế. Nhưng càng gắn bó, tôi càng thấu hiểu rằng: để mang đến một giấc ngủ trọn vẹn, không chỉ cần một chiếc chăn mềm đệm êm.',
+  'Điều thực sự quan trọng là sự tử tế đặt trong từng nguyên liệu, sự tỉ mỉ gửi gắm qua từng đường kim, mũi chỉ – và một tinh thần trách nhiệm bền bỉ với môi trường mà tất cả chúng ta đang cùng chia sẻ. Và đó chính là tôn chỉ mà chúng tôi luôn theo đuổi: “Tốt – Thật – Thiện”. Mỗi sản phẩm Ecopillo đều mang theo sứ mệnh “Nâng niu giấc mơ xanh”, góp phần kiến tạo nên “Chốn Yên”, nơi bạn và những người thân yêu luôn mong được trở về, mỗi đêm.',
+  'Tôi tin rằng, một giấc ngủ an lành là gốc rễ của một cuộc sống tròn đầy. Khi bạn lựa chọn Ecopillo, đó không chỉ là một món đồ trong phòng ngủ – mà là một cách sống: nhẹ nhàng hơn, bền vững hơn, và chan chứa yêu thương hơn với chính mình và những người quanh bạn. Cảm ơn bạn – vì đã để chúng tôi trở thành một phần trong tổ ấm của bạn.',
+]
+
+export const FOUNDER_SIGNATURE = ['Phạm Thị Phương', 'Người sáng lập thương hiệu Ecopillo', 'Á hậu Doanh nhân Việt Nam 2025'] as const
+
+export const FOUNDER_LETTER_FILL_IN =
+  '[ECOPILLO GỬI FILE CHỮ GỐC VÀ 2 ẢNH GỐC CỦA THƯ; XÁC NHẬN THƯ ĐỨNG RIÊNG HAY THAY PHẦN CÂU CHUYỆN]'
+
 export const STORY_OPENING =
   'Một giấc ngủ không trọn đôi khi chẳng bắt đầu từ điều gì lớn lao: chiếc ga quá thô ráp, đứa trẻ trằn trọc vì chăn bí nóng, hay người lớn mang cả áp lực vào giấc ngủ sau một ngày dài.'
 
@@ -25,6 +41,18 @@ export const FOUNDER_IMAGE: ImageSource = {
   srcSet: '/images/about/chi-phuong-sm.webp 800w, /images/about/chi-phuong.webp 1309w',
   alt: 'Chị Phạm Thị Phương, người sáng lập Ecopillo, tại VTV3',
 }
+
+/**
+ * Tốt · Thật · Thiện kèm câu ngắn như bảng hiệu (yêu cầu sửa mục 5, bảng hiệu 88x4m6 khách gửi 16/10/2026).
+ * Bảng hiệu in "Thiện với môi trường", tin nhắn của khách ghi "với thiên nhiên": dùng chữ trên bảng hiệu, chờ Ecopillo xác nhận.
+ */
+export const VALUES_SHORT = [
+  { word: 'Tốt', text: 'trong chất lượng' },
+  { word: 'Thật', text: 'trong cam kết' },
+  { word: 'Thiện', text: 'với môi trường' },
+] as const
+
+export const VALUES_SHORT_FILL_IN = '[XÁC NHẬN: "THIỆN VỚI MÔI TRƯỜNG" NHƯ BẢNG HIỆU HAY "VỚI THIÊN NHIÊN"]'
 
 export const PHILOSOPHY = [
   { word: 'Tốt', text: 'trong chất lượng sản phẩm: nguyên liệu chọn lọc, từng chi tiết được chế tác kỹ lưỡng.' },

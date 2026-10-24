@@ -5,8 +5,11 @@ import type { ImageSource } from './catalog'
  * (components/home/EventsStrip.tsx). Owner chọn mẫu B và chỉ đưa sự kiện đọc được tên (20/10/2026).
  * Mẫu: docs/de-xuat-su-kien-dong-hanh.html. Tên, ngày, nơi đọc từ băng rôn trong ảnh khách gửi; Ecopillo chưa gửi danh sách
  * (câu 25 trong Excel). Chưa có ngày thì để trống, không tự đoán. Ảnh nén bằng tools/nen-anh-su-kien-2026-10-20.py.
- * Dùng lại cho phần sự kiện ở trang Quà tặng và sự kiện (mục 34) khi Ecopillo gửi thêm.
+ * Dùng chung cho phần sự kiện ở trang Quà tặng và sự kiện (mục 34, từ 24/10/2026): Ecopillo gửi thêm thì chỉ thêm vào đây.
  */
+
+/** Trang Quà tặng và sự kiện: nhắc Ecopillo gửi thêm sự kiện, ảnh gian hàng (mục 34) */
+export const EVENTS_FILL_IN = '[ECOPILLO GỬI THÊM SỰ KIỆN CÓ MẶT ECOPILLO: TÊN, NGÀY, NƠI VÀ ẢNH GIAN HÀNG]'
 
 export interface BrandEvent {
   id: string

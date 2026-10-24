@@ -132,7 +132,7 @@ const OFFICIAL: readonly Dealer[] = SHOWROOMS.map((s) => ({
  * Nén bằng tools/nen-anh-khach-gui-2026-10-16.py. Điểm chưa có ảnh dùng DEFAULT_DEALER_PHOTO.
  * [XÁC NHẬN]: Đà Nẵng (2 ảnh trong nằm ở mép ảnh chụp tin nhắn), Quyết Hương (khách ghi "Hải dương"),
  * Thu Vũ (khách ghi "Hải phòng") là ghép theo tin nhắn, chờ Ecopillo xác nhận.
- * Hiên Long (khách ghi "Bắc ninh"): ảnh chưa lưu về máy, chờ owner gửi.
+ * Hiên Long (khách ghi "Bắc ninh"): chưa có file gốc, ảnh cắt từ ảnh chụp tin nhắn (24/10/2026); có file gốc thì nén lại.
  */
 const storePhotos = (id: string, count: number): string[] =>
   Array.from({ length: count }, (_, i) => `/images/stores/${id}-${i + 1}-sm.webp`)
@@ -145,6 +145,7 @@ const AGENT_PHOTOS: Readonly<Record<string, readonly string[]>> = {
   'quy-nhon': storePhotos('quy-nhon', 1),
   'quyet-huong': storePhotos('quyet-huong', 1),
   'thu-vu': storePhotos('thu-vu', 1),
+  'hien-long': storePhotos('hien-long', 1),
 }
 
 /** Thứ tự mặc định: Văn phòng Hà Nội, Chi nhánh TP. HCM, rồi các đại lý theo tỉnh từ Bắc vào Nam */

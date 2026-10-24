@@ -7,8 +7,9 @@ import { Breadcrumb } from '../components/ui/PageHero'
 import { buttonClass, Container, FillIn } from '../components/ui/primitives'
 import { CONTACT } from '../data/brand'
 import { productImage, type ImageSource } from '../data/catalog'
+import { CERTIFICATES } from '../data/about'
 import { HOTEL_PARTNERS } from '../data/content'
-import { HOTEL_BENEFITS, HOTEL_EYEBROW, HOTEL_INTRO, HOTEL_INTRO_HEADING, HOTEL_PHOTOS } from '../data/hotel'
+import { HOTEL_BENEFITS, HOTEL_EYEBROW, HOTEL_INTRO, HOTEL_INTRO_HEADING, HOTEL_PHOTOS, HOTEL_PROOF_FILL_IN } from '../data/hotel'
 import { productsUrl } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
@@ -129,18 +130,40 @@ function HotelHero() {
   )
 }
 
+/**
+ * Đã đồng hành cùng + chứng nhận, danh hiệu (mục 13, khách yêu cầu 16/10/2026: khách sạn vào trang phải thấy mình đã bán cho ai
+ * và có tiêu chuẩn gì). Chứng nhận dùng chung dữ liệu với trang Giới thiệu (src/data/about.ts); danh sách khách sạn đủ chờ Ecopillo.
+ */
 function Partners() {
   return (
-    <section aria-label="Khách sạn đã đồng hành" className="border-b border-line py-6 sm:py-8">
+    <section aria-label="Khách sạn đã đồng hành, chứng nhận" className="border-b border-line py-6 sm:py-8">
       <Container className="grid gap-4 lg:grid-cols-[12rem_1fr] lg:items-center">
         <p className="eyebrow">Đã đồng hành cùng</p>
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {HOTEL_PARTNERS.map((p) => (
-            <li key={p.name} className="flex h-16 items-center justify-center rounded-xl bg-ivory px-4 py-2 ring-1 ring-cream-200 sm:h-20">
+            <li key={p.name} className="flex h-16 items-center justify-center rounded-xl bg-ivory px-4 py-2 shadow-[var(--shadow-soft)] sm:h-20">
               <img src={p.logo} alt={`Logo ${p.name}`} loading="lazy" decoding="async" className="max-h-full max-w-full object-contain" />
             </li>
           ))}
         </ul>
+        <p className="eyebrow lg:mt-2">Chứng nhận, danh hiệu</p>
+        <ul className="grid grid-cols-3 gap-2 sm:gap-3 lg:mt-2">
+          {CERTIFICATES.map((c) => (
+            <li key={c.name} className="flex flex-col items-center gap-2 rounded-xl bg-ivory p-2.5 text-center shadow-[var(--shadow-soft)] sm:flex-row sm:gap-3 sm:p-3 sm:text-left">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-mist-100 p-1 sm:h-11 sm:w-11">
+                {c.logo ? (
+                  <img src={c.logo} alt={`Chứng nhận ${c.name}`} loading="lazy" decoding="async" className="max-h-full max-w-full object-contain" />
+                ) : (
+                  <Icon name="award" size={20} className="text-deep-700" />
+                )}
+              </span>
+              <span className="text-meta leading-snug font-medium text-deep-900 sm:text-body-sm">{c.name}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="text-sm lg:col-start-2">
+          <FillIn>{HOTEL_PROOF_FILL_IN}</FillIn>
+        </p>
       </Container>
     </section>
   )

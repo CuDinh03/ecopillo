@@ -24,6 +24,10 @@ export const HOTEL_INTRO: readonly string[] = [
   'Chúng tôi mang đến giải pháp đồng bộ từ chăn ga gối đến đệm, giúp đối tác tối ưu chi phí đầu tư, kéo dài thời gian sử dụng sản phẩm và nâng cao trải nghiệm nghỉ ngơi của khách hàng.',
 ]
 
+/** Mục 13: phần còn chờ Ecopillo gửi cho trang Khách sạn và dự án (không tự bịa tên khách sạn, giấy chứng nhận) */
+export const HOTEL_PROOF_FILL_IN =
+  '[ECOPILLO GỬI: DANH SÁCH KHÁCH SẠN, DỰ ÁN ĐÃ CUNG CẤP (ĐƯỢC NÊU TÊN), SẢN PHẨM DÀNH CHO KHÁCH SẠN, ẢNH GIẤY CHỨNG NHẬN]'
+
 /** Mục 39: bốn lợi ích, thay bốn dòng cũ khách đã gạch */
 export const HOTEL_BENEFITS: readonly string[] = [
   'Tư vấn đúng nhu cầu, phù hợp ngân sách',
