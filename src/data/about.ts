@@ -44,15 +44,13 @@ export const FOUNDER_IMAGE: ImageSource = {
 
 /**
  * Tốt · Thật · Thiện kèm câu ngắn như bảng hiệu (yêu cầu sửa mục 5, bảng hiệu 88x4m6 khách gửi 16/10/2026).
- * Bảng hiệu in "Thiện với môi trường", tin nhắn của khách ghi "với thiên nhiên": dùng chữ trên bảng hiệu, chờ Ecopillo xác nhận.
+ * Bảng hiệu in "Thiện với môi trường", tin nhắn của khách ghi "với thiên nhiên": owner chốt "với thiên nhiên" (24/10/2026).
  */
 export const VALUES_SHORT = [
   { word: 'Tốt', text: 'trong chất lượng' },
   { word: 'Thật', text: 'trong cam kết' },
-  { word: 'Thiện', text: 'với môi trường' },
+  { word: 'Thiện', text: 'với thiên nhiên' },
 ] as const
-
-export const VALUES_SHORT_FILL_IN = '[XÁC NHẬN: "THIỆN VỚI MÔI TRƯỜNG" NHƯ BẢNG HIỆU HAY "VỚI THIÊN NHIÊN"]'
 
 export const PHILOSOPHY = [
   { word: 'Tốt', text: 'trong chất lượng sản phẩm: nguyên liệu chọn lọc, từng chi tiết được chế tác kỹ lưỡng.' },

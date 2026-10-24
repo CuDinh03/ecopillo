@@ -1,9 +1,9 @@
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { Icon, type IconName } from '../ui/Icon'
-import { buttonClass, Container, FillIn } from '../ui/primitives'
+import { buttonClass, Container } from '../ui/primitives'
 import { CONTACT } from '../../data/brand'
-import { VALUES_SHORT, VALUES_SHORT_FILL_IN } from '../../data/about'
+import { VALUES_SHORT } from '../../data/about'
 import { productsUrl } from '../../data/links'
 
 /**
@@ -141,9 +141,6 @@ function BangEcBar() {
             </li>
           ))}
         </ul>
-        <p className="mt-1.5 text-label">
-          <FillIn>{VALUES_SHORT_FILL_IN}</FillIn>
-        </p>
         <ul className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1.5 text-meta text-ink-soft">
           {BENEFITS.map((b) => (
             <li key={b.text} className="inline-flex items-center gap-1.5">
