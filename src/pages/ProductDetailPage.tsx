@@ -44,9 +44,18 @@ function MissingProduct() {
   return <NotFoundPage />
 }
 
+/**
+ * Mô tả SEO của sản phẩm lẻ: câu giới thiệu, giá, cách đặt. Trước 24/10/2026 trang này không đặt mô tả,
+ * 16 sản phẩm lẻ dùng chung mô tả của trang chủ (rà toàn web 24/10/2026)
+ */
+const productDescription = (product: Product): string => {
+  const summary = product.summary.trim().replace(/[.!?]?$/, '.')
+  return `${product.name}: ${summary.charAt(0).toLowerCase()}${summary.slice(1)} Giá ${priceLabel(product)}. Đặt online, thanh toán khi nhận hàng.`
+}
+
 /** Sản phẩm lẻ (ruột gối, ruột chăn, topper, đệm): ảnh chính + ảnh phụ, chọn kích thước rồi đặt online */
 function ProductDetail({ product }: { product: Product }) {
-  usePageMeta(product.name)
+  usePageMeta(product.name, productDescription(product))
   const photos = product.image ? [product.image, ...(product.gallery ?? [])] : []
   const [photoIndex, setPhotoIndex] = useState(0)
   const variants = product.variants
