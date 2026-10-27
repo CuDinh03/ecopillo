@@ -5,10 +5,9 @@ import { EventsStrip } from '../components/home/EventsStrip'
 import { Icon } from '../components/ui/Icon'
 import { PageHero } from '../components/ui/PageHero'
 import { Placeholder } from '../components/ui/Placeholder'
-import { buttonClass, ContactButtons, Container, FillIn, SectionHeading } from '../components/ui/primitives'
+import { buttonClass, ContactButtons, Container, SectionHeading } from '../components/ui/primitives'
 import { collectionById, coverOf } from '../data/catalog'
 import { collectionPathById } from '../data/links'
-import { EVENTS_FILL_IN } from '../data/events'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 
@@ -68,13 +67,10 @@ export function GiftsPage() {
       <Gifts standalone />
 
       {/* Mục 34 (khách yêu cầu 16/10/2026): các sự kiện có mặt Ecopillo. Dùng chung dữ liệu với trang chủ (src/data/events.ts);
-          Ecopillo gửi thêm sự kiện, ảnh gian hàng thì chỉ thêm vào events.ts */}
+          riêng trang này có thêm hàng sự kiện lớn (MAJOR_EVENTS, Ecopillo yêu cầu 27/10/2026). Thêm sự kiện thì chỉ sửa events.ts */}
       <section id="su-kien" className="scroll-mt-24 py-14 sm:py-24">
         <Container>
           <EventsStrip standalone />
-          <p className="mt-6 text-sm">
-            <FillIn>{EVENTS_FILL_IN}</FillIn>
-          </p>
         </Container>
       </section>
 
@@ -125,9 +121,6 @@ export function GiftsPage() {
           <div className="lg:col-span-5">
             <SectionHeading id="service-title" eyebrow="Tặng dễ dàng" title="Ecopillo lo phần còn lại" />
             <ContactButtons size="md" stretch className="mt-8" callLabel="Gọi tư vấn quà" />
-            <p className="mt-5 text-sm">
-              <FillIn>[ECOPILLO XÁC NHẬN: CÓ GÓI QUÀ, VIẾT THIỆP THEO YÊU CẦU KHÔNG]</FillIn>
-            </p>
           </div>
           <ul className="grid gap-3 lg:col-span-7">
             {SERVICES.map((s, i) => (

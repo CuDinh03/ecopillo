@@ -1,6 +1,6 @@
 import { CORPORATE_GIFTS, GIFT_MORE_IMAGES, GIFT_POSTER, GIFT_SIDE_IMAGES, type CorporateGiftImage } from '../../data/corporateGifts'
 import { revealDelay } from '../../lib/reveal'
-import { ContactButtons, Container, FillIn } from '../ui/primitives'
+import { ContactButtons, Container } from '../ui/primitives'
 
 /**
  * Quà tặng doanh nghiệp, sự kiện ở trang Quà tặng và sự kiện, đặt trên khối tri ân (owner chọn mẫu A 27/10/2026:
@@ -30,7 +30,7 @@ export function CorporateGifts() {
             </h2>
             <p className="mt-4 text-body-sm leading-relaxed text-ink-soft">{g.lead}</p>
 
-            <div className="mt-6 rounded-[1.25rem] bg-brass-100 px-5 py-4 text-deep-900">
+            <div className="mt-6 self-start rounded-[1.25rem] bg-brass-100 px-5 py-4 text-deep-900">
               <p className="flex flex-wrap items-baseline gap-x-3">
                 <span>
                   <span className="text-small">từ </span>
@@ -38,24 +38,13 @@ export function CorporateGifts() {
                 </span>
                 <span className="text-small font-medium">{g.priceLabel}</span>
               </p>
-              <p className="mt-2 text-small">
-                <FillIn className="!bg-ivory">{g.priceFillIn}</FillIn>
-              </p>
             </div>
 
             <ul className="mt-5 grid gap-2.5 text-body-sm text-ink-soft">
-              {g.points.map((p) => (
-                <li key={p.text} className="flex gap-3">
+              {g.points.map((point) => (
+                <li key={point} className="flex gap-3">
                   <span aria-hidden="true" className="mt-[0.55em] h-2 w-2 shrink-0 rounded-full bg-brand-gold ring-4 ring-brand-gold/30" />
-                  <span>
-                    {p.text}
-                    {'fillIn' in p && (
-                      <>
-                        {' '}
-                        <FillIn>{p.fillIn}</FillIn>
-                      </>
-                    )}
-                  </span>
+                  {point}
                 </li>
               ))}
             </ul>
@@ -102,12 +91,6 @@ function GiftPhoto({ item, className = '', sizes, eager = false }: GiftPhotoProp
         // Lớp chàm dưới chân ảnh để chữ trắng đọc được trên mọi ảnh (như thẻ sự kiện)
         <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-deep-900/90 from-30% to-deep-900/0 px-4 pt-12 pb-3.5 text-small leading-snug text-ivory sm:px-5 sm:pb-4">
           {item.caption}
-          {item.captionFillIn && (
-            <>
-              {' '}
-              <FillIn>{item.captionFillIn}</FillIn>
-            </>
-          )}
         </figcaption>
       )}
     </figure>

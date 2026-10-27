@@ -4,14 +4,13 @@ import type { ImageSource } from './catalog'
  * Quà tặng doanh nghiệp, sự kiện (Ecopillo gửi 27/10/2026: "Phần này là quà tặng", 7 ảnh), ở trang Quà tặng và sự kiện.
  * Khác quà tri ân kèm khi mua bộ chăn ga (GIFT_TIERS trong catalog.ts). Owner chọn mẫu A: docs/de-xuat-phan-qua-tang.html.
  * Ảnh gốc đều vuông, nén bằng tools/nen-anh-qua-tang-2026-10-27.py; trên web giữ khung vuông để thấy trọn ảnh (owner dặn 27/10).
+ * Giá 99K in trong ảnh quảng cáo của Ecopillo: owner bảo không cần hỏi lại (27/10/2026).
  */
 
 export interface CorporateGiftImage {
   image: ImageSource
   /** Chú thích đè dưới chân ảnh. Không có thì ảnh hiện trọn, không lớp phủ (ảnh quảng cáo có chữ) */
   caption?: string
-  /** Chỗ còn chờ Ecopillo xác nhận, hiện bằng FillIn sau chú thích */
-  captionFillIn?: string
 }
 
 const giftImage = (key: string, alt: string): ImageSource => ({
@@ -28,12 +27,8 @@ export const CORPORATE_GIFTS = {
   /** Giá in trong ảnh quảng cáo "Gói quà Tết cho doanh nghiệp, giá chỉ từ 99K" */
   price: '99.000đ',
   priceLabel: 'Gói quà Tết cho doanh nghiệp',
-  priceFillIn: '[ECOPILLO XÁC NHẬN: GÓI GỒM GÌ, ĐẶT TỐI THIỂU BAO NHIÊU]',
-  points: [
-    { text: 'Hộp quà, túi quà in nhận diện Ecopillo' },
-    { text: 'Kèm thư cảm ơn theo đơn vị đặt, như thư gửi VTV3', fillIn: '[XÁC NHẬN]' },
-    { text: 'Giao tận nơi cho sự kiện, hội nghị', fillIn: '[XÁC NHẬN]' },
-  ],
+  /** Chỉ ghi điều thấy trong ảnh khách gửi hoặc đã có trong chính sách (giao hàng: src/data/policies.ts) */
+  points: ['Hộp quà, túi quà in nhận diện Ecopillo', 'Kèm thư cảm ơn mang tên đơn vị nhận, như thư gửi VTV3', 'Giao hàng toàn quốc'],
   callLabel: 'Gọi đặt quà',
 } as const
 
@@ -53,8 +48,7 @@ export const GIFT_MORE_IMAGES: readonly CorporateGiftImage[] = [
   { image: giftImage('hop-qua-xep-chong', 'Hộp quà chăn ga gối đệm cao cấp Ecopillo xếp chồng, kèm thư VTV3'), caption: 'Hộp quà chăn ga gối đệm cao cấp' },
   {
     image: giftImage('trao-qua-showroom-1', 'Trao hộp quà Ecopillo cho một đoàn khách tại phòng trưng bày'),
-    caption: 'Trao quà tại phòng trưng bày',
-    captionFillIn: '[ECOPILLO: ĐƠN VỊ NÀO]',
+    caption: 'Trao quà tại phòng trưng bày Ecopillo',
   },
-  { image: giftImage('trao-qua-showroom-2', 'Đoàn khách nhận quà Ecopillo tại phòng trưng bày'), caption: 'Trao quà tại phòng trưng bày' },
+  { image: giftImage('trao-qua-showroom-2', 'Đoàn khách nhận quà Ecopillo tại phòng trưng bày'), caption: 'Đoàn khách nhận quà Ecopillo' },
 ]

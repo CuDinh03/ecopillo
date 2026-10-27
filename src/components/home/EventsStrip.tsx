@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { FEATURED_EVENT, OTHER_EVENTS, type BrandEvent } from '../../data/events'
+import { FEATURED_EVENT, MAJOR_EVENTS, OTHER_EVENTS, type BrandEvent } from '../../data/events'
 import { postBySlug, postPath } from '../../data/posts'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
@@ -12,8 +12,8 @@ import { Icon } from '../ui/Icon'
  */
 interface EventsStripProps {
   /**
-   * Trang Quà tặng và sự kiện (mục 34, 24/10/2026): đứng riêng một phần nên tiêu đề là h2, khoảng trên do trang lo.
-   * Trang chủ: nằm cuối phần Về chúng tôi, tiêu đề h3.
+   * Trang Quà tặng và sự kiện (mục 34, 24/10/2026): đứng riêng một phần nên tiêu đề là h2, khoảng trên do trang lo;
+   * thêm hàng sự kiện lớn (MAJOR_EVENTS, 27/10/2026) trên lưới. Trang chủ: nằm cuối phần Về chúng tôi, tiêu đề h3.
    */
   standalone?: boolean
 }
@@ -31,7 +31,15 @@ export function EventsStrip({ standalone = false }: EventsStripProps) {
         </p>
       </header>
 
-      <div className="mt-7 grid gap-4 sm:mt-9 lg:grid-cols-[1.15fr_1fr] lg:gap-5">
+      {standalone && (
+        <div className="mt-7 grid gap-4 sm:mt-9 md:grid-cols-2 lg:gap-5">
+          {MAJOR_EVENTS.map((event) => (
+            <FeaturedCard key={event.id} event={event} sizes="(min-width: 1240px) 590px, (min-width: 768px) 50vw, 100vw" />
+          ))}
+        </div>
+      )}
+
+      <div className={`grid gap-4 lg:grid-cols-[1.15fr_1fr] lg:gap-5 ${standalone ? 'mt-4 lg:mt-5' : 'mt-7 sm:mt-9'}`}>
         <FeaturedCard event={FEATURED_EVENT} />
         {/* Điện thoại: hàng vuốt ngang tràn mép (như .m-rail); từ 640px: lưới */}
         <ul
@@ -48,7 +56,12 @@ export function EventsStrip({ standalone = false }: EventsStripProps) {
   )
 }
 
-function FeaturedCard({ event }: { event: BrandEvent }) {
+interface FeaturedCardProps {
+  event: BrandEvent
+  sizes?: string
+}
+
+function FeaturedCard({ event, sizes = '(min-width: 1024px) 620px, 100vw' }: FeaturedCardProps) {
   // Bài viết nằm trên WordPress (giữ link web cũ): chỉ hiện lối đọc khi bài đã có trên giao diện mới
   const post = event.postSlug ? postBySlug(event.postSlug) : undefined
   return (
@@ -57,7 +70,7 @@ function FeaturedCard({ event }: { event: BrandEvent }) {
         <img
           src={event.image.src}
           srcSet={event.image.srcSet}
-          sizes="(min-width: 1024px) 620px, 100vw"
+          sizes={sizes}
           alt={event.image.alt}
           loading="lazy"
           decoding="async"

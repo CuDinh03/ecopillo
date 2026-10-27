@@ -8,13 +8,10 @@ import type { ImageSource } from './catalog'
  * Dùng chung cho phần sự kiện ở trang Quà tặng và sự kiện (mục 34, từ 24/10/2026): Ecopillo gửi thêm thì chỉ thêm vào đây.
  */
 
-/** Trang Quà tặng và sự kiện: nhắc Ecopillo gửi thêm sự kiện, ảnh gian hàng (mục 34) */
-export const EVENTS_FILL_IN = '[ECOPILLO GỬI THÊM SỰ KIỆN CÓ MẶT ECOPILLO: TÊN, NGÀY, NƠI VÀ ẢNH GIAN HÀNG]'
-
 export interface BrandEvent {
   id: string
   /** Nhãn nhỏ phía trên tên */
-  kind: 'Thiện nguyện' | 'Đồng hành' | 'Hội thảo'
+  kind: 'Thiện nguyện' | 'Đồng hành' | 'Hội thảo' | 'Giải thưởng' | 'Khai trương'
   title: string
   /** Ngày, nơi: chỉ ghi khi đọc được trong ảnh */
   when?: string
@@ -73,5 +70,33 @@ export const OTHER_EVENTS: readonly BrandEvent[] = [
     title: 'Giải VTV3 Pickleball “30 Years of Excellence”',
     image: eventImage('vtv3-pickleball', 'Vận động viên giải VTV3 Pickleball nhận quà tặng Ecopillo'),
     wideImage: eventWideImage('vtv3-pickleball-ngang', 'Vận động viên giải VTV3 Pickleball nhận quà tặng Ecopillo'),
+  },
+]
+
+/**
+ * Sự kiện lớn, chỉ ở trang Quà tặng và sự kiện (Ecopillo 27/10/2026: "Phần đồng hành thêm các sự kiện lớn").
+ * Tên, ngày, nơi, con số chép từ bài viết trên web cũ (giữ đúng link); ảnh lấy từ chính bài đó,
+ * nén bằng tools/nen-anh-su-kien-lon-2026-10-27.py. Bài khai trương Đà Nẵng (14/06/2026) chưa đưa: ảnh bìa in chữ chất liệu cũ.
+ */
+export const MAJOR_EVENTS: readonly BrandEvent[] = [
+  {
+    id: 'thuong-hieu-dan-dau-2025',
+    kind: 'Giải thưởng',
+    title: 'Top 10 Thương hiệu dẫn đầu Việt Nam 2025',
+    when: '13/04/2025 · TP. Hồ Chí Minh',
+    summary:
+      'Lễ công bố “Thương hiệu dẫn đầu Việt Nam 2025” do Liên hiệp Khoa học Phát triển Doanh nghiệp Việt Nam và Viện Nghiên cứu Kinh tế Châu Á tổ chức, truyền hình trực tiếp trên HTV1. Ecopillo được vinh danh trong Top 10.',
+    postSlug: 'cong-ty-tnhh-ecopillo-eternal-viet-nam-vinh-du-don-nhan-giai-thuong-top-10-thuong-hieu-dan-dau-viet-nam-2025',
+    image: eventWideImage('thuong-hieu-dan-dau-2025-ngang', 'Đại diện Ecopillo nhận chứng nhận trên sân khấu lễ công bố Thương hiệu dẫn đầu Việt Nam 2025'),
+  },
+  {
+    id: 'khai-truong-hcm',
+    kind: 'Khai trương',
+    title: 'Khai trương chi nhánh TP. Hồ Chí Minh',
+    when: '27/09/2025 · Gò Vấp, TP. Hồ Chí Minh',
+    summary:
+      'Hơn 300 khách hàng, đối tác và khách mời dự lễ khai trương cửa hàng 257A6 Nguyễn Văn Lượng. Chương trình thông tin 260 của VTV3 có mặt ghi hình, đưa tin.',
+    postSlug: 'khai-truong-ecopillo-chi-nhanh-ho-chi-minh',
+    image: eventWideImage('khai-truong-hcm-ngang', 'Lễ cắt băng khai trương chi nhánh Ecopillo TP. Hồ Chí Minh, có múa lân'),
   },
 ]
