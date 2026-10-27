@@ -108,14 +108,14 @@ export const FAQS: readonly Faq[] = [
     q: 'Sản phẩm được bảo hành bao lâu?',
     a: [
       'Bảo hành theo từng sản phẩm, tính từ ngày mua.',
-      'Đệm: 5–15 năm tuỳ dòng đệm. Chăn ga: 90 [XÁC NHẬN ĐƠN VỊ: NGÀY]. Gối: [ĐIỀN THỜI HẠN BẢO HÀNH GỐI].',
+      'Đệm: 5–15 năm tuỳ dòng đệm. Chăn ga: 90 ngày.',
     ],
   },
   {
     q: 'Hệ thống phân phối mở cửa giờ nào?',
     a: [
       `Văn phòng đại diện Hà Nội và chi nhánh TP. HCM: ${OPENING_HOURS}.`,
-      '[ECOPILLO GỬI GIỜ MỞ CỬA CỦA CÁC ĐIỂM PHÂN PHỐI KHÁC NẾU KHÁC NHAU]',
+      'Đại lý: giờ mở cửa ghi ở từng điểm trên trang Hệ thống phân phối. Điểm chưa ghi giờ, Quý khách gọi trước khi ghé.',
     ],
   },
 ]
@@ -189,4 +189,9 @@ const SAMPLE_BY_CATEGORY: Readonly<Record<string, readonly ProductReview[]>> = {
 
 export const reviewsForCategory = (category: string): readonly ProductReview[] => SAMPLE_BY_CATEGORY[category] ?? []
 
-export const REVIEW_SAMPLE_NOTE = '[NHẬN XÉT MẪU — THAY BẰNG NHẬN XÉT THẬT CỦA KHÁCH]'
+/**
+ * Nhận xét ở trên (REVIEWS, SAMPLE_BY_CATEGORY) đều là NỘI DUNG MẪU để dựng giao diện. Owner bảo bỏ hết nhãn chờ (28/10/2026):
+ * bỏ nhãn "nhận xét mẫu" mà vẫn hiện thì thành nhận xét bịa, nên khối nhận xét ẩn hẳn ở trang chủ và trang sản phẩm.
+ * Có nhận xét thật Ecopillo gửi (tên, tỉnh, mẫu đã mua, đồng ý đăng) thì thay dữ liệu mẫu rồi đổi thành true.
+ */
+export const REVIEWS_ARE_REAL = false

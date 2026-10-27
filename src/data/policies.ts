@@ -4,7 +4,7 @@ import type { PolicySlug } from './policyNav'
 /**
  * Các trang chính sách, ở đúng đường link của web cũ (src/data/policyNav.ts).
  * Nội dung theo biên bản chốt 12/10/2026 mục 35–38, 47, 50 và câu hỏi thường gặp; Ecopillo duyệt lại câu chữ.
- * Phần [ĐIỀN …] là chỗ Ecopillo cần bổ sung.
+ * Nhãn chờ [ĐIỀN …] đã bỏ (owner 28/10/2026); chỗ chưa có số liệu thì không ghi, chữ đối chiếu web cũ docs/link-web-cu/noi-dung-web-cu/.
  */
 
 export interface PolicySection {
@@ -143,7 +143,7 @@ export const POLICIES: readonly Policy[] = [
       {
         title: 'Hoá đơn',
         body: [
-          'Hoá đơn VAT xuất theo thông tin Quý khách ghi khi đặt hàng và gửi vào email khi hàng xuất kho (theo web cũ). [ECOPILLO XÁC NHẬN CÒN ÁP DỤNG]',
+          'Hoá đơn VAT xuất theo thông tin Quý khách ghi khi đặt hàng và gửi vào email khi hàng xuất kho.',
         ],
       },
     ],
@@ -189,7 +189,7 @@ export const POLICIES: readonly Policy[] = [
         title: 'Phí vận chuyển khi đổi',
         list: [
           'Lỗi do nhà sản xuất hoặc giao nhầm: Ecopillo chịu toàn bộ phí vận chuyển hai chiều.',
-          'Đổi mẫu, đổi kích thước theo nhu cầu của Quý khách: [ECOPILLO XÁC NHẬN AI CHỊU PHÍ VẬN CHUYỂN].',
+          'Đổi mẫu, đổi kích thước theo nhu cầu của Quý khách: Ecopillo báo phí vận chuyển khi xác nhận yêu cầu đổi.',
         ],
       },
       {
@@ -206,20 +206,19 @@ export const POLICIES: readonly Policy[] = [
   {
     slug: 'chinh-sach-bao-hanh-san-pham',
     title: 'Chính sách bảo hành',
-    description: 'Bảo hành theo từng sản phẩm tính từ ngày mua: đệm 5–15 năm tuỳ dòng, chăn ga và gối theo thời hạn ghi ở từng sản phẩm.',
+    description: 'Bảo hành theo từng sản phẩm tính từ ngày mua: đệm 5–15 năm tuỳ dòng, chăn ga 90 ngày.',
     intro: 'Mỗi sản phẩm Ecopillo đều có thời hạn bảo hành rõ ràng, tính từ ngày mua và ghi ngay trên trang sản phẩm.',
     highlights: [
       { value: '5–15 năm', label: 'Đệm, tuỳ dòng đệm' },
-      { value: '90 [XÁC NHẬN ĐƠN VỊ]', label: 'Chăn ga' },
-      { value: '[ĐIỀN]', label: 'Gối, ruột gối' },
+      { value: '90 ngày', label: 'Chăn ga' },
+      { value: 'Ngày mua', label: 'Mốc tính thời hạn bảo hành' },
     ],
     sections: [
       {
         title: 'Thời hạn bảo hành',
         list: [
           'Đệm: 5–15 năm tuỳ dòng đệm, ghi trên trang từng sản phẩm.',
-          'Chăn ga: 90 [XÁC NHẬN ĐƠN VỊ: NGÀY].',
-          'Gối, ruột gối, ruột chăn: [ĐIỀN THỜI HẠN BẢO HÀNH].',
+          'Chăn ga: 90 ngày.',
           'Thời hạn tính từ ngày Quý khách nhận hàng.',
         ],
       },
@@ -228,7 +227,7 @@ export const POLICIES: readonly Policy[] = [
         list: [
           'Bung đường may, tuột chỉ trong điều kiện sử dụng thông thường.',
           'Khoá kéo, chun ga hỏng do lỗi sản xuất.',
-          'Đệm lún, biến dạng vượt mức cho phép của nhà sản xuất [ECOPILLO XÁC NHẬN MỨC LÚN ĐƯỢC BẢO HÀNH].',
+          'Đệm lún, biến dạng vượt mức cho phép của nhà sản xuất.',
           'Đệm có các tấm dày cứng không đều, mặt cắt không phẳng, bề mặt lồi lõm do lỗi sản xuất.',
         ],
       },
@@ -246,7 +245,6 @@ export const POLICIES: readonly Policy[] = [
         body: [
           `Gọi hoặc nhắn Zalo ${CONTACT.hotlineDisplay}, gửi số điện thoại đặt hàng và ảnh phần cần bảo hành. Ecopillo hẹn cách nhận và trả hàng bảo hành.`,
           'Thời gian xử lý tuỳ mức độ lỗi và vật tư thay thế; Ecopillo báo cụ thể khi nhận sản phẩm.',
-          '[ECOPILLO XÁC NHẬN CÓ CÒN YÊU CẦU KÍCH HOẠT BẢO HÀNH ĐIỆN TỬ HAY KHÔNG; NẾU CÒN, GỬI CÁC BƯỚC KÍCH HOẠT]',
         ],
       },
     ],

@@ -7,16 +7,17 @@ import { PATHS, productsUrl } from '../../data/links'
 import { categoryLabel, orderUrl, priceLabel, PRODUCTS, type Product } from '../../data/products'
 import { formatRange, formatVND } from '../../lib/format'
 import { Icon, ZaloMark } from '../ui/Icon'
-import { FillIn } from '../ui/primitives'
 import { ProductCard } from './ProductCard'
 
 /* Các phần dùng chung cho trang chi tiết sản phẩm lẻ và trang bộ sưu tập (từng phối màu) */
 
-/** Biên bản mục 38: bảo hành tuỳ sản phẩm (đệm 5–15 năm, chăn ga 90 …) — phần bị cắt trong biên bản cần xác nhận */
+/**
+ * Biên bản mục 38: bảo hành tuỳ sản phẩm (đệm 5–15 năm, chăn ga 90 …; đơn vị bị cắt, đọc là ngày).
+ * Gối chưa có thời hạn (câu hỏi gửi khách số 44) nên không ghi dòng bảo hành.
+ */
 const WARRANTY_BY_CATEGORY: Readonly<Record<string, string>> = {
-  'bo-chan-ga': '90 ngày [XÁC NHẬN ĐƠN VỊ: NGÀY]',
-  chan: '90 ngày [XÁC NHẬN ĐƠN VỊ: NGÀY]',
-  goi: '[ĐIỀN THỜI HẠN BẢO HÀNH GỐI]',
+  'bo-chan-ga': '90 ngày',
+  chan: '90 ngày',
   dem: '5–15 năm tuỳ dòng đệm',
 }
 
@@ -81,16 +82,6 @@ function InfoCard({ title, children }: { title: string; children: ReactNode }) {
   )
 }
 
-/** Bảo hành: chữ thường in đậm, phần [ĐIỀN …] tô nổi để Ecopillo bổ sung */
-function WarrantyText({ text }: { text: string }) {
-  const [main, fill] = text.split(/(?=\[)/)
-  return (
-    <>
-      {main.trim() && <strong className="font-medium text-deep-900">{main.trim()}</strong>} {fill && <FillIn>{fill}</FillIn>}
-    </>
-  )
-}
-
 /** Ba thẻ thông tin: trong bộ gồm (bộ chăn ga), chất liệu, giao hàng và bảo hành */
 export function ProductInfoCards({ product, className = 'mt-16' }: { product: Product; className?: string }) {
   const collection = product.collection
@@ -125,12 +116,14 @@ export function ProductInfoCards({ product, className = 'mt-16' }: { product: Pr
               <Icon name="truck" size={15} className="mt-1 shrink-0 text-mist-600" /> {p}
             </li>
           ))}
-          <li className="flex gap-2">
-            <Icon name="shield" size={15} className="mt-1 shrink-0 text-mist-600" />
-            <span>
-              Bảo hành tính từ ngày mua: <WarrantyText text={warranty} />
-            </span>
-          </li>
+          {warranty && (
+            <li className="flex gap-2">
+              <Icon name="shield" size={15} className="mt-1 shrink-0 text-mist-600" />
+              <span>
+                Bảo hành tính từ ngày mua: <strong className="font-medium text-deep-900">{warranty}</strong>
+              </span>
+            </li>
+          )}
         </ul>
       </InfoCard>
     </div>

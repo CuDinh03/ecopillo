@@ -1,6 +1,6 @@
-import { REVIEW_SAMPLE_NOTE, REVIEWS, type Review } from '../../data/content'
+import { REVIEWS, REVIEWS_ARE_REAL, type Review } from '../../data/content'
 import { revealDelay } from '../../lib/reveal'
-import { Container, FillIn, SectionHeading } from '../ui/primitives'
+import { Container, SectionHeading } from '../ui/primitives'
 
 function Stars() {
   return (
@@ -17,9 +17,10 @@ function Stars() {
 /**
  * Mẫu C trang chủ (owner duyệt 23/10/2026): một câu trích lớn bên trái, ba nhận xét còn lại thành cột lời ngắn bên phải,
  * thay cho lưới bốn thẻ. Điện thoại: câu trích ở trên, ba nhận xét xếp dưới.
- * Nhận xét đang là nội dung mẫu (src/data/content.ts): nhãn mẫu nằm sát câu trích.
+ * Nhận xét đang là nội dung mẫu (src/data/content.ts) nên khối ẩn cho tới khi REVIEWS_ARE_REAL = true.
  */
 export function Reviews() {
+  if (!REVIEWS_ARE_REAL) return null
   const [featured, ...others] = REVIEWS
   return (
     <section id="danh-gia" aria-labelledby="reviews-title" className="py-14 sm:py-24">
@@ -28,8 +29,7 @@ export function Reviews() {
 
         <div className="mt-8 grid gap-10 sm:mt-12 lg:grid-cols-12 lg:gap-16">
           <figure data-reveal className="lg:col-span-7">
-            <FillIn>{REVIEW_SAMPLE_NOTE}</FillIn>
-            <div className="mt-5 flex items-center gap-3">
+            <div className="flex items-center gap-3">
               <Stars />
             </div>
             <blockquote className="font-display mt-4 max-w-[32ch] text-[1.5rem] leading-[1.3] text-deep-900 italic sm:text-[2rem] lg:text-[2.125rem]">

@@ -1,12 +1,12 @@
 import { BRAND, CONTACT, SHOWROOMS } from '../data/brand'
 import { PolicyLayout } from '../components/policy/PolicyLayout'
-import { FillIn } from '../components/ui/primitives'
 import { RichText } from '../components/ui/RichText'
 import { usePageMeta } from '../hooks/usePageMeta'
 
 /**
  * Chính sách bảo vệ thông tin cá nhân theo Nghị định 13/2023/NĐ-CP (biên bản chốt mục 62).
- * BẢN DỰ THẢO do bên thực hiện soạn, Ecopillo duyệt lại trước khi chạy chính thức.
+ * Bên thực hiện soạn; mã số doanh nghiệp, địa chỉ và thời gian lưu theo web cũ (chân trang, chính sách bảo mật cũ).
+ * Nhãn chờ bỏ theo owner 28/10/2026; Ecopillo vẫn nên đọc lại trước khi chạy chính thức.
  */
 interface PolicySection {
   title: string
@@ -18,7 +18,7 @@ const SECTIONS: readonly PolicySection[] = [
     title: '1. Bên xử lý thông tin',
     body: [
       `${BRAND.company} (gọi tắt là Ecopillo) là bên kiểm soát và xử lý thông tin cá nhân Quý khách cung cấp trên website ecopillo.com.vn.`,
-      'Mã số doanh nghiệp: [ĐIỀN MÃ SỐ DOANH NGHIỆP]. Địa chỉ trụ sở: [ĐIỀN ĐỊA CHỈ TRỤ SỞ THEO GIẤY ĐĂNG KÝ KINH DOANH].',
+      'Mã số doanh nghiệp: 0110682605 do Sở Kế hoạch và Đầu tư TP. Hà Nội cấp. Địa chỉ: Số 273 Xã Đàn, phường Nam Đồng, quận Đống Đa, thành phố Hà Nội.',
     ],
   },
   {
@@ -51,7 +51,7 @@ const SECTIONS: readonly PolicySection[] = [
     title: '5. Lưu trữ và bảo vệ',
     body: [
       'Thông tin đơn hàng được lưu trên hệ thống quản trị website của Ecopillo, chỉ người được phân công xử lý đơn mới xem được.',
-      'Thời gian lưu: [ĐIỀN THỜI GIAN LƯU, VÍ DỤ: 5 NĂM KỂ TỪ ĐƠN HÀNG CUỐI CÙNG] hoặc đến khi Quý khách yêu cầu xoá, trừ trường hợp pháp luật yêu cầu lưu lâu hơn (ví dụ chứng từ kế toán).',
+      'Thông tin được lưu cho tới khi Quý khách yêu cầu xoá, trừ trường hợp pháp luật yêu cầu lưu lâu hơn (ví dụ chứng từ kế toán).',
       'Khi phát hiện sự cố lộ lọt thông tin, Ecopillo sẽ thông báo cho Quý khách và cơ quan có thẩm quyền theo thời hạn Nghị định 13/2023/NĐ-CP quy định.',
     ],
   },
@@ -61,7 +61,7 @@ const SECTIONS: readonly PolicySection[] = [
       'Được biết thông tin nào đang được lưu, được xem, sửa hoặc yêu cầu xoá thông tin của mình.',
       'Được rút lại sự đồng ý, phản đối hoặc yêu cầu hạn chế việc xử lý thông tin.',
       'Được khiếu nại, tố cáo, khởi kiện và yêu cầu bồi thường theo quy định của pháp luật.',
-      'Ecopillo phản hồi yêu cầu trong vòng [ĐIỀN SỐ NGÀY, VÍ DỤ: 72 GIỜ] kể từ khi nhận được.',
+      'Ecopillo phản hồi yêu cầu trong thời hạn Nghị định 13/2023/NĐ-CP quy định.',
     ],
   },
   {
@@ -81,16 +81,6 @@ export function PrivacyPage() {
     <PolicyLayout
       title="Chính sách bảo vệ thông tin cá nhân"
       intro="Theo Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân. Ecopillo chỉ dùng thông tin Quý khách cung cấp để giao hàng và chăm sóc khách hàng."
-      meta={
-        <div className="mt-5 space-y-2 text-sm text-ink-soft">
-          <p>
-            Áp dụng từ ngày <FillIn>[ĐIỀN NGÀY WEB CHẠY]</FillIn>.
-          </p>
-          <p>
-            <FillIn>[BẢN DỰ THẢO: ECOPILLO DUYỆT LẠI TRƯỚC KHI CHẠY CHÍNH THỨC]</FillIn>
-          </p>
-        </div>
-      }
     >
       <div className="space-y-12">
         {SECTIONS.map((section) => (

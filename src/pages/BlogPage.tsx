@@ -1,8 +1,8 @@
 import { useSearchParams } from 'react-router-dom'
 import { PostCard } from '../components/blog/PostCard'
 import { PageHero } from '../components/ui/PageHero'
-import { Container, FillIn } from '../components/ui/primitives'
-import { BLOG_FILL_IN, POST_CATEGORIES, POSTS, type PostCategory } from '../data/posts'
+import { Container } from '../components/ui/primitives'
+import { POST_CATEGORIES, POSTS, type PostCategory } from '../data/posts'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 
@@ -30,9 +30,6 @@ export function BlogPage() {
         }
         lead="Hiểu về chất liệu, chọn đúng kích thước và chăm sóc chăn ga gối đệm để dùng bền, ngủ êm."
       >
-        <p className="mt-5 max-w-xl text-sm">
-          <FillIn>{BLOG_FILL_IN}</FillIn>
-        </p>
       </PageHero>
 
       <Container className="mt-10 sm:mt-14">

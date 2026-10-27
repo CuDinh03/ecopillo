@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { CONTACT, DISTRIBUTION_FILL_IN, OPENING_HOURS, SHOWROOMS } from '../../data/brand'
+import { CONTACT, OPENING_HOURS, SHOWROOMS } from '../../data/brand'
 import { FAQS } from '../../data/content'
 import { PATHS } from '../../data/links'
 import { DEALERS, dealerCountLabel, NEAR_ME_URL } from '../../data/dealers'
@@ -31,10 +31,7 @@ export function Showrooms() {
           title="Hệ thống phân phối"
           lead="Chạm tay vào chất vải tại Ecopillo: cảm nhận độ mềm mát của vải Lyocell, nằm thử gối và đệm, được tư vấn mẫu hợp với phòng ngủ của Quý khách."
         />
-        <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="max-w-2xl text-sm">
-            <FillIn>{DISTRIBUTION_FILL_IN}</FillIn>
-          </p>
+        <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end">
           <div className="flex shrink-0 flex-col items-start gap-2 sm:items-end">
             <Link to={NEAR_ME_URL} className={buttonClass('primary', 'md')}>
               <Icon name="locate" size={17} />

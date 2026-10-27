@@ -10,9 +10,9 @@ import { COLLECTIONS, type Collection, type Pattern } from './catalog'
  * là BẢN NHÁP viết theo ảnh mẫu, CHỜ ECOPILLO DUYỆT.
  * Bản để Ecopillo đọc và sửa: docs/nhap-cau-chuyen-phoi-mau.html
  * (tạo lại bằng `node tools/xuat-nhap-cau-chuyen.mjs` mỗi khi sửa file này).
- * Khi Ecopillo đã duyệt hết bản nháp thì đổi STORIES_APPROVED thành true để bỏ mọi nhãn "chờ duyệt" trên web.
+ * Nhãn "chờ duyệt" trên web đã tắt (owner 28/10/2026: bỏ hết nhãn chờ); bản nháp vẫn gửi Ecopillo duyệt như cũ.
  */
-export const STORIES_APPROVED = false
+export const STORIES_APPROVED = true
 
 export type ToneId = 'xanh' | 'hong' | 'tim' | 'kem' | 'xam' | 'be'
 
@@ -25,7 +25,7 @@ export interface Tone {
   swatch: string
 }
 
-/** Cách chia gam là bản nháp: [ECOPILLO DUYỆT CÁCH CHIA GAM MÀU] */
+/** Cách chia gam là bản nháp, chờ Ecopillo duyệt */
 export const TONES: readonly Tone[] = [
   { id: 'xanh', label: 'Xanh', phrase: 'gam xanh', swatch: 'linear-gradient(135deg, #a2bfe1, #b6d7e8)' },
   { id: 'hong', label: 'Hồng, đỏ cam', phrase: 'gam hồng, đỏ cam', swatch: 'linear-gradient(135deg, #f0d2d8, #cfa9a2)' },

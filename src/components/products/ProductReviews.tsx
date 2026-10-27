@@ -1,7 +1,6 @@
-import { REVIEW_CRITERIA, REVIEW_SAMPLE_NOTE, reviewsForCategory } from '../../data/content'
+import { REVIEW_CRITERIA, REVIEWS_ARE_REAL, reviewsForCategory } from '../../data/content'
 import type { Product } from '../../data/products'
 import { Icon } from '../ui/Icon'
-import { FillIn } from '../ui/primitives'
 
 function Stars({ value, size = 16 }: { value: number; size?: number }) {
   return (
@@ -27,7 +26,8 @@ const oneDecimal = (n: number) => n.toLocaleString('vi-VN', { minimumFractionDig
 /** Biên bản mục 42: nhận xét và chấm điểm chi tiết theo từng sản phẩm */
 export function ProductReviews({ product }: { product: Product }) {
   const reviews = reviewsForCategory(product.category)
-  if (reviews.length === 0) return null
+  // Nhận xét đang là nội dung mẫu: ẩn cho tới khi có nhận xét thật (src/data/content.ts)
+  if (!REVIEWS_ARE_REAL || reviews.length === 0) return null
   const overall = average(reviews.map((r) => r.stars))
   const criteria = REVIEW_CRITERIA.map((label, i) => ({ label, score: average(reviews.map((r) => r.scores[i])) }))
 
@@ -37,7 +37,6 @@ export function ProductReviews({ product }: { product: Product }) {
         <h2 id="product-reviews-title" className="font-display text-[1.8rem] text-deep-900 sm:text-[2.2rem]">
           Nhận xét của khách
         </h2>
-        <FillIn>{REVIEW_SAMPLE_NOTE}</FillIn>
       </div>
 
       <div className="mt-6 grid gap-5 lg:grid-cols-[320px_1fr]">

@@ -174,4 +174,3 @@ export const postBySlug = (slug: string | undefined): Post | undefined => POSTS.
 /** Bài viết nằm ở gốc web như WordPress cũ: ecopillo.com.vn/ten-bai/ */
 export const postPath = (p: Post): string => `/${p.slug}/`
 
-export const BLOG_FILL_IN = '[59 BÀI VIẾT TỪ WORDPRESS SẼ HIỆN Ở ĐÂY, GIỮ NGUYÊN ĐƯỜNG LINK CŨ; 3 BÀI DƯỚI ĐÂY LÀ BÀI MẪU]'

@@ -1,6 +1,5 @@
 import { CONTACT } from '../../data/brand'
 import {
-  GIFT_PROGRAM_NOTE,
   isSizeSoldOut,
   setPrice,
   SHEET_LABELS,
@@ -13,7 +12,6 @@ import { formatVND } from '../../lib/format'
 import { MAX_QUANTITY, PRICE_ON_CALL, type OrderSummaryData } from '../../lib/order'
 import { Icon } from '../ui/Icon'
 import { QuantityStepper } from '../ui/QuantityStepper'
-import { FillIn } from '../ui/primitives'
 
 interface StepSizeProps {
   summary: OrderSummaryData
@@ -77,8 +75,7 @@ export function StepSize({ summary, sheet, onSelectSheet, onSelectSize, onChange
           </div>
           {activeSheet === 'chun' && !pattern.fittedPrices && (
             <p className="mt-4 text-sm text-ink-soft">
-              Mẫu {pattern.code} chưa có giá ga chun chần: nhân viên báo giá khi gọi xác nhận.{' '}
-              <FillIn>[ĐIỀN GIÁ GA CHUN CHẦN {pattern.code}]</FillIn>
+              Mẫu {pattern.code} chưa có giá ga chun chần: nhân viên báo giá khi gọi xác nhận.
             </p>
           )}
         </fieldset>
@@ -149,8 +146,7 @@ export function StepSize({ summary, sheet, onSelectSheet, onSelectSize, onChange
         </div>
 
         <p className="mt-4 text-xs leading-relaxed text-ink-soft">
-          Kích thước hết hàng sẽ sớm về lại — nhắn Zalo để được báo khi có. Giá 180×200 hiện là giá tạm tính{' '}
-          <FillIn>[XÁC NHẬN GIÁ KÍCH THƯỚC 180×200]</FillIn>
+          Kích thước hết hàng sẽ sớm về lại — nhắn Zalo để được báo khi có.
         </p>
       </fieldset>
 
@@ -187,7 +183,7 @@ export function StepSize({ summary, sheet, onSelectSheet, onSelectSize, onChange
               {giftCount} {gift.unit} {gift.item}
             </p>
             <p className="mt-1 text-sm text-ink-soft">
-              {gift.label} × {quantity} bộ. Số lượng quà có hạn. <FillIn>{GIFT_PROGRAM_NOTE}</FillIn>
+              {gift.label} × {quantity} bộ. Số lượng quà có hạn.
             </p>
           </div>
         </section>

@@ -2,7 +2,8 @@
  * Danh mục sản phẩm Ecopillo.
  *
  * Khoảng giá của từng bộ sưu tập lấy theo bảng giá thật (1m6 → 2m2).
- * Giá kích thước 180×200 hiện là giá nội suy giữa hai đầu — cần thay bằng giá thật.
+ * Giá 180×200 theo web cũ (lấy 28/10/2026): bộ ga phủ bán một cỡ Free Size dùng cho cả giường 1m6 và 1m8 nên bằng giá 160×200;
+ * Eco Flora (ga chun) 3.600.000đ. Chăn hè chưa đối chiếu được (web cũ một giá mỗi mẫu, khác bảng giá này).
  * Mã mẫu lấy theo ảnh sản phẩm thật (thư mục images/ và web cũ ecopillo.com.vn).
  * Tên màu do mình đặt theo ảnh; màu ô mẫu lấy từ ảnh. Tình trạng "Tạm hết hàng" là DỮ LIỆU GIẢ LẬP.
  */
@@ -57,7 +58,6 @@ export const GIFTS: Readonly<Record<GiftTier, Gift>> = {
 }
 
 /** Biên bản mục 34: Ecopillo sẽ tuỳ chỉnh lại phần quà tri ân, chưa có nội dung mới */
-export const GIFT_PROGRAM_NOTE = '[ECOPILLO ĐANG CHỈNH LẠI QUÀ TRI ÂN]'
 
 export interface Pattern {
   code: string
@@ -136,11 +136,11 @@ const price = (a: number, b: number, c: number): PriceTable => ({
   '200x220': c,
 })
 
-const ROSA_NEW = price(5_080_000, 5_440_000, 5_800_000)
-const TERA_ET06 = price(5_540_000, 5_630_000, 5_720_000)
+const ROSA_NEW = price(5_080_000, 5_080_000, 5_800_000)
+const TERA_ET06 = price(5_540_000, 5_540_000, 5_720_000)
 
 /* Giá bộ ga chun chần theo trang từng mẫu trên web cũ (lấy 23/10/2026). Mẫu không ghi ở đây: web cũ không bán ga chun chần,
-   trang đặt hàng hiện ô [ĐIỀN GIÁ]. ER46 (2m2) và ER48 (1m8) ghi 5.800.000đ, lệch nhịp với ER45, ER47: giữ đúng web cũ, chờ Ecopillo xác nhận */
+   nhân viên báo giá khi gọi xác nhận. ER46 (2m2) và ER48 (1m8) ghi 5.800.000đ, lệch nhịp với ER45, ER47: giữ đúng web cũ, chờ Ecopillo xác nhận */
 const ROSA_ER39_CHUN = price(4_700_000, 4_950_000, 5_300_000)
 const ROSA_NEW_CHUN = price(5_080_000, 5_200_000, 5_400_000)
 const TERA_CHUN = price(5_040_000, 5_180_000, 5_380_000)
@@ -163,7 +163,7 @@ export const COLLECTIONS: readonly Collection[] = [
     tagline: 'Thanh khiết và sinh động',
     description:
       'Bộ ga chun Lyocell chần thủ công từng đường, họa tiết cánh hoa và vân đá nhẹ nhàng. Lựa chọn khởi đầu cho phòng ngủ thanh lịch.',
-    prices: price(3_500_000, 3_650_000, 3_800_000),
+    prices: price(3_500_000, 3_600_000, 3_800_000),
     gift: 'om',
     contents: SET_CHUN_CONTENTS,
     imageNote: 'Ảnh phòng ngủ trải bộ Eco Flora EF06',
@@ -189,7 +189,7 @@ export const COLLECTIONS: readonly Collection[] = [
       // Catalog Ecopillo 22.07.2026: in hoạt tính
       'Bộ chăn ga Lyocell được yêu thích nhất của Ecopillo: hoa lá, hình học, họa tiết cho bé, từ gam trung tính đến pastel. In hoạt tính nên màu tươi và bền theo thời gian. Các mẫu mới ER45–ER49 vừa ra mắt.',
     badge: 'Nhiều mẫu nhất',
-    prices: price(4_950_000, 5_320_000, 5_690_000),
+    prices: price(4_950_000, 4_950_000, 5_690_000),
     gift: 'one-plus',
     contents: SET_PHU_OR_CHUN_CONTENTS,
     hasFittedOption: true,
@@ -228,7 +228,7 @@ export const COLLECTIONS: readonly Collection[] = [
       real('ER45', 'Gấu hồng', '#e6d3d9', { isNew: true, prices: ROSA_NEW, fittedPrices: ROSA_NEW_CHUN }),
       real('ER46', 'Tàu thuyền xanh', '#bacbe3', { isNew: true, prices: ROSA_NEW, fittedPrices: price(5_080_000, 5_200_000, 5_800_000) }),
       real('ER47', 'Hoa nhí hồng', '#e1dde0', { isNew: true, prices: ROSA_NEW, soldOut: ['180x200'], fittedPrices: ROSA_NEW_CHUN }),
-      real('ER49', 'Sọc ngang xanh dịu', '#ccccc6', { isNew: true, prices: ROSA_NEW }),
+      real('ER49', 'Sọc ngang xanh dịu', '#ccccc6', { isNew: true, prices: ROSA_NEW, fittedPrices: ROSA_NEW_CHUN }),
     ],
   },
   {
@@ -239,7 +239,7 @@ export const COLLECTIONS: readonly Collection[] = [
     tagline: 'Thanh lịch và hiện đại',
     description:
       'Lyocell trơn một màu với ánh lụa nhẹ, viền chần nổi quanh ga phủ. Sáu gam màu từ xanh da trời, hồng phấn đến kem và xám.',
-    prices: price(5_040_000, 5_380_000, 5_720_000),
+    prices: price(5_040_000, 5_040_000, 5_720_000),
     gift: 'one-plus',
     contents: SET_PHU_OR_CHUN_CONTENTS,
     hasFittedOption: true,
@@ -262,7 +262,7 @@ export const COLLECTIONS: readonly Collection[] = [
     tagline: 'Nghệ thuật chạm cảm xúc',
     description:
       'Họa tiết hoa lá và hình học mềm mại trên nền Lyocell pastel, hợp phòng ngủ sáng màu và nhiều ánh nắng.',
-    prices: price(5_600_000, 5_690_000, 5_790_000),
+    prices: price(5_600_000, 5_600_000, 5_790_000),
     gift: 'one-plus',
     contents: SET_PHU_OR_CHUN_CONTENTS,
     hasFittedOption: true,
@@ -285,7 +285,7 @@ export const COLLECTIONS: readonly Collection[] = [
     tagline: 'Ngọt ngào và quý phái',
     description:
       'Hoa văn được dệt thẳng vào sợi Lyocell bằng kỹ thuật Jacquard, nổi khối tinh tế dưới ánh sáng. Bền màu, càng dùng càng mềm.',
-    prices: price(7_890_000, 8_780_000, 9_660_000),
+    prices: price(7_890_000, 7_890_000, 9_660_000),
     gift: 'two-plus',
     contents: SET_PHU_CONTENTS,
     imageNote: 'Ảnh bộ Eco Sweet ES06',
@@ -304,7 +304,7 @@ export const COLLECTIONS: readonly Collection[] = [
     tagline: 'Tinh tế và sang trọng',
     description:
       'Vải dệt kim sa độc quyền, từng sợi kim tuyến lấp lánh nhẹ trên nền hồng đào, xám, vàng ánh kim. Hợp làm quà cưới, quà tân gia cho những người thân yêu.',
-    prices: price(8_020_000, 8_150_000, 8_280_000),
+    prices: price(8_020_000, 8_020_000, 8_280_000),
     gift: 'two-plus',
     contents: SET_PHU_CONTENTS,
     imageNote: 'Ảnh bộ Eco Liora EL10',
@@ -326,7 +326,7 @@ export const COLLECTIONS: readonly Collection[] = [
     description:
       'Tuyển chọn sợi Lyocell đẹp nhất, chần thêu dày và đều, đường may 4 mũi/cm chắc chắn. Tinh hoa của hơn 15 năm làm nghề.',
     badge: 'Dòng cao nhất',
-    prices: price(10_000_000, 10_180_000, 10_360_000),
+    prices: price(10_000_000, 10_000_000, 10_360_000),
     gift: 'two-plus',
     contents: DORIS_CONTENTS,
     imageNote: 'Ảnh bộ Eco Doris ED25',
@@ -356,7 +356,7 @@ export const COLLECTIONS: readonly Collection[] = [
     patterns: [
       real('ER09', 'Lá xanh xám', '#b7bcc5', { imageKey: 'chan-he-ER09' }),
       // Ảnh chan-he-ER12.webp in sẵn dòng chất liệu cũ đã bỏ khỏi web (owner yêu cầu 14/10/2026) nên tạm không hiện.
-      // [ECOPILLO GỬI ẢNH ER12 MỚI]: có ảnh mới thì đổi lại thành real(…, { imageKey: 'chan-he-ER12' })
+      // Ecopillo gửi ảnh ER12 mới thì đổi lại thành real(…, { imageKey: 'chan-he-ER12' })
       { code: 'ER12', colorName: 'Xanh biển họa tiết', swatch: '#96bed1' },
       real('ER16', 'Kẻ xám', '#acabb0', { imageKey: 'chan-he-ER16', soldOut: ['160x200'] }),
       real('ER20', 'Kem be', '#d4c9b2', { imageKey: 'chan-he-ER20' }),

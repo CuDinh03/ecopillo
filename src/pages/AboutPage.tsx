@@ -6,7 +6,7 @@ import { TrustStrip } from '../components/home/Craft'
 import { CountUp } from '../components/ui/CountUp'
 import { Icon, type IconName } from '../components/ui/Icon'
 import { Breadcrumb } from '../components/ui/PageHero'
-import { buttonClass, FillIn, LinkButton } from '../components/ui/primitives'
+import { buttonClass, LinkButton } from '../components/ui/primitives'
 import {
   AWARD_IMAGE,
   AWARD_NAME,
@@ -26,7 +26,6 @@ import {
   MISSION_IMAGE,
   PHILOSOPHY,
   STORY_OPENING,
-  STORY_REVIEW_NOTE,
   VISION,
   VISION_IMAGE,
 } from '../data/about'
@@ -41,7 +40,7 @@ import { revealDelay } from '../lib/reveal'
  * Trang Giới thiệu (/gioi-thieu, giữ đường link web cũ) dạng chương sách (mẫu 1, owner chọn 16/10/2026,
  * bìa là ảnh chị Phương tại VTV3 theo yêu cầu owner; mẫu: docs/de-xuat-trang-ve-chung-toi.html).
  * Bìa + mục lục → Lời mở → 6 chương số La Mã → Lời kết mời ghé thăm. Chữ dùng chung với trang chủ ở data/about.ts.
- * Tên chương là chữ nối mạch truyện, chờ Ecopillo duyệt cùng phần câu chuyện (STORY_REVIEW_NOTE).
+ * Tên chương là chữ nối mạch truyện, chờ Ecopillo duyệt cùng phần câu chuyện.
  */
 
 interface TocItem {
@@ -92,9 +91,6 @@ export function AboutPage() {
         <h2 id="loi-mo-tieu-de" className="sr-only">
           Lời mở: một giấc ngủ không trọn
         </h2>
-        <p className="mt-4 text-sm">
-          <FillIn>{STORY_REVIEW_NOTE}</FillIn>
-        </p>
         <Prose dropCap>{STORY_OPENING}</Prose>
       </section>
 

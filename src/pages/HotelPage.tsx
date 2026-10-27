@@ -5,7 +5,7 @@ import { MessageForm } from '../components/contact/MessageForm'
 import { CrossfadeImage } from '../components/ui/CrossfadeImage'
 import { Icon } from '../components/ui/Icon'
 import { Breadcrumb } from '../components/ui/PageHero'
-import { buttonClass, Container, FillIn } from '../components/ui/primitives'
+import { buttonClass, Container } from '../components/ui/primitives'
 import { CONTACT } from '../data/brand'
 import { productImage, type ImageSource } from '../data/catalog'
 import { HOTEL_PARTNERS } from '../data/content'
@@ -305,9 +305,7 @@ function Steps() {
             </li>
           ))}
         </ol>
-        <p className="mt-6 text-sm">
-          <FillIn>[ECOPILLO DUYỆT QUY TRÌNH, SỐ LƯỢNG TỐI THIỂU VÀ THỜI GIAN MAY CHO ĐƠN KHÁCH SẠN]</FillIn>
-        </p>
+        <p className="mt-6 max-w-2xl text-small text-ink-soft">Số lượng tối thiểu và thời gian may Ecopillo báo theo từng dự án, cùng với báo giá.</p>
       </Container>
     </section>
   )

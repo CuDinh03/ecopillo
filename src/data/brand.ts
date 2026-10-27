@@ -127,6 +127,3 @@ export const SHOWROOMS: readonly Showroom[] = [
   },
 ]
 
-/** Chữ chờ điền cho phần hệ thống phân phối */
-export const DISTRIBUTION_FILL_IN =
-  '[ECOPILLO GỬI THÊM CHO TỪNG ĐẠI LÝ: GIỜ MỞ CỬA, ZALO (NẾU KHÁC SỐ ĐIỆN THOẠI), ẢNH CỬA HÀNG]'

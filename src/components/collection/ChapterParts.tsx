@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
 import {
-  GIFT_PROGRAM_NOTE,
   GIFTS,
   isSizeSoldOut,
   patternPrice,
@@ -158,7 +157,7 @@ export function ChapterBuy({ collection, pattern, size, onSize, isSoldOut, class
         <p className="mt-6 flex items-start gap-3 rounded-2xl bg-brass-100 p-4 text-sm text-deep-900">
           <Icon name="gift" size={20} className="mt-0.5 shrink-0 text-brass-600" />
           <span>
-            <span className="font-medium">{gift.label}</span> cho mỗi bộ, chương trình Tri ân 15.000 khách hàng. <FillIn>{GIFT_PROGRAM_NOTE}</FillIn>
+            <span className="font-medium">{gift.label}</span> cho mỗi bộ, chương trình Tri ân 15.000 khách hàng.
           </span>
         </p>
       )}

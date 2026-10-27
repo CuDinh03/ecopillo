@@ -1,13 +1,12 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { CONTACT, OPENING_HOURS } from '../../data/brand'
-import { GIFT_PROGRAM_NOTE } from '../../data/catalog'
 import { formatVND } from '../../lib/format'
 import { PRICE_ON_CALL, type CustomerInfo, type OrderSummaryData } from '../../lib/order'
 import { Icon, type IconName } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { PreviewNotSent } from '../ui/PreviewNotSent'
-import { buttonClass, ContactButtons, FillIn } from '../ui/primitives'
+import { buttonClass, ContactButtons } from '../ui/primitives'
 
 interface ConfirmationProps {
   orderCode: string
@@ -101,9 +100,6 @@ export function Confirmation({ orderCode, summary, customer, onNewOrder }: Confi
               value={
                 <>
                   {line.giftCount} {line.gift.unit} {line.gift.item}
-                  <span className="mt-1 block">
-                    <FillIn>{GIFT_PROGRAM_NOTE}</FillIn>
-                  </span>
                 </>
               }
             />

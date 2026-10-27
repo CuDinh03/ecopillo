@@ -3,10 +3,8 @@ import { staticImage, type ImageSource } from './catalog'
 /**
  * Chữ và ảnh của câu chuyện thương hiệu, dùng chung cho phần "Về chúng tôi" ở trang chủ (components/home/About.tsx)
  * và trang Giới thiệu dạng chương sách (pages/AboutPage.tsx). Nội dung theo trang Giới thiệu và trang chủ cũ của ecopillo.com.vn.
- * Biên bản mục 11, 29, 41. Ecopillo đang duyệt lại câu chữ (STORY_REVIEW_NOTE).
+ * Biên bản mục 11, 29, 41. Ecopillo đang duyệt lại câu chữ; nhãn chờ duyệt đã bỏ khỏi web (owner 28/10/2026).
  */
-
-export const STORY_REVIEW_NOTE = '[ECOPILLO ĐANG DUYỆT LẠI CÂU CHỮ PHẦN CÂU CHUYỆN THƯƠNG HIỆU]'
 
 /**
  * Thư "Chia sẻ từ người sáng lập" (yêu cầu sửa mục 11): chép nguyên văn trang khách gửi 16/10/2026, kể cả cách xưng "bạn"
@@ -90,7 +88,6 @@ export const CORE_VALUES = [
  * Tạm dùng ảnh đội ngũ Ecopillo tại văn phòng Hà Nội cho tới khi Ecopillo gửi ảnh riêng (câu hỏi 11 trong Excel).
  */
 export const VALUES_IMAGE = staticImage('/images/stores/ha-noi-1.webp', 'Đội ngũ Ecopillo tại văn phòng 273 Xã Đàn, Hà Nội')
-export const VALUES_IMAGE_NOTE = '[ECOPILLO GỬI ẢNH RIÊNG CHO GIÁ TRỊ CỐT LÕI]'
 
 export const AWARD_NAME = 'Thương hiệu dẫn đầu Việt Nam 2025'
 export const AWARD_IMAGE = staticImage('/images/about/thuong-hieu-dan-dau.webp', 'Ecopillo tại lễ công bố Thương hiệu dẫn đầu Việt Nam 2025')

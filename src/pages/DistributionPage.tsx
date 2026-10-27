@@ -6,8 +6,8 @@ import { DealerMap } from '../components/dealers/DealerMap'
 import { ZaloMark, Icon } from '../components/ui/Icon'
 import { Breadcrumb } from '../components/ui/PageHero'
 import { Select, type SelectHandle } from '../components/ui/Select'
-import { buttonClass, Container, FillIn } from '../components/ui/primitives'
-import { CONTACT, DISTRIBUTION_FILL_IN, SHOWROOMS } from '../data/brand'
+import { buttonClass, Container } from '../components/ui/primitives'
+import { CONTACT, SHOWROOMS } from '../data/brand'
 import { PATHS, SITE_ORIGIN } from '../data/links'
 import {
   FAR_KM,
@@ -325,9 +325,6 @@ export function DistributionPage() {
               <p className="text-ink-faint">Vị trí chỉ dùng để tìm đại lý gần Quý khách, không lưu lại.</p>
             )}
           </div>
-          <p className="mt-4 max-w-3xl text-sm">
-            <FillIn>{DISTRIBUTION_FILL_IN}</FillIn>
-          </p>
         </Container>
       </section>
 

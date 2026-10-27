@@ -4,7 +4,6 @@ import { CONTACT } from '../../data/brand'
 import {
   COLLECTIONS,
   ESSENTIALS,
-  GIFT_PROGRAM_NOTE,
   MATTRESSES,
   productImage,
   type EssentialItem,
@@ -13,7 +12,7 @@ import {
 import { formatRange, formatVND } from '../../lib/format'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
-import { buttonClass, Container, FillIn, SectionHeading } from '../ui/primitives'
+import { buttonClass, Container, SectionHeading } from '../ui/primitives'
 import { PRODUCTS, productBySlug, productForEssential, productPath, singleOrderUrl } from '../../data/products'
 import { PATHS, productsUrl } from '../../data/links'
 import { revealDelay } from '../../lib/reveal'
@@ -277,8 +276,7 @@ export function Gifts({ standalone = false }: GiftsProps) {
                 Tri ân 15.000 khách hàng
               </h2>
               <p className="mt-4 text-ink-soft">
-                Mỗi bộ chăn ga đều kèm quà. Số lượng quà có hạn, áp dụng đến khi hết quà.{' '}
-                <FillIn>{GIFT_PROGRAM_NOTE}</FillIn>
+                Mỗi bộ chăn ga đều kèm quà. Số lượng quà có hạn, áp dụng đến khi hết quà.
               </p>
             </div>
             {standalone ? (

@@ -9,13 +9,11 @@ import {
   MISSION_IMAGE,
   PHILOSOPHY,
   STORY_OPENING,
-  STORY_REVIEW_NOTE,
   VISION,
   VISION_IMAGE,
   AWARD_IMAGE,
   AWARD_NAME,
   VALUES_IMAGE,
-  VALUES_IMAGE_NOTE,
 } from '../../data/about'
 import type { ImageSource } from '../../data/catalog'
 import { PATHS } from '../../data/links'
@@ -24,7 +22,7 @@ import { Icon } from '../ui/Icon'
 import { EventsStrip } from './EventsStrip'
 import { MobileMore } from '../ui/MobileMore'
 import { Placeholder } from '../ui/Placeholder'
-import { Container, FillIn, SectionHeading } from '../ui/primitives'
+import { Container, SectionHeading } from '../ui/primitives'
 
 /* Chữ, ảnh dùng chung với trang Giới thiệu: data/about.ts */
 
@@ -61,9 +59,6 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
               id="about-title"
               title="Từ trái tim một người làm nghề lâu năm"
             />
-            <p data-reveal className="mt-5">
-              <FillIn>{STORY_REVIEW_NOTE}</FillIn>
-            </p>
             <div data-reveal style={revealDelay(1)} className="mt-5 max-w-2xl space-y-5 text-body leading-relaxed text-ink-soft">
               <p>{STORY_OPENING}</p>
               <div className={isExpanded ? 'space-y-5' : 'hidden space-y-5 sm:block'}>
@@ -120,7 +115,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
           <MissionCard label="Tầm nhìn" image={VISION_IMAGE} position="50% 0%">
             <MissionText>{VISION}</MissionText>
           </MissionCard>
-          <MissionCard label="Giá trị cốt lõi" image={VALUES_IMAGE} position="50% 35%" note={VALUES_IMAGE_NOTE}>
+          <MissionCard label="Giá trị cốt lõi" image={VALUES_IMAGE} position="50% 35%">
             <ul className="mt-4 grid grid-cols-1 gap-x-6 gap-y-3.5 sm:grid-cols-2">
               {CORE_VALUES.map((v) => (
                 <li key={v.title} className="flex gap-3">
@@ -166,8 +161,6 @@ interface MissionCardProps {
   label: string
   image: ImageSource
   position?: string
-  /** Nhãn chờ Ecopillo khi ảnh đang là ảnh tạm */
-  note?: string
   children: ReactNode
 }
 
@@ -180,7 +173,7 @@ function MissionText({ children }: { children: ReactNode }) {
  * Ảnh Sứ mệnh, Tầm nhìn là banner có chữ viết tay nên khung giữ 3:2: ảnh Sứ mệnh (3:2) hiện trọn,
  * ảnh Tầm nhìn (vuông) neo mép trên để dòng chữ trong ảnh không bị cắt.
  */
-function MissionCard({ label, image, position, note, children }: MissionCardProps) {
+function MissionCard({ label, image, position, children }: MissionCardProps) {
   return (
     <article data-reveal className="group flex flex-col overflow-hidden rounded-[1.75rem] bg-deep-900 text-ivory">
       <div className="ecm-parallax relative aspect-[3/2] overflow-hidden">
@@ -190,11 +183,6 @@ function MissionCard({ label, image, position, note, children }: MissionCardProp
           image={image}
           position={position}
         />
-        {note && (
-          <span className="absolute top-3 left-3">
-            <FillIn>{note}</FillIn>
-          </span>
-        )}
       </div>
       <div className="flex-1 p-7 sm:p-9">
         <p className="eyebrow !text-mist-300">{label}</p>
