@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { CorporateGifts } from '../components/gifts/CorporateGifts'
 import { Gifts } from '../components/home/Essentials'
 import { EventsStrip } from '../components/home/EventsStrip'
 import { Icon } from '../components/ui/Icon'
@@ -12,8 +13,8 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 
 /**
- * Trang Quà tặng (biên bản mục 34, 48): chương trình tri ân đang được Ecopillo chỉnh lại,
- * nên trang gồm phần quà hiện có + gợi ý chọn chăn ga làm quà theo dịp.
+ * Trang Quà tặng (biên bản mục 34, 48): quà tặng doanh nghiệp, sự kiện (Ecopillo gửi 27/10/2026, mẫu A),
+ * chương trình tri ân (đang được Ecopillo chỉnh lại), sự kiện đồng hành, gợi ý chọn chăn ga làm quà theo dịp.
  */
 
 const OCCASIONS = [
@@ -41,7 +42,7 @@ const SERVICES = [
 ] as const
 
 export function GiftsPage() {
-  usePageMeta('Quà tặng và sự kiện', 'Chương trình tri ân 15.000 khách hàng và gợi ý chọn chăn ga gối Ecopillo làm quà cưới, quà tân gia, quà biếu Tết.')
+  usePageMeta('Quà tặng và sự kiện', 'Hộp quà chăn ga Ecopillo cho doanh nghiệp, sự kiện; chương trình tri ân 15.000 khách hàng và gợi ý chọn chăn ga gối Ecopillo làm quà cưới, quà tân gia, quà biếu Tết.')
 
   return (
     <div className="pb-24">
@@ -61,6 +62,8 @@ export function GiftsPage() {
           <Icon name="chevronDown" size={17} />
         </a>
       </PageHero>
+
+      <CorporateGifts />
 
       <Gifts standalone />
 
