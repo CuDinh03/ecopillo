@@ -111,8 +111,11 @@ export function CertificateCabinet() {
   )
 }
 
-/** Phần thu nhỏ ở trang Khách sạn và dự án: ba giấy chất lượng, ảnh thật thay biểu tượng, bấm xem to */
-export function CertificateBadges() {
+/**
+ * Phần thu nhỏ ở trang Khách sạn và dự án: ba giấy chất lượng, ảnh thật thay biểu tượng, bấm xem to.
+ * `showImages={false}`: chưa gắn ảnh (khung giữ nguyên cỡ), để trang tự gắn khi khách cuộn tới gần (xem useNearViewport).
+ */
+export function CertificateBadges({ showImages = true }: { showImages?: boolean }) {
   const { open, viewer } = useCertificateViewer()
   return (
     <>
@@ -126,7 +129,7 @@ export function CertificateBadges() {
               className="flex h-full w-full flex-col items-center gap-2 rounded-xl bg-ivory p-2.5 text-center shadow-[var(--shadow-soft)] transition hover:shadow-[var(--shadow-lift)] sm:flex-row sm:gap-3 sm:p-3 sm:text-left"
             >
               <img
-                src={`${c.image}-sm.webp`}
+                src={showImages ? `${c.image}-sm.webp` : undefined}
                 alt=""
                 loading="lazy"
                 decoding="async"
@@ -208,8 +211,16 @@ export function PressQuotes() {
   )
 }
 
+interface PartnerLogosProps {
+  partners: readonly Partner[]
+  className?: string
+  itemClassName?: string
+  /** `false`: chưa gắn ảnh (ô giữ nguyên cỡ), như CertificateBadges */
+  showImages?: boolean
+}
+
 /** Lưới logo đối tác (4 cột máy tính, 2 cột điện thoại); dùng chung trang chủ, Về chúng tôi, Khách sạn và dự án */
-export function PartnerLogos({ partners, className = '', itemClassName = 'h-16 sm:h-20' }: { partners: readonly Partner[]; className?: string; itemClassName?: string }) {
+export function PartnerLogos({ partners, className = '', itemClassName = 'h-16 sm:h-20', showImages = true }: PartnerLogosProps) {
   return (
     <ul className={`grid grid-cols-2 gap-3 sm:grid-cols-4 ${className}`}>
       {partners.map((p, i) => (
@@ -219,7 +230,14 @@ export function PartnerLogos({ partners, className = '', itemClassName = 'h-16 s
           style={revealDelay(i % 4)}
           className={`flex items-center justify-center rounded-xl bg-ivory px-4 py-2.5 shadow-[var(--shadow-soft)] ${itemClassName}`}
         >
-          <img src={p.logo} alt={`Logo ${p.name}`} loading="lazy" decoding="async" className="max-h-full max-w-full object-contain" />
+          {/* Chưa gắn ảnh thì ẩn thẻ, kẻo trình duyệt hiện chữ thay thế trong ô */}
+          <img
+            src={showImages ? p.logo : undefined}
+            alt={`Logo ${p.name}`}
+            loading="lazy"
+            decoding="async"
+            className={`max-h-full max-w-full object-contain ${showImages ? '' : 'invisible'}`}
+          />
         </li>
       ))}
     </ul>

@@ -8,13 +8,25 @@ import { Hospitality } from '../components/home/Hospitality'
 import { Reviews } from '../components/home/Reviews'
 import { Faq, Showrooms } from '../components/home/Showrooms'
 import { StoryTabs } from '../components/home/StoryTabs'
-import { useIsMobile } from '../hooks/useIsMobile'
 import { usePageMeta } from '../hooks/usePageMeta'
 
+/**
+ * Cả hai bản nằm trong HTML; trình duyệt chọn bằng CSS (`md:`).
+ * Không dùng useIsMobile: lúc dựng sẵn HTML trên máy chủ không biết khổ màn hình, nếu chỉ vẽ một bản
+ * thì máy tính sẽ đổi cây DOM sau khi gắn React (xô bố cục, lệch hydrate). Xem docs/ke-hoach-ssg-va-wordpress.md mục 5.
+ */
 export function HomePage() {
   usePageMeta(null)
-  const isMobile = useIsMobile()
-  return isMobile ? <MobileHome /> : <DesktopHome />
+  return (
+    <>
+      <div className="md:hidden">
+        <MobileHome />
+      </div>
+      <div className="hidden md:block">
+        <DesktopHome />
+      </div>
+    </>
+  )
 }
 
 /** Máy tính: thứ tự gốc. Dải mạng xã hội bỏ theo mẫu C (owner duyệt 23/10/2026): biểu tượng đã có ở chân trang */

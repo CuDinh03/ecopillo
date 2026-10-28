@@ -40,7 +40,7 @@ export function ProductDetailPage() {
 }
 
 function MissingProduct() {
-  usePageMeta('Không tìm thấy trang')
+  usePageMeta('Không tìm thấy trang', undefined, true)
   return <NotFoundPage />
 }
 

@@ -29,5 +29,13 @@ export default defineConfig(({ mode }) => {
   const isPreview = env.VITE_BAN_XEM_THU === '1'
   return {
     plugins: [react(), tailwindcss(), ...(isPreview ? [previewHtml(env.XEM_THU_URL || PREVIEW_URL_DEFAULT)] : [])],
+    /**
+     * Build cho máy chủ (dựng sẵn HTML, tools/dung-san-html.mjs). React Router để mặc định thì Node chọn bản CommonJS
+     * và Vite báo "module is not defined" (lỗi gặp 15/10/2026): đóng gói nó vào luôn, và ưu tiên bản ESM ("module-sync", "import").
+     */
+    ssr: {
+      noExternal: ['react-router', 'react-router-dom'],
+      resolve: { conditions: ['module-sync', 'import', 'module', 'node', 'development|production'] },
+    },
   }
 })

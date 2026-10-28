@@ -72,6 +72,9 @@ export function CollectionCover({ collection, isCompactOnMobile = false }: Colle
                   srcSet={image.srcSet}
                   sizes="(min-width: 1024px) 260px, 34vw"
                   alt=""
+                  // Trang phối màu ẩn cả khối này trên điện thoại: không có lazy thì điện thoại vẫn tải 5 ảnh,
+                  // giành đường truyền với ảnh chính (đo 28/10/2026: LCP ER25 chậm thêm ~1s)
+                  loading="lazy"
                   decoding="async"
                   className="absolute inset-0 h-full w-full scale-[1.35] skew-x-6 object-cover"
                 />

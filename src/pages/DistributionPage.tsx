@@ -114,7 +114,8 @@ export function DistributionPage() {
   const [params] = useSearchParams()
   const [me, setMe] = useState<LatLng | null>(null)
   const [geo, setGeo] = useState<Geo>('idle')
-  const [provinceId, setProvinceId] = useState(readProvince)
+  // Tỉnh nhớ lần trước: đọc sau khi gắn vào trình duyệt (useEffect), không đọc lúc dựng sẵn HTML trên máy chủ
+  const [provinceId, setProvinceId] = useState('')
   const [query, setQuery] = useState('')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [limit, setLimit] = useState(PAGE_SIZE)
@@ -127,6 +128,10 @@ export function DistributionPage() {
   const listRef = useRef<HTMLDivElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
   const searchRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    setProvinceId(readProvince())
+  }, [])
 
   const province = provinceById(provinceId)
   // Tỉnh có điểm bán ghi số điểm bên phải dòng

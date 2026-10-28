@@ -62,6 +62,13 @@ jobs:
           VITE_BAN_XEM_THU: '1'
           XEM_THU_URL: https://${{ env.PROJECT }}.pages.dev
 
+      # Dựng sẵn HTML vào dist-xem-thu (cùng bước với bản chạy thật; khuôn lấy từ outDir)
+      - name: Dựng sẵn HTML từng trang
+        run: node tools/dung-san-html.mjs
+        env:
+          ECOPILLO_DIST: dist-xem-thu
+          XEM_THU_URL: https://${{ env.PROJECT }}.pages.dev
+
       - name: Đóng gói, kiểm chặn Google, ảnh ẩn, chữ cấm
         run: node tools/chuan-bi-ban-xem-thu.mjs
 

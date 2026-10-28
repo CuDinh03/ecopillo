@@ -11,6 +11,7 @@ import { productImage, type ImageSource } from '../data/catalog'
 import { HOTEL_PARTNERS } from '../data/content'
 import { HOTEL_BENEFITS, HOTEL_EYEBROW, HOTEL_INTRO, HOTEL_INTRO_HEADING, HOTEL_LINEN, HOTEL_PARTNER_POINTS, HOTEL_PHOTOS } from '../data/hotel'
 import { productsUrl } from '../data/links'
+import { useNearViewport } from '../hooks/useNearViewport'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 
@@ -148,6 +149,8 @@ function HotelHero() {
  * thu nhỏ, bấm xem to (phần C của chứng chỉ). Mục 13: khách sạn vào trang phải thấy Ecopillo đã làm cho ai và có tiêu chuẩn gì.
  */
 function Partners() {
+  // 11 ảnh logo, giấy chứng nhận chỉ gắn khi khách cuộn tới gần: để ảnh bìa đầu trang có trọn đường truyền
+  const [imagesRef, showImages] = useNearViewport<HTMLDivElement>()
   return (
     <section aria-labelledby="partners-title" className="border-b border-line py-14 sm:py-20">
       <Container className="grid gap-10 lg:grid-cols-[5fr_6fr] lg:items-start lg:gap-16">
@@ -167,12 +170,12 @@ function Partners() {
             ))}
           </dl>
         </div>
-        <div className="grid gap-8">
-          <PartnerLogos partners={HOTEL_PARTNERS} itemClassName="h-20 sm:h-24" />
+        <div ref={imagesRef} className="grid gap-8">
+          <PartnerLogos partners={HOTEL_PARTNERS} itemClassName="h-20 sm:h-24" showImages={showImages} />
           <div>
             <p className="eyebrow">Chứng nhận, danh hiệu</p>
             <div className="mt-4">
-              <CertificateBadges />
+              <CertificateBadges showImages={showImages} />
             </div>
           </div>
         </div>

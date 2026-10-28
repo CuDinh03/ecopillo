@@ -13,7 +13,7 @@ const SUGGESTIONS = [
 ] as const
 
 export function NotFoundPage() {
-  usePageMeta('Không tìm thấy trang')
+  usePageMeta('Không tìm thấy trang', undefined, true)
   return (
     <Container className="py-24 text-center sm:py-32">
       <p className="eyebrow">Lỗi 404</p>

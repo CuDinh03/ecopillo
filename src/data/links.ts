@@ -394,7 +394,14 @@ const RENAMED_PATHS: Readonly<Record<string, string>> = {
 /** Mọi link cũ của web cũ cần chuyển 301: dùng cho máy chủ (tools/xuat-bang-chuyen-huong.mjs) */
 export const SERVER_REDIRECTS: Readonly<Record<string, string>> = { ...OLD_SITE_REDIRECTS, ...RENAMED_PATHS }
 
-const REDIRECTS: Readonly<Record<string, string>> = { ...SERVER_REDIRECTS, ...PREVIEW_REDIRECTS }
+/**
+ * Bảng chuyển hướng ghi vào `_redirects` lúc dựng sẵn HTML (Cloudflare Pages).
+ * Gồm cả link tạm bản xem thử cũ: sau khi có `404.html`, Pages không còn trả index.html cho mọi link,
+ * nên phải có 301 ở máy chủ, không chỉ `Navigate` phía trình duyệt.
+ */
+export const HOST_REDIRECTS: Readonly<Record<string, string>> = { ...SERVER_REDIRECTS, ...PREVIEW_REDIRECTS }
+
+const REDIRECTS: Readonly<Record<string, string>> = HOST_REDIRECTS
 
 /** Thêm dấu "/" cuối để tra bảng (WordPress luôn có) */
 export const withSlash = (path: string): string => (path.endsWith('/') ? path : `${path}/`)

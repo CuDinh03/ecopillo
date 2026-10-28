@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node tools/dung-san-html.mjs",
+    "dung-san": "node tools/dung-san-html.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

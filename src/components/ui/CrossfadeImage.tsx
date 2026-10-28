@@ -61,6 +61,7 @@ export function CrossfadeImage({ image, sizes, className = '', priority }: Cross
             alt={isTop ? layer.image.alt : ''}
             aria-hidden={isTop ? undefined : true}
             loading={priority ? 'eager' : 'lazy'}
+            fetchPriority={priority ? 'high' : undefined}
             decoding="async"
             onLoad={() => markLoaded(layer.image.src)}
             // Ảnh hỏng cũng coi như xong, để khung không kẹt ở ảnh của mẫu trước
