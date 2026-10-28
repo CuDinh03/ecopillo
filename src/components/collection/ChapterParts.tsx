@@ -71,10 +71,15 @@ interface ChapterStoryProps {
   index: number
   total: number
   volume?: string
+  /**
+   * Trang riêng của phối màu: tên đầy đủ "Bộ chăn ga Lyocell Eco Rosa ER25" thành H1 duy nhất của trang
+   * (SSG giai đoạn 2; web cũ cũng đặt H1 như vậy). Trang bộ sưu tập không truyền: H1 là tên bộ ở bìa.
+   */
+  heading?: string
   className?: string
 }
 
-export function ChapterStory({ pattern, story, title, index, total, volume, className = '' }: ChapterStoryProps) {
+export function ChapterStory({ pattern, story, title, index, total, volume, heading, className = '' }: ChapterStoryProps) {
   return (
     <div className={className}>
       <p className="flex flex-wrap items-baseline gap-x-2.5 font-display text-mist-600 italic">
@@ -86,12 +91,26 @@ export function ChapterStory({ pattern, story, title, index, total, volume, clas
       </p>
       {/* key: đổi chương thì chữ hiện dần lại */}
       <div key={pattern.code} className="fade-in" aria-live="polite">
-        <h2 id="chapter-title" className="font-display mt-3 text-[2.3rem] leading-[1.05] text-mist-600 italic sm:text-[3rem]">
-          {title}
-        </h2>
-        <p className="mt-2 text-sm font-medium text-deep-900">
-          {pattern.colorName} · {pattern.code}
-        </p>
+        {heading ? (
+          <>
+            {/* Tên chương giữ nguyên kiểu chữ nhưng không là thẻ tiêu đề; dòng nhỏ bên dưới là H1 */}
+            <p id="chapter-title" className="font-display mt-3 text-[2.3rem] leading-[1.05] text-mist-600 italic sm:text-[3rem]">
+              {title}
+            </p>
+            <div className="mt-2 text-sm font-medium text-deep-900">
+              <h1 className="inline">{heading}</h1> · {pattern.colorName}
+            </div>
+          </>
+        ) : (
+          <>
+            <h2 id="chapter-title" className="font-display mt-3 text-[2.3rem] leading-[1.05] text-mist-600 italic sm:text-[3rem]">
+              {title}
+            </h2>
+            <p className="mt-2 text-sm font-medium text-deep-900">
+              {pattern.colorName} · {pattern.code}
+            </p>
+          </>
+        )}
         {story && <p className="mt-4 max-w-xl text-body leading-relaxed text-ink-soft">{story.text}</p>}
         {story && !story.fromCatalog && !STORIES_APPROVED && (
           <p className="mt-3">

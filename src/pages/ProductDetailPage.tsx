@@ -3,6 +3,7 @@ import { Link, useLocation, useParams } from 'react-router-dom'
 import { CollectionDetail } from '../components/collection/CollectionDetail'
 import { DetailBreadcrumb, MobileBuyBar, NearMeLine, ProductInfoCards, RelatedProducts, TrustList } from '../components/products/DetailParts'
 import { ProductReviews } from '../components/products/ProductReviews'
+import { JsonLd } from '../components/seo/JsonLd'
 import { CrossfadeImage } from '../components/ui/CrossfadeImage'
 import { Icon, ZaloMark } from '../components/ui/Icon'
 import { Placeholder } from '../components/ui/Placeholder'
@@ -15,6 +16,7 @@ import { ExploreMore } from '../components/ui/ExploreMore'
 import { categoryLabel, priceLabel, productBySlug, singleOrderUrl, variantPrice, type Product } from '../data/products'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { formatVND } from '../lib/format'
+import { productLd, shareImageOf } from '../lib/structuredData'
 import { NotFoundPage } from './NotFoundPage'
 
 /**
@@ -40,7 +42,7 @@ export function ProductDetailPage() {
 }
 
 function MissingProduct() {
-  usePageMeta('Không tìm thấy trang', undefined, true)
+  usePageMeta('Không tìm thấy trang', undefined, { notFound: true })
   return <NotFoundPage />
 }
 
@@ -55,7 +57,8 @@ const productDescription = (product: Product): string => {
 
 /** Sản phẩm lẻ (ruột gối, ruột chăn, topper, đệm): ảnh chính + ảnh phụ, chọn kích thước rồi đặt online */
 function ProductDetail({ product }: { product: Product }) {
-  usePageMeta(product.name, productDescription(product))
+  const { pathname } = useLocation()
+  usePageMeta(product.name, productDescription(product), { image: shareImageOf(product.image), type: 'product' })
   const photos = product.image ? [product.image, ...(product.gallery ?? [])] : []
   const [photoIndex, setPhotoIndex] = useState(0)
   const variants = product.variants
@@ -75,6 +78,10 @@ function ProductDetail({ product }: { product: Product }) {
   return (
     <div className="pb-36 lg:pb-24">
       <Container className="pt-8 sm:pt-10">
+        {/* Sản phẩm lẻ chưa có dữ liệu tồn kho: không ghi còn hay hết hàng */}
+        <JsonLd
+          data={productLd({ name: product.name, description: product.summary, path: pathname, image: product.image, min: product.min, max: product.max })}
+        />
         <DetailBreadcrumb product={product} />
 
         <div className="mt-6 grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-14">

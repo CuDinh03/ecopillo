@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom'
 import { Faq } from '../components/home/Showrooms'
+import { JsonLd } from '../components/seo/JsonLd'
 import { Icon } from '../components/ui/Icon'
 import { PageHero } from '../components/ui/PageHero'
+import { FAQS } from '../data/content'
 import { POLICY_NAV } from '../data/policyNav'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { faqLd } from '../lib/structuredData'
 
 /** Trang Hỏi đáp: câu hỏi thường gặp (biên bản mục 43) + lối tắt sang các trang chính sách */
 export function FaqPage() {
@@ -37,6 +40,7 @@ export function FaqPage() {
         </ul>
       </PageHero>
       <Faq standalone />
+      <JsonLd data={faqLd(FAQS)} />
     </>
   )
 }

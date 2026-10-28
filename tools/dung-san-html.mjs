@@ -12,9 +12,11 @@
  *
  * Thẻ <title>, mô tả, canonical lấy từ usePageMeta lúc dựng. `data-trang` trên #root để
  * src/main.tsx nạp đúng gói lazy trước khi hydrate (tránh chớp trắng).
+ * Giai đoạn 2: ảnh chia sẻ riêng (og:image, og:image:alt) và og:type cũng lấy từ usePageMeta;
+ * trang không khai ảnh giữ ảnh chung trong index.html. Dữ liệu cấu trúc (JSON-LD) nằm sẵn trong phần thân trang.
  */
 import { build as viteBuild } from 'vite'
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join, relative } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
@@ -56,7 +58,14 @@ function deferFonts(html) {
   return html.replace(FONT_LINK_RE, loader)
 }
 
-/** Ghi nội dung trang vào bản index.html của Vite: title, mô tả, canonical, #root có HTML dựng sẵn */
+/** Thay giá trị `content` của thẻ meta mang thuộc tính `attr` (thẻ trong index.html có thể xuống dòng giữa hai thuộc tính) */
+function replaceMeta(html, attr, value) {
+  const re = new RegExp(`(${attr}\\s+content=")[^"]*(")`)
+  if (!re.test(html)) throw new Error(`Không thấy thẻ ${attr} trong index.html`)
+  return html.replace(re, `$1${escapeAttr(value)}$2`)
+}
+
+/** Ghi nội dung trang vào bản index.html của Vite: title, mô tả, canonical, ảnh chia sẻ, #root có HTML dựng sẵn */
 function applyPage(template, { url, body, meta, page, siteOrigin }) {
   const title = meta?.title
   const description = meta?.description
@@ -66,19 +75,20 @@ function applyPage(template, { url, body, meta, page, siteOrigin }) {
   let html = template
   if (title) {
     html = html.replace(/<title>[^<]*<\/title>/, `<title>${escapeText(title)}</title>`)
-    html = html.replace(/property="og:title" content="[^"]*"/, `property="og:title" content="${escapeAttr(title)}"`)
+    html = replaceMeta(html, 'property="og:title"', title)
   }
   if (description) {
-    html = html.replace(
-      /(<meta\s+name="description"\s+content=")[^"]*(")/,
-      `$1${escapeAttr(description)}$2`,
-    )
-    html = html.replace(
-      /property="og:description" content="[^"]*"/,
-      `property="og:description" content="${escapeAttr(description)}"`,
-    )
+    html = replaceMeta(html, 'name="description"', description)
+    html = replaceMeta(html, 'property="og:description"', description)
   }
-  html = html.replace(/property="og:url" content="[^"]*"/, `property="og:url" content="${escapeAttr(canonical)}"`)
+  html = replaceMeta(html, 'property="og:url"', canonical)
+  if (meta?.type) html = replaceMeta(html, 'property="og:type"', meta.type)
+  if (meta?.image) {
+    // Ảnh đã chép từ public/ sang thư mục build: thiếu ảnh thì báo lỗi, không để Facebook, Zalo nhận link hỏng
+    if (!existsSync(join(DIST, meta.image.path))) throw new Error(`thiếu ảnh chia sẻ ${meta.image.path}`)
+    html = replaceMeta(html, 'property="og:image"', `${siteOrigin}${meta.image.path}`)
+    html = replaceMeta(html, 'property="og:image:alt"', meta.image.alt)
+  }
 
   // Canonical: thêm hoặc thay
   if (/rel="canonical"/.test(html)) {

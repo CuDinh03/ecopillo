@@ -8,8 +8,10 @@ import { Hospitality } from '../components/home/Hospitality'
 import { Reviews } from '../components/home/Reviews'
 import { Faq, Showrooms } from '../components/home/Showrooms'
 import { StoryTabs } from '../components/home/StoryTabs'
+import { JsonLd } from '../components/seo/JsonLd'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { organizationLd } from '../lib/structuredData'
 
 /**
  * HTML dựng sẵn có cả hai bản; trình duyệt chọn bằng CSS (`md:`). Lúc dựng trên máy chủ không biết khổ màn hình,
@@ -23,6 +25,7 @@ export function HomePage() {
   const isMobile = useIsMobile()
   return (
     <>
+      <JsonLd data={organizationLd()} />
       {/* Hai bản cùng mở đầu bằng Hero + TrustStrip: vẽ một lần (Hero tự chia điện thoại / máy tính bằng CSS) */}
       <Hero />
       <TrustStrip />

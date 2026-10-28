@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { breadcrumbLd, type BreadcrumbItem } from '../../lib/structuredData'
+import { JsonLd } from '../seo/JsonLd'
 import { Container } from './primitives'
 
 export interface Crumb {
@@ -7,10 +9,26 @@ export interface Crumb {
   to?: string
 }
 
-/** Đường dẫn "Trang chủ / …" ở đầu mỗi trang con */
-export function Breadcrumb({ items }: { items: readonly Crumb[] }) {
+/**
+ * Đường dẫn dạng dữ liệu cấu trúc: mục có link giữ link, mục cuối là trang đang xem;
+ * mục giữa không có link (nhãn nhóm như "Chính sách") bỏ đi vì Google cần link cho mọi mục trừ mục cuối
+ */
+function crumbTrail(items: readonly Crumb[], pathname: string, current?: string): BreadcrumbItem[] {
+  return items.flatMap((item, i) => {
+    if (i === items.length - 1) return [{ name: current ?? item.label, path: pathname }]
+    return item.to ? [{ name: item.label, path: item.to }] : []
+  })
+}
+
+/**
+ * Đường dẫn "Trang chủ / …" ở đầu mỗi trang con.
+ * `current`: tên trang đang xem trong dữ liệu cấu trúc khi mục cuối hiện chữ khác (bài viết hiện chủ đề, Google cần tên bài)
+ */
+export function Breadcrumb({ items, current }: { items: readonly Crumb[]; current?: string }) {
+  const { pathname } = useLocation()
   return (
     <nav aria-label="Đường dẫn" className="text-sm text-ink-soft">
+      <JsonLd data={breadcrumbLd(crumbTrail(items, pathname, current))} />
       <ol className="flex flex-wrap items-center gap-2">
         <li>
           <Link to="/" className="hover:text-deep-900">

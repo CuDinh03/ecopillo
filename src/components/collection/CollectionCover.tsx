@@ -20,6 +20,7 @@ interface CollectionCoverProps {
   /**
    * Trang của một phối màu: trên điện thoại thu bìa thành một dòng dẫn về trang bộ, để ảnh mẫu lên màn đầu
    * (B5, owner duyệt 24/10/2026). Trang bộ sưu tập và máy tính giữ bìa đầy đủ.
+   * Trang phối màu có H1 riêng ("Bộ chăn ga Lyocell Eco Rosa ER25", trong ChapterStory), nên tên bộ ở bìa chỉ là chữ thường.
    */
   isCompactOnMobile?: boolean
 }
@@ -31,29 +32,32 @@ interface CollectionCoverProps {
 export function CollectionCover({ collection, isCompactOnMobile = false }: CollectionCoverProps) {
   const story = COLLECTION_STORIES[collection.id]
   const slices = pickSlices(collection)
+  // Trang bộ: tên bộ là H1. Trang phối màu: H1 nằm ở câu chuyện chương
+  const Name = isCompactOnMobile ? 'p' : 'h1'
   return (
     <>
     {isCompactOnMobile && (
-      // Mỗi khổ chỉ hiện một h1: dòng này trên điện thoại, bìa đầy đủ từ 640px
-      <h1 className="mt-5 sm:hidden">
+      // Dòng dẫn về trang bộ, chỉ hiện trên điện thoại (bìa đầy đủ từ 640px)
+      <p className="mt-5 sm:hidden">
         <Link
           to={collectionPath(collection)}
           className="flex min-h-12 items-center justify-between gap-3 rounded-2xl bg-ivory px-4 py-3 text-body-sm text-deep-900 shadow-[var(--shadow-soft)] active:bg-mist-100"
         >
-          <span>
+          {/* Luôn một dòng: ở 320px, lúc font dự phòng còn hiện thì dòng này xuống hai dòng rồi co lại khi font về, kéo cả trang lên (CLS 0,13, đo 28/10/2026) */}
+          <span className="min-w-0 truncate">
             <span className="font-medium">Bộ {collection.name}</span>
             <span className="text-ink-soft"> · {collection.patterns.length} chương màu</span>
           </span>
           <Icon name="arrowRight" size={16} className="shrink-0 text-ink-faint" />
         </Link>
-      </h1>
+      </p>
     )}
     <header className={`mt-5 flex-col ${isCompactOnMobile ? 'hidden sm:flex' : 'flex'} overflow-hidden rounded-[1.75rem] bg-deep-900 text-ivory sm:rounded-[2.25rem] lg:grid lg:grid-cols-[1fr_1.15fr]`}>
       <div className="p-5 pt-4 sm:p-10 lg:py-12 lg:pl-12">
         <p className="eyebrow !text-ivory/75">
           {collection.kindLabel} · {collection.patterns.length} chương màu
         </p>
-        <h1 className="font-display mt-2 text-[2.4rem] leading-none sm:mt-3 sm:text-[4.2rem]">{collection.name}</h1>
+        <Name className="font-display mt-2 text-[2.4rem] leading-none sm:mt-3 sm:text-[4.2rem]">{collection.name}</Name>
         <p className="mt-3 max-w-md text-small leading-relaxed text-ivory/85 sm:mt-4 sm:text-body">{story ?? collection.description}</p>
         {story && !STORIES_APPROVED && (
           <p className="mt-3">

@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { SITE_ORIGIN, withSlash } from '../data/links'
+import type { ShareImage } from '../lib/structuredData'
 
 const SITE = 'Ecopillo'
 export const DEFAULT_TITLE = 'Ecopillo - Nâng niu giấc mơ xanh'
@@ -15,7 +16,13 @@ export interface PageMeta {
   description?: string
   /** Trang lỗi: bước dựng ghi thành 404.html, máy chủ trả mã 404 */
   notFound?: boolean
+  /** Ảnh chia sẻ riêng (og:image); không có thì dùng ảnh chung của web trong index.html */
+  image?: ShareImage
+  /** og:type: trang sản phẩm, bài viết; mặc định "website" */
+  type?: 'website' | 'product' | 'article'
 }
+
+export type PageMetaOptions = Pick<PageMeta, 'notFound' | 'image' | 'type'>
 /** Bước dựng đọc ra sau khi vẽ: thẻ đầu trang, và gói (trang `lazy`) mà trang dùng, để trình duyệt nạp gói đó trước khi gắn vào */
 export interface PrerenderCollector {
   meta: PageMeta | null
@@ -39,12 +46,13 @@ function setCanonical(pathname: string) {
 /**
  * Tiêu đề tab, đoạn mô tả và thẻ canonical cho từng trang.
  * Trên WordPress, Yoast giữ tiêu đề, mô tả đang có của từng đường link cũ; đây là bản mặc định cho trang mới.
- * `notFound`: trang lỗi (dựng thành 404.html).
+ * `notFound`: trang lỗi (dựng thành 404.html). `image`, `type`: chỉ ghi vào HTML dựng sẵn
+ * (Facebook, Zalo đọc HTML, không chạy JavaScript), nên lúc chuyển trang trên trình duyệt không cần đổi.
  */
-export function usePageMeta(title: string | null, description?: string, notFound = false) {
+export function usePageMeta(title: string | null, description?: string, options: PageMetaOptions = {}) {
   const { pathname } = useLocation()
   const collected = useContext(PageMetaContext)
-  if (collected) collected.meta = { title: fullTitle(title), description, notFound }
+  if (collected) collected.meta = { title: fullTitle(title), description, ...options }
 
   useEffect(() => setCanonical(pathname), [pathname])
 

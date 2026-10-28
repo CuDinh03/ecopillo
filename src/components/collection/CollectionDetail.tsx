@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import {
+  coverOf,
   imageOfPattern,
   isPatternSoldOut,
   isSizeSoldOut,
   patternPrice,
+  patternRange,
   type Collection,
   type Pattern,
   type SizeId,
@@ -13,6 +15,8 @@ import type { Product } from '../../data/products'
 import { chapterTitle, patternByParam, patternPath, sameToneElsewhere, storyOf, storySummary, toneById, volumesOf } from '../../data/stories'
 import { relatedForProduct } from '../../data/related'
 import { usePageMeta } from '../../hooks/usePageMeta'
+import { productLd, shareImageOf } from '../../lib/structuredData'
+import { JsonLd } from '../seo/JsonLd'
 import { ExploreMore } from '../ui/ExploreMore'
 import { DetailBreadcrumb, MobileBuyBar, ProductInfoCards, RelatedProducts } from '../products/DetailParts'
 import { ProductReviews } from '../products/ProductReviews'
@@ -42,6 +46,7 @@ const defaultPattern = (collection: Collection): Pattern | undefined =>
  */
 export function CollectionDetail({ product, collection, patternParam }: CollectionDetailProps) {
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const [searchParams] = useSearchParams()
   const legacy = patternParam ? undefined : patternByParam(collection, searchParams.get('mau'))
   const pattern = patternByParam(collection, patternParam) ?? legacy ?? defaultPattern(collection)
@@ -53,14 +58,21 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
 
   const story = pattern ? storyOf(collection, pattern) : undefined
   const title = pattern ? chapterTitle(collection, pattern) : product.name
+  // Trang riêng của một phối màu (có mã trên link); trang bộ chỉ mở sẵn một chương
+  const chapter = patternParam ? pattern : undefined
+  // Tên đầy đủ như web cũ: "Bộ chăn ga Lyocell Eco Rosa ER25" (H1, tên trong dữ liệu cấu trúc, đường dẫn)
+  const fullName = chapter ? `${product.name} ${chapter.code}` : product.name
+  const description = chapter && story ? storySummary(story) : product.summary
+  const image = chapter ? imageOfPattern(collection, chapter) : coverOf(collection)
   // Trang bộ (chưa chọn chương) mở sẵn chương đầu nhưng đặt tiêu đề theo tên bộ, để không trùng tiêu đề với trang
   // riêng của chương đó (audit 16/10/2026); trang chương giữ tiêu đề chương
-  usePageMeta(
-    patternParam && pattern ? `${title} · ${product.name} ${pattern.code}` : product.name,
-    patternParam && story ? storySummary(story) : product.summary,
-  )
+  usePageMeta(chapter ? `${title} · ${fullName}` : product.name, description, {
+    image: shareImageOf(image),
+    type: 'product',
+  })
 
   if (!pattern) return null
+  const range = chapter ? patternRange(collection, chapter) : { min: product.min, max: product.max }
   // Link cũ dạng ?mau=ER42: chuyển sang link riêng của phối màu
   if (legacy) return <Navigate to={patternPath(collection, legacy)} replace />
 
@@ -89,7 +101,18 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
   return (
     <div className="pb-36 lg:pb-24">
       <Container className="pt-8 sm:pt-10">
-        <DetailBreadcrumb product={product} />
+        <JsonLd
+          data={productLd({
+            name: fullName,
+            description,
+            path: pathname,
+            image,
+            sku: chapter?.code,
+            ...range,
+            isInStock: chapter ? !isPatternSoldOut(chapter) : undefined,
+          })}
+        />
+        <DetailBreadcrumb product={product} current={fullName} />
         <CollectionCover collection={collection} isCompactOnMobile={Boolean(patternParam)} />
 
         {/*
@@ -107,7 +130,15 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
               onNext={() => step(1)}
             />
             <div className="max-lg:contents">
-              <ChapterStory pattern={pattern} story={story} title={title} index={index} total={siblings.length} volume={story?.volume} />
+              <ChapterStory
+                pattern={pattern}
+                story={story}
+                title={title}
+                index={index}
+                total={siblings.length}
+                volume={story?.volume}
+                heading={chapter && fullName}
+              />
               <ChapterBuy
                 collection={collection}
                 pattern={pattern}

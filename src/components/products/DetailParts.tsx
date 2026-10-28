@@ -1,11 +1,13 @@
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
 import { patternRange, type Pattern, type SizeId } from '../../data/catalog'
 import { NEAR_ME_URL } from '../../data/dealers'
 import { PATHS, productsUrl } from '../../data/links'
 import { categoryLabel, orderUrl, priceLabel, PRODUCTS, type Product } from '../../data/products'
 import { formatRange, formatVND } from '../../lib/format'
+import { breadcrumbLd } from '../../lib/structuredData'
+import { JsonLd } from '../seo/JsonLd'
 import { Icon, ZaloMark } from '../ui/Icon'
 import { ProductCard } from './ProductCard'
 
@@ -30,9 +32,20 @@ const POLICIES = [
 
 const TRUST_POINTS = ['Thanh toán khi nhận hàng', 'Miễn phí giao từ 500.000đ', 'Kiểm hàng, trải thử khi nhận', 'Đổi hàng trong 7 ngày'] as const
 
-export function DetailBreadcrumb({ product }: { product: Product }) {
+/**
+ * Thanh hiện ba mục (Trang chủ / Sản phẩm / nhóm); dữ liệu cấu trúc thêm trang đang xem ở cuối.
+ * `current`: tên trang đang xem, mặc định tên sản phẩm (trang phối màu truyền tên kèm mã).
+ */
+export function DetailBreadcrumb({ product, current = product.name }: { product: Product; current?: string }) {
+  const { pathname } = useLocation()
+  const trail = [
+    { name: 'Sản phẩm', path: PATHS.products },
+    { name: categoryLabel(product.category), path: productsUrl({ 'danh-muc': product.category }) },
+    { name: current, path: pathname },
+  ]
   return (
     <nav aria-label="Đường dẫn" className="flex flex-wrap items-center gap-2 text-sm text-ink-soft">
+      <JsonLd data={breadcrumbLd(trail)} />
       <Link to="/" className="hover:text-deep-900">
         Trang chủ
       </Link>

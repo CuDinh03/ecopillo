@@ -1,5 +1,6 @@
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { PostCard } from '../components/blog/PostCard'
+import { JsonLd } from '../components/seo/JsonLd'
 import { Icon } from '../components/ui/Icon'
 import { Breadcrumb } from '../components/ui/PageHero'
 import { Placeholder } from '../components/ui/Placeholder'
@@ -9,6 +10,7 @@ import { postBySlug, POSTS, type PostBlock } from '../data/posts'
 import { relatedForPost } from '../data/related'
 import { ExploreMore } from '../components/ui/ExploreMore'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { articleLd, shareImageOf } from '../lib/structuredData'
 import { NotFoundPage } from './NotFoundPage'
 
 function Block({ block }: { block: PostBlock }) {
@@ -45,7 +47,12 @@ function Block({ block }: { block: PostBlock }) {
 export function ArticlePage() {
   const { slug } = useParams()
   const post = postBySlug(slug)
-  usePageMeta(post?.title ?? 'Không tìm thấy trang', post?.excerpt)
+  const { pathname } = useLocation()
+  usePageMeta(
+    post?.title ?? 'Không tìm thấy trang',
+    post?.excerpt,
+    post ? { image: shareImageOf(post.cover), type: 'article' } : { notFound: true },
+  )
   if (!post) return <NotFoundPage />
 
   const others = POSTS.filter((p) => p.slug !== post.slug).slice(0, 2)
@@ -54,7 +61,8 @@ export function ArticlePage() {
     <div className="pb-24">
       <Container className="pt-10 sm:pt-14">
         <div className="mx-auto max-w-3xl">
-          <Breadcrumb items={[{ label: 'Tin tức', to: PATHS.blog }, { label: post.category }]} />
+          <JsonLd data={articleLd({ title: post.title, description: post.excerpt, path: pathname, image: post.cover })} />
+          <Breadcrumb items={[{ label: 'Tin tức', to: PATHS.blog }, { label: post.category }]} current={post.title} />
           <p className="mt-8 flex items-center gap-2 text-meta text-ink-soft">
             <Link to={`${PATHS.blog}?chu-de=${encodeURIComponent(post.category)}`} className="font-medium tracking-[0.12em] text-mist-600 uppercase hover:underline">
               {post.category}

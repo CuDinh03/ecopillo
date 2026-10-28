@@ -88,7 +88,7 @@ pnpm lint       # đang có 4 cảnh báo cũ react-refresh, không phải lỗi
 | Danh mục nhỏ của web cũ (đệm lò xo, ruột chăn gối…) | `LISTINGS` trong `src/data/links.ts`, trang `src/pages/CategoryPage.tsx` |
 | Hiệu ứng hiện dần, cuộn trôi (Lenis), ảnh trôi | `public/hieu-ung/` + `HIEU-UNG-GHI-CHU.md` |
 | Phần đầu trang chủ (ảnh Bảng EC) | `src/components/home/Hero.tsx`, yêu cầu gốc ở `docs/hero-bang-ec-prompt.md` |
-| Tiêu đề tab, mô tả SEO, canonical, ảnh chia sẻ | `usePageMeta` ở từng trang, `index.html` |
+| Tiêu đề tab, mô tả SEO, canonical, ảnh chia sẻ, JSON-LD | `usePageMeta` ở từng trang; `src/lib/structuredData.ts` + `src/components/seo/JsonLd.tsx`; ảnh chia sẻ `public/images/chia-se/` (tạo lại: `python3 -I tools/tao-anh-chia-se-2026-10-28.py public/images`); ghi vào HTML: `tools/dung-san-html.mjs` |
 
 ## Bẫy đã gặp (đọc trước khi debug)
 
