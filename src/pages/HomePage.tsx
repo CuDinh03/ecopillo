@@ -8,33 +8,34 @@ import { Hospitality } from '../components/home/Hospitality'
 import { Reviews } from '../components/home/Reviews'
 import { Faq, Showrooms } from '../components/home/Showrooms'
 import { StoryTabs } from '../components/home/StoryTabs'
+import { useIsMobile } from '../hooks/useIsMobile'
 import { usePageMeta } from '../hooks/usePageMeta'
 
 /**
- * Cả hai bản nằm trong HTML; trình duyệt chọn bằng CSS (`md:`).
- * Không dùng useIsMobile: lúc dựng sẵn HTML trên máy chủ không biết khổ màn hình, nếu chỉ vẽ một bản
- * thì máy tính sẽ đổi cây DOM sau khi gắn React (xô bố cục, lệch hydrate). Xem docs/ke-hoach-ssg-va-wordpress.md mục 5.
+ * HTML dựng sẵn có cả hai bản; trình duyệt chọn bằng CSS (`md:`). Lúc dựng trên máy chủ không biết khổ màn hình,
+ * nếu chỉ vẽ một bản thì máy tính sẽ đổi cây DOM sau khi gắn React (xô bố cục, lệch hydrate).
+ * Gắn xong thì bỏ bản đang ẩn: trang chỉ còn một H1 và không trùng id (link #bo-suu-tap, thanh menu sáng đúng mục).
+ * Bản bị bỏ vốn đang ẩn nên không xô bố cục; hai khung bọc giữ nguyên để bản đang hiện không bị vẽ lại.
+ * Xem docs/ke-hoach-ssg-va-wordpress.md mục 5.
  */
 export function HomePage() {
   usePageMeta(null)
+  const isMobile = useIsMobile()
   return (
     <>
-      <div className="md:hidden">
-        <MobileHome />
-      </div>
-      <div className="hidden md:block">
-        <DesktopHome />
-      </div>
+      {/* Hai bản cùng mở đầu bằng Hero + TrustStrip: vẽ một lần (Hero tự chia điện thoại / máy tính bằng CSS) */}
+      <Hero />
+      <TrustStrip />
+      <div className="md:hidden">{isMobile !== false && <MobileHome />}</div>
+      <div className="hidden md:block">{isMobile !== true && <DesktopHome />}</div>
     </>
   )
 }
 
-/** Máy tính: thứ tự gốc. Dải mạng xã hội bỏ theo mẫu C (owner duyệt 23/10/2026): biểu tượng đã có ở chân trang */
+/** Máy tính: thứ tự gốc (sau Hero, TrustStrip). Dải mạng xã hội bỏ theo mẫu C (owner duyệt 23/10/2026): biểu tượng đã có ở chân trang */
 function DesktopHome() {
   return (
     <>
-      <Hero />
-      <TrustStrip />
       <About moreLink />
       <BrandVideo />
       <BrandStory />
@@ -59,8 +60,6 @@ function DesktopHome() {
 function MobileHome() {
   return (
     <>
-      <Hero />
-      <TrustStrip />
       <Collections />
       <Essentials withTabs />
       <Reviews />

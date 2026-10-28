@@ -14,7 +14,7 @@ import { productsUrl } from '../../data/links'
  *
  * [ECOPILLO GỬI FONT LOGO] Mục 2 (yêu cầu 16/10/2026): câu chính sẽ viết bằng đúng font viết tay của dòng slogan trong logo.
  * Owner chốt 17/10/2026: chờ Ecopillo gửi tên hoặc file font, chưa đổi. Mẫu thử 3 font gần giống (Ephesis, Ms Madi, Allura):
- * docs/de-xuat-dau-trang-chu-goi-4.html. Khi có font: chỉ áp cho hai thẻ <h1> bên dưới, và đo lại CLS vì font về muộn làm câu chính nhảy.
+ * docs/de-xuat-dau-trang-chu-goi-4.html. Khi có font: chỉ áp cho câu chính ở hai bản bên dưới (thẻ <h1> điện thoại, tiêu đề máy tính), và đo lại CLS vì font về muộn làm câu chính nhảy.
  * Hai ý còn lại của Bảng EC (Hệ sinh thái sản phẩm; Vì một giấc ngủ chất lượng hơn) gom vào
  * MỘT dải trắng ngay dưới ảnh.
  */
@@ -228,15 +228,21 @@ export function Hero() {
         <Container className="absolute inset-0 z-10 flex items-center pt-[4.5rem]">
           <div>
             <Tagline />
-            <h1
+            {/*
+              Trang chỉ có một thẻ <h1> (bản điện thoại ở MobileTop, vì Google xếp hạng theo bản điện thoại).
+              Bản máy tính là tiêu đề cấp 1 cho trình đọc màn hình bằng role; hai bản không bao giờ cùng hiện.
+            */}
+            <p
               id="hero-title"
+              role="heading"
+              aria-level={1}
               style={delay(60)}
-              className={`hero-in font-display mt-5 text-[3.5rem] leading-[1.02] text-deep-900 lg:text-[4rem] ${TITLE_WIDE}`}
+              className={`hero-in font-display mt-5 text-balance text-[3.5rem] leading-[1.02] text-deep-900 lg:text-[4rem] ${TITLE_WIDE}`}
             >
               Nâng niu
               <br />
               <span className="text-mist-600 italic">giấc mơ xanh</span>
-            </h1>
+            </p>
             <p style={delay(120)} className="hero-in font-display mt-3 text-[1.35rem] text-deep-700 italic">
               {SUBLINE}
             </p>
