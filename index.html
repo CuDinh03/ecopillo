@@ -58,6 +58,16 @@
           document.head.appendChild(link)
         }
       }
+      // Trang chủ: tải trước font viết tay của câu "Nâng niu giấc mơ xanh" (7 KB, src/index.css) để câu chính hiện ngay
+      if (path === '/') {
+        const font = document.createElement('link')
+        font.rel = 'preload'
+        font.as = 'font'
+        font.type = 'font/woff'
+        font.href = '/fonts/betterlett-slogan.woff'
+        font.crossOrigin = 'anonymous'
+        document.head.appendChild(font)
+      }
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

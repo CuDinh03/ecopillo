@@ -40,6 +40,8 @@ bắt đầu từ [`00-phien-sau-doc-truoc.md`](docs/viec-can-lam/00-phien-sau-d
   `ivory`, `cream-50`, `cream-100`, `mist-50` đều là trắng. Thẻ, ô, hộp trắng tách khỏi nền bằng `shadow-[var(--shadow-soft)]`, không dùng viền `ring-cream-200` (trùng màu nền nên không thấy).
   Dải kéo hết bề ngang không đặt nền (để nền xanh liền). Đường kẻ dùng `border-line` (chàm 14%). Ô nhỏ nằm **bên trong** khối trắng dùng `bg-mist-100` (#E9F8FF).
 - Font: Be Vietnam Pro (chữ thường) + Noto Serif Display (tiêu đề, lớp `font-display`).
+  Ngoại lệ duy nhất: câu "Nâng niu giấc mơ xanh" đầu trang chủ dùng font viết tay của logo (lớp `font-slogan`, 1FTV VIP Betterlett, mục 2).
+  File `public/fonts/betterlett-slogan.woff` **chỉ có chữ của câu đó**: dùng font này cho chữ khác thì chữ thiếu sẽ hiện font khác; đổi câu thì cắt lại (lệnh ở đầu `src/index.css`).
 - **Skill thiết kế trong `.claude/skills/`** (Impeccable, Taste Skill, bộ của Emil Kowalski; nguồn ở `.claude/skills/NGUON-SKILL.md`, không lên git):
   chỉ dùng để rà và chau chuốt. Chúng khuyên đổi font, màu, bố cục thì **quy tắc trong file này và quyết định owner đã chốt thắng**.
 - **Không dùng `<select>` của trình duyệt** (danh sách xổ xuống màu xám của macOS, owner chê 15/10/2026): dùng `Select` trong `src/components/ui/Select.tsx`.

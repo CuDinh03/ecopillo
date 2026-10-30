@@ -12,9 +12,10 @@ import { productsUrl } from '../../data/links'
  *
  * Thứ bậc: 1 câu chính "Nâng niu giấc mơ xanh" → 1 dòng nghiêng "Chốn yên…" → 2 nút.
  *
- * [ECOPILLO GỬI FONT LOGO] Mục 2 (yêu cầu 16/10/2026): câu chính sẽ viết bằng đúng font viết tay của dòng slogan trong logo.
- * Owner chốt 17/10/2026: chờ Ecopillo gửi tên hoặc file font, chưa đổi. Mẫu thử 3 font gần giống (Ephesis, Ms Madi, Allura):
- * docs/de-xuat-dau-trang-chu-goi-4.html. Khi có font: chỉ áp cho câu chính ở hai bản bên dưới (thẻ <h1> điện thoại, tiêu đề máy tính), và đo lại CLS vì font về muộn làm câu chính nhảy.
+ * Mục 2 (yêu cầu 16/10/2026): câu chính viết bằng đúng font viết tay của dòng slogan trong logo (1FTV VIP Betterlett,
+ * lớp font-slogan, src/index.css; có font 29/10/2026). Một màu chàm như logo, không nghiêng thêm (font đã nghiêng sẵn).
+ * Hai dòng ở cả hai khổ: viết một dòng thì phải nhỏ còn ~47px mới lọt khoảng trời trái ảnh, mà chữ thường của font rất thấp.
+ * Mẫu thử trước đó (3 font gần giống): docs/de-xuat-dau-trang-chu-goi-4.html.
  * Hai ý còn lại của Bảng EC (Hệ sinh thái sản phẩm; Vì một giấc ngủ chất lượng hơn) gom vào
  * MỘT dải trắng ngay dưới ảnh.
  */
@@ -79,6 +80,22 @@ function Tagline() {
     <p className="hero-in text-[clamp(1.05rem,5.2vw,1.44rem)] leading-tight font-medium tracking-[0.06em] sm:tracking-[0.12em] text-tagline uppercase">
       Chăn ga gối đệm cao cấp
     </p>
+  )
+}
+
+/**
+ * Câu chính "Nâng niu / giấc mơ xanh". Font chỉ có đúng các chữ của câu này: đổi chữ thì phải cắt lại font (src/index.css).
+ * leading 1.18: nét móc chữ "g" dòng trên không chạm dấu mũ dòng dưới.
+ */
+const SLOGAN_CLASS = 'hero-in font-slogan leading-[1.18] font-normal text-deep-900'
+
+function SloganLines() {
+  return (
+    <>
+      Nâng niu
+      <br />
+      giấc mơ xanh
+    </>
   )
 }
 
@@ -168,11 +185,9 @@ function MobileTop() {
         <h1
           id="hero-title-m"
           style={delay(60)}
-          className="hero-in font-display mt-3 text-[clamp(2.4rem,12.3vw,3rem)] leading-[1.02] text-deep-900"
+          className={`${SLOGAN_CLASS} mt-2 text-[clamp(3rem,15.4vw,3.75rem)]`}
         >
-          Nâng niu
-          <br />
-          <span className="text-mist-600 italic">giấc mơ xanh</span>
+          <SloganLines />
         </h1>
       </div>
       {/* Xếp bằng flex, không dùng absolute: khách bật chữ to (200%) thì khung tự cao theo, chữ không chồng lên nhau */}
@@ -199,7 +214,7 @@ function MobileTop() {
  * Cỡ câu chính trên màn hình rộng: co nhẹ theo bề ngang để chữ luôn nằm gọn trong khoảng trời
  * bên trái ảnh, không chạm vào chùm lá (lá bắt đầu ở khoảng 41% bề ngang ảnh).
  */
-const TITLE_WIDE = 'xl:text-[clamp(3.4rem,calc(91px-1.5vw),4.5rem)]'
+const TITLE_WIDE = 'xl:text-[clamp(3.9rem,calc(102px-1.6vw),5rem)]'
 
 /**
  * Màn hình hẹp hơn 1280px (máy tính thu nhỏ cửa sổ, máy tính bảng): ảnh trọn khung thì quá thấp để chứa chữ,
@@ -237,11 +252,9 @@ export function Hero() {
               role="heading"
               aria-level={1}
               style={delay(60)}
-              className={`hero-in font-display mt-5 text-balance text-[3.5rem] leading-[1.02] text-deep-900 lg:text-[4rem] ${TITLE_WIDE}`}
+              className={`${SLOGAN_CLASS} mt-4 text-[4.25rem] lg:text-[4.5rem] ${TITLE_WIDE}`}
             >
-              Nâng niu
-              <br />
-              <span className="text-mist-600 italic">giấc mơ xanh</span>
+              <SloganLines />
             </p>
             <p style={delay(120)} className="hero-in font-display mt-3 text-[1.35rem] text-deep-700 italic">
               {SUBLINE}

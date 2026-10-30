@@ -85,7 +85,21 @@
   line-gap-override: 0%;
 }
 
+/*
+ * Font viết tay của dòng slogan trong logo (mục 2, yêu cầu 16/10/2026): 1FTV VIP Betterlett, bản Việt hoá
+ * font Betterlett của Digitype Studio. File chỉ giữ 45 nét chữ của câu "Nâng niu giấc mơ xanh" (7 KB), cắt bằng
+ * `fonttools subset --text=... --flavor=woff`; câu đổi chữ thì phải cắt lại. Chỉ trang chủ tải trước (index.html).
+ * block: trong lúc chờ (thường dưới 0,1s vì đã tải trước) chữ ẩn, không hiện font khác rồi nhảy sang;
+ * chiều cao câu chính do line-height cố định quyết định nên font về muộn cũng không đẩy phần dưới.
+ */
+@font-face {
+  font-family: 'Ecopillo Slogan';
+  src: url('/fonts/betterlett-slogan.woff') format('woff');
+  font-display: block;
+}
+
 @theme {
+  --font-slogan: 'Ecopillo Slogan', 'Noto Serif Display', 'Noto Serif Display Georgia', serif;
   --font-sans:
     'Be Vietnam Pro', 'Be Vietnam Pro Roboto', 'Be Vietnam Pro Helvetica', 'Be Vietnam Pro Arial', ui-sans-serif, system-ui,
     sans-serif;
