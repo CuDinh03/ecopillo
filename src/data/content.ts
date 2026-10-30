@@ -48,9 +48,14 @@ export interface Partner {
  * Tám đối tác theo catalog Ecopillo 22.07.2026 (trang 5), logo cắt từ catalog (nền trong suốt).
  * Owner cho phép đưa logo lên web (24/10/2026). May 10, FLC Biscom, DBV Insurance không phải khách sạn:
  * mọi nhãn đứng trên lưới logo gọi là "Đối tác", không gọi "khách sạn đã đồng hành".
+ * Mục 36 (owner cho phép 30/10/2026): thêm VTV3, Hiệp hội DNNVV Hà Nội, báo Dân trí, đặt cạnh May 10 ở đầu.
+ * Logo lấy từ nguồn công khai (VTV3, Dân trí: Wikimedia Commons; Hiệp hội: hanoisme.vn), chưa phải file Ecopillo gửi.
  */
 export const HOTEL_PARTNERS: readonly Partner[] = [
   { name: 'May 10', logo: '/images/partners/may-10.webp' },
+  { name: 'VTV3', logo: '/images/partners/vtv3.webp' },
+  { name: 'Hiệp hội Doanh nghiệp nhỏ và vừa Hà Nội', logo: '/images/partners/hiep-hoi-dnnvv-ha-noi.webp' },
+  { name: 'Báo Dân trí', logo: '/images/partners/dan-tri.webp' },
   { name: 'FLC Biscom', logo: '/images/partners/flc-biscom.webp' },
   { name: 'Flamingo Resorts', logo: '/images/partners/flamingo-resorts.webp' },
   { name: 'DBV Insurance', logo: '/images/partners/dbv-insurance.webp' },

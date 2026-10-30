@@ -25,7 +25,7 @@ export const HOTEL_INTRO: readonly string[] = [
 ]
 
 /**
- * Ba ý cạnh lưới 8 logo đối tác ở trang Khách sạn và dự án (owner chọn kiểu B 24/10/2026).
+ * Ba ý cạnh lưới logo đối tác ở trang Khách sạn và dự án (owner chọn kiểu B 24/10/2026).
  * Rút từ 4 đoạn chữ trang 5 catalog Ecopillo 22.07.2026, giữ số liệu của catalog.
  */
 export const HOTEL_PARTNER_POINTS: readonly { value: string; text: string }[] = [

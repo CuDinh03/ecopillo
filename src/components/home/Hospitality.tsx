@@ -69,7 +69,7 @@ export function Hospitality() {
       </Container>
 
       <Container className="mt-10 sm:mt-20">
-        {/* 8 đối tác theo catalog 22.07.2026; May 10, DBV Insurance không phải khách sạn nên gọi là "Đối tác" */}
+        {/* 8 đối tác theo catalog 22.07.2026 + 3 của mục 36; May 10, VTV3, DBV Insurance không phải khách sạn nên gọi là "Đối tác" */}
         <p className="eyebrow !text-mist-400">Đối tác</p>
         <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {HOTEL_PARTNERS.map((partner, i) => (

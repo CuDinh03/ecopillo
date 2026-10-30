@@ -145,11 +145,11 @@ function HotelHero() {
 }
 
 /**
- * Đối tác (kiểu 3B, owner chọn 24/10/2026): ba ý chính từ catalog 22.07.2026 cạnh lưới 8 logo; ngay dưới là ba giấy chất lượng
+ * Đối tác (kiểu 3B, owner chọn 24/10/2026): ba ý chính từ catalog 22.07.2026 cạnh lưới logo đối tác; ngay dưới là ba giấy chất lượng
  * thu nhỏ, bấm xem to (phần C của chứng chỉ). Mục 13: khách sạn vào trang phải thấy Ecopillo đã làm cho ai và có tiêu chuẩn gì.
  */
 function Partners() {
-  // 11 ảnh logo, giấy chứng nhận chỉ gắn khi khách cuộn tới gần: để ảnh bìa đầu trang có trọn đường truyền
+  // Ảnh logo, giấy chứng nhận chỉ gắn khi khách cuộn tới gần: để ảnh bìa đầu trang có trọn đường truyền
   const [imagesRef, showImages] = useNearViewport<HTMLDivElement>()
   return (
     <section aria-labelledby="partners-title" className="border-b border-line py-14 sm:py-20">
