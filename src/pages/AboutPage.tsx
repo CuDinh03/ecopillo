@@ -103,7 +103,7 @@ export function AboutPage() {
         eyebrow="Người sáng lập"
         title={
           <>
-            Người <em className="text-deep-700">làm nghề</em>
+            Người làm nghề
           </>
         }
       >
@@ -121,12 +121,12 @@ export function AboutPage() {
         eyebrow="Khát vọng"
         title={
           <>
-            Chốn <em className="text-deep-700">Yên</em>
+            Chốn Yên
           </>
         }
       >
         <p data-reveal className="font-display mt-8 rounded-[0.35rem] bg-mist-50 px-6 py-8 text-center text-[1.35rem] leading-snug text-balance text-deep-900 sm:text-[1.6rem]">
-          “Chốn Yên”: nơi giấc ngủ lành mạnh được vun đắp <em className="text-deep-700">và cơ thể được phục hồi trọn vẹn.</em>
+          “Chốn Yên”: nơi giấc ngủ lành mạnh được vun đắp và cơ thể được phục hồi trọn vẹn.
         </p>
         <Prose>{BRAND_PROMISE}</Prose>
       </Chapter>
@@ -139,7 +139,7 @@ export function AboutPage() {
         eyebrow="Triết lý"
         title={
           <>
-            Tốt · Thật · <em className="text-deep-700">Thiện</em>
+            Tốt · Thật · Thiện
           </>
         }
       >
@@ -160,7 +160,7 @@ export function AboutPage() {
         eyebrow="Chất liệu và tay nghề"
         title={
           <>
-            Từ sợi gỗ <em className="text-deep-700">đến giấc ngủ</em>
+            Từ sợi gỗ đến giấc ngủ
           </>
         }
       >
@@ -201,7 +201,7 @@ export function AboutPage() {
         eyebrow="Sứ mệnh, tầm nhìn"
         title={
           <>
-            Điều chúng tôi <em className="text-deep-700">theo đuổi</em>
+            Điều chúng tôi theo đuổi
           </>
         }
       >
@@ -248,7 +248,7 @@ export function AboutPage() {
         eyebrow="Chứng nhận, đối tác"
         title={
           <>
-            Được <em className="text-deep-700">ghi nhận</em>
+            Được ghi nhận
           </>
         }
       >
@@ -289,7 +289,7 @@ function Cover() {
           <Icon name="book" size={15} className="text-deep-700" /> Câu chuyện Ecopillo
         </p>
         <h1 id="page-title" className="font-display mt-4 text-[2.6rem] leading-[1.02] text-balance text-deep-900 sm:text-[3.4rem] xl:text-[3.9rem]">
-          Hơn 15 năm <em className="block text-deep-700">nâng niu giấc ngủ Việt</em>
+          Hơn 15 năm <span className="block">nâng niu giấc ngủ Việt</span>
         </h1>
         <p className="mt-5 max-w-md text-body leading-relaxed text-ink-soft">
           Ecopillo Eternal Việt Nam làm chăn ga gối đệm từ chất liệu thiên nhiên, với một mong muốn giản dị: mỗi gia đình có một chốn yên để ngủ ngon.
@@ -364,7 +364,7 @@ function Recognition() {
         <Icon name="quote" size={15} className="text-deep-700" /> Báo chí nói về Ecopillo
       </p>
       <h3 className="font-display mt-3 text-[1.6rem] leading-tight text-deep-900 sm:text-[2rem]">
-        Người khác <em className="text-deep-700">kể về chúng tôi</em>
+        Người khác kể về chúng tôi
       </h3>
       <PressQuotes />
       {/* Đối tác (3A): May 10, DBV Insurance không phải khách sạn nên gọi chung là đối tác */}
@@ -391,7 +391,7 @@ function Closing() {
           <Icon name="pin" size={15} /> Lời kết · Ghé thăm Ecopillo
         </p>
         <h2 id="loi-ket-tieu-de" className="font-display mt-4 text-[2.1rem] leading-tight sm:text-[2.8rem]">
-          Chạm tay vào chất vải <em className="text-mist-300">trước khi chọn</em>
+          Chạm tay vào chất vải trước khi chọn
         </h2>
         <p className="mt-4 max-w-md text-mist-200/90">
           Cảm nhận độ mềm mát của Lyocell, nằm thử gối và đệm, được tư vấn mẫu hợp với phòng ngủ của Quý khách.

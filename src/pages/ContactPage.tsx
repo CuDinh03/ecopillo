@@ -195,7 +195,7 @@ export function ContactPage() {
             <h1 id="contact-title" className="font-display mt-4 text-[2.4rem] leading-[1.05] text-deep-900 sm:text-[3.4rem]">
               Ecopillo luôn
               <br />
-              <em className="text-deep-700">lắng nghe Quý khách</em>
+              lắng nghe Quý khách
             </h1>
             <p className="mt-5 max-w-md text-body leading-relaxed text-ink-soft">
               Có bất cứ thắc mắc gì, Quý khách gọi, nhắn tin hoặc để lại lời nhắn. Bộ phận Chăm sóc khách hàng của

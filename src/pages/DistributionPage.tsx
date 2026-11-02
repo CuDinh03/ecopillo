@@ -262,7 +262,7 @@ export function DistributionPage() {
         <Container className="pt-6 pb-7 sm:pt-12 sm:pb-12">
           <Breadcrumb items={[{ label: 'Hệ thống phân phối' }]} />
           <h1 id="page-title" className="font-display mt-4 text-[2rem] sm:mt-6 leading-[1.1] text-balance text-deep-900 sm:text-[2.8rem]">
-            Tìm Ecopillo <em className="text-deep-700">gần Quý khách</em>
+            Tìm Ecopillo gần Quý khách
           </h1>
           <p className="mt-2 text-body text-ink-soft sm:mt-3">Nằm thử gối, đệm và chạm tay vào vải Lyocell.</p>
 

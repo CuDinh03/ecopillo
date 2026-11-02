@@ -131,6 +131,38 @@ function MoreMenu({ activeHref }: { activeHref: string | null }) {
 
 const SCROLL_THRESHOLD = 12
 
+/**
+ * Trang chủ (A2, owner chọn 02/11/2026): còn thấy cụm chữ ECOPILLO lớn ở phần đầu (Hero.tsx, `data-hero-lockup`)
+ * thì logo nhỏ trên thanh đầu trang ẩn, để màn hình đầu chỉ có một logo; cụm đó khuất dưới thanh đầu trang thì logo hiện lại.
+ * Lúc dựng sẵn HTML trang chủ đã ẩn sẵn, không nháy logo. Trang khác giữ như cũ.
+ */
+function useLogoHiddenAtHero(pathname: string): boolean {
+  const isHome = pathname === '/'
+  const [isLockupVisible, setIsLockupVisible] = useState(isHome)
+
+  useEffect(() => {
+    // Hai bản Hero (điện thoại, máy tính) có thể cùng nằm trong trang trước khi gắn React; bản đang ẩn không bao giờ giao nhau
+    const lockups = isHome ? Array.from(document.querySelectorAll('[data-hero-lockup]')) : []
+    if (lockups.length === 0 || typeof IntersectionObserver === 'undefined') {
+      setIsLockupVisible(false)
+      return
+    }
+    const visible = new Set<Element>()
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => (e.isIntersecting ? visible.add(e.target) : visible.delete(e.target)))
+        setIsLockupVisible(visible.size > 0)
+      },
+      // Chừa phần thanh đầu trang (cao 4.5rem): cụm chữ trượt hết vào dưới thanh thì coi như đã khuất
+      { rootMargin: '-72px 0px 0px 0px' },
+    )
+    lockups.forEach((el) => observer.observe(el))
+    return () => observer.disconnect()
+  }, [isHome])
+
+  return isHome && isLockupVisible
+}
+
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -181,6 +213,8 @@ export function Header() {
 
   const solid = isScrolled || isMenuOpen
   const activeHref = useActiveHref()
+  // Mở menu điện thoại thì luôn hiện logo (menu phủ cả cụm chữ ở phần đầu)
+  const isLogoHidden = useLogoHiddenAtHero(location.pathname) && !isMenuOpen
 
   return (
     <header
@@ -192,7 +226,12 @@ export function Header() {
       }`}
     >
       <Container className="flex h-[4.5rem] items-center justify-between gap-4">
-        <Logo />
+        <span
+          inert={isLogoHidden}
+          className={`transition-opacity duration-300 ${isLogoHidden ? 'pointer-events-none opacity-0' : 'opacity-100'}`}
+        >
+          <Logo />
+        </span>
 
         <nav aria-label="Điều hướng chính" className="hidden lg:block">
           <ul className="flex items-center gap-0.5">

@@ -229,7 +229,7 @@ function ProductStory({ sections }: { sections: readonly InfoSection[] }) {
   return (
     <section aria-labelledby="story-title" className="mt-16 sm:mt-20">
       <h2 id="story-title" className="font-display text-[1.8rem] leading-tight text-deep-900 sm:text-[2.2rem]">
-        Hiểu kỹ <span className="text-mist-600 italic">trước khi chọn</span>
+        Hiểu kỹ trước khi chọn
       </h2>
       <div className="mt-6 grid gap-x-12 gap-y-8 lg:grid-cols-3">
         {sections.map((section) => (

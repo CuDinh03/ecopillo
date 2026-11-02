@@ -35,7 +35,7 @@ export function DistributionModel() {
         <header data-reveal>
           <p className="eyebrow">Mô hình kinh doanh</p>
           <h2 id="mo-hinh-tieu-de" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.6rem]">
-            Một hệ thống, <em className="text-deep-700">ba kênh</em> song song
+            Một hệ thống, ba kênh song song
           </h2>
           <p className="mt-4 max-w-xl text-body leading-relaxed text-ink-soft">
             Sản phẩm, hình ảnh thương hiệu và chính sách bán hàng được đồng bộ, để khách mua ở đâu cũng nhận cùng một trải nghiệm.

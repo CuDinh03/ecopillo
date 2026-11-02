@@ -123,7 +123,7 @@ function HotelHero() {
         <Breadcrumb items={[{ label: 'Khách sạn và dự án' }]} />
         <p className="eyebrow mt-8">{HOTEL_EYEBROW}</p>
         <h1 id="page-title" className="font-display mt-4 text-[2.6rem] leading-[1.02] text-balance text-deep-900 sm:text-[3.4rem] xl:text-[4rem]">
-          Giấc ngủ năm sao <em className="block text-deep-700">cho khách lưu trú</em>
+          Giấc ngủ năm sao <span className="block">cho khách lưu trú</span>
         </h1>
         {/* Viết thường như câu dẫn, trước in hoa giãn chữ chạy hai dòng khó đọc (B10, owner duyệt 24/10/2026) */}
         <p className="mt-5 max-w-sm text-lead leading-snug font-medium text-balance text-deep-800">{HOTEL_INTRO_HEADING}</p>
@@ -158,7 +158,7 @@ function Partners() {
           <header data-reveal="left">
             <p className="eyebrow">Đối tác của chúng tôi</p>
             <h2 id="partners-title" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.6rem]">
-              Đối tác tin cậy <em className="text-deep-700">của khách sạn,</em> khu nghỉ dưỡng
+              Đối tác tin cậy của khách sạn, khu nghỉ dưỡng
             </h2>
           </header>
           <dl className="mt-6 border-b border-line">
@@ -208,7 +208,7 @@ function BedLayers() {
           <header data-reveal="left">
             <p className="eyebrow">Sản phẩm cho phòng</p>
             <h2 id="layer-title" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.75rem]">
-              Một chiếc giường, <em className="text-deep-700">sáu lớp</em> đồ vải
+              Một chiếc giường, sáu lớp đồ vải
             </h2>
           </header>
           <ol className="mt-6 border-b border-line">
@@ -261,7 +261,7 @@ function Reasons() {
       <Container className="relative grid gap-10 lg:grid-cols-[5fr_7fr] lg:gap-16">
         <div data-reveal="left">
           <h2 id="reason-title" className="font-display text-[2.1rem] leading-[1.12] italic sm:text-[3.1rem]">
-            “Bền cho vận hành, <em className="text-mist-300">êm cho khách nghỉ.</em>”
+            “Bền cho vận hành, êm cho khách nghỉ.”
           </h2>
           <div className="mt-6 space-y-3 text-body-sm leading-relaxed text-mist-200/90">
             {HOTEL_INTRO.slice(1).map((paragraph) => (
@@ -289,7 +289,7 @@ function Steps() {
         <header data-reveal="left">
           <p className="eyebrow">Cách làm việc</p>
           <h2 id="step-title" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.75rem]">
-            Từ khảo sát <em className="text-deep-700">đến nghiệm thu</em>
+            Từ khảo sát đến nghiệm thu
           </h2>
         </header>
         <ol className="mt-8 grid lg:mt-12 lg:grid-cols-5 lg:gap-6">
@@ -333,7 +333,7 @@ function Quote() {
         <header data-reveal="left">
           <p className="eyebrow">Nhận báo giá</p>
           <h2 id="quote-title" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.6rem]">
-            Gửi yêu cầu cho <em className="text-deep-700">dự án của Quý khách</em>
+            Gửi yêu cầu cho dự án của Quý khách
           </h2>
           <p className="mt-4 max-w-xl text-body-sm leading-relaxed text-ink-soft">
             Ghi số phòng, cỡ giường và món cần may. Bộ phận dự án gọi lại, gửi mẫu vải và báo giá riêng.

@@ -25,7 +25,7 @@ export function RecruitPage() {
           <>
             Tuyển đại lý
             <br />
-            <em className="text-deep-700">chăn ga gối đệm Ecopillo</em>
+            chăn ga gối đệm Ecopillo
           </>
         }
         lead="Ecopillo tìm đối tác phân phối tại các tỉnh, thành: cửa hàng chăn ga, nội thất, đồ cưới. Để lại thông tin, bộ phận kinh doanh sẽ gọi lại."

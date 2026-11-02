@@ -15,7 +15,7 @@ export function SameTone({ collection, tone }: { collection: Collection; tone: T
     <section aria-labelledby="same-tone-title" className="mt-16 sm:mt-20">
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
         <h2 id="same-tone-title" className="font-display text-[1.6rem] leading-tight text-deep-900 sm:text-[2.2rem]">
-          Thêm <span className="text-mist-600 italic">{tone.phrase}</span> ở bộ khác
+          Thêm {tone.phrase} ở bộ khác
         </h2>
         <Link
           to={productsUrl({ gam: tone.id })}

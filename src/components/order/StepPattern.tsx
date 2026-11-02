@@ -51,7 +51,7 @@ export function StepPattern({ collectionId, patternCode, onSelectCollection, onS
 
       <fieldset id="chon-mau" className="scroll-mt-28">
         <legend className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">
-          Chọn mẫu{collection ? <span className="text-mist-600 italic"> · {collection.name}</span> : null}
+          Chọn mẫu{collection ? ` · ${collection.name}` : null}
         </legend>
 
         {!collection ? (

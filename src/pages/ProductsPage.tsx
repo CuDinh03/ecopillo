@@ -167,7 +167,7 @@ export function ProductsPage() {
             <span className="text-deep-900">Sản phẩm</span>
           </nav>
           <h1 className="font-display mt-4 text-[2.4rem] leading-tight text-deep-900 sm:text-[3.4rem]">
-            Sản phẩm <span className="text-mist-600 italic">Ecopillo</span>
+            Sản phẩm Ecopillo
           </h1>
           <div className="mt-4 grid gap-6 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
             <p className="max-w-2xl text-ink-soft">{PRODUCTS_INTRO}</p>
@@ -229,7 +229,7 @@ export function ProductsPage() {
           {canBrowseByCollection && (
             <section aria-labelledby="browse-title" className="mt-7 sm:mt-9">
               <h2 id="browse-title" className="font-display text-[1.45rem] leading-tight text-deep-900 sm:text-[1.8rem]">
-                Quý khách tìm theo <span className="text-mist-600 italic">bộ sưu tập</span>
+                Quý khách tìm theo bộ sưu tập
               </h2>
               <div role="group" aria-label="Bộ sưu tập" className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3 lg:grid-cols-8">
                 <Tile active={!collection} onPick={() => update({ [COLLECTION_PARAM]: null })} title="Tất cả bộ" note={`${BEDDING_SETS.length} bộ sưu tập`} />

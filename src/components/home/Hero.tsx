@@ -10,12 +10,12 @@ import { productsUrl } from '../../data/links'
  * Phần đầu trang chủ — bản chốt 12/10/2026, phương án "ảnh trọn khung": ảnh Bảng EC hiện đủ, rõ,
  * không phủ lớp mờ; chữ nằm vào khoảng trời bên trái ảnh (màn hình rộng) hoặc ngay trên ảnh (điện thoại).
  *
- * Thứ bậc: 1 câu chính "Nâng niu giấc mơ xanh" → 1 dòng nghiêng "Chốn yên…" → 2 nút.
+ * Khách yêu cầu 02/11/2026, owner chọn A2 (mẫu: docs/de-xuat-dau-trang-va-dem-02-11.html): chữ đầu trang là MỘT cụm như logo,
+ * canh giữa theo nhau: dòng đỏ "Chăn ga gối đệm cao cấp" → hình chữ ECOPILLO ETERNAL → câu viết tay "Nâng niu giấc mơ xanh"
+ * nhỏ hơn chữ Ecopillo (trước đó câu viết tay to nhất, khách xem tưởng là tên hãng). Bỏ dòng "Chốn yên…".
+ * Ở trang chủ, logo nhỏ trên thanh đầu trang ẩn khi cụm này còn trên màn hình (src/components/layout/Header.tsx).
  *
- * Mục 2 (yêu cầu 16/10/2026): câu chính viết bằng đúng font viết tay của dòng slogan trong logo (1FTV VIP Betterlett,
- * lớp font-slogan, src/index.css; có font 29/10/2026). Một màu chàm như logo, không nghiêng thêm (font đã nghiêng sẵn).
- * Hai dòng ở cả hai khổ: viết một dòng thì phải nhỏ còn ~47px mới lọt khoảng trời trái ảnh, mà chữ thường của font rất thấp.
- * Mẫu thử trước đó (3 font gần giống): docs/de-xuat-dau-trang-chu-goi-4.html.
+ * Câu viết tay dùng đúng font của dòng slogan trong logo (1FTV VIP Betterlett, lớp font-slogan, src/index.css; mục 2).
  * Hai ý còn lại của Bảng EC (Hệ sinh thái sản phẩm; Vì một giấc ngủ chất lượng hơn) gom vào
  * MỘT dải trắng ngay dưới ảnh.
  */
@@ -74,32 +74,83 @@ function HeroPicture({ className }: { className: string }) {
  */
 const delay = (ms: number) => ({ '--hero-delay': `${ms}ms` }) as CSSProperties
 
-/** Dòng đỏ, cùng màu chữ "ETERNAL" trong logo. Bỏ vạch đầu, chữ to gấp đôi (khách yêu cầu 16/10/2026, mục 1) */
-function Tagline() {
-  return (
-    <p className="hero-in text-[clamp(1.05rem,5.2vw,1.44rem)] leading-tight font-medium tracking-[0.06em] sm:tracking-[0.12em] text-tagline uppercase">
-      Chăn ga gối đệm cao cấp
-    </p>
+/**
+ * Cụm chữ đầu trang (A2, 02/11/2026). Tiêu đề cấp 1 gồm dòng đỏ và hình chữ Ecopillo (alt), nên Google đọc được
+ * "Chăn ga gối đệm cao cấp Ecopillo Eternal"; câu viết tay nằm ngoài tiêu đề.
+ * Hình chữ cắt từ images/Logo-Ecopillo-Viet-Nam-1080x447.png, bỏ dòng slogan (có width/height để không xô bố cục).
+ * Font viết tay chỉ có đúng các chữ của câu này: đổi chữ thì phải cắt lại font (src/index.css).
+ */
+const LOGO_SRC = '/images/brand/logo-ecopillo-chu-980.webp'
+const LOGO_SRCSET = '/images/brand/logo-ecopillo-chu-480.webp 480w, /images/brand/logo-ecopillo-chu-980.webp 980w'
+
+interface LockupSize {
+  /** Cỡ dòng đỏ */
+  tagline: string
+  /** Bề ngang hình chữ Ecopillo, kèm `sizes` khớp với bề ngang đó */
+  logo: string
+  logoSizes: string
+  /** Cỡ câu viết tay */
+  slogan: string
+}
+
+function Lockup({ size, isMain }: { size: LockupSize; isMain: boolean }) {
+  const title = (
+    <>
+      <span
+        className={`hero-in block leading-tight font-medium tracking-[0.12em] text-tagline uppercase ${size.tagline}`}
+      >
+        Chăn ga gối đệm cao cấp
+      </span>{' '}
+      <img
+        src={LOGO_SRC}
+        srcSet={LOGO_SRCSET}
+        sizes={size.logoSizes}
+        width={980}
+        height={239}
+        alt="Ecopillo Eternal"
+        style={delay(60)}
+        className={`hero-in mx-auto mt-[0.45em] block h-auto ${size.logo}`}
+      />
+    </>
   )
+  return (
+    <div data-hero-lockup className="flex w-max max-w-full flex-col items-center text-center">
+      {/*
+        Trang chỉ có một thẻ <h1> (bản điện thoại, vì Google xếp hạng theo bản điện thoại).
+        Bản máy tính là tiêu đề cấp 1 cho trình đọc màn hình bằng role; HomePage bỏ bản đang ẩn sau khi gắn React.
+      */}
+      {isMain ? (
+        <h1 id="hero-title-m">{title}</h1>
+      ) : (
+        <p id="hero-title" role="heading" aria-level={1}>
+          {title}
+        </p>
+      )}
+      <p style={delay(120)} className={`hero-in font-slogan mt-[0.3em] leading-[1.18] font-normal text-deep-900 ${size.slogan}`}>
+        Nâng niu giấc mơ xanh
+      </p>
+    </div>
+  )
+}
+
+/** Điện thoại: cụm chữ chiếm khoảng 3/4 bề ngang như mẫu A2 */
+const MOBILE_LOCKUP: LockupSize = {
+  tagline: 'text-[clamp(0.95rem,4.6vw,1.2rem)]',
+  logo: 'w-[min(76vw,22rem)]',
+  logoSizes: '(max-width: 767px) min(76vw, 352px)',
+  slogan: 'text-[clamp(1.75rem,9vw,2.35rem)]',
 }
 
 /**
- * Câu chính "Nâng niu / giấc mơ xanh". Font chỉ có đúng các chữ của câu này: đổi chữ thì phải cắt lại font (src/index.css).
- * leading 1.18: nét móc chữ "g" dòng trên không chạm dấu mũ dòng dưới.
+ * Màn hình rộng: co theo bề ngang để cả cụm nằm gọn trong khoảng trời bên trái ảnh,
+ * không chạm chùm lá (lá bắt đầu ở khoảng 41% bề ngang ảnh).
  */
-const SLOGAN_CLASS = 'hero-in font-slogan leading-[1.18] font-normal text-deep-900'
-
-function SloganLines() {
-  return (
-    <>
-      Nâng niu
-      <br />
-      giấc mơ xanh
-    </>
-  )
+const DESKTOP_LOCKUP: LockupSize = {
+  tagline: 'text-[clamp(1rem,1.55vw,1.4rem)]',
+  logo: 'w-[clamp(18rem,30vw,29rem)]',
+  logoSizes: 'clamp(288px, 30vw, 464px)',
+  slogan: 'text-[clamp(1.9rem,3vw,2.9rem)]',
 }
-
-const SUBLINE = 'Chốn yên, bắt đầu từ giấc ngủ ngon'
 
 const BAR_LABEL = 'text-label font-medium tracking-[0.12em] text-mist-600 uppercase'
 
@@ -172,30 +223,19 @@ function BangEcBar() {
 }
 
 /**
- * Điện thoại — mẫu A: ảnh phủ kín, câu chính đặt trên phần rèm trắng, dòng nghiêng và 2 nút ở chân ảnh
+ * Điện thoại — mẫu A: ảnh phủ kín, cụm chữ đặt trên phần rèm trắng, 2 nút ở chân ảnh
  * (trên nền chăn gối trắng, để chữ không đè lên tóc người mẫu). Không phủ lớp mờ lên ảnh.
- * Câu chính co theo bề ngang để "giấc mơ xanh" luôn nằm một dòng, kể cả ở 320px.
  */
 function MobileTop() {
   return (
     <div className="relative flex min-h-[min(660px,82svh)] flex-col md:hidden">
       <HeroPicture className="absolute inset-0 h-full w-full object-cover object-[88%_center]" />
       <div className="relative px-5 pt-[6.25rem]">
-        <Tagline />
-        <h1
-          id="hero-title-m"
-          style={delay(60)}
-          className={`${SLOGAN_CLASS} mt-2 text-[clamp(3rem,15.4vw,3.75rem)]`}
-        >
-          <SloganLines />
-        </h1>
+        <Lockup size={MOBILE_LOCKUP} isMain />
       </div>
       {/* Xếp bằng flex, không dùng absolute: khách bật chữ to (200%) thì khung tự cao theo, chữ không chồng lên nhau */}
       <div className="relative mt-auto px-5 pt-6 pb-5">
-        <p style={delay(120)} className="hero-in font-display text-[clamp(1rem,4.5vw,1.1rem)] text-deep-700 italic">
-          {SUBLINE}
-        </p>
-        <div style={delay(180)} className="hero-in mt-3 flex flex-wrap gap-2.5 [&>a]:flex-1 [&>a]:basis-[9rem]">
+        <div style={delay(180)} className="hero-in flex flex-wrap gap-2.5 [&>a]:flex-1 [&>a]:basis-[9rem]">
           <a href="#bo-suu-tap" className={buttonClass('primary', 'md')}>
             Xem bộ sưu tập
           </a>
@@ -209,12 +249,6 @@ function MobileTop() {
     </div>
   )
 }
-
-/**
- * Cỡ câu chính trên màn hình rộng: co nhẹ theo bề ngang để chữ luôn nằm gọn trong khoảng trời
- * bên trái ảnh, không chạm vào chùm lá (lá bắt đầu ở khoảng 41% bề ngang ảnh).
- */
-const TITLE_WIDE = 'xl:text-[clamp(3.9rem,calc(102px-1.6vw),5rem)]'
 
 /**
  * Màn hình hẹp hơn 1280px (máy tính thu nhỏ cửa sổ, máy tính bảng): ảnh trọn khung thì quá thấp để chứa chữ,
@@ -242,23 +276,7 @@ export function Hero() {
         {/* Chữ luôn đặt vào khoảng trời bên trái ảnh, chừa chỗ cho header trong suốt phía trên */}
         <Container className="absolute inset-0 z-10 flex items-center pt-[4.5rem]">
           <div>
-            <Tagline />
-            {/*
-              Trang chỉ có một thẻ <h1> (bản điện thoại ở MobileTop, vì Google xếp hạng theo bản điện thoại).
-              Bản máy tính là tiêu đề cấp 1 cho trình đọc màn hình bằng role; hai bản không bao giờ cùng hiện.
-            */}
-            <p
-              id="hero-title"
-              role="heading"
-              aria-level={1}
-              style={delay(60)}
-              className={`${SLOGAN_CLASS} mt-4 text-[4.25rem] lg:text-[4.5rem] ${TITLE_WIDE}`}
-            >
-              <SloganLines />
-            </p>
-            <p style={delay(120)} className="hero-in font-display mt-3 text-[1.35rem] text-deep-700 italic">
-              {SUBLINE}
-            </p>
+            <Lockup size={DESKTOP_LOCKUP} isMain={false} />
             <div style={delay(180)} className="hero-in mt-7 flex gap-3">
               <a href="#bo-suu-tap" className={buttonClass('primary', 'lg')}>
                 Xem bộ sưu tập

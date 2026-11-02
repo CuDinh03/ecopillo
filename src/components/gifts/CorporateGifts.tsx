@@ -26,7 +26,7 @@ export function CorporateGifts() {
           <div data-reveal="left" className="flex flex-col px-3 pt-2 pb-4 sm:px-6 sm:pt-6 lg:order-1 lg:py-6 lg:pl-8">
             <p className="eyebrow">{g.eyebrow}</p>
             <h2 id="corporate-gifts-title" className="font-display mt-4 text-[2rem] leading-[1.1] text-deep-900 sm:text-[2.75rem]">
-              {g.title} <em className="text-deep-700">{g.titleAccent}</em>
+              {g.title} {g.titleAccent}
             </h2>
             <p className="mt-4 text-body-sm leading-relaxed text-ink-soft">{g.lead}</p>
 

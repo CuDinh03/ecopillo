@@ -25,7 +25,7 @@ export function BlogPage() {
           <>
             Cẩm nang
             <br />
-            <em className="text-deep-700">cho giấc ngủ ngon</em>
+            cho giấc ngủ ngon
           </>
         }
         lead="Hiểu về chất liệu, chọn đúng kích thước và chăm sóc chăn ga gối đệm để dùng bền, ngủ êm."

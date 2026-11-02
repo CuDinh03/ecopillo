@@ -20,7 +20,7 @@ export function FaqPage() {
           <>
             Mua sắm an tâm
             <br />
-            <em className="text-deep-700">với Ecopillo</em>
+            với Ecopillo
           </>
         }
         lead="Những câu Quý khách hỏi nhiều nhất về giao hàng, kiểm hàng, đổi hàng, thanh toán và bảo hành."

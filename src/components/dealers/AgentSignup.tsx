@@ -21,7 +21,7 @@ export function AgentSignup() {
           eyebrow="Hợp tác"
           title={
             <>
-              Trở thành <span className="text-mist-600 italic">đại lý Ecopillo</span>
+              Trở thành đại lý Ecopillo
             </>
           }
           lead="Ecopillo tìm đối tác phân phối chăn ga gối đệm cao cấp tại các tỉnh, thành. Để lại thông tin, bộ phận kinh doanh sẽ gọi lại."

@@ -51,7 +51,7 @@ export function GiftsPage() {
         title={
           <>
             Món quà cho <br className="max-sm:hidden" />
-            <em className="text-deep-700">những giấc ngủ thương yêu</em>
+            những giấc ngủ thương yêu
           </>
         }
         lead="Mỗi bộ chăn ga Ecopillo đều kèm quà tri ân. Và một bộ chăn ga đẹp cũng là món quà được dùng mỗi ngày, nhắc người nhận nhớ tới Quý khách."
@@ -81,7 +81,7 @@ export function GiftsPage() {
             eyebrow="Gợi ý chọn quà"
             title={
               <>
-                Chọn theo <span className="text-mist-600 italic">từng dịp</span>
+                Chọn theo từng dịp
               </>
             }
           />

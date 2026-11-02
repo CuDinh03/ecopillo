@@ -61,7 +61,7 @@ export function CategoryPage() {
         {colorways.length > 0 && (
           <section aria-labelledby="colorways-title" className="mt-16 sm:mt-20">
             <h2 id="colorways-title" className="font-display text-[1.6rem] leading-tight text-deep-900 sm:text-[2.2rem]">
-              Một vài <span className="text-mist-600 italic">phối màu</span>
+              Một vài phối màu
             </h2>
             <ul className="mt-6 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
               {colorways.slice(0, COLORWAY_PREVIEW).map((colorway) => (

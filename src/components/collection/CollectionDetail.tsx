@@ -165,7 +165,7 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
         {tone && <SameTone collection={collection} tone={tone} />}
 
         <h2 className="font-display mt-16 text-[1.6rem] leading-tight text-deep-900 sm:mt-20 sm:text-[2.2rem]">
-          Giống nhau ở <span className="text-mist-600 italic">mọi phối màu</span>
+          Giống nhau ở mọi phối màu
         </h2>
         <ProductInfoCards product={product} className="mt-6" />
 
