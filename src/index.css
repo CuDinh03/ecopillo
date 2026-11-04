@@ -284,14 +284,29 @@
     overscroll-behavior-x: contain;
   }
 
-  /* Tiêu đề chia dòng đều, đoạn văn không để một chữ lẻ ở dòng cuối (rà 23/10/2026) */
+  /*
+   * Tiêu đề và chữ ngắn chia dòng đều; đoạn văn dài không để một chữ lẻ ở dòng cuối (rà 23/10/2026).
+   * Owner 05/11/2026: dòng cuối chỉ còn 1–2 chữ trông lạc lõng, nên mọi tiêu đề, nhãn, câu hỏi, chú thích ảnh,
+   * gạch đầu dòng, đoạn dẫn đầu phần đều chia đều. Chrome chỉ chia đều khối tới 6 dòng; dài hơn thì chia như thường.
+   */
   h1,
   h2,
-  h3 {
+  h3,
+  h4,
+  h5,
+  h6,
+  summary,
+  figcaption,
+  dt,
+  dd,
+  li,
+  label,
+  .font-display,
+  .eyebrow,
+  .text-balance-short {
     text-wrap: balance;
   }
   p,
-  li,
   blockquote {
     text-wrap: pretty;
   }

@@ -83,7 +83,8 @@ function FeaturedCard({ event, sizes = '(min-width: 1024px) 620px, 100vw' }: Fea
           {event.kind}
           {event.when && ` · ${event.when}`}
         </p>
-        <h4 className="font-display mt-3 text-[1.45rem] leading-snug text-deep-900 sm:text-[1.75rem]">{event.title}</h4>
+        {/* Cỡ nhỏ lại để tên nằm một dòng trên máy tính (owner 05/11/2026: chữ "thương”" rơi xuống dòng riêng) */}
+        <h4 className="font-display mt-3 text-[1.3rem] leading-snug text-deep-900 sm:text-[1.45rem]">{event.title}</h4>
         {event.summary && <p className="mt-3 text-body-sm leading-relaxed text-ink-soft">{event.summary}</p>}
         {post && (
           <Link
@@ -131,7 +132,7 @@ function SmallCard({ event, index, isWide }: SmallCardProps) {
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-deep-900/95 from-35% to-deep-900/0 px-4 pt-14 pb-4 sm:px-5 sm:pb-5">
         <p className="text-label font-medium tracking-[0.14em] text-mist-300 uppercase">{event.kind}</p>
         <h4 className="font-display mt-1.5 text-lead leading-snug sm:text-lead">{event.title}</h4>
-        {event.when && <p className="mt-1.5 text-meta text-ivory/80">{event.when}</p>}
+        {event.when && <p className="mt-1.5 text-meta text-balance text-ivory/80">{event.when}</p>}
       </div>
     </li>
   )

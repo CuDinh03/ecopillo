@@ -195,9 +195,9 @@ export function ContactPage() {
             <h1 id="contact-title" className="font-display mt-4 text-[2.4rem] leading-[1.05] text-deep-900 sm:text-[3.6rem]">
               Ecopillo luôn
               <br />
-              lắng nghe Quý khách
+              lắng nghe <span className="whitespace-nowrap">Quý khách</span>
             </h1>
-            <p className="mt-5 max-w-md text-body leading-relaxed text-ink-soft">
+            <p className="mt-5 max-w-md text-body leading-relaxed text-balance text-ink-soft">
               Có bất cứ thắc mắc gì, Quý khách gọi, nhắn tin hoặc để lại lời nhắn. Bộ phận Chăm sóc khách hàng của
               Ecopillo Việt Nam sẽ phản hồi trong giờ làm việc.
             </p>
@@ -236,7 +236,7 @@ export function ContactPage() {
           <h2 id="message-title" className="font-display mt-3 text-[1.9rem] leading-tight text-deep-900 sm:text-[2.3rem]">
             Gửi tin nhắn cho chúng tôi
           </h2>
-          <p className="mt-2 mb-8 text-ink-soft">Chọn điều Quý khách cần, Ecopillo sẽ chuyển đúng người gọi lại.</p>
+          <p className="mt-2 mb-8 text-balance text-ink-soft">Chọn điều Quý khách cần, Ecopillo sẽ chuyển đúng người gọi lại.</p>
           <MessageForm key={topic} defaultTopic={topic} />
         </section>
 

@@ -130,7 +130,7 @@ export function SectionHeading({
       </h2>
       {lead && (
         <p
-          className={`mt-5 text-body leading-relaxed ${dark ? 'text-mist-200/90' : 'text-ink-soft'} ${
+          className={`mt-5 text-body leading-relaxed text-balance ${dark ? 'text-mist-200/90' : 'text-ink-soft'} ${
             centered ? 'mx-auto' : ''
           } max-w-xl`}
         >

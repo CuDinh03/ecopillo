@@ -51,7 +51,7 @@ export function GiftsPage() {
         title={
           <>
             Món quà cho <br className="max-sm:hidden" />
-            những giấc ngủ thương yêu
+            những giấc ngủ <span className="whitespace-nowrap">thương yêu</span>
           </>
         }
         lead="Mỗi bộ chăn ga Ecopillo đều kèm quà tri ân. Và một bộ chăn ga đẹp cũng là món quà được dùng mỗi ngày, nhắc người nhận nhớ tới Quý khách."

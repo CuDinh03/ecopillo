@@ -242,7 +242,7 @@ export function Gifts({ standalone = false }: GiftsProps) {
               <h2 id="gifts-title" className="font-display mt-4 text-[2rem] text-deep-900 sm:text-[2.9rem]">
                 Tri ân 15.000 khách hàng
               </h2>
-              <p className="mt-4 text-ink-soft">
+              <p className="mt-4 text-balance text-ink-soft">
                 Mỗi bộ chăn ga đều kèm quà. Số lượng quà có hạn, áp dụng đến khi hết quà.
               </p>
             </div>

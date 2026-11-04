@@ -63,8 +63,9 @@ function ShelfHeader({ shelf, onPick }: { shelf: Shelf; onPick: (category: Categ
   const action = shelf.category === 'bo-chan-ga' ? `Xem ${SET_COLORWAY_TOTAL} phối màu` : `Chỉ xem ${shelf.shortLabel}`
   return (
     <div className="flex items-baseline justify-between gap-3 sm:gap-4">
-      {/* Tên kệ không bẻ giữa chữ ("Bộ chăn / ga" ở 320px): thiếu chỗ thì số mẫu xuống dòng */}
-      <h2 id={`${shelf.id}-ten`} className="font-display min-w-0 text-[1.35rem] leading-tight text-deep-900 min-[360px]:text-[1.45rem] sm:text-[1.8rem]">
+      {/* Tên kệ không bẻ giữa chữ ("Bộ chăn / ga" ở 320px): thiếu chỗ thì số mẫu xuống dòng.
+          text-wrap thường, không chia đều: chia đều đẩy số mẫu xuống dòng cả khi đủ chỗ */}
+      <h2 id={`${shelf.id}-ten`} className="font-display min-w-0 text-[1.35rem] leading-tight text-wrap text-deep-900 min-[360px]:text-[1.45rem] sm:text-[1.8rem]">
         <span className="whitespace-nowrap">{shelf.label}</span>{' '}
         <span className="tabular inline-block align-middle font-sans text-label font-medium whitespace-nowrap text-ink-faint sm:ml-1 sm:text-meta">{shelf.count} mẫu</span>
       </h2>
