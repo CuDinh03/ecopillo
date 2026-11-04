@@ -42,7 +42,10 @@ export function GroupTiles() {
               />
               <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-deep-950/0 from-40% to-deep-950/80" />
               <span className="absolute inset-x-3 bottom-2.5 text-ivory sm:inset-x-3.5 sm:bottom-3">
-                <span className="font-display block text-[1.15rem] leading-tight sm:text-[1.2rem] lg:text-[1.35rem]">{shelf.label}</span>
+                {/* Khổ 320px: chữ đậm 600 rộng hơn, "Đệm & topper" ở 1,15rem rớt hai dòng và bị mép ô cắt (04/11/2026) */}
+                <span className="font-display block text-[1.05rem] leading-tight min-[360px]:text-[1.15rem] sm:text-[1.2rem] lg:text-[1.35rem]">
+                  {shelf.label}
+                </span>
                 <span className="tabular block text-label opacity-90">{tileNote(shelf)}</span>
               </span>
             </a>

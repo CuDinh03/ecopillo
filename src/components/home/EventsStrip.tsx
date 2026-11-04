@@ -23,7 +23,7 @@ export function EventsStrip({ standalone = false }: EventsStripProps) {
   return (
     <section aria-labelledby="events-title" className={standalone ? '' : 'mt-14 sm:mt-24'}>
       <header data-reveal="left">
-        <Heading id="events-title" className={`font-display text-deep-900 ${standalone ? 'text-[2rem] sm:text-[2.75rem]' : 'text-[1.75rem] sm:text-[2.2rem]'}`}>
+        <Heading id="events-title" className={`font-display text-deep-900 ${standalone ? 'text-[2rem] sm:text-[2.9rem]' : 'text-[1.75rem] sm:text-[2.2rem]'}`}>
           Ecopillo đồng hành
         </Heading>
         {/* Một dòng trên máy tính (khách 04/11/2026: chữ "vị bạn." rơi xuống dòng riêng) */}

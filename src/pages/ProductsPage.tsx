@@ -177,7 +177,7 @@ export function ProductsPage() {
             <Icon name="arrowRight" size={13} className="text-ink-faint" />
             <span className="text-deep-900">Sản phẩm</span>
           </nav>
-          <h1 className="font-display mt-4 text-[2.4rem] leading-tight text-deep-900 sm:text-[3.4rem]">
+          <h1 className="font-display mt-4 text-[2.4rem] leading-tight text-deep-900 sm:text-[3.6rem]">
             Sản phẩm Ecopillo
           </h1>
           <div className="mt-4 grid gap-6 lg:grid-cols-[1.15fr_1fr] lg:gap-10">

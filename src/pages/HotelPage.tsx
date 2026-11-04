@@ -122,7 +122,7 @@ function HotelHero() {
       <div className="flex flex-col justify-center px-5 pt-7 pb-10 sm:px-8 lg:py-16 lg:pr-12 lg:pl-[max(2.5rem,calc((100vw-1240px)/2+2.5rem))]">
         <Breadcrumb items={[{ label: 'Khách sạn và dự án' }]} />
         <p className="eyebrow mt-8">{HOTEL_EYEBROW}</p>
-        <h1 id="page-title" className="font-display mt-4 text-[2.6rem] leading-[1.02] text-balance text-deep-900 sm:text-[3.4rem] xl:text-[4rem]">
+        <h1 id="page-title" className="font-display mt-4 text-[2.6rem] leading-[1.02] text-balance text-deep-900 sm:text-[3.6rem] xl:text-[4rem]">
           Giấc ngủ năm sao <span className="block">cho khách lưu trú</span>
         </h1>
         {/* Viết thường như câu dẫn, trước in hoa giãn chữ chạy hai dòng khó đọc (B10, owner duyệt 24/10/2026) */}
@@ -207,7 +207,7 @@ function BedLayers() {
         <div>
           <header data-reveal="left">
             <p className="eyebrow">Sản phẩm cho phòng</p>
-            <h2 id="layer-title" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.75rem]">
+            <h2 id="layer-title" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.9rem]">
               Một chiếc giường, sáu lớp đồ vải
             </h2>
           </header>
@@ -288,7 +288,7 @@ function Steps() {
       <Container>
         <header data-reveal="left">
           <p className="eyebrow">Cách làm việc</p>
-          <h2 id="step-title" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.75rem]">
+          <h2 id="step-title" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.9rem]">
             Từ khảo sát đến nghiệm thu
           </h2>
         </header>

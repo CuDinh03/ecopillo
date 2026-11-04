@@ -54,8 +54,12 @@ export function CollectionCover({ collection, isCompactOnMobile = false }: Colle
     )}
     <header className={`mt-5 flex-col ${isCompactOnMobile ? 'hidden sm:flex' : 'flex'} overflow-hidden rounded-[1.75rem] bg-deep-900 text-ivory sm:rounded-[2.25rem] lg:grid lg:grid-cols-[1fr_1.15fr]`}>
       <div className="p-5 pt-4 sm:p-10 lg:py-12 lg:pl-12">
+        {/* Điện thoại: số chương luôn xuống dòng riêng. Khổ 390px dòng này vừa khít một dòng, lúc font máy còn hiện thì
+            rớt hai dòng rồi co lại khi font web về, kéo cả trang lên (CLS 0,158, đo 04/11/2026) */}
         <p className="eyebrow !text-ivory/75">
-          {collection.kindLabel} · {collection.patterns.length} chương màu
+          {collection.kindLabel}
+          <span className="max-sm:hidden"> · </span>
+          <span className="max-sm:block">{collection.patterns.length} chương màu</span>
         </p>
         <Name className="font-display mt-2 text-[2.4rem] leading-none sm:mt-3 sm:text-[4.2rem]">{collection.name}</Name>
         <p className="mt-3 max-w-md text-small leading-relaxed text-ivory/85 sm:mt-4 sm:text-body">{story ?? collection.description}</p>

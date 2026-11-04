@@ -33,12 +33,18 @@
   descent-override: 24.9%;
   line-gap-override: 0%;
 }
+/*
+ * Font tiêu đề chữ đứng chỉ nạp độ đậm 600 (góp ý 04/11/2026, mẫu A): font thay thế chữ đứng là bản Bold của font máy,
+ * nhận mọi độ đậm (100 900) để trình duyệt không tự tô đậm thêm. Số đo lại 04/11/2026 trên 155 tiêu đề của 8 trang,
+ * Noto Serif Display 600 chia cho bản Bold; chiều đứng giữ đường chân chữ của font web (ascent 107%, descent 29%).
+ */
 @font-face {
   font-family: 'Noto Serif Display Georgia'; /* iPhone, Mac, Windows */
-  src: local('Georgia');
-  size-adjust: 104.9%;
-  ascent-override: 101.9%;
-  descent-override: 27.9%;
+  font-weight: 100 900;
+  src: local('Georgia Bold'), local('Georgia-Bold');
+  size-adjust: 94.2%;
+  ascent-override: 113.6%;
+  descent-override: 30.8%;
   line-gap-override: 0%;
 }
 @font-face {
@@ -52,10 +58,11 @@
 }
 @font-face {
   font-family: 'Noto Serif Display Noto Serif'; /* Android */
-  src: local('Noto Serif'), local('NotoSerif'), local('NotoSerif-Regular');
-  size-adjust: 98.5%;
-  ascent-override: 108.5%;
-  descent-override: 29.7%;
+  font-weight: 100 900;
+  src: local('Noto Serif Bold'), local('NotoSerif-Bold');
+  size-adjust: 96.7%;
+  ascent-override: 110.7%;
+  descent-override: 30%;
   line-gap-override: 0%;
 }
 @font-face {
@@ -69,10 +76,11 @@
 }
 @font-face {
   font-family: 'Noto Serif Display Times';
-  src: local('Times New Roman'), local('TimesNewRomanPSMT');
-  size-adjust: 114.6%;
-  ascent-override: 93.3%;
-  descent-override: 25.6%;
+  font-weight: 100 900;
+  src: local('Times New Roman Bold'), local('TimesNewRomanPS-BoldMT');
+  size-adjust: 112.2%;
+  ascent-override: 95.4%;
+  descent-override: 25.8%;
   line-gap-override: 0%;
 }
 @font-face {
@@ -303,9 +311,18 @@
 }
 
 @layer components {
+  /*
+   * Tiêu đề đậm 600 (góp ý 04/11/2026 "nét thanh quá", "sàn sàn"; owner chọn mẫu A, docs/de-xuat-font-tieu-de-04-11.html).
+   * Chữ nghiêng (câu trích, số thứ tự, tên chương) giữ 400 cho nhẹ: chỉ nạp nghiêng 400, để 600 thì trình duyệt tự tô đậm giả
+   */
   .font-display {
-    letter-spacing: -0.01em;
+    font-weight: 600;
+    letter-spacing: -0.015em;
     line-height: 1.08;
+  }
+  .font-display:is(.italic, em, i),
+  .font-display :is(.italic, em, i) {
+    font-weight: 400;
   }
 
   /* Nhãn in hoa: 12px, giãn chữ 0,14em (trước 11,5px giãn 0,22em, khó đọc với người lớn tuổi; rà 23/10/2026) */

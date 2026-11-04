@@ -86,7 +86,8 @@ export function ChapterRail({ collection, chapters, current, volumes, volume, on
                 <span className={`block aspect-[4/3] overflow-hidden rounded-xl ${soldOut ? 'opacity-50' : ''}`}>
                   <Placeholder compact className="h-full w-full" tint={pattern.swatch} note={pattern.code} image={image} sizes="170px" />
                 </span>
-                <span className="font-display mt-2.5 block px-1.5 text-body leading-tight italic">
+                {/* Tên trên thẻ đứng, đậm như thẻ phối màu (mẫu A 04/11/2026) */}
+                <span className="font-display mt-2.5 block px-1.5 text-body leading-tight">
                   {chapterTitle(collection, pattern)}
                 </span>
                 <span className={`mt-1 block px-1.5 text-label leading-snug ${active ? 'text-ivory/75' : 'text-ink-faint'}`}>

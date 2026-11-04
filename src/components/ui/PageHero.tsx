@@ -86,7 +86,7 @@ export function PageHero({ crumbs, eyebrow, title, lead, aside, children, tone =
           <p className={`eyebrow mt-8 ${deep ? '!text-mist-300' : ''}`}>{eyebrow}</p>
           <h1
             id={id}
-            className={`font-display mt-4 text-[2.4rem] leading-[1.05] text-balance sm:text-[3.4rem] ${deep ? 'text-ivory' : 'text-deep-900'}`}
+            className={`font-display mt-4 text-[2.4rem] leading-[1.05] text-balance sm:text-[3.6rem] ${deep ? 'text-ivory' : 'text-deep-900'}`}
           >
             {title}
           </h1>

@@ -239,7 +239,7 @@ export function Gifts({ standalone = false }: GiftsProps) {
           <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-xl">
               <p className="eyebrow !text-brass-600">Chương trình tri ân</p>
-              <h2 id="gifts-title" className="font-display mt-4 text-[2rem] text-deep-900 sm:text-[2.75rem]">
+              <h2 id="gifts-title" className="font-display mt-4 text-[2rem] text-deep-900 sm:text-[2.9rem]">
                 Tri ân 15.000 khách hàng
               </h2>
               <p className="mt-4 text-ink-soft">

@@ -192,7 +192,7 @@ export function ContactPage() {
               <span className="text-deep-900">Liên hệ</span>
             </nav>
             <p className="eyebrow mt-8">Liên hệ</p>
-            <h1 id="contact-title" className="font-display mt-4 text-[2.4rem] leading-[1.05] text-deep-900 sm:text-[3.4rem]">
+            <h1 id="contact-title" className="font-display mt-4 text-[2.4rem] leading-[1.05] text-deep-900 sm:text-[3.6rem]">
               Ecopillo luôn
               <br />
               lắng nghe Quý khách
