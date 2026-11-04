@@ -4,16 +4,14 @@ import { CONTACT } from '../../data/brand'
 import {
   COLLECTIONS,
   ESSENTIALS,
-  MATTRESSES,
   productImage,
   type EssentialItem,
-  type Mattress,
 } from '../../data/catalog'
-import { formatRange, formatVND } from '../../lib/format'
+import { formatRange } from '../../lib/format'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { buttonClass, Container, SectionHeading } from '../ui/primitives'
-import { PRODUCTS, productBySlug, productForEssential, productPath, singleOrderUrl } from '../../data/products'
+import { productForEssential, productPath, singleOrderUrl } from '../../data/products'
 import { PATHS, productsUrl } from '../../data/links'
 import { revealDelay } from '../../lib/reveal'
 import { scrollToElement } from '../../lib/scroll'
@@ -23,19 +21,18 @@ import { MobileTabBar } from './MobileTabBar'
 const SUMMER_QUILT_NAME = 'Chăn hè Lyocell'
 const SUMMER_QUILT_ID = 'chan-he-lyocell'
 
-/** Tab của khối gộp trên điện thoại: ba nhóm ruột chăn gối, đệm, quà tặng */
-type EssentialTab = 'ruot-goi' | 'ruot-chan' | 'chan-topper' | 'dem' | 'qua-tang'
+/** Tab của khối gộp trên điện thoại: ruột chăn gối + quà tặng (đệm tách ra khối MattressPicker, C3 02/11/2026) */
+type EssentialTab = 'ruot-goi' | 'ruot-chan' | 'chan-topper' | 'qua-tang'
 
 const ESSENTIAL_TABS: readonly { id: EssentialTab; label: string }[] = [
   ...ESSENTIALS.map((g) => ({ id: g.id as EssentialTab, label: g.title })),
-  { id: 'dem', label: 'Đệm' },
   { id: 'qua-tang', label: 'Quà tặng' },
 ]
 
 interface EssentialsProps {
   /**
-   * Trang chủ điện thoại (mẫu 2, owner chốt 15/10/2026): gộp Ruột chăn gối, Đệm, Quà tặng thành một khối có tab.
-   * Máy tính không đổi. Mọi nhóm vẫn nằm trong trang, chỉ hiện nhóm đang chọn.
+   * Trang chủ điện thoại (mẫu 2, owner chốt 15/10/2026): gộp ruột chăn gối và quà tặng thành một khối có tab.
+   * Đệm tách ra MattressPicker từ 02/11/2026 (C3). Máy tính không dùng tab.
    */
   withTabs?: boolean
 }
@@ -65,8 +62,8 @@ export function Essentials({ withTabs = false }: EssentialsProps) {
           <SectionHeading
             id="essentials-title"
             className="lg:col-span-7"
-            title="Ruột chăn, ruột gối, topper và đệm"
-            lead="Phần êm ái bên trong. Chọn độ êm hợp với thói quen ngủ của Quý khách: đặt online ngay, hoặc ghé cửa hàng Ecopillo để nằm thử từng loại gối, đệm."
+            title="Ruột chăn, ruột gối và topper"
+            lead="Phần êm ái bên trong. Chọn độ êm hợp với thói quen ngủ của Quý khách: đặt online ngay, hoặc ghé cửa hàng Ecopillo để nằm thử từng loại gối."
           />
           {/* Một ảnh cho cả bảng giá, chỉ trên máy tính (rà mẫu C 23/10: bảng không còn ảnh, chăn và topper không có ảnh nào trên trang chủ) */}
           <div data-reveal className="hidden aspect-[16/10] overflow-hidden rounded-[1.75rem] shadow-[var(--shadow-soft)] lg:col-span-5 lg:block">
@@ -81,14 +78,14 @@ export function Essentials({ withTabs = false }: EssentialsProps) {
 
         {withTabs && <MobileTabBar label="Nhóm sản phẩm" tabs={ESSENTIAL_TABS} value={tab} onChange={setTab} className="mt-6" />}
 
-        {/* Bảng giá liền thay cho ba thẻ ảnh (mẫu C, owner duyệt 23/10/2026). Hai cột cân số dòng:
-            trái ruột gối + chăn hè & topper, phải ruột chăn + đệm. Điện thoại: một nhóm mỗi tab. */}
+        {/* Bảng giá liền thay cho ba thẻ ảnh (mẫu C, owner duyệt 23/10/2026). Hai cột:
+            trái ruột gối, phải ruột chăn + chăn hè & topper. Đệm tách ra MattressPicker (C3 02/11). Điện thoại: một nhóm mỗi tab. */}
         <div className={`grid gap-x-16 sm:mt-14 lg:grid-cols-2 ${withTabs ? 'mt-2' : 'mt-8'}`}>
           <div data-reveal className="grid gap-10 sm:gap-12">
-            {[PRICE_GROUPS[0], PRICE_GROUPS[2]].map(group)}
+            {[PRICE_GROUPS[0]].map(group)}
           </div>
           <div data-reveal style={revealDelay(1)} className="grid gap-10 sm:gap-12 max-lg:mt-10 max-sm:mt-0">
-            {[PRICE_GROUPS[1], PRICE_GROUPS[3]].map(group)}
+            {[PRICE_GROUPS[1], PRICE_GROUPS[2]].map(group)}
           </div>
         </div>
 
@@ -96,8 +93,8 @@ export function Essentials({ withTabs = false }: EssentialsProps) {
           <Icon name="info" size={16} className="mt-0.5 shrink-0 text-mist-600" />
           {/* Gói chữ vào một khối: không thì mỗi mảnh chữ, link thành một cột riêng của flex và số điện thoại bị bẻ dòng */}
           <span>
-            Ruột gối, ruột chăn, topper và đệm đều đặt online được; nhân viên gọi xác nhận trước khi giao, giá đệm báo chính
-            xác theo độ dày. Cần tư vấn độ êm? Gọi hoặc nhắn Zalo{' '}
+            Ruột gối, ruột chăn và topper đều đặt online được; nhân viên gọi xác nhận trước khi giao. Cần tư vấn độ êm? Gọi
+            hoặc nhắn Zalo{' '}
             <a
               href={CONTACT.zaloUrl}
               target="_blank"
@@ -127,8 +124,6 @@ const essentialOrderUrl = (name: string): string => {
   return product ? singleOrderUrl(product) : PATHS.order
 }
 
-const mattressProduct = (note: string) => PRODUCTS.find((p) => p.category === 'dem' && p.summary === note)
-
 /** Một dòng của bảng giá: tên (link sang trang sản phẩm nếu có), giá, ghi chú, link đặt mua */
 interface PriceRow {
   name: string
@@ -156,41 +151,13 @@ const essentialRow = (item: EssentialItem): PriceRow => {
   }
 }
 
-const mattressRow = (m: Mattress): PriceRow => {
-  const product = mattressProduct(m.note)
-  return {
-    name: m.name,
-    note: m.note,
-    price: `từ ${formatVND(m.from)}`,
-    productTo: product ? productPath(product) : undefined,
-    orderTo: product ? singleOrderUrl(product) : PATHS.order,
-  }
-}
-
-/** Đệm thêm theo mục 42 (23/10/2026): dữ liệu ở products.ts, ghi chú ngắn cho bảng giá */
-const productRow = (slug: string, name: string, note: string): PriceRow[] => {
-  const product = productBySlug(slug)
-  if (!product) return []
-  return [{ name, note, price: `từ ${formatVND(product.min)}`, productTo: productPath(product), orderTo: singleOrderUrl(product) }]
-}
-
-const MATTRESS_ROWS: readonly PriceRow[] = [
-  ...MATTRESSES.slice(0, 1).map(mattressRow),
-  ...productRow('dem-lo-xo-tui-cao-cap-eco-luxe', 'Lò xo túi Eco Luxe', 'Mặt Pillow Top, lõi lò xo túi 16 cm, dày 28 cm'),
-  ...MATTRESSES.slice(1).map(mattressRow),
-  ...productRow('dem-bong-nano-chan-foam', 'Bông Nano chần foam', 'Bông ép gập 2, mặt chần foam êm'),
-]
-
-/** Thứ tự: ruột gối, ruột chăn, chăn hè & topper, đệm (khớp hàng tab điện thoại) */
-const PRICE_GROUPS: readonly PriceGroup[] = [
-  ...ESSENTIALS.map((g) => ({ id: g.id as EssentialTab, title: g.title, subtitle: g.subtitle, rows: g.items.map(essentialRow) })),
-  {
-    id: 'dem',
-    title: 'Đệm',
-    subtitle: 'Đặt online, hoặc nằm thử tại cửa hàng Ecopillo ở Hà Nội và TP. HCM',
-    rows: MATTRESS_ROWS,
-  },
-]
+/** Thứ tự: ruột gối, ruột chăn, chăn hè & topper (khớp hàng tab điện thoại; đệm tách ra MattressPicker) */
+const PRICE_GROUPS: readonly PriceGroup[] = ESSENTIALS.map((g) => ({
+  id: g.id as EssentialTab,
+  title: g.title,
+  subtitle: g.subtitle,
+  rows: g.items.map(essentialRow),
+}))
 
 /** Ảnh đầu bảng giá: ruột chăn (nhóm chưa có ảnh nào khác trên trang chủ) */
 const ESSENTIALS_PHOTO = ESSENTIALS.find((g) => g.id === 'ruot-chan') ?? ESSENTIALS[0]

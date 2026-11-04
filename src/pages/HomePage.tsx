@@ -5,6 +5,7 @@ import { BrandStory, TrustStrip } from '../components/home/Craft'
 import { Essentials, Gifts } from '../components/home/Essentials'
 import { Hero } from '../components/home/Hero'
 import { Hospitality } from '../components/home/Hospitality'
+import { MattressPicker } from '../components/home/MattressPicker'
 import { Reviews } from '../components/home/Reviews'
 import { Faq, Showrooms } from '../components/home/Showrooms'
 import { StoryTabs } from '../components/home/StoryTabs'
@@ -26,22 +27,24 @@ export function HomePage() {
   return (
     <>
       <JsonLd data={organizationLd()} />
-      {/* Hai bản cùng mở đầu bằng Hero + TrustStrip: vẽ một lần (Hero tự chia điện thoại / máy tính bằng CSS) */}
+      {/* Hai bản cùng mở đầu bằng Hero + TrustStrip + BrandStory: vẽ một lần (Hero tự chia điện thoại / máy tính bằng CSS).
+          BrandStory (chất liệu Lyocell) đưa lên ngay sau dải cam kết ISO: khách yêu cầu 04/11/2026 ("sau iso ấy") */}
       <Hero />
       <TrustStrip />
+      <BrandStory />
       <div className="md:hidden">{isMobile !== false && <MobileHome />}</div>
       <div className="hidden md:block">{isMobile !== true && <DesktopHome />}</div>
     </>
   )
 }
 
-/** Máy tính: thứ tự gốc (sau Hero, TrustStrip). Dải mạng xã hội bỏ theo mẫu C (owner duyệt 23/10/2026): biểu tượng đã có ở chân trang */
+/** Máy tính: thứ tự gốc (sau Hero, TrustStrip, BrandStory). Khối đệm C3 ngay đầu (owner chốt 02/11/2026). Dải mạng xã hội bỏ theo mẫu C (owner duyệt 23/10/2026): biểu tượng đã có ở chân trang */
 function DesktopHome() {
   return (
     <>
+      <MattressPicker />
       <About moreLink />
       <BrandVideo />
-      <BrandStory />
       <Collections />
       <Essentials />
       <Gifts />
@@ -63,6 +66,8 @@ function DesktopHome() {
 function MobileHome() {
   return (
     <>
+      {/* Khối đệm C3 ngay sau phần mở đầu chung (owner chốt 02/11/2026), trước bộ sưu tập */}
+      <MattressPicker />
       <Collections />
       <Essentials withTabs />
       <Reviews />

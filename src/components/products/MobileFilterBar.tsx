@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type PointerEvent } from 'react'
+import { useEffect, useRef, useState, type PointerEvent, type ReactNode } from 'react'
 import { CATEGORIES, type CategoryId } from '../../data/products'
 import { Icon } from '../ui/Icon'
 import { FilterPanel, type FilterPanelProps } from './FilterPanel'
@@ -17,6 +17,11 @@ interface MobileFilterBarProps {
   resultCount: number
   /** Gọi khi đóng bảng lọc: trang cuộn về đầu lưới nếu đang ở dưới sâu */
   onClose: () => void
+  /**
+   * Có thì thay hàng nút loại sản phẩm bằng dòng chữ này: mục "Tất cả" dạng kệ đã có ô nhóm và nút đầu kệ,
+   * hàng nút loại thành trùng (owner 02/11/2026: "tránh trùng lặp các nút")
+   */
+  summary?: ReactNode
 }
 
 /**
@@ -24,7 +29,7 @@ interface MobileFilterBarProps {
  * thanh dính ngay dưới thanh đầu trang, gồm hàng loại sản phẩm vuốt ngang và nút "Bộ lọc".
  * Nút mở bảng lọc trượt từ dưới lên (thẻ <dialog> của trình duyệt: giữ focus bên trong, Esc để đóng).
  */
-export function MobileFilterBar({ panel, activeCount, resultCount, onClose }: MobileFilterBarProps) {
+export function MobileFilterBar({ panel, activeCount, resultCount, onClose, summary }: MobileFilterBarProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [hasOpened, setHasOpened] = useState(false)
   const dialogRef = useRef<HTMLDialogElement>(null)
@@ -81,11 +86,15 @@ export function MobileFilterBar({ panel, activeCount, resultCount, onClose }: Mo
   return (
     <>
       <div className="sticky top-[4.5rem] z-30 -mx-5 flex items-center gap-2 bg-page/95 py-2 pr-3 pl-5 shadow-[0_1px_0_var(--color-line)] backdrop-blur-md sm:hidden">
-        <div role="group" aria-label="Loại sản phẩm" className="flex min-w-0 flex-1 gap-1.5 overflow-x-auto py-0.5 [scrollbar-width:none]">
-          {[{ id: null, label: 'Tất cả' } as const, ...CATEGORIES].map((c) => (
-            <CategoryPill key={c.label} id={c.id} label={c.label} isActive={panel.category === c.id} onPick={panel.onCategory} />
-          ))}
-        </div>
+        {summary ? (
+          <p className="tabular min-w-0 flex-1 truncate text-small text-ink-soft">{summary}</p>
+        ) : (
+          <div role="group" aria-label="Loại sản phẩm" className="flex min-w-0 flex-1 gap-1.5 overflow-x-auto py-0.5 [scrollbar-width:none]">
+            {[{ id: null, label: 'Tất cả' } as const, ...CATEGORIES].map((c) => (
+              <CategoryPill key={c.label} id={c.id} label={c.label} isActive={panel.category === c.id} onPick={panel.onCategory} />
+            ))}
+          </div>
+        )}
         <button
           ref={openerRef}
           type="button"

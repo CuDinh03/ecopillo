@@ -32,6 +32,8 @@ export interface FilterPanelProps {
   onSort: (sort: SortId) => void
   /** Có lọc gì thì hiện "Xoá lọc" */
   onClear?: () => void
+  /** Ẩn nhóm "Loại sản phẩm": mục "Tất cả" dạng kệ đã có ô nhóm và nút đầu kệ (02/11/2026, tránh trùng nút) */
+  hideCategory?: boolean
 }
 
 /**
@@ -40,7 +42,7 @@ export interface FilterPanelProps {
  */
 export function FilterPanel(props: FilterPanelProps) {
   const { idPrefix, category, categoryCount, onCategory, bands, band, bandCount, onBand } = props
-  const { collections, collection, collectionCount, onCollection, sort, onSort, onClear } = props
+  const { collections, collection, collectionCount, onCollection, sort, onSort, onClear, hideCategory } = props
   const id = (name: string) => `${idPrefix}-${name}`
   return (
     <div>
@@ -53,15 +55,17 @@ export function FilterPanel(props: FilterPanelProps) {
         )}
       </div>
 
-      <FilterGroup id={id('loai')} label="Loại sản phẩm" isFirst>
-        {[{ id: null, label: 'Tất cả' } as const, ...CATEGORIES].map((c) => (
-          <ChoiceRow key={c.label} isActive={category === c.id} count={categoryCount(c.id)} onPick={() => onCategory(c.id)}>
-            {c.label}
-          </ChoiceRow>
-        ))}
-      </FilterGroup>
+      {!hideCategory && (
+        <FilterGroup id={id('loai')} label="Loại sản phẩm" isFirst>
+          {[{ id: null, label: 'Tất cả' } as const, ...CATEGORIES].map((c) => (
+            <ChoiceRow key={c.label} isActive={category === c.id} count={categoryCount(c.id)} onPick={() => onCategory(c.id)}>
+              {c.label}
+            </ChoiceRow>
+          ))}
+        </FilterGroup>
+      )}
 
-      <FilterGroup id={id('gia')} label="Mức giá">
+      <FilterGroup id={id('gia')} label="Mức giá" isFirst={hideCategory}>
         <div className="flex flex-wrap gap-1.5">
           {bands.map((b) => {
             const isActive = band?.id === b.id

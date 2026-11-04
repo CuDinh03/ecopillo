@@ -2,8 +2,10 @@ import { useMemo, useRef, type CSSProperties, type ReactNode } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { ColorwayCard } from '../components/products/ColorwayCard'
 import { FilterPanel, SORTS, type FilterPanelProps, type SortId } from '../components/products/FilterPanel'
+import { GroupTiles } from '../components/products/GroupTiles'
 import { MobileFilterBar } from '../components/products/MobileFilterBar'
 import { ProductCard } from '../components/products/ProductCard'
+import { ProductShelves } from '../components/products/ProductShelves'
 import { Icon } from '../components/ui/Icon'
 import { Select } from '../components/ui/Select'
 import { Container, FillIn } from '../components/ui/primitives'
@@ -20,6 +22,7 @@ import {
   type PriceBand,
   type Product,
 } from '../data/products'
+import { cardCount, SHELF_CARD_COUNT } from '../data/productShelves'
 import { COLORWAYS, STORIES_APPROVED, toneById, type Colorway, type Tone } from '../data/stories'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useFirstRender } from '../hooks/useFirstRender'
@@ -91,6 +94,14 @@ export function ProductsPage() {
   const page = Number.isInteger(rawPage) && rawPage >= 1 && rawPage <= pageCount ? rawPage : 1
   const first = (page - 1) * PAGE_SIZE
   const pageItems = items.slice(first, first + PAGE_SIZE)
+
+  /*
+   * Mục "Tất cả" dạng kệ (phương án 1 + 2, owner chốt 02/11/2026): bốn ô nhóm + bốn kệ thẻ gộp, đệm/chăn/gối hiện ngay.
+   * Chỉ khi chưa chọn loại, mức giá, bộ, gam, sắp xếp khác "Nổi bật", và không có ?trang= (SSG cũng không có query → vào đây).
+   * Lọc / ?danh-muc= / phân trang vẫn ra lưới mỗi phối màu một thẻ như mục 31.
+   */
+  const isShelfMode =
+    category === null && !band && !collection && !tone && sort === 'noi-bat' && !params.has(PAGE_PARAM)
 
   const update = (patch: Record<string, string | null>) => {
     const next = new URLSearchParams(params)
@@ -185,36 +196,45 @@ export function ProductsPage() {
       </section>
 
       <Container className="pt-2 sm:pt-8">
-        {/* Điện thoại: thanh lọc dính dưới thanh đầu trang (cách A) */}
-        <MobileFilterBar panel={{ ...panel, idPrefix: 'loc-dt' }} activeCount={activeCount} resultCount={items.length} onClose={revealGrid} />
+        {/* Điện thoại: thanh lọc dính dưới thanh đầu trang (cách A). Mục "Tất cả" dạng kệ: thay hàng nút loại bằng dòng tóm tắt, tránh trùng ô nhóm */}
+        <MobileFilterBar
+          panel={{ ...panel, idPrefix: 'loc-dt', hideCategory: isShelfMode }}
+          activeCount={activeCount}
+          resultCount={items.length}
+          onClose={revealGrid}
+          summary={isShelfMode ? `${SHELF_CARD_COUNT} thẻ, đủ ${cardCount(null)} mẫu` : undefined}
+        />
 
-        {/* 640–1279px: khối lọc phía trên lưới như trước. Từ 1280px khối lọc là cột dính bên phải (bên dưới) */}
+        {/* 640–1279px: khối lọc phía trên lưới như trước. Từ 1280px khối lọc là cột dính bên phải (bên dưới).
+            Mục "Tất cả" dạng kệ: ẩn tab loại và hàng bộ sưu tập (đã có ô nhóm + nút đầu kệ), giữ sắp xếp + mức giá. */}
         <div className="hidden sm:block xl:hidden">
           {/* Hàng 1: loại sản phẩm (tab gạch chân) bên trái, sắp xếp bên phải */}
           <div className="flex flex-col gap-x-8 gap-y-3 sm:flex-row sm:items-end">
-            <div
-              role="group"
-              aria-label="Danh mục"
-              className="-mx-5 flex min-w-0 flex-1 gap-6 overflow-x-auto border-b border-line px-5 [scrollbar-width:none] sm:mx-0 sm:px-0"
-            >
-              {[{ id: null, label: 'Tất cả' } as const, ...CATEGORIES].map((c) => {
-                const active = category === c.id
-                return (
-                  <button
-                    key={c.label}
-                    type="button"
-                    aria-pressed={active}
-                    onClick={() => pickCategory(c.id)}
-                    className={`-mb-px inline-flex h-11 shrink-0 items-center gap-1.5 border-b-2 text-body-sm whitespace-nowrap transition-colors ${
-                      active ? 'border-deep-800 font-medium text-deep-900' : 'border-transparent text-ink-faint hover:text-deep-900'
-                    }`}
-                  >
-                    {c.label}
-                    <span className="tabular text-xs">{cardCount(c.id)}</span>
-                  </button>
-                )
-              })}
-            </div>
+            {!isShelfMode && (
+              <div
+                role="group"
+                aria-label="Danh mục"
+                className="-mx-5 flex min-w-0 flex-1 gap-6 overflow-x-auto border-b border-line px-5 [scrollbar-width:none] sm:mx-0 sm:px-0"
+              >
+                {[{ id: null, label: 'Tất cả' } as const, ...CATEGORIES].map((c) => {
+                  const active = category === c.id
+                  return (
+                    <button
+                      key={c.label}
+                      type="button"
+                      aria-pressed={active}
+                      onClick={() => pickCategory(c.id)}
+                      className={`-mb-px inline-flex h-11 shrink-0 items-center gap-1.5 border-b-2 text-body-sm whitespace-nowrap transition-colors ${
+                        active ? 'border-deep-800 font-medium text-deep-900' : 'border-transparent text-ink-faint hover:text-deep-900'
+                      }`}
+                    >
+                      {c.label}
+                      <span className="tabular text-xs">{cardCount(c.id)}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            )}
             <SortSelect value={sort} onChange={(v) => update({ [SORT_PARAM]: v === 'noi-bat' ? null : v })} />
           </div>
 
@@ -226,7 +246,7 @@ export function ProductsPage() {
           />
 
           {/* Hàng chọn bộ sưu tập: lưới ô đều nhau, chia cột cố định nên không rớt dòng */}
-          {canBrowseByCollection && (
+          {!isShelfMode && canBrowseByCollection && (
             <section aria-labelledby="browse-title" className="mt-7 sm:mt-9">
               <h2 id="browse-title" className="font-display text-[1.45rem] leading-tight text-deep-900 sm:text-[1.8rem]">
                 Quý khách tìm theo bộ sưu tập
@@ -258,52 +278,65 @@ export function ProductsPage() {
             data-lenis-prevent
             className="hidden xl:sticky xl:top-[5.75rem] xl:col-start-2 xl:row-start-1 xl:mt-6 xl:block xl:max-h-[calc(100dvh-5.75rem-6.5rem)] xl:overflow-y-auto xl:overscroll-contain xl:[scrollbar-width:thin] xl:[scrollbar-color:var(--color-line)_transparent] xl:rounded-[1.5rem] xl:bg-ivory xl:p-5 xl:shadow-[var(--shadow-lift)]"
           >
-            <FilterPanel {...panel} idPrefix="loc-cot" />
+            <FilterPanel {...panel} idPrefix="loc-cot" hideCategory={isShelfMode} />
           </aside>
           <div className="min-w-0 xl:col-start-1 xl:row-start-1">
-            <p ref={gridRef} className="mt-6 flex scroll-mt-[5.5rem] flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-ink-soft">
-              <span aria-live="polite">{resultLabel}</span>
-              {isFiltered && (
-                <button
-                  type="button"
-                  onClick={() => update({ [TONE_PARAM]: null, [COLLECTION_PARAM]: null })}
-                  className="-my-2 py-2 font-medium text-deep-900 underline underline-offset-4"
-                >
-                  {band ? 'Xoá lọc màu' : 'Xoá lọc'}
-                </button>
-              )}
-              {band && (
-                <button type="button" onClick={() => update({ [PRICE_PARAM]: null })} className="-my-2 py-2 font-medium text-deep-900 underline underline-offset-4">
-                  Xoá lọc giá
-                </button>
-              )}
-              {tone && !STORIES_APPROVED && <FillIn>[ECOPILLO DUYỆT CÁCH CHIA GAM MÀU]</FillIn>}
-            </p>
-
-            {items.length === 0 ? (
-              <div className="mt-6 rounded-[1.5rem] border border-dashed border-line p-10 text-center text-ink-soft">
-                Không có sản phẩm phù hợp.{' '}
-                <button type="button" onClick={() => setParams({}, { replace: true })} className="font-medium text-deep-900 underline">
-                  Xoá bộ lọc
-                </button>
-              </div>
+            {isShelfMode ? (
+              <>
+                {/* Neo cuộn cho revealGrid khi đổi lọc từ cột phải / bảng lọc */}
+                <p ref={gridRef} className="sr-only scroll-mt-[5.5rem]" aria-live="polite">
+                  {SHELF_CARD_COUNT} thẻ, đủ {cardCount(null)} mẫu
+                </p>
+                <GroupTiles />
+                <ProductShelves onPick={pickCategory} reveal={isFirstGrid} />
+              </>
             ) : (
               <>
-                <ul className="mt-5 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
-                  {pageItems.map((item, i) => (
-                    <li
-                      key={itemKey(item)}
-                      data-reveal={isFirstGrid ? '' : undefined}
-                      style={isFirstGrid ? revealDelay(i, 70) : undefined}
-                      className="flex"
+                <p ref={gridRef} className="mt-6 flex scroll-mt-[5.5rem] flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-ink-soft">
+                  <span aria-live="polite">{resultLabel}</span>
+                  {isFiltered && (
+                    <button
+                      type="button"
+                      onClick={() => update({ [TONE_PARAM]: null, [COLLECTION_PARAM]: null })}
+                      className="-my-2 py-2 font-medium text-deep-900 underline underline-offset-4"
                     >
-                      <div className="flex w-full flex-col [&>article]:flex-1">
-                        {item.kind === 'colorway' ? <ColorwayCard colorway={item.colorway} /> : <ProductCard product={item.product} />}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-                {pageCount > 1 && <Pagination page={page} count={pageCount} onPick={goToPage} />}
+                      {band ? 'Xoá lọc màu' : 'Xoá lọc'}
+                    </button>
+                  )}
+                  {band && (
+                    <button type="button" onClick={() => update({ [PRICE_PARAM]: null })} className="-my-2 py-2 font-medium text-deep-900 underline underline-offset-4">
+                      Xoá lọc giá
+                    </button>
+                  )}
+                  {tone && !STORIES_APPROVED && <FillIn>[ECOPILLO DUYỆT CÁCH CHIA GAM MÀU]</FillIn>}
+                </p>
+
+                {items.length === 0 ? (
+                  <div className="mt-6 rounded-[1.5rem] border border-dashed border-line p-10 text-center text-ink-soft">
+                    Không có sản phẩm phù hợp.{' '}
+                    <button type="button" onClick={() => setParams({}, { replace: true })} className="font-medium text-deep-900 underline">
+                      Xoá bộ lọc
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <ul className="mt-5 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
+                      {pageItems.map((item, i) => (
+                        <li
+                          key={itemKey(item)}
+                          data-reveal={isFirstGrid ? '' : undefined}
+                          style={isFirstGrid ? revealDelay(i, 70) : undefined}
+                          className="flex"
+                        >
+                          <div className="flex w-full flex-col [&>article]:flex-1">
+                            {item.kind === 'colorway' ? <ColorwayCard colorway={item.colorway} /> : <ProductCard product={item.product} />}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                    {pageCount > 1 && <Pagination page={page} count={pageCount} onPick={goToPage} />}
+                  </>
+                )}
               </>
             )}
           </div>
@@ -361,13 +394,6 @@ function CollectionTile({ collection, active, onPick, disabled }: CollectionTile
     </Tile>
   )
 }
-
-/** Số thẻ của một loại (hoặc tất cả) khi chưa lọc: bộ chăn ga, chăn hè đếm theo phối màu */
-const cardCount = (category: CategoryId | null): number =>
-  PRODUCTS.filter((p) => !category || p.category === category).reduce(
-    (n, p) => n + (p.collection ? COLORWAYS.filter((c) => c.collection.id === p.collection?.id).length : 1),
-    0,
-  )
 
 /** Thẻ trong lưới: một phối màu (bộ chăn ga, chăn hè) hoặc một sản phẩm lẻ (gối, đệm, chăn) */
 type GridItem = { kind: 'colorway'; colorway: Colorway } | { kind: 'product'; product: Product }

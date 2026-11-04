@@ -42,10 +42,11 @@ export function ContactDock({ mobileBar = true }: { mobileBar?: boolean }) {
             </a>
             <Link
               to={PATHS.order}
-              className="flex h-12 items-center justify-center gap-1.5 rounded-2xl bg-deep-800 text-sm font-medium text-ivory active:bg-deep-700"
+              className="flex h-12 items-center justify-center gap-1.5 rounded-2xl bg-deep-800 text-sm font-medium whitespace-nowrap text-ivory active:bg-deep-700"
             >
               Đặt hàng
-              <Icon name="arrowRight" size={16} />
+              {/* Dưới 360px ô quá hẹp, chữ rớt hai dòng "Đặt / hàng": bỏ mũi tên */}
+              <Icon name="arrowRight" size={16} className="max-[359px]:hidden" />
             </Link>
           </div>
         </div>
