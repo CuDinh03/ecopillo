@@ -20,7 +20,8 @@ export function ColorwayCard({ colorway }: { colorway: Colorway }) {
         />
       </div>
       <div className="flex flex-1 flex-col p-3.5 sm:p-5">
-        <h3 title={story.title} className="font-display line-clamp-2 text-lead leading-tight text-mist-600 italic sm:text-[1.35rem]">
+        {/* Không cắt tên: tên câu chuyện dài nhất 42 ký tự, điện thoại dùng chữ nhỏ hơn để đọc trọn (khách 04/11/2026: "bị giấu chữ") */}
+        <h3 className="font-display text-body leading-snug text-mist-600 italic sm:text-[1.3rem] sm:leading-tight">
           {/* Liên kết phủ cả ô */}
           <Link to={patternPath(collection, pattern)} className="after:absolute after:inset-0 focus-visible:outline-none">
             {story.title}

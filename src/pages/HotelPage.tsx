@@ -39,7 +39,7 @@ const LAYERS: readonly Layer[] = [
     title: 'Ga bọc, ga phủ',
     text: 'Trắng tinh hoặc màu theo nhận diện khách sạn.',
     material: HOTEL_LINEN.bedding,
-    to: productsUrl({ 'danh-muc': 'bo-chan-ga' }),
+    // Ga trắng khách sạn chưa có trang sản phẩm; trước 04/11/2026 dẫn sang bộ chăn ga gia đình (khách báo nhầm): dẫn xuống form báo giá
     image: HOTEL_PHOTOS.sheets,
   },
   {

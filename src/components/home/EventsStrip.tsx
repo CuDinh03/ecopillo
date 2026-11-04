@@ -22,11 +22,12 @@ export function EventsStrip({ standalone = false }: EventsStripProps) {
   const Heading = standalone ? 'h2' : 'h3'
   return (
     <section aria-labelledby="events-title" className={standalone ? '' : 'mt-14 sm:mt-24'}>
-      <header data-reveal="left" className="max-w-2xl">
+      <header data-reveal="left">
         <Heading id="events-title" className={`font-display text-deep-900 ${standalone ? 'text-[2rem] sm:text-[2.75rem]' : 'text-[1.75rem] sm:text-[2.2rem]'}`}>
           Ecopillo đồng hành
         </Heading>
-        <p className="mt-3 max-w-xl text-body-sm leading-relaxed text-ink-soft">
+        {/* Một dòng trên máy tính (khách 04/11/2026: chữ "vị bạn." rơi xuống dòng riêng) */}
+        <p className="mt-3 text-body-sm leading-relaxed text-pretty text-ink-soft">
           Những chương trình, sự kiện Ecopillo góp mặt cùng cộng đồng và các đơn vị bạn.
         </p>
       </header>

@@ -18,29 +18,30 @@ const TRUST: readonly { icon: IconName; title: string; text: string }[] = [
 /**
  * Mỗi ô: biểu tượng ở trên, chữ căn giữa bên dưới, các ô rộng bằng nhau và cách vạch ngăn như nhau,
  * để tiêu đề không bị chạm vạch và các dòng mô tả xuống dòng đều nhau.
+ * Khách 04/11/2026 "làm nổi bật phần này": đặt trong khối trắng nổi (nền cả web xanh), biểu tượng nền chàm, tiêu đề to và đậm hơn.
  */
 export function TrustStrip() {
   return (
-    <section aria-label="Cam kết của Ecopillo" className="border-y border-line">
+    <section aria-label="Cam kết của Ecopillo" className="pb-2">
       <Container>
-        <ul className="grid grid-cols-2 lg:grid-cols-5">
+        <ul className="grid grid-cols-2 overflow-hidden rounded-[1.5rem] bg-ivory shadow-[var(--shadow-soft)] lg:grid-cols-5">
           {TRUST.map((item, i) => (
             <li
               key={item.title}
               data-reveal
               style={revealDelay(i)}
-              className={`flex flex-col items-center gap-2.5 px-3 py-5 text-center sm:gap-3 sm:py-7 lg:px-4 ${
+              className={`flex flex-col items-center gap-3 px-3 py-6 text-center sm:py-8 lg:px-4 ${
                 i % 2 === 1 ? 'border-l border-line' : ''
               } ${i > 0 ? 'lg:border-l lg:border-line' : ''} ${i >= 2 ? 'border-t border-line lg:border-t-0' : ''} ${
                 i === TRUST.length - 1 && TRUST.length % 2 === 1 ? 'col-span-2 lg:col-span-1' : ''
               }`}
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ivory text-mist-600 ring-1 ring-cream-200">
-                <Icon name={item.icon} size={19} />
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-deep-800 text-ivory sm:h-14 sm:w-14">
+                <Icon name={item.icon} size={24} />
               </span>
               <span className="block">
-                <span className="block text-meta font-medium text-balance text-deep-900 sm:text-small">{item.title}</span>
-                <span className="mx-auto mt-1 hidden max-w-[14rem] text-meta leading-snug text-balance text-ink-soft sm:block">
+                <span className="block text-small font-semibold text-balance text-deep-900 sm:text-body">{item.title}</span>
+                <span className="mx-auto mt-1 hidden max-w-[14rem] text-small leading-snug text-balance text-ink-soft sm:block">
                   {item.text}
                 </span>
               </span>
