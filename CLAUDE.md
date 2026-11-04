@@ -81,6 +81,7 @@ pnpm lint       # đang có 4 cảnh báo cũ react-refresh, không phải lỗi
 | Câu chuyện phối màu, gam màu, tập (bản nháp chờ Ecopillo duyệt) | `src/data/stories.ts`; xuất bản gửi duyệt: `node tools/xuat-nhap-cau-chuyen.mjs` |
 | Thêm bộ sưu tập mới, thêm phối màu mới | Làm theo `docs/huong-dan-them-bo-suu-tap.md` |
 | Trang bộ sưu tập (bìa, chương, hàng chương, cùng gam màu) | `src/components/collection/` |
+| Bộ sưu tập trang chủ chia nhóm Thêu / In hoạ tiết / Dệt hoa văn (thêm bộ mới phải thêm vào một nhóm) | `src/data/collectionGroups.ts`, `src/components/home/Collections.tsx` |
 | Bài viết | `src/data/posts.ts` |
 | Đánh giá, nội dung mẫu trang chủ | `src/data/content.ts` |
 | Sự kiện Ecopillo đồng hành (cuối phần Về chúng tôi trang chủ) | `src/data/events.ts`, khối `src/components/home/EventsStrip.tsx`; nén ảnh: `tools/nen-anh-su-kien-2026-10-20.py` |

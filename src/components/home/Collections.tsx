@@ -1,8 +1,7 @@
-import { useState } from 'react'
+import { useState, type MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
 import {
-  BEDDING_SETS,
   collectionRange,
   coverOf,
   GIFTS,
@@ -11,28 +10,19 @@ import {
   type Collection,
   type Pattern,
 } from '../../data/catalog'
+import { COLLECTION_GROUPS, type CollectionGroup } from '../../data/collectionGroups'
 import { orderUrl } from '../../data/products'
 import { collectionPath, PATHS } from '../../data/links'
 import { chapterTitle, patternPath } from '../../data/stories'
 import { formatRange } from '../../lib/format'
 import { revealDelay } from '../../lib/reveal'
+import { scrollToElement } from '../../lib/scroll'
 import { Icon } from '../ui/Icon'
 import { preloadImage } from '../../lib/preload'
 import { CrossfadeImage } from '../ui/CrossfadeImage'
 import { MobileMore } from '../ui/MobileMore'
 import { Placeholder } from '../ui/Placeholder'
-import { buttonClass, Container, SectionHeading } from '../ui/primitives'
-
-/** Thứ tự và độ rộng ô trên lưới bento (lg: 3 cột) */
-const LAYOUT: readonly { id: string; wide?: boolean }[] = [
-  { id: 'eco-rosa', wide: true },
-  { id: 'eco-flora' },
-  { id: 'eco-tera' },
-  { id: 'eco-vera' },
-  { id: 'eco-sweet' },
-  { id: 'eco-liora' },
-  { id: 'eco-doris', wide: true },
-]
+import { buttonClass, Container, FillIn, SectionHeading } from '../ui/primitives'
 
 export const orderLink = (collectionId: string) => `${PATHS.order}?bo-suu-tap=${collectionId}`
 
@@ -132,7 +122,15 @@ function Swatches({ collection, selected, onSelect, onPreview }: SwatchesProps) 
   )
 }
 
-function CollectionCard({ collection, wide, index = 0 }: { collection: Collection; wide?: boolean; index?: number }) {
+interface CollectionCardProps {
+  collection: Collection
+  /** Chưa xác nhận bộ này thuộc nhóm đang hiện (câu hỏi STT 68) */
+  unconfirmed?: boolean
+  index?: number
+}
+
+/** Thẻ bộ sưu tập: mọi thẻ bằng nhau (mục 9, mẫu A), nút và giá dồn xuống đáy để các thẻ cùng hàng thẳng nhau */
+function CollectionCard({ collection, unconfirmed, index = 0 }: CollectionCardProps) {
   const { min, max } = collectionRange(collection)
   const [patternCode, setPatternCode] = useState(collection.cover ?? collection.patterns[0]?.code)
   const [previewCode, setPreviewCode] = useState<string | null>(null)
@@ -147,52 +145,43 @@ function CollectionCard({ collection, wide, index = 0 }: { collection: Collectio
     <article
       data-reveal
       style={revealDelay(index)}
-      className={`group relative flex flex-col overflow-hidden rounded-[1.75rem] bg-ivory shadow-[var(--shadow-soft)] transition duration-500 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] ${
-        wide ? `lg:col-span-2 lg:grid ${isTop ? 'lg:grid-cols-[1fr_1.15fr]' : 'lg:grid-cols-[1.15fr_1fr]'}` : ''
-      }`}
+      className="group relative flex flex-col overflow-hidden rounded-[1.75rem] bg-ivory shadow-[var(--shadow-soft)] transition duration-500 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]"
     >
-      <div
-        className={`relative overflow-hidden ${wide ? 'aspect-[4/3] lg:aspect-auto lg:min-h-[26rem]' : 'aspect-[4/3]'} ${
-          isTop ? 'lg:order-2' : ''
-        }`}
-      >
+      <div className="relative aspect-[4/3] overflow-hidden">
         {image ? (
           <div className="absolute inset-0 transition-transform duration-700 ease-[var(--ease-soft)] group-hover:scale-[1.03]">
-            <CrossfadeImage
-              image={image}
-              sizes={wide ? '(min-width: 1024px) 540px, 100vw' : '(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw'}
-            />
+            <CrossfadeImage image={image} sizes="(min-width: 1280px) 280px, (min-width: 1024px) 300px, (min-width: 640px) 50vw, 84vw" />
           </div>
         ) : (
           <Placeholder
-            className="absolute inset-0 h-full w-full !rounded-none border-0 border-b lg:border-b-0"
+            className="absolute inset-0 h-full w-full !rounded-none border-0 border-b"
             tint={pattern?.swatch}
             note={collection.imageNote}
           />
         )}
-        {collection.badge && (
-          <span
-            className={`absolute top-4 left-4 rounded-full px-3 py-1 text-label font-medium tracking-wide uppercase ${
-              isTop ? 'bg-deep-900 text-brass-100' : 'bg-ivory text-deep-800'
-            }`}
-          >
-            {collection.badge}
-          </span>
-        )}
+        {/* Nhãn đặt góc trên trái: góc dưới ảnh có mã mẫu in sẵn (ES06, ER48…) */}
+        <div className="absolute top-4 left-4 flex flex-col items-start gap-2">
+          {collection.badge && (
+            <span
+              className={`rounded-full px-3 py-1 text-label font-medium tracking-wide uppercase ${
+                isTop ? 'bg-deep-900 text-brass-100' : 'bg-ivory text-deep-800'
+              }`}
+            >
+              {collection.badge}
+            </span>
+          )}
+          {unconfirmed && <FillIn className="text-label">[XÁC NHẬN loại]</FillIn>}
+        </div>
       </div>
 
-      <div className={`flex flex-1 flex-col p-5 sm:p-7 ${wide ? 'lg:p-10' : ''}`}>
-        <p className="text-label font-medium tracking-[0.14em] text-mist-600 uppercase">
-          {collection.kindLabel}
-        </p>
-        <h3 className={`font-display mt-2 text-deep-900 ${wide ? 'text-[1.75rem] sm:text-[2.2rem] lg:text-[2.6rem]' : 'text-[1.75rem] sm:text-[1.8rem]'}`}>
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
+        <p className="text-label font-medium tracking-[0.14em] text-mist-600 uppercase">{collection.kindLabel}</p>
+        <h4 className="font-display mt-2 text-[1.6rem] text-deep-900">
           <Link to={collectionPath(collection)} className="decoration-mist-300 underline-offset-[6px] hover:underline">
             {collection.name}
           </Link>
-        </h3>
-        <p className="mt-1 line-clamp-2 text-small text-ink-soft italic sm:line-clamp-none sm:text-body-sm">{collection.tagline}</p>
-
-        {wide && <p className="mt-5 hidden max-w-md text-sm leading-relaxed text-ink-soft sm:block">{collection.description}</p>}
+        </h4>
+        <p className="mt-1 line-clamp-2 text-small text-ink-soft italic sm:line-clamp-none">{collection.tagline}</p>
 
         <p className="mt-4 hidden text-meta leading-snug text-ink-soft sm:block">
           <span className="text-ink-faint">Gồm: </span>
@@ -203,7 +192,7 @@ function CollectionCard({ collection, wide, index = 0 }: { collection: Collectio
           <Swatches collection={collection} selected={pattern} onSelect={setPatternCode} onPreview={setPreviewCode} />
         </div>
 
-        <div className="mt-auto pt-5 sm:pt-6">
+        <div className="mt-auto pt-5">
           <p className="hidden text-label tracking-wide text-ink-faint uppercase sm:block">1m6 → 2m2</p>
           <p className="tabular mt-1 text-lead font-medium text-deep-900">{formatRange(min, max)}</p>
           {gift.perSet > 0 && (
@@ -212,10 +201,10 @@ function CollectionCard({ collection, wide, index = 0 }: { collection: Collectio
               {gift.label}
             </p>
           )}
-          <div className="mt-5 flex gap-2">
+          <div className="mt-5 grid grid-cols-2 gap-2">
             <Link
               to={orderUrl(collection, pattern && !isPatternSoldOut(pattern) ? pattern : undefined)}
-              className={buttonClass('primary', 'md', 'flex-1 sm:flex-none')}
+              className={buttonClass('primary', 'md', '!px-3')}
               aria-label={`Đặt mua ${collection.name}`}
             >
               Đặt mua
@@ -223,7 +212,7 @@ function CollectionCard({ collection, wide, index = 0 }: { collection: Collectio
             </Link>
             <Link
               to={pattern ? patternPath(collection, pattern) : collectionPath(collection)}
-              className={buttonClass('secondary', 'md', 'flex-1 sm:flex-none')}
+              className={buttonClass('secondary', 'md', '!px-3')}
               aria-label={`Xem chi tiết ${collection.name}`}
             >
               Chi tiết
@@ -235,16 +224,66 @@ function CollectionCard({ collection, wide, index = 0 }: { collection: Collectio
   )
 }
 
-export function Collections() {
-  const byId = new Map(BEDDING_SETS.map((c) => [c.id, c]))
+/** Hàng chip dưới tiêu đề: bấm thì cuộn tới nhóm (đi qua Lenis) */
+function GroupJumps() {
+  const goTo = (e: MouseEvent<HTMLAnchorElement>, group: CollectionGroup) => {
+    const target = document.getElementById(group.id)
+    if (!target) return
+    e.preventDefault()
+    scrollToElement(target)
+  }
+  return (
+    <nav aria-label="Nhóm bộ sưu tập theo cách làm hoa văn" className="mt-6 sm:mt-8">
+      <ul className="flex flex-wrap gap-2">
+        {COLLECTION_GROUPS.map((group) => (
+          <li key={group.id}>
+            <a
+              href={`#${group.id}`}
+              onClick={(e) => goTo(e, group)}
+              className="group/chip inline-flex h-10 items-center gap-1.5 rounded-full bg-ivory px-4 text-sm font-medium text-deep-900 shadow-[var(--shadow-soft)] transition duration-300 ease-[var(--ease-soft)] hover:bg-deep-800 hover:text-ivory focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mist-600 active:scale-[0.98]"
+            >
+              {group.title}
+              <span className="tabular font-normal text-ink-faint transition-colors group-hover/chip:text-ivory/75">
+                {group.collections.length} bộ
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
 
+function GroupBlock({ group }: { group: CollectionGroup }) {
+  const headingId = `${group.id}-tieu-de`
+  return (
+    <section id={group.id} aria-labelledby={headingId} className="mt-10 scroll-mt-[5.5rem] sm:mt-14">
+      <header className="mb-5 flex flex-col gap-1 border-b border-line pb-3 sm:grid sm:grid-cols-[auto_1fr_auto] sm:items-baseline sm:gap-5 sm:pb-4">
+        <h3 id={headingId} className="font-display text-[1.6rem] text-deep-900 sm:text-[1.75rem]">
+          {group.title}
+        </h3>
+        <p className="text-meta leading-relaxed text-ink-soft sm:text-sm">{group.note}</p>
+        <span className="tabular text-label whitespace-nowrap text-ink-faint max-sm:hidden">
+          {group.collections.length} bộ sưu tập
+        </span>
+      </header>
+      <div className="m-rail grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {group.collections.map((c, index) => (
+          <CollectionCard key={c.id} collection={c} unconfirmed={group.unconfirmed.has(c.id)} index={index} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+export function Collections() {
   return (
     <section id="bo-suu-tap" aria-labelledby="collections-title" className="py-14 sm:py-24">
       <Container>
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <SectionHeading
             id="collections-title"
-            title="Bảy bộ sưu tập, một chuẩn mực êm ái"
+            title="Bộ sưu tập chăn ga, chọn theo cách làm hoa văn"
             lead="Giá thay đổi theo kích thước giường 1m6, 1m8 và 2m2. Bấm “Đặt mua” để chọn mẫu, kích thước và xem quà tặng kèm."
           />
           <ol className="flex gap-6 text-sm text-ink-soft lg:pb-2" aria-label="Phân khúc">
@@ -257,14 +296,13 @@ export function Collections() {
           </ol>
         </div>
 
-        <div className="m-rail mt-8 grid gap-5 sm:mt-14 sm:grid-cols-2 lg:grid-cols-3">
-          {LAYOUT.map(({ id, wide }, index) => {
-            const c = byId.get(id)
-            return c ? <CollectionCard key={id} collection={c} wide={wide} index={index} /> : null
-          })}
-        </div>
+        <GroupJumps />
 
-        <div className="mt-6 flex justify-center sm:mt-10">
+        {COLLECTION_GROUPS.map((group) => (
+          <GroupBlock key={group.id} group={group} />
+        ))}
+
+        <div className="mt-8 flex justify-center sm:mt-12">
           <Link to={PATHS.products} className={buttonClass('secondary', 'lg')}>
             Xem tất cả sản phẩm
             <Icon name="arrowRight" size={18} />
