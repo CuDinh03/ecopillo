@@ -22,7 +22,7 @@ import {
   type PriceBand,
   type Product,
 } from '../data/products'
-import { cardCount, SHELF_CARD_COUNT } from '../data/productShelves'
+import { cardCount } from '../data/productShelves'
 import { COLORWAYS, STORIES_APPROVED, toneById, type Colorway, type Tone } from '../data/stories'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useFirstRender } from '../hooks/useFirstRender'
@@ -202,7 +202,7 @@ export function ProductsPage() {
           activeCount={activeCount}
           resultCount={items.length}
           onClose={revealGrid}
-          summary={isShelfMode ? `${SHELF_CARD_COUNT} thẻ, đủ ${cardCount(null)} mẫu` : undefined}
+          summary={isShelfMode ? 'Tất cả sản phẩm' : undefined}
         />
 
         {/* 640–1279px: khối lọc phía trên lưới như trước. Từ 1280px khối lọc là cột dính bên phải (bên dưới).
@@ -252,7 +252,7 @@ export function ProductsPage() {
                 Quý khách tìm theo bộ sưu tập
               </h2>
               <div role="group" aria-label="Bộ sưu tập" className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3 lg:grid-cols-8">
-                <Tile active={!collection} onPick={() => update({ [COLLECTION_PARAM]: null })} title="Tất cả bộ" note={`${BEDDING_SETS.length} bộ sưu tập`} />
+                <Tile active={!collection} onPick={() => update({ [COLLECTION_PARAM]: null })} title="Tất cả bộ" note="Mọi bộ sưu tập" />
                 {BEDDING_SETS.map((c) => (
                   <CollectionTile
                     key={c.id}
@@ -285,7 +285,7 @@ export function ProductsPage() {
               <>
                 {/* Neo cuộn cho revealGrid khi đổi lọc từ cột phải / bảng lọc */}
                 <p ref={gridRef} className="sr-only scroll-mt-[5.5rem]" aria-live="polite">
-                  {SHELF_CARD_COUNT} thẻ, đủ {cardCount(null)} mẫu
+                  Tất cả sản phẩm
                 </p>
                 <GroupTiles />
                 <ProductShelves onPick={pickCategory} reveal={isFirstGrid} />
@@ -356,7 +356,7 @@ interface TileProps {
   children?: ReactNode
 }
 
-/** Ô lọc: mọi ô trong một lưới cao bằng nhau, tên một dòng, số lượng ở dòng dưới */
+/** Ô lọc: mọi ô trong một lưới cao bằng nhau, tên một dòng, dòng phụ bên dưới (loại bộ; không ghi số phối màu, khách 05/11/2026) */
 function Tile({ active, onPick, title, note, disabled, children }: TileProps) {
   return (
     <button
@@ -385,7 +385,7 @@ interface CollectionTileProps {
 
 function CollectionTile({ collection, active, onPick, disabled }: CollectionTileProps) {
   return (
-    <Tile active={active} onPick={onPick} title={collection.name} note={`${collection.patterns.length} phối màu`} disabled={disabled}>
+    <Tile active={active} onPick={onPick} title={collection.name} note={collection.kindLabel} disabled={disabled}>
       <span aria-hidden="true" className="flex px-3 pt-3 sm:px-3.5">
         {collection.patterns.slice(0, TILE_DOTS).map((p) => (
           <span key={p.code} className="-mr-1 h-4 w-4 rounded-full ring-1 ring-ivory" style={{ backgroundColor: p.swatch } as CSSProperties} />

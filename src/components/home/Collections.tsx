@@ -1,6 +1,5 @@
 import { useState, type MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { CONTACT } from '../../data/brand'
 import {
   collectionRange,
   coverOf,
@@ -20,7 +19,6 @@ import { scrollToElement } from '../../lib/scroll'
 import { Icon } from '../ui/Icon'
 import { preloadImage } from '../../lib/preload'
 import { CrossfadeImage } from '../ui/CrossfadeImage'
-import { MobileMore } from '../ui/MobileMore'
 import { Placeholder } from '../ui/Placeholder'
 import { buttonClass, Container, FillIn, SectionHeading } from '../ui/primitives'
 
@@ -60,7 +58,7 @@ function Swatches({ collection, selected, onSelect, onPreview }: SwatchesProps) 
   ]
   const shown = ordered.slice(0, SWATCH_LIMIT)
   const extra = collection.patterns.length - shown.length
-  // Điện thoại chỉ hiện 4 ô để ô màu và "+N mẫu" nằm gọn một hàng
+  // Điện thoại chỉ hiện 4 ô để ô màu và "Xem thêm" nằm gọn một hàng
   const extraMobile = collection.patterns.length - Math.min(shown.length, MOBILE_SWATCHES)
   // Điện thoại: nút rộng hơn ô màu nhìn thấy (28px) để dễ bấm, lề âm bù lại nên hàng không dài thêm.
   // 320px chỉ đủ chỗ cho vùng bấm 34×40; từ 360px giãn ô ra để vùng bấm đủ 40×40 mà không chồng nhau.
@@ -103,13 +101,14 @@ function Swatches({ collection, selected, onSelect, onPreview }: SwatchesProps) 
       {extraMobile > 0 && (
         <Link
           to={collectionPath(collection)}
-          // Máy tính hiện đủ mẫu (extra = 0) thì link không có chữ: ẩn hẳn để không có link trống
+          // Máy tính đã hiện đủ mẫu (extra = 0) thì ẩn link trên máy tính
+          aria-label={`Xem thêm mẫu ${collection.name}`}
           className={`relative z-10 -my-3 py-3 pl-1 text-xs font-medium whitespace-nowrap text-deep-800 underline-offset-4 hover:underline ${
             extra > 0 ? '' : 'sm:hidden'
           }`}
         >
-          <span className="sm:hidden">+{extraMobile} mẫu</span>
-          {extra > 0 && <span className="max-sm:hidden">+{extra} mẫu</span>}
+          {/* Không ghi số mẫu (khách 05/11/2026: "đừng cho số lượng vào", web chưa đủ hết mẫu đang bán) */}
+          Xem thêm
         </Link>
       )}
       {selected && (
@@ -243,9 +242,6 @@ function GroupJumps() {
               className="group/chip inline-flex h-10 items-center gap-1.5 rounded-full bg-ivory px-4 text-sm font-medium text-deep-900 shadow-[var(--shadow-soft)] transition duration-300 ease-[var(--ease-soft)] hover:bg-deep-800 hover:text-ivory focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mist-600 active:scale-[0.98]"
             >
               {group.title}
-              <span className="tabular font-normal text-ink-faint transition-colors group-hover/chip:text-ivory/75">
-                {group.collections.length} bộ
-              </span>
             </a>
           </li>
         ))}
@@ -258,14 +254,11 @@ function GroupBlock({ group }: { group: CollectionGroup }) {
   const headingId = `${group.id}-tieu-de`
   return (
     <section id={group.id} aria-labelledby={headingId} className="mt-10 scroll-mt-[5.5rem] sm:mt-14">
-      <header className="mb-5 flex flex-col gap-1 border-b border-line pb-3 sm:grid sm:grid-cols-[auto_1fr_auto] sm:items-baseline sm:gap-5 sm:pb-4">
+      <header className="mb-5 flex flex-col gap-1 border-b border-line pb-3 sm:grid sm:grid-cols-[auto_1fr] sm:items-baseline sm:gap-5 sm:pb-4">
         <h3 id={headingId} className="font-display text-[1.6rem] text-deep-900 sm:text-[1.75rem]">
           {group.title}
         </h3>
         <p className="text-meta leading-relaxed text-ink-soft sm:text-sm">{group.note}</p>
-        <span className="tabular text-label whitespace-nowrap text-ink-faint max-sm:hidden">
-          {group.collections.length} bộ sưu tập
-        </span>
       </header>
       <div className="m-rail grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {group.collections.map((c, index) => (
@@ -308,75 +301,8 @@ export function Collections() {
             <Icon name="arrowRight" size={18} />
           </Link>
         </div>
-
-        {/* Điện thoại: "trong bộ gồm" nằm sau nút (vẫn có trong trang) */}
-        <MobileMore label="Trong mỗi bộ gồm những gì" buttonClassName="mt-4">
-          <SetAnatomy />
-        </MobileMore>
+        {/* Khối "Trong mỗi bộ gồm những gì" bỏ theo khách 05/11/2026 ("nhìn lộn xộn"); thành phần từng bộ vẫn ở dòng "Gồm" trên thẻ và trang bộ */}
       </Container>
     </section>
-  )
-}
-
-const ANATOMY = [
-  {
-    title: 'Bộ ga phủ / bộ chăn ga',
-    note: 'Eco Rosa, Tera, Vera, Sweet, Liora, Doris',
-    items: [
-      ['Ga phủ chần', '160×200 · 180×200 · 200×220'],
-      // Mục 28 (Ecopillo trả lời 23/10/2026): Rosa, Tera, Vera chọn được ga chun chần thay ga phủ, giá riêng
-      ['hoặc ga chun chần (Rosa, Tera, Vera)', 'cùng kích thước'],
-      // Catalog 22.07.2026: vỏ chăn Doris to hơn các bộ khác
-      ['Vỏ chăn 4 mùa, khoá kéo', '200×220 · Doris 210×230'],
-      ['2 vỏ gối đầu', '45×65'],
-      ['1 vỏ gối ôm', '80×100'],
-      // Chỉ Eco Doris có gối tựa (mục 29)
-      ['1 vỏ gối tựa (riêng Eco Doris)', '45×45'],
-    ],
-  },
-  {
-    title: 'Bộ ga chun',
-    note: 'Eco Flora',
-    items: [
-      ['Ga chun', 'theo kích thước giường'],
-      ['Vỏ chăn 4 mùa', '200×220'],
-      ['2 vỏ gối đầu', '45×65'],
-    ],
-  },
-] as const
-
-function SetAnatomy() {
-  return (
-    <div className="m-rail mt-10 grid gap-5 sm:mt-16 lg:grid-cols-[1fr_1fr_0.9fr]">
-      {ANATOMY.map((set, i) => (
-        <div key={set.title} data-reveal style={revealDelay(i)} className="rounded-[1.75rem] bg-ivory p-6 shadow-[var(--shadow-soft)] sm:p-7">
-          <h3 className="font-display text-2xl text-deep-900">{set.title}</h3>
-          <p className="mt-1 text-xs text-ink-faint">{set.note}</p>
-          <dl className="mt-5 space-y-3 text-sm">
-            {set.items.map(([name, size]) => (
-              <div key={name} className="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:gap-3">
-                {/* Đường chỉ nối tên và cỡ vẽ bằng ::after của dt: trong dl chỉ được có dt, dd (audit 16/10/2026) */}
-                <dt className="text-deep-900 sm:flex sm:flex-1 sm:items-baseline sm:gap-3 sm:after:block sm:after:flex-1 sm:after:translate-y-[-3px] sm:after:text-cream-300 sm:after:content-[''] sm:after:h-px sm:after:[background-image:linear-gradient(to_right,currentColor_50%,transparent_0)] sm:after:[background-size:10px_1px] sm:after:bg-repeat-x">
-                  {name}
-                </dt>
-                <dd className="tabular text-meta text-ink-soft sm:text-right sm:text-sm">{size}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      ))}
-      <div data-reveal style={revealDelay(2)} className="flex flex-col justify-between gap-5 rounded-[1.75rem] bg-mist-100 p-6 sm:p-7">
-        <div>
-          <Icon name="ruler" size={24} className="text-mist-600" />
-          <h3 className="font-display mt-3 text-2xl text-deep-900">Giường kích thước riêng?</h3>
-          <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-            Gửi số đo dài × rộng × độ dày đệm qua Zalo, Ecopillo may vừa khít cho Quý khách.
-          </p>
-        </div>
-        <a href={CONTACT.zaloUrl} target="_blank" rel="noopener noreferrer" className={buttonClass('secondary', 'md', 'self-start')}>
-          Gửi số đo qua Zalo
-        </a>
-      </div>
-    </div>
   )
 }

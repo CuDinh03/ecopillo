@@ -4,11 +4,8 @@ import { scrollToElement } from '../../lib/scroll'
 import { SHELVES, type Shelf } from '../../data/productShelves'
 import { Placeholder } from '../ui/Placeholder'
 
-const tileNote = (shelf: Shelf): string => {
-  if (shelf.category === 'bo-chan-ga') return `${shelf.products.length} bộ · ${shelf.count} mẫu`
-  if (shelf.category === 'dem') return `${shelf.count} mẫu · từ ${formatVND(shelf.min)}`
-  return `${shelf.count} mẫu`
-}
+/** Dòng phụ ô nhóm: chỉ giá khởi điểm, không ghi số mẫu (khách 05/11/2026: "đừng cho số lượng vào") */
+const tileNote = (shelf: Shelf): string => `từ ${formatVND(shelf.min)}`
 
 /**
  * Bốn ô ảnh nhóm đầu mục "Tất cả" (phương án 1 + 2, owner chốt 02/11/2026): bấm ô thì cuộn tới kệ của nhóm đó.

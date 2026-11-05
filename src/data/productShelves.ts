@@ -71,15 +71,5 @@ export const SHELVES: readonly Shelf[] = SHELF_ORDER.map((category) => {
   }
 })
 
-/** Số thẻ trên cả bốn kệ */
-export const SHELF_CARD_COUNT = SHELVES.reduce((n, s) => n + s.products.length, 0)
-
-/** Bộ chăn ga: ít và nhiều phối màu nhất một bộ, cho thẻ "Xem theo phối màu" */
-const setColorways = SHELVES.find((s) => s.category === 'bo-chan-ga')?.products.map(colorwayCount) ?? [0]
-const SET_COLORWAYS = { fewest: Math.min(...setColorways), most: Math.max(...setColorways) }
-
-/** Số phối màu của cả bộ chăn ga (lưới xem theo phối màu) */
-export const SET_COLORWAY_TOTAL = cardCount('bo-chan-ga')
-
-/** Câu trên thẻ "Xem theo phối màu" (máy tính) */
-export const COLORWAY_HINT = `Mỗi bộ có từ ${SET_COLORWAYS.fewest} tới ${SET_COLORWAYS.most} phối màu; bấm vào bộ để chọn phối màu, hoặc xem cả ${SET_COLORWAY_TOTAL} phối màu trên một lưới.`
+/** Câu trên thẻ "Xem theo phối màu" (máy tính). Không ghi số (khách 05/11/2026: "đừng cho số lượng vào") */
+export const COLORWAY_HINT = 'Mỗi bộ có nhiều phối màu; bấm vào bộ để chọn, hoặc xem mọi phối màu trên một lưới.'

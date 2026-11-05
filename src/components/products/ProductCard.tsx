@@ -15,7 +15,6 @@ function otherPatternImage(collection: Collection, currentSrc?: string): ImageSo
 
 export function ProductCard({ product }: { product: Product }) {
   const gift = product.collection ? GIFTS[product.collection.gift] : undefined
-  const patternCount = product.collection?.patterns.length ?? 0
   // Rê chuột mờ dần sang ảnh thứ hai (hieu-ung, câu 4A): ảnh thư viện đầu tiên, chưa có thì lấy mẫu khác
   const altImage =
     product.gallery?.[0] ?? (product.collection ? otherPatternImage(product.collection, product.image?.src) : undefined)
@@ -52,7 +51,6 @@ export function ProductCard({ product }: { product: Product }) {
       <div className="flex flex-1 flex-col p-3.5 sm:p-6">
         <p className="text-label font-medium tracking-[0.12em] text-mist-600 uppercase sm:text-label sm:tracking-[0.14em]">
           {categoryLabel(product.category)}
-          {patternCount > 1 && <span className="text-ink-faint"> · {patternCount} mẫu</span>}
         </p>
         {/* Tên dài (khi lấy từ WordPress) cắt còn 2 dòng để thẻ cùng hàng cao bằng nhau (B8, owner duyệt 24/10/2026) */}
         <h3 title={product.name} className="font-display mt-1.5 line-clamp-3 text-body leading-snug text-deep-900 sm:mt-2 sm:line-clamp-2 sm:text-[1.35rem]">

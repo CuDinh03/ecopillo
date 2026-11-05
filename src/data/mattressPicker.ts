@@ -26,9 +26,9 @@ export interface MattressPreference {
   thumb: ImageSource
 }
 
+/** Chip nhóm đệm: chỉ tên, không ghi số mẫu (khách 05/11/2026: "để tag thôi, bỏ số bên cạnh", "cả đệm cũng vậy") */
 export interface MattressChip {
   label: string
-  count: number
   to: string
 }
 
@@ -80,18 +80,17 @@ export const MATTRESS_PREFERENCES: readonly MattressPreference[] = [
   preference('dem-bong-gam-thuan-khiet', 3),
 ]
 
-const chipOf = (path: string, label: string): MattressChip => ({
-  label,
-  count: LISTINGS[path].products?.length ?? 0,
-  to: path,
-})
+const chipOf = (path: string, label: string): MattressChip => {
+  if (!LISTINGS[path]) throw new Error(`mattressPicker: thiếu danh mục ${path}`)
+  return { label, to: path }
+}
 
 export const MATTRESS_CHIPS: readonly MattressChip[] = [
   chipOf('/danh-muc-san-pham/san-pham/dem-lo-xo/', 'Đệm lò xo'),
   chipOf('/danh-muc-san-pham/san-pham/dem-cao-su/', 'Đệm cao su'),
   chipOf('/danh-muc-san-pham/san-pham/dem-foam/', 'Đệm foam'),
   chipOf('/danh-muc-san-pham/san-pham/dem-bong-ep/', 'Đệm bông ép'),
-  { label: 'Topper', count: 1, to: singleProductPath('topper-micro-fiber') },
+  { label: 'Topper', to: singleProductPath('topper-micro-fiber') },
 ]
 
 export const MATTRESS_ALL_PATH = DEM_PATH

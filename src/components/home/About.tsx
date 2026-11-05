@@ -8,6 +8,7 @@ import {
   MISSION,
   MISSION_IMAGE,
   STORY_OPENING,
+  isLongText,
   VISION,
   VISION_IMAGE,
   AWARD_IMAGE,
@@ -105,7 +106,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
             <MissionText>{MISSION}</MissionText>
           </MissionCard>
           <MissionCard label="Tầm nhìn" image={VISION_IMAGE} position="50% 0%">
-            <MissionText>{VISION}</MissionText>
+            <MissionText isLong={isLongText(VISION)}>{VISION}</MissionText>
           </MissionCard>
           <MissionCard label="Giá trị cốt lõi" image={VALUES_IMAGE} position="50% 35%">
             <ul className="mt-4 grid grid-cols-1 gap-x-6 gap-y-3.5 sm:grid-cols-2">
@@ -156,8 +157,9 @@ interface MissionCardProps {
   children: ReactNode
 }
 
-function MissionText({ children }: { children: ReactNode }) {
-  return <p className="font-display mt-3 max-w-lg text-[1.35rem] leading-snug sm:text-[1.55rem]">{children}</p>
+function MissionText({ children, isLong = false }: { children: ReactNode; isLong?: boolean }) {
+  const size = isLong ? 'text-[1.08rem] leading-relaxed sm:text-[1.15rem]' : 'text-[1.35rem] leading-snug sm:text-[1.55rem]'
+  return <p className={`font-display mt-3 max-w-xl ${size}`}>{children}</p>
 }
 
 /**

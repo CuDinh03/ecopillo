@@ -102,10 +102,9 @@ export function MattressPicker() {
               <li key={chip.to} className="shrink-0">
                 <Link
                   to={chip.to}
-                  className="tabular inline-flex h-10 items-center gap-1.5 rounded-full bg-ivory px-4 text-small text-deep-900 shadow-[var(--shadow-soft)] transition duration-300 ease-[var(--ease-soft)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)]"
+                  className="inline-flex h-10 items-center rounded-full bg-ivory px-4 text-small text-deep-900 shadow-[var(--shadow-soft)] transition duration-300 ease-[var(--ease-soft)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)]"
                 >
                   {chip.label}
-                  <span className="text-label text-ink-faint">{chip.count}</span>
                 </Link>
               </li>
             ))}

@@ -1,12 +1,12 @@
 import { collectionById, patternImage, productImage, type ImageSource } from './catalog'
 import { collectionPathById, LISTINGS, PATHS, singleProductPath } from './links'
 import { PRODUCTS, productBySlug, type Product } from './products'
-import { colorwayCount } from './productShelves'
 
 /**
  * Ô xổ "Sản phẩm" trên thanh đầu trang (góp ý 04/11/2026 mục 3, 13; owner chọn phương án B ngày 05/11/2026).
  * Năm nhóm theo thứ tự và tên nhóm của menu web cũ, thêm Topper vào nhóm Đệm. Mẫu: docs/de-xuat-menu-san-pham-04-11.html.
- * Mọi link là link web cũ đã có (links.ts); giá, số mẫu tính từ PRODUCTS, không chép tay.
+ * Mọi link là link web cũ đã có (links.ts); giá tính từ PRODUCTS, không chép tay.
+ * Không ghi số mẫu, số bộ (khách 05/11/2026: "đừng cho số lượng vào").
  * Eco Ceno (web cũ có) chưa đưa vào: [XÁC NHẬN Ecopillo còn bán Eco Ceno không].
  */
 
@@ -23,8 +23,6 @@ export interface MenuGroup {
   title: string
   to: string
   image: ImageSource
-  /** Dòng phụ trên thẻ điện thoại, ví dụ "6 bộ sưu tập" */
-  note: string
   min: number
   rows: readonly MenuRow[]
 }
@@ -76,13 +74,14 @@ export const PRODUCT_MENU: readonly MenuGroup[] = [
     title: LISTINGS[DEM_PATH].title,
     to: DEM_PATH,
     image: productImage('dem-lo-xo-tui-cao-cap-eco-luxe-2', 'Đệm Ecopillo'),
-    note: `${listingProducts(DEM_PATH).length} mẫu`,
     rows: [
       listingRow('/danh-muc-san-pham/san-pham/dem-lo-xo/'),
       listingRow('/danh-muc-san-pham/san-pham/dem-cao-su/'),
       listingRow('/danh-muc-san-pham/san-pham/dem-bong-ep/'),
       listingRow('/danh-muc-san-pham/san-pham/dem-foam/'),
       productRow('topper-micro-fiber', 'Topper'),
+      productRow('divan-ecopillo', 'Divan'),
+      productRow('bao-ve-dem-chong-tham', 'Bảo vệ đệm'),
     ],
   }),
   group({
@@ -90,7 +89,6 @@ export const PRODUCT_MENU: readonly MenuGroup[] = [
     title: LISTINGS[GA_PHU_PATH].title,
     to: GA_PHU_PATH,
     image: patternImage('ED25', 'Bộ ga phủ'),
-    note: `${GA_PHU_ORDER.length} bộ sưu tập`,
     rows: GA_PHU_ORDER.map(collectionRow),
   }),
   group({
@@ -98,7 +96,6 @@ export const PRODUCT_MENU: readonly MenuGroup[] = [
     title: 'Bộ ga chun',
     to: collectionPathById('eco-flora'),
     image: patternImage('EF06', 'Bộ ga chun'),
-    note: '1 bộ sưu tập',
     rows: [collectionRow('eco-flora')],
   }),
   group({
@@ -106,7 +103,6 @@ export const PRODUCT_MENU: readonly MenuGroup[] = [
     title: 'Chăn hè',
     to: collectionPathById('chan-he-lyocell'),
     image: patternImage('ER09', 'Chăn hè'),
-    note: `${colorwayCount(productOf('chan-he-lyocell'))} phối màu`,
     rows: [collectionRow('chan-he-lyocell')],
   }),
   group({
@@ -114,7 +110,6 @@ export const PRODUCT_MENU: readonly MenuGroup[] = [
     title: LISTINGS[RUOT_PATH].title,
     to: RUOT_PATH,
     image: productImage('chan-long-vu-tu-nhien', 'Ruột chăn gối'),
-    note: `${listingProducts(RUOT_PATH).length} mẫu`,
     rows: [
       listingRow('/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/', 'Ruột gối nằm'),
       productRow('chan-dong-micro-fiber'),

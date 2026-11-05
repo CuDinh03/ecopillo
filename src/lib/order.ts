@@ -217,7 +217,8 @@ export const summarizeSingle = (draft: SingleDraft): OrderSummaryData => {
     imageNote: product.imageNote,
     sizeLabel,
     quantity,
-    unit: product.category === 'dem' && !product.name.startsWith('Topper') ? 'tấm' : 'chiếc',
+    // Đệm tính "tấm"; topper, bảo vệ đệm, divan cùng nhóm nhưng tính "chiếc"
+    unit: product.category === 'dem' && product.name.startsWith('Đệm') ? 'tấm' : 'chiếc',
     unitPrice: price ?? null,
     giftCount: 0,
   }

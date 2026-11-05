@@ -164,6 +164,10 @@ const PRODUCT_SLUGS: Readonly<Record<string, string>> = {
   'dem-eco-foam-da-tang': 'dem-eco-foam-da-tang-ecopillo',
   'dem-lo-xo-eco-royal': 'dem-lo-xo-cao-cap-eco-royal',
   'dem-cao-su-thien-nhien-eco-latex': 'dem-cao-su-thien-nhien-eco-latex',
+  // Có giá từ 05/11/2026: dùng lại trang divan của web cũ thay cho 301 sang Khách sạn (docs/giu-link-web-cu.md mục C)
+  'divan-ecopillo': 'divan-ke-giuong-khach-san',
+  // Web cũ không có trang này: link mới, không cần 301
+  'bao-ve-dem-chong-tham': 'bao-ve-dem-chong-tham',
 }
 
 const productPagePath = (slug: string): string => `/san-pham/${slug}/`
@@ -239,7 +243,7 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
   },
   '/danh-muc-san-pham/dem-ecopillo/': {
     title: 'Đệm Ecopillo',
-    description: 'Đệm lò xo, đệm cao su thiên nhiên, đệm bông ép, đệm foam và topper Ecopillo. Giá theo kích thước và độ dày, nằm thử tại hệ thống phân phối.',
+    description: 'Đệm lò xo, đệm cao su thiên nhiên, đệm bông ép, đệm foam, topper, divan và bảo vệ đệm Ecopillo. Giá theo kích thước và độ dày, nằm thử tại hệ thống phân phối.',
     category: 'dem',
   },
   '/danh-muc-san-pham/san-pham/dem-lo-xo/': {
@@ -314,7 +318,6 @@ export const OLD_SITE_REDIRECTS: Readonly<Record<string, string>> = {
   '/san-pham/ruot-goi-dau-ecopillo/': '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/',
   '/san-pham/chan-he-e-cool-ecopillo/': COLLECTION_PATHS['chan-he-lyocell'],
   '/san-pham/khan-tam-khan-tay-khan-mat-ecopillo/': PATHS.hotel,
-  '/san-pham/divan-ke-giuong-khach-san/': PATHS.hotel,
   // Thẻ bài viết, trang tác giả (web cũ đã chặn /author/ trong robots.txt), khối giao diện của theme cũ
   '/tag/menh-duong-lieu-moc/': PATHS.blog,
   '/tag/menh-hoa-hop-mau-gi/': PATHS.blog,

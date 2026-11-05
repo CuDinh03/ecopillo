@@ -34,7 +34,7 @@ export function ChapterRail({ collection, chapters, current, volumes, volume, on
     <section aria-labelledby="chapters-title" className={className}>
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <h2 id="chapters-title" className="font-display text-[1.5rem] leading-tight text-deep-900 sm:text-[2rem]">
-          {collection.patterns.length} chương màu của {collection.name}
+          Các chương màu của {collection.name}
         </h2>
         {volumes.length > 1 && (
           <div role="group" aria-label="Chọn tập" className="-mx-5 flex gap-2 overflow-x-auto px-5 [mask-image:linear-gradient(to_right,#000_85%,transparent)] [scrollbar-width:none] sm:mx-0 sm:px-0 sm:[mask-image:none]">

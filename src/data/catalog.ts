@@ -443,14 +443,18 @@ export const ESSENTIALS: readonly EssentialGroup[] = [
     ],
   },
   {
+    // Tên nhóm theo khách 05/11/2026 ("Chăn, topper và phụ kiện khác"); thêm bảo vệ đệm, divan với giá khách gửi cùng ngày
     id: 'chan-topper',
-    title: 'Chăn hè & topper',
-    subtitle: 'Thêm một lớp êm, đổi mùa cho phòng ngủ',
+    title: 'Chăn, topper và phụ kiện khác',
+    subtitle: 'Thêm một lớp êm, giữ đệm sạch, đổi mùa cho phòng ngủ',
     imageNote: 'Ảnh topper trải trên đệm, chăn hè gấp cạnh',
     imageKey: 'topper-micro-fiber',
     items: [
       { name: 'Chăn hè Lyocell', note: 'Chần bông mỏng, mát cho mùa hè', min: 1_380_000, max: 1_920_000 },
       { name: 'Topper Micro Fiber', note: 'Làm mềm mặt đệm cứng', min: 3_550_000, max: 4_200_000 },
+      // Giá từng cỡ ở BAO_VE_DEM, DIVAN (products.ts): đổi giá thì sửa cả hai chỗ
+      { name: 'Bảo vệ đệm chống thấm', note: 'Chống thấm, chống bụi, dễ tháo giặt', min: 675_000, max: 889_000 },
+      { name: 'Divan Ecopillo', note: 'Kệ giường khung gỗ thông, cao 30 cm', min: 6_580_000, max: 9_250_000 },
     ],
   },
 ]

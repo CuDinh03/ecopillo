@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { COLORWAY_HINT, colorwayCount, SET_COLORWAY_TOTAL, SHELVES, type Shelf } from '../../data/productShelves'
+import { COLORWAY_HINT, colorwayCount, SHELVES, type Shelf } from '../../data/productShelves'
 import { productPath, type CategoryId, type Product } from '../../data/products'
 import { formatVND } from '../../lib/format'
 import { revealDelay } from '../../lib/reveal'
@@ -7,14 +7,15 @@ import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 
 interface ProductShelvesProps {
-  /** Bấm "Chỉ xem …" hoặc "Xem N phối màu": mở lưới của nhóm đó (?danh-muc=…) */
+  /** Bấm "Chỉ xem …" hoặc "Xem theo phối màu": mở lưới của nhóm đó (?danh-muc=…) */
   onPick: (category: CategoryId) => void
   /** Hiện dần chỉ lần đầu vào trang */
   reveal: boolean
 }
 
 /**
- * Bốn kệ theo nhóm ở mục "Tất cả" (phương án 1 + 2, owner chốt 02/11/2026): đủ 24 thẻ gộp, phủ cả 89 mẫu, một trang.
+ * Bốn kệ theo nhóm ở mục "Tất cả" (phương án 1 + 2, owner chốt 02/11/2026): mỗi bộ, mỗi sản phẩm một thẻ, một trang.
+ * Không ghi số mẫu, số phối màu (khách 05/11/2026: "đừng cho số lượng vào", web chưa có đủ mẫu đang bán).
  * Máy tính 4 thẻ một hàng (640–1023px: 3), kệ bộ chăn ga thêm thẻ "Xem theo phối màu" lấp ô cuối.
  * Điện thoại: mỗi kệ một hàng thẻ nhỏ lướt ngang; thẻ "Xem theo phối màu" ẩn vì trùng nút ở đầu kệ.
  */
@@ -46,7 +47,7 @@ export function ProductShelves({ onPick, reveal }: ProductShelvesProps) {
                   <span className="font-display text-[1.3rem] leading-tight text-deep-900">Xem theo phối màu</span>
                   <span className="text-meta leading-relaxed text-ink-soft">{COLORWAY_HINT}</span>
                   <span className="mt-1 inline-flex items-center gap-1 text-small font-medium text-mist-600">
-                    Xem {SET_COLORWAY_TOTAL} phối màu
+                    Xem tất cả phối màu
                     <Icon name="arrowRight" size={14} className="transition-transform group-hover:translate-x-0.5" />
                   </span>
                 </button>
@@ -60,14 +61,12 @@ export function ProductShelves({ onPick, reveal }: ProductShelvesProps) {
 }
 
 function ShelfHeader({ shelf, onPick }: { shelf: Shelf; onPick: (category: CategoryId) => void }) {
-  const action = shelf.category === 'bo-chan-ga' ? `Xem ${SET_COLORWAY_TOTAL} phối màu` : `Chỉ xem ${shelf.shortLabel}`
+  const action = shelf.category === 'bo-chan-ga' ? 'Xem theo phối màu' : `Chỉ xem ${shelf.shortLabel}`
   return (
     <div className="flex items-baseline justify-between gap-3 sm:gap-4">
-      {/* Tên kệ không bẻ giữa chữ ("Bộ chăn / ga" ở 320px): thiếu chỗ thì số mẫu xuống dòng.
-          text-wrap thường, không chia đều: chia đều đẩy số mẫu xuống dòng cả khi đủ chỗ */}
+      {/* Tên kệ không bẻ giữa chữ ("Bộ chăn / ga" ở 320px) */}
       <h2 id={`${shelf.id}-ten`} className="font-display min-w-0 text-[1.35rem] leading-tight text-wrap text-deep-900 min-[360px]:text-[1.45rem] sm:text-[1.8rem]">
-        <span className="whitespace-nowrap">{shelf.label}</span>{' '}
-        <span className="tabular inline-block align-middle font-sans text-label font-medium whitespace-nowrap text-ink-faint sm:ml-1 sm:text-meta">{shelf.count} mẫu</span>
+        <span className="whitespace-nowrap">{shelf.label}</span>
       </h2>
       <button
         type="button"
@@ -84,7 +83,7 @@ function ShelfHeader({ shelf, onPick }: { shelf: Shelf; onPick: (category: Categ
 /** Giá trên thẻ kệ: chỉ giá thấp nhất cho gọn, giá đủ khoảng ở trang sản phẩm */
 const shelfPrice = (p: Product): string => (p.min === p.max ? formatVND(p.min) : `từ ${formatVND(p.min)}`)
 
-/** Thẻ gọn trên kệ: bộ ghi số phối màu, sản phẩm lẻ ghi một dòng giới thiệu. Liên kết phủ cả thẻ */
+/** Thẻ gọn trên kệ: bộ ghi nhãn "Nhiều phối màu" (không ghi số), sản phẩm lẻ ghi một dòng giới thiệu. Liên kết phủ cả thẻ */
 function ShelfCard({ product }: { product: Product }) {
   const colorways = colorwayCount(product)
   return (
@@ -104,9 +103,9 @@ function ShelfCard({ product }: { product: Product }) {
             {product.name}
           </Link>
         </h3>
-        {colorways > 0 ? (
-          <span className="tabular mt-1.5 self-start rounded-full bg-mist-100 px-2 py-0.5 text-label font-medium text-deep-900">
-            {colorways} mẫu phối màu
+        {colorways > 1 ? (
+          <span className="mt-1.5 self-start rounded-full bg-mist-100 px-2 py-0.5 text-label font-medium text-deep-900">
+            Nhiều phối màu
           </span>
         ) : (
           <p className="mt-1 line-clamp-1 text-label text-ink-faint sm:line-clamp-2 sm:text-meta">{product.summary}</p>

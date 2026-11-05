@@ -26,6 +26,7 @@ import {
   MISSION_IMAGE,
   PHILOSOPHY,
   STORY_OPENING,
+  isLongText,
   VISION,
   VISION_IMAGE,
 } from '../data/about'
@@ -55,7 +56,7 @@ const TOC: readonly TocItem[] = [
   { id: 'thu-sang-lap', numeral: '', title: 'Chia sẻ từ người sáng lập', icon: 'feather' },
   { id: 'chuong-1', numeral: 'I', title: 'Người làm nghề', icon: 'feather' },
   { id: 'chuong-2', numeral: 'II', title: 'Chốn Yên', icon: 'home' },
-  { id: 'chuong-3', numeral: 'III', title: 'Tốt · Thật · Thiện', icon: 'community' },
+  { id: 'chuong-3', numeral: 'III', title: 'Triết lý kinh doanh', icon: 'community' },
   { id: 'chuong-4', numeral: 'IV', title: 'Từ sợi gỗ đến giấc ngủ', icon: 'leaf' },
   { id: 'chuong-5', numeral: 'V', title: 'Điều chúng tôi theo đuổi', icon: 'compass' },
   { id: 'chuong-6', numeral: 'VI', title: 'Được ghi nhận', icon: 'award' },
@@ -76,7 +77,7 @@ const VALUE_ICONS: readonly IconName[] = ['award', 'recycle', 'lightbulb', 'comm
 export function AboutPage() {
   usePageMeta(
     'Giới thiệu',
-    'Câu chuyện Ecopillo: hơn 15 năm làm chăn ga gối đệm, chị Phạm Thị Phương và “Chốn Yên”, triết lý Tốt · Thật · Thiện, vải Lyocell, chứng nhận ISO 9001:2015 và TQC.',
+    'Câu chuyện Ecopillo: hơn 15 năm làm chăn ga gối đệm, chị Phạm Thị Phương và “Chốn Yên”, triết lý kinh doanh Tốt · Thật · Thiện, vải Lyocell, chứng nhận ISO 9001:2015 và TQC.',
   )
 
   return (
@@ -136,10 +137,11 @@ export function AboutPage() {
         id="chuong-3"
         numeral="III"
         icon="community"
-        eyebrow="Triết lý"
+        eyebrow="Tốt · Thật · Thiện"
         title={
           <>
-            Tốt · Thật · Thiện
+            {/* Tên chương theo web cũ (khách 05/11/2026: "triết lý kinh doanh") */}
+            Triết lý kinh doanh
           </>
         }
       >
@@ -221,7 +223,7 @@ export function AboutPage() {
                 className="aspect-[3/2] w-full rounded-[0.35rem] bg-cream-100 object-cover"
               />
               <p className="eyebrow mt-4">{m.label}</p>
-              <p className="font-display mt-2 text-[1.2rem] leading-snug text-deep-900">{m.text}</p>
+              <p className={`font-display mt-2 text-deep-900 ${isLongText(m.text) ? 'text-[1.05rem] leading-relaxed' : 'text-[1.2rem] leading-snug'}`}>{m.text}</p>
             </article>
           ))}
         </div>

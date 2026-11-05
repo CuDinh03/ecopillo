@@ -64,15 +64,26 @@ export const VALUES_SHORT = [
   { word: 'Thiện', text: 'với thiên nhiên' },
 ] as const
 
+/** Triết lý kinh doanh: chép nguyên văn web cũ (khách yêu cầu 05/11/2026). Chữ to là `word`, câu đọc liền: "Tốt trong từng…" */
 export const PHILOSOPHY = [
-  { word: 'Tốt', text: 'trong chất lượng sản phẩm: nguyên liệu chọn lọc, từng chi tiết được chế tác kỹ lưỡng.' },
-  { word: 'Thật', text: 'trong cam kết với khách hàng: chính trực, tận tâm và minh bạch.' },
-  { word: 'Thiện', text: 'trong cách chọn vật liệu và hành động: hướng tới cộng đồng và môi trường.' },
+  {
+    word: 'Tốt',
+    text: 'trong từng nguyên liệu được lựa chọn, từng chi tiết được chế tác, đảm bảo mang lại trải nghiệm trọn vẹn nhất cho bạn.',
+  },
+  { word: 'Thật', text: 'trong cách chúng tôi làm việc, thể hiện sự chính trực, tận tâm và minh bạch.' },
+  {
+    word: 'Thiện',
+    text: 'trong từng hành động hướng đến cộng đồng và môi trường, bởi chúng tôi tin rằng kinh doanh không chỉ để phát triển mà còn để lan tỏa những điều tốt đẹp nhất.',
+  },
 ] as const
 
 export const MISSION = 'Mang đến giải pháp chăn ga gối đệm vừa nâng niu giấc ngủ, vừa góp phần bảo vệ môi trường.'
+/** Tầm nhìn: chép nguyên văn web cũ (khách yêu cầu 05/11/2026), dài hơn Sứ mệnh nhiều nên chữ hiện nhỏ hơn (`isLongText`) */
 export const VISION =
-  'Trở thành thương hiệu chăn ga gối đệm hàng đầu, kết hợp chất lượng vượt trội với trách nhiệm môi trường, đồng hành cùng các gia đình Việt.'
+  'Ecopillo hướng đến trở thành thương hiệu chăn ga gối đệm hàng đầu, biểu tượng cho sự hài hòa giữa chất lượng vượt trội và trách nhiệm với môi trường. Với cam kết đổi mới không ngừng, Ecopillo sẽ là người bạn đồng hành đáng tin cậy của mỗi gia đình Việt, mang đến sự chăm sóc trọn vẹn cho giấc ngủ và góp phần xây dựng một cuộc sống an lành, bền vững cho thế hệ tương lai.'
+
+/** Câu dài (Tầm nhìn) không để chữ tiêu đề cỡ lớn: thẻ sẽ cao gấp mấy lần thẻ bên cạnh */
+export const isLongText = (text: string): boolean => text.length > 160
 export const MISSION_IMAGE = staticImage('/images/about/su-menh.webp', 'Sứ mệnh Ecopillo: thay màu cho yêu thương')
 export const VISION_IMAGE = staticImage('/images/about/tam-nhin.webp', 'Tầm nhìn Ecopillo')
 

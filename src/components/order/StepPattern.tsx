@@ -129,7 +129,7 @@ export function StepPattern({ collectionId, patternCode, onSelectCollection, onS
                 onClick={() => setExpandedFor(collection.id)}
                 className="mt-5 inline-flex h-11 items-center gap-2 rounded-full border border-deep-800/20 px-5 text-sm font-medium text-deep-900 transition hover:border-deep-800/50"
               >
-                Xem thêm {hiddenCount} mẫu
+                Xem thêm mẫu
                 <Icon name="chevronDown" size={16} />
               </button>
             )}

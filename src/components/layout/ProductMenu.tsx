@@ -222,7 +222,7 @@ function MobileGroup({ group, isOpen, onToggle, onNavigate }: MobileGroupProps) 
         <span className="min-w-0">
           <span className="block font-semibold text-deep-900">{group.title}</span>
           <span className="block text-xs text-ink-faint">
-            {group.note} · <span className="whitespace-nowrap">từ {formatVND(group.min)}</span>
+            <span className="whitespace-nowrap">từ {formatVND(group.min)}</span>
           </span>
         </span>
         <Icon name="plus" size={20} className={`text-mist-600 transition-transform duration-200 ${isOpen ? 'rotate-45' : ''}`} />

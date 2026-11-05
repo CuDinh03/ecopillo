@@ -62,7 +62,7 @@ export function Essentials({ withTabs = false }: EssentialsProps) {
           <SectionHeading
             id="essentials-title"
             className="lg:col-span-7"
-            title="Ruột chăn, ruột gối và topper"
+            title="Ruột chăn, ruột gối và phụ kiện"
             lead="Phần êm ái bên trong. Chọn độ êm hợp với thói quen ngủ của Quý khách: đặt online ngay, hoặc ghé cửa hàng Ecopillo để nằm thử từng loại gối."
           />
           {/* Một ảnh cho cả bảng giá, chỉ trên máy tính (rà mẫu C 23/10: bảng không còn ảnh, chăn và topper không có ảnh nào trên trang chủ) */}
@@ -79,7 +79,7 @@ export function Essentials({ withTabs = false }: EssentialsProps) {
         {withTabs && <MobileTabBar label="Nhóm sản phẩm" tabs={ESSENTIAL_TABS} value={tab} onChange={setTab} className="mt-6" />}
 
         {/* Bảng giá liền thay cho ba thẻ ảnh (mẫu C, owner duyệt 23/10/2026). Hai cột:
-            trái ruột gối, phải ruột chăn + chăn hè & topper. Đệm tách ra MattressPicker (C3 02/11). Điện thoại: một nhóm mỗi tab. */}
+            trái ruột gối, phải ruột chăn + chăn, topper và phụ kiện. Đệm tách ra MattressPicker (C3 02/11). Điện thoại: một nhóm mỗi tab. */}
         <div className={`grid gap-x-16 sm:mt-14 lg:grid-cols-2 ${withTabs ? 'mt-2' : 'mt-8'}`}>
           <div data-reveal className="grid gap-10 sm:gap-12">
             {[PRICE_GROUPS[0]].map(group)}
@@ -93,7 +93,7 @@ export function Essentials({ withTabs = false }: EssentialsProps) {
           <Icon name="info" size={16} className="mt-0.5 shrink-0 text-mist-600" />
           {/* Gói chữ vào một khối: không thì mỗi mảnh chữ, link thành một cột riêng của flex và số điện thoại bị bẻ dòng */}
           <span>
-            Ruột gối, ruột chăn và topper đều đặt online được; nhân viên gọi xác nhận trước khi giao. Cần tư vấn độ êm? Gọi
+            Ruột gối, ruột chăn, topper và phụ kiện đều đặt online được; nhân viên gọi xác nhận trước khi giao. Cần tư vấn độ êm? Gọi
             hoặc nhắn Zalo{' '}
             <a
               href={CONTACT.zaloUrl}
@@ -117,7 +117,7 @@ export function Essentials({ withTabs = false }: EssentialsProps) {
   )
 }
 
-/** Chăn hè đi luồng chọn mẫu; ruột gối, ruột chăn, topper đặt theo kích thước */
+/** Chăn hè đi luồng chọn mẫu; ruột gối, ruột chăn, topper, phụ kiện đặt theo kích thước */
 const essentialOrderUrl = (name: string): string => {
   if (name === SUMMER_QUILT_NAME) return orderLink(SUMMER_QUILT_ID)
   const product = productForEssential(name)
@@ -151,7 +151,7 @@ const essentialRow = (item: EssentialItem): PriceRow => {
   }
 }
 
-/** Thứ tự: ruột gối, ruột chăn, chăn hè & topper (khớp hàng tab điện thoại; đệm tách ra MattressPicker) */
+/** Thứ tự: ruột gối, ruột chăn, chăn, topper và phụ kiện (khớp hàng tab điện thoại; đệm tách ra MattressPicker) */
 const PRICE_GROUPS: readonly PriceGroup[] = ESSENTIALS.map((g) => ({
   id: g.id as EssentialTab,
   title: g.title,

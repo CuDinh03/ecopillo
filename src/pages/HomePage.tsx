@@ -38,16 +38,20 @@ export function HomePage() {
   )
 }
 
-/** Máy tính: thứ tự gốc (sau Hero, TrustStrip, BrandStory). Khối đệm C3 ngay đầu (owner chốt 02/11/2026). Dải mạng xã hội bỏ theo mẫu C (owner duyệt 23/10/2026): biểu tượng đã có ở chân trang */
+/**
+ * Máy tính (sau Hero, TrustStrip, BrandStory). Khối đệm C3 ngay đầu (owner chốt 02/11/2026), rồi bộ sưu tập chăn ga,
+ * rồi ruột chăn gối (khách yêu cầu 05/11/2026: "đệm xong đến chăn ga xong đến nó luôn"); Về chúng tôi và phim xuống sau.
+ * Dải mạng xã hội bỏ theo mẫu C (owner duyệt 23/10/2026): biểu tượng đã có ở chân trang
+ */
 function DesktopHome() {
   return (
     <>
       <MattressPicker />
-      <About moreLink />
-      <BrandVideo />
       <Collections />
       <Essentials />
       <Gifts />
+      <About moreLink />
+      <BrandVideo />
       <Hospitality />
       <Reviews />
       <Showrooms />

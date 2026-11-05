@@ -140,10 +140,62 @@ const choicesFor = (category: CategoryId, min: number, max: number): ProductChoi
   return sizeChoices([min, undefined, max])
 }
 
+/**
+ * Bảo vệ đệm, divan: giá từng cỡ khách gửi Zalo 05/11/2026; chữ theo catalog Ecopillo 22.07.2026 (trang 64, 66).
+ * Chưa có ảnh [ECOPILLO GỬI ẢNH DIVAN, BẢO VỆ ĐỆM]. Dòng bảng giá ở ESSENTIALS (catalog.ts) ghi giá thấp – cao, phải khớp.
+ */
+const BAO_VE_DEM: Product = {
+  slug: 'bao-ve-dem-chong-tham',
+  name: 'Bảo vệ đệm chống thấm',
+  category: 'dem',
+  summary: 'Tấm bảo vệ trải trên mặt đệm, dây thun 4 góc: chống thấm, chống bụi, giữ đệm luôn sạch, dễ tháo giặt.',
+  min: 675_000,
+  max: 889_000,
+  imageNote: 'Ảnh tấm bảo vệ đệm chống thấm',
+  details: [
+    'Hạn chế lấm bẩn từ mồ hôi, thức ăn, đồ uống, giữ đệm luôn sạch.',
+    'Chống bám bụi, ngăn nấm mốc, vi khuẩn và côn trùng.',
+    'Dây thun co giãn 4 góc giữ tấm bảo vệ không xê dịch. Dễ tháo giặt.',
+  ],
+  specs: [{ label: 'Cố định', value: 'Dây thun 4 góc' }],
+  choices: sizeChoices([675_000, 755_000, 889_000]),
+}
+
+const DIVAN: Product = {
+  slug: 'divan-ecopillo',
+  name: 'Divan Ecopillo',
+  category: 'dem',
+  summary: 'Kệ giường khung gỗ thông, mặt foam bọc vải Canvas, cao 30 cm. Bảo hành 5 năm.',
+  min: 6_580_000,
+  max: 9_250_000,
+  imageNote: 'Ảnh divan Ecopillo',
+  details: [
+    'Khung gỗ thông chắc chắn; gỗ ván ép công nghiệp 8 mm chống mối mọt.',
+    'Mặt foam PU 10 mm, sợi Micro Fiber, bọc vải Canvas.',
+    'Khoá chân trụ và bánh xe.',
+    'Nhận đặt theo kích thước riêng: gọi hoặc nhắn Zalo để báo giá.',
+  ],
+  specs: [
+    { label: 'Độ cao', value: '30 cm' },
+    { label: 'Bảo hành', value: '5 năm' },
+    { label: 'Khung', value: 'Gỗ thông, ván ép 8 mm' },
+    { label: 'Bọc', value: 'Foam PU, vải Canvas' },
+  ],
+  choices: [
+    { id: '120x200', label: '120 × 200 cm', price: 6_580_000 },
+    { id: '140x200', label: '140 × 200 cm', price: 7_460_000 },
+    { id: '160x200', label: '160 × 200 cm', price: 7_860_000 },
+    { id: '180x200', label: '180 × 200 cm', price: 8_500_000 },
+    { id: '200x220', label: '200 × 220 cm', price: 9_250_000 },
+  ],
+}
+
+/** Dòng bảng giá đã có sản phẩm riêng: chăn hè (có mẫu, đặt online), bảo vệ đệm và divan (giá từng cỡ) */
+const OWN_PRODUCT_ITEMS: ReadonlySet<string> = new Set(['Chăn hè Lyocell', BAO_VE_DEM.name, DIVAN.name])
+
 const essentialProducts: Product[] = ESSENTIALS.flatMap((group) =>
   group.items
-    // Chăn hè đã là sản phẩm riêng (có mẫu, đặt online)
-    .filter((item) => item.name !== 'Chăn hè Lyocell')
+    .filter((item) => !OWN_PRODUCT_ITEMS.has(item.name))
     .map((item) => {
       const category = ESSENTIAL_CATEGORY[group.id] ?? 'goi'
       const prefix = category === 'goi' ? 'Ruột gối ' : ''
@@ -336,6 +388,8 @@ export const PRODUCTS: readonly Product[] = [
   NANO_CHAN_FOAM,
   ...mattressProducts,
   ECO_LUXE,
+  BAO_VE_DEM,
+  DIVAN,
 ].map(withPhoto)
 
 export const productBySlug = (slug: string | undefined): Product | undefined => PRODUCTS.find((p) => p.slug === slug)
