@@ -5,6 +5,7 @@ import {
   imageOfPattern,
   isPatternSoldOut,
   isSizeSoldOut,
+  patternGallery,
   patternPrice,
   patternRange,
   type Collection,
@@ -124,6 +125,7 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
           <div className="max-lg:contents lg:grid lg:grid-cols-[1.15fr_1fr] lg:items-start lg:gap-x-14">
             <ChapterImage
               image={imageOfPattern(collection, shown)}
+              gallery={patternGallery(collection, shown)}
               shown={shown}
               note={collection.imageNote}
               onPrev={() => step(-1)}

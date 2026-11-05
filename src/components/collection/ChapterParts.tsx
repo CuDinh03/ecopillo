@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
 import {
@@ -26,6 +27,8 @@ const ARROW = 'flex h-11 w-11 items-center justify-center rounded-full bg-ivory/
 
 interface ChapterImageProps {
   image?: ImageSource
+  /** Ảnh phụ chi tiết của phối màu (web cũ); không gồm ảnh chính */
+  gallery?: readonly ImageSource[]
   /** Mẫu đang hiện trên ảnh (có thể là mẫu đang rê chuột xem trước) */
   shown: Pattern
   note: string
@@ -34,12 +37,21 @@ interface ChapterImageProps {
   className?: string
 }
 
-export function ChapterImage({ image, shown, note, onPrev, onNext, className = '' }: ChapterImageProps) {
+export function ChapterImage({ image, gallery = [], shown, note, onPrev, onNext, className = '' }: ChapterImageProps) {
+  // Ảnh đang chọn trong dãy: 0 = ảnh chính, 1… = ảnh phụ. Đổi chương / xem trước thì về ảnh chính.
+  const photos = image ? [image, ...gallery] : []
+  const [photoIndex, setPhotoIndex] = useState(0)
+  useEffect(() => {
+    setPhotoIndex(0)
+  }, [shown.code])
+  const safeIndex = photos.length ? Math.min(photoIndex, photos.length - 1) : 0
+  const current = photos[safeIndex]
+
   return (
     <div className={`min-w-0 lg:sticky lg:top-24 lg:self-start ${className}`}>
       <div className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] bg-cream-100 shadow-[var(--shadow-soft)]">
-        {image ? (
-          <CrossfadeImage image={image} sizes="(min-width: 1024px) 680px, 100vw" priority />
+        {current ? (
+          <CrossfadeImage image={current} sizes="(min-width: 1024px) 680px, 100vw" priority />
         ) : (
           <Placeholder className="absolute inset-0 h-full w-full" tone="mist" tint={shown.swatch} note={note} />
         )}
@@ -59,6 +71,25 @@ export function ChapterImage({ image, shown, note, onPrev, onNext, className = '
           </button>
         </div>
       </div>
+      {photos.length > 1 && (
+        <ul aria-label="Ảnh sản phẩm" className="mt-3 flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:none]">
+          {photos.map((photo, i) => (
+            <li key={photo.src} className="shrink-0">
+              <button
+                type="button"
+                onClick={() => setPhotoIndex(i)}
+                aria-label={`Xem ảnh ${i + 1}`}
+                aria-pressed={i === safeIndex}
+                className={`block h-16 w-[5.5rem] overflow-hidden rounded-xl transition ${
+                  i === safeIndex ? 'ring-2 ring-deep-800 ring-offset-2 ring-offset-ivory' : 'opacity-80 hover:opacity-100'
+                }`}
+              >
+                <Placeholder compact className="h-full w-full" note={`Ảnh ${i + 1}`} image={photo} sizes="88px" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }

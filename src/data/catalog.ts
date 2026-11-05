@@ -489,6 +489,60 @@ export const patternImage = (code: string, alt: string): ImageSource => ({
   alt,
 })
 
+/**
+ * Số ảnh phụ chi tiết theo mã (public/images/patterns/<MÃ>-2.webp …).
+ * Đếm từ dãy ảnh web cũ (images/web-cu-anh-mau, tải 05/11/2026): bỏ ảnh trùng ảnh chính, tối đa 8.
+ * Nén bằng tools/nen-anh-mau-chi-tiet-2026-11-05.py; script in ra _gallery-counts.json (đã chuyển ra ngoài public/), số ở đây phải khớp file đó.
+ * Mẫu không có trong bảng → chỉ hiện ảnh chính.
+ */
+export const PATTERN_GALLERY_COUNTS: Readonly<Record<string, number>> = {
+  ED25: 8,
+  ED26: 6,
+  EF06: 8,
+  EF09: 8,
+  EF10: 8,
+  EF11: 8,
+  // Web cũ gắn nhầm dãy ảnh EF16 vào trang EF12 (ảnh in mã EF16): dùng cho EF16, EF12 chỉ có ảnh chính
+  EF16: 7,
+  EF18: 8,
+  EF19: 6,
+  EL06: 8,
+  EL08: 8,
+  EL12: 8,
+  ER06: 7,
+  ER42: 8,
+  ER45: 4,
+  ER46: 4,
+  ER47: 4,
+  ER48: 5,
+  ER49: 5,
+  ET01: 7,
+  ET02: 5,
+  ET03: 5,
+  ET04: 5,
+  ET05: 5,
+  ET06: 1,
+  EV01: 5,
+  EV02: 5,
+  EV03: 4,
+  EV04: 6,
+  EV05: 2,
+  EV06: 2,
+}
+
+/** Ảnh phụ của một phối màu (không gồm ảnh chính). */
+export const patternGallery = (collection: Collection, pattern: Pattern | undefined): ImageSource[] => {
+  if (!pattern?.hasImage) return []
+  const key = pattern.imageKey ?? pattern.code
+  const n = PATTERN_GALLERY_COUNTS[key] ?? 0
+  if (n <= 0) return []
+  const baseAlt = `${collection.name} ${pattern.code} · ${pattern.colorName}`
+  return Array.from({ length: n }, (_, i) => {
+    const idx = i + 2
+    return patternImage(`${key}-${idx}`, `${baseAlt} · ảnh ${idx}`)
+  })
+}
+
 export const imageOfPattern = (collection: Collection, pattern: Pattern | undefined): ImageSource | undefined =>
   pattern?.hasImage
     ? patternImage(pattern.imageKey ?? pattern.code, `${collection.name} ${pattern.code} · ${pattern.colorName}`)
