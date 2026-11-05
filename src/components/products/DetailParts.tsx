@@ -46,15 +46,15 @@ export function DetailBreadcrumb({ product, current = product.name }: { product:
   return (
     <nav aria-label="Đường dẫn" className="flex flex-wrap items-center gap-2 text-sm text-ink-soft">
       <JsonLd data={breadcrumbLd(trail)} />
-      <Link to="/" className="hover:text-deep-900">
+      <Link to="/" className="-my-3 inline-block py-3 hover:text-deep-900">
         Trang chủ
       </Link>
       <Icon name="arrowRight" size={13} className="text-ink-faint" />
-      <Link to={PATHS.products} className="hover:text-deep-900">
+      <Link to={PATHS.products} className="-my-3 inline-block py-3 hover:text-deep-900">
         Sản phẩm
       </Link>
       <Icon name="arrowRight" size={13} className="text-ink-faint" />
-      <Link to={productsUrl({ 'danh-muc': product.category })} className="hover:text-deep-900">
+      <Link to={productsUrl({ 'danh-muc': product.category })} className="-my-3 inline-block py-3 hover:text-deep-900">
         {categoryLabel(product.category)}
       </Link>
     </nav>
@@ -65,7 +65,7 @@ export function DetailBreadcrumb({ product, current = product.name }: { product:
 export function NearMeLine() {
   return (
     <p className="mt-5 text-sm text-ink-soft">
-      <Link to={NEAR_ME_URL} className="inline-flex items-center gap-1.5 hover:text-deep-900">
+      <Link to={NEAR_ME_URL} className="inline-flex min-h-11 items-center gap-1.5 hover:text-deep-900">
         <Icon name="pin" size={15} className="text-mist-600" />
         Muốn nằm thử trước?{' '}
         <span className="font-medium text-deep-900 underline underline-offset-4">Tìm đại lý gần Quý khách</span>

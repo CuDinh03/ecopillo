@@ -38,7 +38,12 @@ interface MobileOrderBarProps {
   onNext: () => void
 }
 
-/** Thanh dưới cố định trên điện thoại: gọi / Zalo / số tiền / bước tiếp theo */
+/**
+ * Thanh dưới cố định trên điện thoại: gọi / Zalo / số tiền / bước tiếp theo.
+ * Rà điện thoại 05/11/2026: ở 320px dòng gợi ý và tổng tiền bị cắt "4.950.0…", nên gợi ý xuống tối đa hai dòng
+ * (nút cao theo chữ) và số tiền không bao giờ ngắt. Chưa đi tiếp được thì nút vẫn nền chàm đậm (nền chàm 45% chỉ
+ * đạt 2,5:1 với chữ trắng), chỉ mũi tên nhạt đi; dòng gợi ý đã nói Quý khách cần làm gì.
+ */
 export function MobileOrderBar({ amount, amountLabel, nextLabel, hint, canContinue, onNext }: MobileOrderBarProps) {
   return (
     <div className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ivory/95 px-3 pt-2.5 backdrop-blur-md lg:hidden">
@@ -63,15 +68,20 @@ export function MobileOrderBar({ amount, amountLabel, nextLabel, hint, canContin
           type="button"
           onClick={onNext}
           aria-disabled={!canContinue}
-          className={`flex h-12 min-w-0 flex-1 items-center justify-between gap-2 rounded-2xl pr-3 pl-4 text-left text-ivory transition active:bg-deep-700 ${canContinue ? 'bg-deep-800' : 'bg-deep-800/45'}`}
+          className="flex min-h-12 min-w-0 flex-1 items-center justify-between gap-2 rounded-2xl bg-deep-800 py-1.5 pr-3 pl-4 text-left text-ivory transition active:bg-deep-700"
         >
           <span className="min-w-0 leading-tight">
-            <span className="block truncate text-label text-mist-200">
-              {hint ?? (amount ? `${amountLabel} ${formatVND(amount)}` : amountLabel)}
+            <span className="line-clamp-2 text-label text-ivory/90">
+              {hint ?? (
+                <>
+                  {amountLabel}
+                  {amount > 0 && <span className="whitespace-nowrap"> {formatVND(amount)}</span>}
+                </>
+              )}
             </span>
             <span className="block truncate text-body-sm font-medium">{nextLabel}</span>
           </span>
-          <Icon name="arrowRight" size={18} className="shrink-0" />
+          <Icon name="arrowRight" size={18} className={`shrink-0 transition-opacity ${canContinue ? '' : 'opacity-50'}`} />
         </button>
       </div>
     </div>

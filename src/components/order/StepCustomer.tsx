@@ -33,7 +33,7 @@ interface FieldProps {
 
 function Field({ id, label, error, hint, optional, children, className = '' }: FieldProps) {
   return (
-    <div className={className}>
+    <div data-field className={`scroll-mt-[5.5rem] ${className}`}>
       <label htmlFor={`f-${id}`} className="text-sm font-medium text-deep-900">
         {label}
         {optional && <span className="font-normal text-ink-faint"> (không bắt buộc)</span>}
@@ -147,7 +147,7 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
         <p className="mt-4 text-xs leading-relaxed text-ink-soft">
           Muốn trả tiền mặt hoặc quẹt thẻ tại cửa hàng? Ghé hệ thống phân phối Ecopillo tại Hà Nội hoặc TP. HCM. Khi bấm “Đặt
           hàng”, Quý khách đồng ý để Ecopillo dùng thông tin trên để gọi xác nhận và giao hàng, theo{' '}
-          <Link to={PATHS.privacy} className="font-medium text-deep-900 underline underline-offset-2">
+          <Link to={PATHS.privacy} className="-my-2 inline-block py-2 font-medium text-deep-900 underline underline-offset-2">
             chính sách bảo vệ thông tin
           </Link>
           .

@@ -104,13 +104,13 @@ export function PrivacyPage() {
           <ul className="mt-4 space-y-2 leading-relaxed text-ink-soft">
             <li>
               Hotline/Zalo:{' '}
-              <a href={CONTACT.hotlineTel} className="tabular text-deep-900 underline underline-offset-2">
+              <a href={CONTACT.hotlineTel} className="-my-2 inline-flex min-h-11 items-center tabular text-deep-900 underline underline-offset-2">
                 {CONTACT.hotlineDisplay}
               </a>
             </li>
             <li>
               Email:{' '}
-              <a href={`mailto:${CONTACT.email}`} className="text-deep-900 underline underline-offset-2">
+              <a href={`mailto:${CONTACT.email}`} className="-my-2 inline-flex min-h-11 items-center text-deep-900 underline underline-offset-2">
                 {CONTACT.email}
               </a>
             </li>

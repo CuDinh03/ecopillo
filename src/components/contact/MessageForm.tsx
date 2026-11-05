@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { OPENING_HOURS } from '../../data/brand'
 import { PATHS } from '../../data/links'
 import { isValidPhone } from '../../lib/order'
+import { focusField } from '../../lib/scroll'
 import { Icon } from '../ui/Icon'
 import { PreviewNotSent } from '../ui/PreviewNotSent'
 import { buttonClass } from '../ui/primitives'
@@ -50,7 +51,7 @@ const inputClass = (hasError: boolean) => `${INPUT} ${hasError ? 'border-alert r
 
 function Field({ id, label, error, children }: { id: string; label: string; error?: string; children: ReactNode }) {
   return (
-    <div>
+    <div data-field className="scroll-mt-[5.5rem]">
       <label htmlFor={`c-${id}`} className="text-sm font-medium text-deep-900">
         {label}
       </label>
@@ -98,7 +99,7 @@ export function MessageForm({
     setErrors(found)
     const first = Object.keys(found)[0]
     if (first) {
-      document.getElementById(`c-${first}`)?.focus()
+      focusField(`c-${first}`)
       return
     }
     setSent(form)
@@ -200,7 +201,7 @@ export function MessageForm({
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="max-w-sm text-meta leading-relaxed text-ink-faint">
           Ecopillo chỉ dùng thông tin này để liên hệ lại, theo{' '}
-          <Link to={PATHS.privacy} className="underline underline-offset-2 hover:text-deep-900">
+          <Link to={PATHS.privacy} className="-my-2 inline-block py-2 underline underline-offset-2 hover:text-deep-900">
             chính sách bảo vệ thông tin
           </Link>
           .

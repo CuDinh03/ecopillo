@@ -31,7 +31,7 @@ export function ProductShelves({ onPick, reveal }: ProductShelvesProps) {
                 key={product.slug}
                 data-reveal={reveal ? '' : undefined}
                 style={reveal ? revealDelay(i, 60) : undefined}
-                className="flex max-sm:w-[9.25rem] max-sm:shrink-0 max-sm:snap-start"
+                className="flex max-sm:w-[calc(100%-2.5rem)] max-sm:shrink-0 max-sm:snap-start"
               >
                 <ShelfCard product={product} />
               </li>

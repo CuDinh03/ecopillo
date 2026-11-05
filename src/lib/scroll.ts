@@ -26,3 +26,17 @@ export function scrollToElement(el: HTMLElement, block: 'start' | 'nearest' = 's
     lenis.scrollTo(window.scrollY + rect.bottom + marginBottom - window.innerHeight)
   }
 }
+
+/**
+ * Bấm gửi mà còn ô lỗi: đưa cả khối ô (nhãn, ô, dòng báo lỗi) lên sát dưới thanh đầu trang rồi mới focus.
+ * focus() thường chỉ cuộn vừa đủ thấy ô, nên trên điện thoại ô và dòng lỗi lọt dưới thanh đặt hàng dán đáy (rà 05/11/2026).
+ * Chờ một khung hình để dòng báo lỗi vừa thêm đã có trên trang. Khối ô cần `data-field` và `scroll-mt-[5.5rem]`.
+ */
+export function focusField(id: string): void {
+  requestAnimationFrame(() => {
+    const el = document.getElementById(id)
+    if (!el) return
+    scrollToElement(el.closest<HTMLElement>('[data-field]') ?? el, 'start')
+    el.focus({ preventScroll: true })
+  })
+}

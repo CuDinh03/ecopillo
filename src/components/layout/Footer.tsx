@@ -10,12 +10,12 @@ import { SocialIcons } from '../home/SocialLinks'
 import { Logo } from './Logo'
 
 /**
- * Điện thoại: mỗi link trong danh sách cao 36px (đệm trên dưới) cho dễ bấm, các vùng bấm xếp sát nhau không chồng.
+ * Điện thoại: mỗi link trong danh sách cao khoảng 44px (đệm trên dưới, rà điện thoại 05/11/2026) cho dễ bấm, các vùng bấm xếp sát nhau không chồng.
  * Từ sm trở lên giữ khoảng cách cũ.
  */
 const LINK_LIST = 'mt-3 text-sm sm:mt-5 sm:space-y-2.5'
-const LIST_LINK = 'transition-colors hover:text-deep-900 max-sm:inline-block max-sm:py-2'
-const CONTACT_LINK = 'flex items-center gap-2.5 whitespace-nowrap hover:text-deep-900 max-sm:py-2'
+const LIST_LINK = 'transition-colors hover:text-deep-900 max-sm:inline-block max-sm:py-2.5'
+const CONTACT_LINK = 'flex items-center gap-2.5 whitespace-nowrap hover:text-deep-900 max-sm:py-2.5'
 
 export function Footer() {
   return (
@@ -98,7 +98,7 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <Link to={PATHS.contact} className="inline-flex items-center gap-2.5 font-medium text-deep-900 underline-offset-2 hover:underline max-sm:py-2">
+                <Link to={PATHS.contact} className="inline-flex items-center gap-2.5 font-medium text-deep-900 underline-offset-2 hover:underline max-sm:py-2.5">
                   <Icon name="mail" size={16} /> Gửi tin nhắn cho Ecopillo
                 </Link>
               </li>

@@ -280,12 +280,12 @@ export function Gifts({ standalone = false }: GiftsProps) {
                   <p className="mt-0.5 text-meta text-ink-soft">{tier.value}</p>
                   <div className="stitch my-4 text-cream-300" aria-hidden="true" />
                   <p className="text-label tracking-[0.14em] text-ink-faint uppercase">Khi mua</p>
-                  <ul className="mt-2 flex flex-wrap gap-1.5">
+                  <ul className="mt-2 flex flex-wrap gap-2">
                     {tier.ids.map((id) => (
                       <li key={id}>
                         <Link
                           to={orderLink(id)}
-                          className="inline-block rounded-full bg-cream-100 px-3 py-1 text-meta text-deep-800 transition-colors hover:bg-mist-200"
+                          className="inline-flex min-h-11 items-center rounded-full bg-cream-100 px-3.5 text-meta text-deep-800 transition-colors hover:bg-mist-200"
                         >
                           {nameOf(id)}
                         </Link>

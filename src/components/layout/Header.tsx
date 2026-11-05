@@ -150,9 +150,10 @@ export function Header() {
     const menuButton = menuButtonRef.current
     return () => {
       behind.forEach((el) => (el.inert = false))
-      // Lúc này menu đã bị gỡ khỏi trang nên focus trong menu rơi về <body>
+      // Lúc này menu đã bị gỡ khỏi trang nên focus trong menu rơi về <body>.
+      // preventScroll: trả focus về nút menu mà để trình duyệt cuộn thì trang nhảy lên vài trăm px (rà điện thoại 05/11/2026)
       const active = document.activeElement
-      if (!active || active === document.body || menu?.contains(active)) menuButton?.focus()
+      if (!active || active === document.body || menu?.contains(active)) menuButton?.focus({ preventScroll: true })
     }
   }, [isMenuOpen])
 

@@ -85,7 +85,7 @@ function Swatches({ collection, selected, onSelect, onPreview }: SwatchesProps) 
             }}
             onPointerLeave={() => onPreview(null)}
             onFocus={() => preloadImage(imageOfPattern(collection, p))}
-            className={`group/sw relative z-10 -mx-[3px] -my-1.5 grid h-10 w-[34px] place-items-center rounded-full min-[360px]:-mx-1.5 min-[360px]:w-10 sm:m-0 sm:h-7 sm:w-7 ${
+            className={`group/sw relative z-10 -mx-0.5 -my-1.5 grid h-11 w-10 place-items-center rounded-full min-[360px]:-mx-1.5 min-[360px]:w-10 sm:m-0 sm:h-7 sm:w-7 ${
               isPatternSoldOut(p) ? 'opacity-40' : ''
             } ${index >= MOBILE_SWATCHES ? 'max-sm:hidden' : ''}`}
           >

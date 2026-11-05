@@ -4,6 +4,7 @@ import { CONTACT } from '../../data/brand'
 import { PATHS } from '../../data/links'
 import { productPath, singleOrderUrl, singleUnitPrice, variantPrice, type Product } from '../../data/products'
 import { formatVND } from '../../lib/format'
+import { focusField } from '../../lib/scroll'
 import {
   createOrderCode,
   createSingleDraft,
@@ -69,7 +70,7 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
     setErrors(found)
     const firstError = Object.keys(found)[0]
     if (firstError) {
-      document.getElementById(`f-${firstError}`)?.focus()
+      focusField(`f-${firstError}`)
       return
     }
     setOrderCode(createOrderCode())
@@ -96,7 +97,7 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
   return (
     <div ref={topRef} className="scroll-mt-20 pb-36 lg:pb-24">
       <Container className="pt-8 sm:pt-12">
-        <Link to={productPath(product)} className="inline-flex items-center gap-1.5 text-sm text-ink-soft hover:text-deep-900">
+        <Link to={productPath(product)} className="-my-3 inline-flex min-h-11 items-center gap-1.5 text-sm text-ink-soft hover:text-deep-900">
           <Icon name="arrowLeft" size={15} /> {product.name}
         </Link>
         <h1 className="font-display mt-3 text-[2.2rem] leading-none text-deep-900 sm:text-5xl">Đặt hàng online</h1>

@@ -149,7 +149,7 @@ function OfficeMap() {
               type="button"
               aria-pressed={i === index}
               onClick={() => setIndex(i)}
-              className={`rounded-full px-3.5 py-1.5 text-meta transition ${
+              className={`inline-flex min-h-11 items-center rounded-full px-4 text-meta transition ${
                 i === index ? 'bg-deep-800 text-ivory' : 'bg-cream-50 text-deep-900 ring-1 ring-cream-200 hover:ring-deep-700/40'
               }`}
             >
@@ -185,7 +185,7 @@ export function ContactPage() {
         <Container className="grid gap-10 pt-10 pb-14 sm:pt-14 sm:pb-20 lg:grid-cols-12 lg:gap-14">
           <div className="lg:col-span-5">
             <nav aria-label="Đường dẫn" className="flex items-center gap-2 text-sm text-ink-soft">
-              <Link to="/" className="hover:text-deep-900">
+              <Link to="/" className="-my-3 inline-block py-3 hover:text-deep-900">
                 Trang chủ
               </Link>
               <span aria-hidden>/</span>
@@ -245,7 +245,7 @@ export function ContactPage() {
 
           <div className="rounded-[2rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] sm:p-8">
             <h2 className="font-display text-[1.4rem] text-deep-900">Hỏi nhanh</h2>
-            <ul className="mt-4 space-y-2.5 text-body-sm">
+            <ul className="mt-2 divide-y divide-line text-body-sm">
               {[
                 ['Giao hàng, thanh toán khi nhận', policyPath('chinh-sach-van-chuyen')],
                 ['Kiểm hàng, đổi hàng', policyPath('chinh-sach-doi-tra-hang-va-hoan-tien')],
@@ -254,7 +254,7 @@ export function ContactPage() {
                 ['Câu hỏi thường gặp', PATHS.faq],
               ].map(([label, href]) => (
                 <li key={label}>
-                  <Link to={href} className="group flex items-center justify-between gap-3 text-deep-900 hover:underline">
+                  <Link to={href} className="group flex min-h-11 items-center justify-between gap-3 py-2.5 text-deep-900 hover:underline">
                     {label}
                     <Icon name="arrowRight" size={16} className="shrink-0 opacity-60 transition group-hover:translate-x-0.5" />
                   </Link>

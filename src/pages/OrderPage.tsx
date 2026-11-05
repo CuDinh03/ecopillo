@@ -24,7 +24,7 @@ import {
 import { SingleOrder } from '../components/order/SingleOrder'
 import { MobileOrderBar, OrderAssurances } from '../components/order/OrderChrome'
 import { usePageMeta } from '../hooks/usePageMeta'
-import { scrollToElement } from '../lib/scroll'
+import { focusField, scrollToElement } from '../lib/scroll'
 
 const COLLECTION_PARAM = 'bo-suu-tap'
 const MOBILE_QUERY = '(max-width: 1023px)'
@@ -162,7 +162,7 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
     setErrors(found)
     const firstError = Object.keys(found)[0]
     if (firstError) {
-      document.getElementById(`f-${firstError}`)?.focus()
+      focusField(`f-${firstError}`)
       return
     }
     setOrderCode(createOrderCode())
@@ -201,7 +201,7 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
       <Container className="pt-8 sm:pt-12">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-ink-soft hover:text-deep-900">
+            <Link to="/" className="-my-3 inline-flex min-h-11 items-center gap-1.5 text-sm text-ink-soft hover:text-deep-900">
               <Icon name="arrowLeft" size={15} /> Trang chủ
             </Link>
             <h1 className="font-display mt-3 text-[2.2rem] leading-none text-deep-900 sm:text-5xl">Đặt hàng online</h1>

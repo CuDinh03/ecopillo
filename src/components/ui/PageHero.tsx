@@ -31,7 +31,7 @@ export function Breadcrumb({ items, current }: { items: readonly Crumb[]; curren
       <JsonLd data={breadcrumbLd(crumbTrail(items, pathname, current))} />
       <ol className="flex flex-wrap items-center gap-2">
         <li>
-          <Link to="/" className="hover:text-deep-900">
+          <Link to="/" className="-my-3 inline-block py-3 hover:text-deep-900">
             Trang chủ
           </Link>
         </li>
@@ -39,7 +39,7 @@ export function Breadcrumb({ items, current }: { items: readonly Crumb[]; curren
           <li key={item.label} className="flex items-center gap-2">
             <span aria-hidden>/</span>
             {item.to ? (
-              <Link to={item.to} className="hover:text-deep-900">
+              <Link to={item.to} className="-my-3 inline-block py-3 hover:text-deep-900">
                 {item.label}
               </Link>
             ) : (

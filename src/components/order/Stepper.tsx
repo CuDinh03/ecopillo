@@ -27,7 +27,7 @@ export function Stepper({ current, onGoTo }: StepperProps) {
                 disabled={!done}
                 onClick={() => onGoTo(step.n)}
                 aria-current={active ? 'step' : undefined}
-                className={`group flex w-full flex-col gap-2.5 text-left disabled:cursor-default ${done ? 'cursor-pointer' : ''}`}
+                className={`group flex min-h-11 w-full flex-col gap-2.5 text-left disabled:cursor-default ${done ? 'cursor-pointer' : ''}`}
               >
                 <span
                   className={`h-1 w-full rounded-full transition-colors duration-500 ${

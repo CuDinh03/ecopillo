@@ -348,13 +348,13 @@ function Quote() {
         </div>
         <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-body-sm">
           <li>
-            <a href={CONTACT.hotlineTel} className="inline-flex items-center gap-2 text-deep-900 hover:underline">
+            <a href={CONTACT.hotlineTel} className="inline-flex min-h-11 items-center gap-2 text-deep-900 hover:underline">
               <Icon name="phone" size={17} className="text-deep-700" />
               <span className="tabular">{CONTACT.hotlineDisplay}</span>
             </a>
           </li>
           <li>
-            <a href={`mailto:${CONTACT.email}`} className="inline-flex items-center gap-2 text-deep-900 hover:underline">
+            <a href={`mailto:${CONTACT.email}`} className="inline-flex min-h-11 items-center gap-2 text-deep-900 hover:underline">
               <Icon name="mail" size={17} className="text-deep-700" />
               {CONTACT.email}
             </a>

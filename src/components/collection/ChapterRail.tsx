@@ -37,7 +37,7 @@ export function ChapterRail({ collection, chapters, current, volumes, volume, on
           {collection.patterns.length} chương màu của {collection.name}
         </h2>
         {volumes.length > 1 && (
-          <div role="group" aria-label="Chọn tập" className="-mx-5 flex gap-2 overflow-x-auto px-5 [scrollbar-width:none] sm:mx-0 sm:px-0">
+          <div role="group" aria-label="Chọn tập" className="-mx-5 flex gap-2 overflow-x-auto px-5 [mask-image:linear-gradient(to_right,#000_85%,transparent)] [scrollbar-width:none] sm:mx-0 sm:px-0 sm:[mask-image:none]">
             {volumes.map((v) => {
               const active = v === volume
               return (
