@@ -3,6 +3,7 @@ import type { Collection } from '../../data/catalog'
 import { productsUrl } from '../../data/links'
 import { sameToneElsewhere, type Tone } from '../../data/stories'
 import { ColorwayCard } from '../products/ColorwayCard'
+import { usePageLoaded } from '../../hooks/usePageLoaded'
 import { Icon } from '../ui/Icon'
 
 export const SAME_TONE_LIMIT = 4
@@ -10,6 +11,8 @@ export const SAME_TONE_LIMIT = 4
 /** Cuối mỗi chương (phần lấy từ hướng C): phối màu cùng gam ở các bộ khác, nhiều mức giá */
 export function SameTone({ collection, tone }: { collection: Collection; tone: Tone }) {
   const colorways = sameToneElsewhere(collection, tone.id, SAME_TONE_LIMIT)
+  // Ảnh gắn sau khi ảnh chính của chương đã về: Chrome trên mạng chậm tải sớm cả ảnh lazy cách màn hình xa (LCP, xem usePageLoaded)
+  const isPageLoaded = usePageLoaded()
   if (colorways.length === 0) return null
   return (
     <section aria-labelledby="same-tone-title" className="mt-16 sm:mt-20">
@@ -27,7 +30,7 @@ export function SameTone({ collection, tone }: { collection: Collection; tone: T
       <ul className="mt-6 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
         {colorways.map((colorway) => (
           <li key={`${colorway.collection.id}/${colorway.pattern.code}`}>
-            <ColorwayCard colorway={colorway} />
+            <ColorwayCard colorway={colorway} deferImage={!isPageLoaded} />
           </li>
         ))}
       </ul>

@@ -20,6 +20,8 @@ interface PlaceholderProps {
   priority?: boolean
   /** Căn vùng ảnh khi bị cắt, ví dụ "50% 70%" */
   position?: string
+  /** Có ảnh nhưng chưa gắn (đợi ảnh chính về trước): hiện nền màu mẫu cùng cỡ, không hiện khung giữ chỗ */
+  defer?: boolean
 }
 
 const TONES = {
@@ -40,11 +42,12 @@ export function Placeholder({
   sizes = '(min-width: 1024px) 50vw, 100vw',
   priority,
   position,
+  defer = false,
 }: PlaceholderProps) {
   // Ảnh tải hỏng (mạng chập chờn, CDN lỗi): giữ nguyên khung với nền nhạt, không hiện biểu tượng ảnh vỡ và chữ alt của trình duyệt.
   // Nhớ theo đường dẫn ảnh, để đổi sang ảnh khác (rê chuột, đổi mẫu) thì thử tải lại.
   const [failedSrc, setFailedSrc] = useState<string | null>(null)
-  if (image && failedSrc === image.src) {
+  if (image && (defer || failedSrc === image.src)) {
     return (
       <span
         role="img"

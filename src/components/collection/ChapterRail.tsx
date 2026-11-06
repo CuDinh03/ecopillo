@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { imageOfPattern, isPatternSoldOut, type Collection, type Pattern } from '../../data/catalog'
 import { chapterTitle } from '../../data/stories'
+import { usePageLoaded } from '../../hooks/usePageLoaded'
 import { preloadImage } from '../../lib/preload'
 import { Placeholder } from '../ui/Placeholder'
 
@@ -21,6 +22,8 @@ interface ChapterRailProps {
 /** Hàng chương: điện thoại vuốt ngang, máy tính xếp lưới. Bấm một chương thì sân khấu đổi tại chỗ */
 export function ChapterRail({ collection, chapters, current, volumes, volume, onVolume, onOpen, onPreview, className = '' }: ChapterRailProps) {
   const listRef = useRef<HTMLUListElement>(null)
+  // Hàng chương nằm ngay màn đầu trên điện thoại: ảnh nhỏ gắn sau khi ảnh chính đã về (LCP, xem usePageLoaded)
+  const isPageLoaded = usePageLoaded()
 
   // Điện thoại: đổi chương bằng mũi tên thì kéo thẻ đang mở vào giữa hàng (chỉ cuộn ngang, không kéo cả trang)
   useEffect(() => {
@@ -84,7 +87,7 @@ export function ChapterRail({ collection, chapters, current, volumes, volume, on
                 }`}
               >
                 <span className={`block aspect-[4/3] overflow-hidden rounded-xl ${soldOut ? 'opacity-50' : ''}`}>
-                  <Placeholder compact className="h-full w-full" tint={pattern.swatch} note={pattern.code} image={image} sizes="170px" />
+                  <Placeholder compact className="h-full w-full" tint={pattern.swatch} note={pattern.code} image={image} sizes="170px" defer={!isPageLoaded} />
                 </span>
                 {/* Tên trên thẻ đứng, đậm như thẻ phối màu (mẫu A 04/11/2026) */}
                 <span className="font-display mt-2.5 block px-1.5 text-body leading-tight">

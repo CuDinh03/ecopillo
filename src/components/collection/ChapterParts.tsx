@@ -13,6 +13,7 @@ import {
   type SizeId,
 } from '../../data/catalog'
 import { orderUrl } from '../../data/products'
+import { usePageLoaded } from '../../hooks/usePageLoaded'
 import { STORIES_APPROVED, type PatternStory } from '../../data/stories'
 import { formatRange, formatVND } from '../../lib/format'
 import { NearMeLine, TrustList } from '../products/DetailParts'
@@ -46,6 +47,8 @@ export function ChapterImage({ image, gallery = [], shown, note, onPrev, onNext,
   }, [shown.code])
   const safeIndex = photos.length ? Math.min(photoIndex, photos.length - 1) : 0
   const current = photos[safeIndex]
+  // Dãy ảnh nhỏ dưới ảnh chính: gắn sau khi ảnh chính đã về (LCP, xem usePageLoaded)
+  const isPageLoaded = usePageLoaded()
 
   return (
     <div className={`min-w-0 lg:sticky lg:top-24 lg:self-start ${className}`}>
@@ -84,7 +87,7 @@ export function ChapterImage({ image, gallery = [], shown, note, onPrev, onNext,
                   i === safeIndex ? 'ring-2 ring-deep-800 ring-offset-2 ring-offset-ivory' : 'opacity-80 hover:opacity-100'
                 }`}
               >
-                <Placeholder compact className="h-full w-full" note={`Ảnh ${i + 1}`} image={photo} sizes="88px" />
+                <Placeholder compact className="h-full w-full" note={`Ảnh ${i + 1}`} image={photo} sizes="88px" defer={!isPageLoaded} />
               </button>
             </li>
           ))}

@@ -5,7 +5,13 @@ import { formatVND } from '../../lib/format'
 import { Placeholder } from '../ui/Placeholder'
 
 /** Ô một phối màu: ảnh, tên câu chuyện, bộ sưu tập và giá từ. Dùng ở trang Sản phẩm (lọc theo gam) và cuối mỗi chương */
-export function ColorwayCard({ colorway }: { colorway: Colorway }) {
+interface ColorwayCardProps {
+  colorway: Colorway
+  /** Chưa gắn ảnh (đợi ảnh chính của trang về trước), xem Placeholder `defer` */
+  deferImage?: boolean
+}
+
+export function ColorwayCard({ colorway, deferImage = false }: ColorwayCardProps) {
   const { collection, pattern, story } = colorway
   const from = Math.min(...SIZES.map((size) => patternPrice(collection, pattern, size.id)))
   return (
@@ -17,6 +23,7 @@ export function ColorwayCard({ colorway }: { colorway: Colorway }) {
           note={pattern.code}
           image={imageOfPattern(collection, pattern)}
           sizes="(min-width: 1024px) 300px, 50vw"
+          defer={deferImage}
         />
       </div>
       <div className="flex flex-1 flex-col p-3.5 sm:p-5">
