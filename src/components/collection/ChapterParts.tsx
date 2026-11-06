@@ -214,7 +214,10 @@ export function ChapterBuy({ collection, pattern, size, onSize, isSoldOut, class
 
       <div className="mt-6 hidden gap-3 lg:flex">
         {isSoldOut ? (
-          <span className={buttonClass('secondary', 'lg', 'flex-1 cursor-not-allowed opacity-60')}>{pattern.code} tạm hết hàng</span>
+          // Nhãn, không phải nút: màu chữ đặt thẳng (không dùng opacity) để đủ tương phản 4.5:1 (axe 06/11/2026), cùng kiểu nhãn hết hàng trên điện thoại (DetailParts)
+          <span className="inline-flex h-14 flex-1 cursor-not-allowed items-center justify-center rounded-full bg-mist-100 px-7 text-base font-medium text-ink-soft">
+            {pattern.code} tạm hết hàng
+          </span>
         ) : (
           <Link to={orderUrl(collection, pattern, size)} className={buttonClass('primary', 'lg', 'flex-1')}>
             Đặt mua {pattern.code}
