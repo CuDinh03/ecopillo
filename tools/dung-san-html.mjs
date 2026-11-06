@@ -217,9 +217,15 @@ ${paths.map((url) => `  <url><loc>${siteOrigin}${url}</loc><lastmod>${today}</la
 `
   writeFileSync(join(DIST, 'sitemap.xml'), sitemap)
 
-  // Cloudflare Pages: có 404.html thì hết fallback SPA — phải có _redirects cho link cũ / link tạm xem thử
+  // Cloudflare Pages: có 404.html thì hết fallback SPA — phải có _redirects cho link cũ / link tạm xem thử.
+  // Hai link điểm bán (05/11 mục 9): HOST_REDIRECTS chỉ ghi /lien-he/ (SPA nối ?gan-toi=1 không bị lệch neo),
+  // còn _redirects gắn #diem-ban để khách vào thẳng khối điểm bán khi mở link cũ.
+  const REDIRECT_HASH = {
+    '/he-thong-phan-phoi/': '#diem-ban',
+    '/showroom/': '#diem-ban',
+  }
   const redirectLines = Object.entries(HOST_REDIRECTS)
-    .map(([from, to]) => `${from} ${to} 301`)
+    .map(([from, to]) => `${from} ${to}${REDIRECT_HASH[from] ?? ''} 301`)
     .sort()
   writeFileSync(
     join(DIST, '_redirects'),

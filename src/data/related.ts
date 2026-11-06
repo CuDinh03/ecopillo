@@ -49,7 +49,7 @@ const BUYING_GUIDE: readonly RelatedLink[] = [
   { label: 'Giao hàng, thanh toán khi nhận', to: policyPath('chinh-sach-van-chuyen') },
   { label: 'Kiểm hàng, đổi hàng', to: policyPath('chinh-sach-doi-tra-hang-va-hoan-tien') },
   { label: 'Bảo hành', to: policyPath('chinh-sach-bao-hanh-san-pham') },
-  { label: 'Tìm đại lý gần Quý khách', to: PATHS.distribution },
+  { label: 'Tìm đại lý gần Quý khách', to: `${PATHS.contact}#diem-ban` },
 ]
 
 /** Các bộ sưu tập khác (trừ bộ đang xem) */

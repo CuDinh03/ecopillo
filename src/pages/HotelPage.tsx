@@ -1,69 +1,24 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { CertificateBadges, PartnerLogos } from '../components/about/Recognition'
 import { MessageForm } from '../components/contact/MessageForm'
-import { CrossfadeImage } from '../components/ui/CrossfadeImage'
+import { WhiteGoods } from '../components/hotel/WhiteGoods'
 import { Icon } from '../components/ui/Icon'
 import { Breadcrumb } from '../components/ui/PageHero'
 import { buttonClass, Container } from '../components/ui/primitives'
 import { CONTACT } from '../data/brand'
-import { productImage, type ImageSource } from '../data/catalog'
 import { HOTEL_PARTNERS } from '../data/content'
-import { HOTEL_BENEFITS, HOTEL_EYEBROW, HOTEL_INTRO, HOTEL_INTRO_HEADING, HOTEL_LINEN, HOTEL_PARTNER_POINTS, HOTEL_PHOTOS } from '../data/hotel'
-import { productsUrl } from '../data/links'
+import { HOTEL_BENEFITS, HOTEL_EYEBROW, HOTEL_INTRO, HOTEL_INTRO_HEADING, HOTEL_PARTNER_POINTS, HOTEL_PHOTOS } from '../data/hotel'
 import { useNearViewport } from '../hooks/useNearViewport'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 
 /**
  * Trang Khách sạn và dự án (biên bản mục 30, 48): chăn ga gối cho khách sạn, resort, nhà nghỉ, dự án.
- * Bố cục kiểu tạp chí (mẫu 1, owner chọn 15/10/2026; mẫu: docs/de-xuat-trang-khach-san-du-an.html):
- * ảnh lớn nửa trang, chữ serif lớn, "sáu lớp đồ vải của một chiếc giường" bấm đổi ảnh, câu trích trên nền chàm,
- * quy trình 5 số nghiêng, form báo giá cạnh ảnh phòng.
+ * Bố cục kiểu tạp chí (mẫu 1, owner chọn 15/10/2026): ảnh lớn nửa trang, chữ serif lớn,
+ * khối Hàng trắng ba tab (phản hồi 05/11 mục 12, phương án C — thay "sáu lớp đồ vải"),
+ * câu trích trên nền chàm, quy trình 5 số nghiêng, form báo giá cạnh ảnh phòng.
  * Form báo giá dùng chung form Liên hệ, chọn sẵn chủ đề "Khách sạn, nhà nghỉ".
  */
-
-interface Layer {
-  title: string
-  text: string
-  /** Chất liệu theo catalog Ecopillo 22.07.2026 (trang 65) */
-  material?: string
-  /** Link sang danh mục sản phẩm; đồ vải chỉ làm cho khách sạn thì không có danh mục, nút dẫn xuống form báo giá */
-  to?: string
-  /** Chưa có ảnh (váy giường: owner cho để trống 24/10/2026) thì giữ ảnh của lớp đang mở trước đó */
-  image?: ImageSource
-}
-
-const LAYERS: readonly Layer[] = [
-  {
-    title: 'Ga bọc, ga phủ',
-    text: 'Trắng tinh hoặc màu theo nhận diện khách sạn.',
-    material: HOTEL_LINEN.bedding,
-    // Ga trắng khách sạn chưa có trang sản phẩm; trước 04/11/2026 dẫn sang bộ chăn ga gia đình (khách báo nhầm): dẫn xuống form báo giá
-    image: HOTEL_PHOTOS.sheets,
-  },
-  {
-    title: 'Vỏ chăn, ruột chăn',
-    text: 'Vỏ chăn cùng bộ với ga. Ruột chăn nhẹ, ấm, giặt máy được.',
-    to: productsUrl({ 'danh-muc': 'chan' }),
-    image: productImage('chan-long-vu-tu-nhien', 'Ruột chăn lông vũ tự nhiên Ecopillo'),
-  },
-  {
-    title: 'Ruột gối, vỏ gối',
-    text: 'Vỏ gối cùng bộ. Gối êm vừa, giữ phom sau nhiều lần giặt.',
-    to: productsUrl({ 'danh-muc': 'goi' }),
-    image: productImage('ruot-goi-long-vu-tu-nhien', 'Ruột gối lông vũ tự nhiên Ecopillo'),
-  },
-  {
-    title: 'Đệm, tấm làm mềm',
-    text: 'Đệm và topper nâng đỡ, đúng cỡ giường.',
-    to: productsUrl({ 'danh-muc': 'dem' }),
-    image: productImage('dem-lo-xo-eco-royal', 'Đệm lò xo Eco Royal'),
-  },
-  // Hai lớp thêm theo trang 65 catalog (owner chọn kiểu 5B 24/10/2026)
-  { title: 'Váy giường, tấm trang trí', text: HOTEL_LINEN.sizes, material: HOTEL_LINEN.valance },
-  { title: 'Khăn tắm, khăn tay, khăn mặt', text: HOTEL_LINEN.sizes, material: HOTEL_LINEN.towels, image: HOTEL_PHOTOS.towels },
-]
 
 const STEPS: readonly { title: string; text: string }[] = [
   { title: 'Khảo sát, tư vấn', text: 'Nhận số phòng, cỡ giường, phong cách; gửi mẫu vải để chọn.' },
@@ -74,31 +29,29 @@ const STEPS: readonly { title: string; text: string }[] = [
 ]
 
 const HERO_IMAGE = HOTEL_PHOTOS.hero
-const DETAIL_IMAGE = { src: '/images/details/vai-ed25.webp', alt: 'Cận chất vải Lyocell của bộ Eco Doris ED25' }
 const QUOTE_IMAGE = HOTEL_PHOTOS.quote
 
 const twoDigits = (n: number) => String(n).padStart(2, '0')
-
-const layerLinkClass = (isActive: boolean) =>
-  `flex h-10 w-10 items-center justify-center rounded-full text-deep-800 transition hover:bg-mist-100 ${
-    isActive ? 'opacity-100' : 'opacity-40 hover:opacity-100'
-  }`
 
 export function HotelPage() {
   usePageMeta(
     'Chăn ga gối khách sạn và dự án',
     'Ecopillo chuyên cung cấp chăn, ga, gối, đệm số lượng lớn cho khách sạn, resort, nhà nghỉ và dự án lưu trú: đường may 4 mũi/cm, giải pháp đồng bộ, báo giá ưu đãi theo số lượng.',
   )
+  // Chữ điền sẵn vào form khi bấm "Liên hệ báo giá" từ một món Hàng trắng
+  const [quotePrefill, setQuotePrefill] = useState({ message: '', key: 0 })
 
   return (
     // Không chừa khoảng dưới: phần báo giá tràn hết bề ngang, nối thẳng xuống chân trang
     <div>
       <HotelHero />
       <Partners />
-      <BedLayers />
+      <WhiteGoods
+        onQuote={(message) => setQuotePrefill((prev) => ({ message, key: prev.key + 1 }))}
+      />
       <Reasons />
       <Steps />
-      <Quote />
+      <Quote defaultMessage={quotePrefill.message} prefillKey={quotePrefill.key} />
     </div>
   )
 }
@@ -184,76 +137,6 @@ function Partners() {
   )
 }
 
-/** "Một chiếc giường, sáu lớp đồ vải": bấm lớp nào, ảnh lớn đổi theo (lớp chưa có ảnh giữ ảnh trước); mỗi lớp có link sang danh mục sản phẩm */
-function BedLayers() {
-  const [active, setActive] = useState(0)
-  // Lớp chưa có ảnh thì giữ ảnh của lớp có ảnh gần nhất phía trên
-  const image = [...LAYERS.slice(0, active + 1)].reverse().find((l) => l.image)?.image ?? HOTEL_PHOTOS.sheets
-  return (
-    <section aria-labelledby="layer-title" className="py-14 sm:py-24">
-      <Container className="grid gap-12 lg:grid-cols-[6fr_5fr] lg:items-center lg:gap-20">
-        <div className="relative mr-4 lg:mr-10">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[0.35rem] bg-cream-100 sm:aspect-[5/4]">
-            <CrossfadeImage image={image} sizes="(min-width: 1024px) 640px, 100vw" />
-          </div>
-          <img
-            src={DETAIL_IMAGE.src}
-            alt={DETAIL_IMAGE.alt}
-            loading="lazy"
-            decoding="async"
-            className="absolute -right-4 -bottom-6 aspect-square w-[42%] border-[6px] border-ivory object-cover shadow-[var(--shadow-lift)] lg:-right-10 lg:-bottom-10 lg:w-[38%]"
-          />
-        </div>
-        <div>
-          <header data-reveal="left">
-            <p className="eyebrow">Sản phẩm cho phòng</p>
-            <h2 id="layer-title" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.9rem]">
-              Một chiếc giường, sáu lớp đồ vải
-            </h2>
-          </header>
-          <ol className="mt-6 border-b border-line">
-            {LAYERS.map((l, i) => {
-              const isActive = i === active
-              return (
-                <li key={l.title} className="border-t border-line">
-                  <div className="grid grid-cols-[2.6rem_1fr_auto] items-baseline gap-x-3 py-4">
-                    <button
-                      type="button"
-                      aria-pressed={isActive}
-                      onClick={() => setActive(i)}
-                      className="group col-span-2 grid grid-cols-subgrid items-baseline text-left"
-                    >
-                      <span className="font-display row-span-2 text-[1.35rem] leading-none text-deep-700 italic">{twoDigits(i + 1)}</span>
-                      <span
-                        className={`font-display text-[1.25rem] leading-snug transition-colors ${
-                          isActive ? 'text-deep-700' : 'text-deep-900 group-hover:text-deep-700'
-                        }`}
-                      >
-                        {l.title}
-                      </span>
-                      {l.material && <span className="col-start-2 mt-1 text-small font-medium text-deep-800">{l.material}</span>}
-                      <span className="col-start-2 mt-1 text-small text-ink-soft">{l.text}</span>
-                    </button>
-                    {l.to ? (
-                      <Link to={l.to} aria-label={`Xem ${l.title.toLowerCase()}`} className={layerLinkClass(isActive)}>
-                        <Icon name="arrowRight" size={18} />
-                      </Link>
-                    ) : (
-                      <a href="#bao-gia" aria-label={`Nhận báo giá ${l.title.toLowerCase()}`} className={layerLinkClass(isActive)}>
-                        <Icon name="arrowRight" size={18} />
-                      </a>
-                    )}
-                  </div>
-                </li>
-              )
-            })}
-          </ol>
-        </div>
-      </Container>
-    </section>
-  )
-}
-
 /** Câu trích lớn trên nền chàm kèm đoạn 2, 3 của chữ giới thiệu; bốn lợi ích (chữ Ecopillo gửi, mục 39) xếp hai cột */
 function Reasons() {
   return (
@@ -315,9 +198,9 @@ function Steps() {
 }
 
 /** Form báo giá cạnh ảnh phòng, tràn hết bề ngang trang */
-function Quote() {
+function Quote({ defaultMessage, prefillKey }: { defaultMessage: string; prefillKey: number }) {
   return (
-    <section id="bao-gia" aria-labelledby="quote-title" className="grid scroll-mt-[4.5rem] grid-cols-1 bg-mist-50 lg:grid-cols-[5fr_7fr]">
+    <section id="bao-gia" aria-labelledby="quote-title" className="grid scroll-mt-[5.5rem] grid-cols-1 bg-mist-50 lg:grid-cols-[5fr_7fr]">
       <div className="relative aspect-[16/10] overflow-hidden lg:aspect-auto">
         <img
           src={QUOTE_IMAGE.src}
@@ -342,6 +225,8 @@ function Quote() {
         <div className="mt-8 rounded-[1.5rem] bg-ivory p-5 shadow-[var(--shadow-soft)] sm:p-8">
           <MessageForm
             defaultTopic="Khách sạn, nhà nghỉ"
+            defaultMessage={defaultMessage}
+            prefillKey={prefillKey}
             placeholder="Ví dụ: khách sạn 40 phòng ở Đà Nẵng, 20 giường 1m6 và 20 giường 1m8, cần ga bọc, vỏ chăn, ruột gối…"
             submitLabel="Gửi yêu cầu báo giá"
           />

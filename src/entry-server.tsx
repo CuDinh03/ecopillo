@@ -32,6 +32,9 @@ export const NOT_FOUND_PATH = '/__khong-tim-thay__/trang/'
 export function listPrerenderPaths(): string[] {
   const paths = new Set<string>()
   for (const path of Object.values(PATHS)) paths.add(withSlash(path))
+  // /he-thong-phan-phoi/ từ 05/11/2026 chỉ còn 301 → /lien-he/ (HOST_REDIRECTS + DistributionPage Navigate).
+  // Không dựng HTML riêng: Navigate trong StaticRouter không thay được 301 máy chủ.
+  paths.delete(withSlash(PATHS.distribution))
   for (const path of COLLECTION_BY_PATH.keys()) paths.add(withSlash(path))
   for (const path of Object.keys(LISTINGS)) paths.add(withSlash(path))
   for (const collection of COLLECTIONS) {

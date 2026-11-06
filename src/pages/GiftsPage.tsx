@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { CorporateGifts } from '../components/gifts/CorporateGifts'
-import { Gifts } from '../components/home/Essentials'
 import { EventsStrip } from '../components/home/EventsStrip'
+import { ThankYouLetters } from '../components/home/ThankYouLetters'
 import { Icon } from '../components/ui/Icon'
 import { PageHero } from '../components/ui/PageHero'
 import { Placeholder } from '../components/ui/Placeholder'
@@ -13,7 +13,8 @@ import { revealDelay } from '../lib/reveal'
 
 /**
  * Trang Quà tặng (biên bản mục 34, 48): quà tặng doanh nghiệp, sự kiện (Ecopillo gửi 27/10/2026, mẫu A),
- * chương trình tri ân (đang được Ecopillo chỉnh lại), sự kiện đồng hành, gợi ý chọn chăn ga làm quà theo dịp.
+ * thư cảm ơn + ưu đãi 5% (thay khối Tri ân 15.000 khách hàng, mục 11 phản hồi 05/11/2026),
+ * sự kiện đồng hành, gợi ý chọn chăn ga làm quà theo dịp.
  */
 
 const OCCASIONS = [
@@ -41,7 +42,10 @@ const SERVICES = [
 ] as const
 
 export function GiftsPage() {
-  usePageMeta('Quà tặng và sự kiện', 'Hộp quà chăn ga Ecopillo cho doanh nghiệp, sự kiện; chương trình tri ân 15.000 khách hàng và gợi ý chọn chăn ga gối Ecopillo làm quà cưới, quà tân gia, quà biếu Tết.')
+  usePageMeta(
+    'Quà tặng và sự kiện',
+    'Hộp quà chăn ga Ecopillo cho doanh nghiệp, sự kiện; thư cảm ơn kèm ưu đãi 5% cho đơn tiếp theo và gợi ý chọn chăn ga gối Ecopillo làm quà cưới, quà tân gia, quà biếu Tết.',
+  )
 
   return (
     <div className="pb-24">
@@ -54,17 +58,17 @@ export function GiftsPage() {
             những giấc ngủ <span className="whitespace-nowrap">thương yêu</span>
           </>
         }
-        lead="Mỗi bộ chăn ga Ecopillo đều kèm quà tri ân. Và một bộ chăn ga đẹp cũng là món quà được dùng mỗi ngày, nhắc người nhận nhớ tới Quý khách."
+        lead="Ecopillo gửi kèm thư cảm ơn và ưu đãi 5% cho đơn hàng tiếp theo. Và một bộ chăn ga đẹp cũng là món quà được dùng mỗi ngày, nhắc người nhận nhớ tới Quý khách."
       >
         <a href="#qua-tang" className={buttonClass('primary', 'md', 'mt-8')}>
-          Xem quà tri ân
+          Xem thư cảm ơn
           <Icon name="chevronDown" size={17} />
         </a>
       </PageHero>
 
       <CorporateGifts />
 
-      <Gifts standalone />
+      <ThankYouLetters standalone />
 
       {/* Mục 34 (khách yêu cầu 16/10/2026): các sự kiện có mặt Ecopillo. Dùng chung dữ liệu với trang chủ (src/data/events.ts);
           riêng trang này có thêm hàng sự kiện lớn (MAJOR_EVENTS, Ecopillo yêu cầu 27/10/2026). Thêm sự kiện thì chỉ sửa events.ts */}

@@ -399,9 +399,9 @@ function Closing() {
           Cảm nhận độ mềm mát của Lyocell, nằm thử gối và đệm, được tư vấn mẫu hợp với phòng ngủ của Quý khách.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <LinkButton to={PATHS.distribution} variant="light">
+          <LinkButton to={`${PATHS.contact}#diem-ban`} variant="light">
             <Icon name="pin" size={17} />
-            Hệ thống phân phối
+            Liên hệ mua hàng
           </LinkButton>
           <LinkButton to={PATHS.products} variant="outlineLight">
             <Icon name="bed" size={17} />

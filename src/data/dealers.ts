@@ -46,7 +46,12 @@ export const KIND_LABEL: Readonly<Record<DealerKind, string>> = {
 export const FAR_KM = 50
 
 /** Nút "Tìm đại lý gần tôi" ở trang khác: mở trang và hỏi vị trí ngay */
-export const NEAR_ME_URL = `${PATHS.distribution}?gan-toi=1`
+/**
+ * Nút "Tìm đại lý gần tôi" (mục 9 phản hồi 05/11, phương án A):
+ * sang trang Liên hệ mua hàng, neo #diem-ban, hỏi vị trí ngay.
+ * Trước đây trỏ /he-thong-phan-phoi/?gan-toi=1 (trang đó 301 về đây).
+ */
+export const NEAR_ME_URL = `${PATHS.contact}?gan-toi=1#diem-ban`
 
 /** Hiện bấy nhiêu điểm đầu, còn lại sau nút "Xem thêm" */
 export const PAGE_SIZE = 10

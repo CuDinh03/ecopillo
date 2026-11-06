@@ -7,7 +7,11 @@ import { Footer } from './Footer'
 import { Header } from './Header'
 import { PreviewNotice } from './PreviewNotice'
 
-/** Mục đã đổi tên: link cũ vẫn cuộn tới đúng chỗ */
+/**
+ * Mục đã đổi tên: link cũ vẫn cuộn tới đúng chỗ.
+ * showroom trên trang chủ vẫn trỏ khối Showrooms (id=he-thong-phan-phoi giữ nguyên).
+ * Trên /lien-he/ thì SiteLayout cuộn theo hash thật (#diem-ban).
+ */
 const RENAMED_SECTIONS: Readonly<Record<string, string>> = { showroom: 'he-thong-phan-phoi' }
 
 interface SmoothScroll {
@@ -56,12 +60,13 @@ function useScrollOnNavigate() {
 export function SiteLayout() {
   useScrollOnNavigate()
   // Hiện dần khi cuộn: do public/hieu-ung/ecopillo-hieu-ung.js lo cho cả trang (thay useScrollReveal)
-  const { pathname } = useLocation()
+  const { pathname, hash } = useLocation()
   // Trang đặt hàng và chi tiết sản phẩm có thanh dưới riêng (giá + gọi/Zalo)
   const showDock = !pathname.startsWith(PATHS.order.slice(0, -1)) && !hasOwnBuyBar(pathname)
-  // Trang tìm đại lý: điện thoại bỏ thanh liên hệ dưới đáy, vì mỗi thẻ đã có Gọi/Zalo của đúng điểm đó
-  // (thêm hotline chung dễ bấm nhầm) và bản đồ cần chỗ. Máy tính vẫn giữ nút "Liên hệ" nổi.
-  const isDealerFinder = pathname.startsWith(PATHS.distribution.slice(0, -1))
+  // Neo #diem-ban trên Liên hệ mua hàng: điện thoại bỏ thanh liên hệ dưới đáy vì mỗi thẻ đại lý
+  // đã có Gọi/Zalo và bản đồ cần chỗ. Máy tính vẫn giữ nút "Liên hệ" nổi.
+  // Trước 05/11/2026 chỉ áp dụng cho /he-thong-phan-phoi/ (nay 301 về /lien-he/#diem-ban).
+  const atDealerFinder = pathname.startsWith(PATHS.contact.slice(0, -1)) && hash === '#diem-ban'
 
   return (
     <div className="flex min-h-svh flex-col">
@@ -83,9 +88,9 @@ export function SiteLayout() {
         </Suspense>
       </main>
       <Footer />
-      {showDock && <ContactDock mobileBar={!isDealerFinder} />}
+      {showDock && <ContactDock mobileBar={!atDealerFinder} />}
       {/* Trên điện thoại có thanh dưới (liên hệ hoặc đặt hàng) thì đẩy nút lên trên nó */}
-      <BackToTop raised={!isDealerFinder} />
+      <BackToTop raised={!atDealerFinder} />
       <PreviewNotice />
     </div>
   )

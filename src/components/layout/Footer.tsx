@@ -106,7 +106,8 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="eyebrow">Hệ thống phân phối</h3>
+            {/* Mục 9 phản hồi 05/11: điểm bán gộp vào Liên hệ mua hàng; nhãn chân trang đổi theo */}
+            <h3 className="eyebrow">Điểm bán</h3>
             <ul className="mt-5 space-y-4 text-sm">
               {SHOWROOMS.map((s) => (
                 <li key={s.id} className="flex gap-2.5">

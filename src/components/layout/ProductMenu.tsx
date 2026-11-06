@@ -16,8 +16,11 @@ import { Placeholder } from '../ui/Placeholder'
 
 const PANEL_ID = 'product-menu'
 
-/** Giá trên một dòng: "từ …" khi còn giá cao hơn theo kích thước, mẫu */
-const rowPrice = (row: MenuRow): string => (row.isFromPrice ? `từ ${formatVND(row.min)}` : formatVND(row.min))
+/** Giá trên một dòng: chữ sẵn (giá liên hệ…), "từ …", hoặc số cố định */
+const rowPrice = (row: MenuRow): string => {
+  if (row.priceLabel) return row.priceLabel
+  return row.isFromPrice ? `từ ${formatVND(row.min)}` : formatVND(row.min)
+}
 
 interface DesktopProductMenuProps {
   label: string
@@ -111,6 +114,22 @@ export function DesktopProductMenu({ label, isOpen, onOpenChange, buttonClass }:
   )
 }
 
+/** Một dòng trong cột: tên + giá (hoặc priceLabel) */
+function DesktopRow({ row, onNavigate }: { row: MenuRow; onNavigate: () => void }) {
+  return (
+    <li>
+      <Link
+        to={row.to}
+        onClick={onNavigate}
+        className="-mx-2 flex flex-wrap items-baseline justify-between gap-x-2 rounded-lg px-2 py-1.5 text-small text-deep-900 transition-colors hover:bg-mist-100"
+      >
+        <span>{row.label}</span>
+        <span className="tabular text-xs whitespace-nowrap text-ink-faint">{rowPrice(row)}</span>
+      </Link>
+    </li>
+  )
+}
+
 function DesktopGroup({ group, onNavigate }: { group: MenuGroup; onNavigate: () => void }) {
   return (
     <>
@@ -128,20 +147,27 @@ function DesktopGroup({ group, onNavigate }: { group: MenuGroup; onNavigate: () 
           {group.title}
         </Link>
       </h3>
-      <ul>
-        {group.rows.map((row) => (
-          <li key={row.to}>
-            <Link
-              to={row.to}
-              onClick={onNavigate}
-              className="-mx-2 flex flex-wrap items-baseline justify-between gap-x-2 rounded-lg px-2 py-1.5 text-small text-deep-900 transition-colors hover:bg-mist-100"
-            >
-              <span>{row.label}</span>
-              <span className="tabular text-xs whitespace-nowrap text-ink-faint">{rowPrice(row)}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {group.sections?.length ? (
+        <div className="grid gap-3">
+          {group.sections.map((section) => (
+            <div key={section.title}>
+              <p className="text-[0.68rem] font-semibold tracking-[0.08em] text-mist-600 uppercase">{section.title}</p>
+              {section.note && <p className="mt-0.5 text-[0.7rem] leading-snug text-ink-faint">{section.note}</p>}
+              <ul className="mt-1">
+                {section.rows.map((row) => (
+                  <DesktopRow key={`${section.title}-${row.to}-${row.label}`} row={row} onNavigate={onNavigate} />
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <ul>
+          {group.rows.map((row) => (
+            <DesktopRow key={`${row.to}-${row.label}`} row={row} onNavigate={onNavigate} />
+          ))}
+        </ul>
+      )}
     </>
   )
 }
@@ -207,8 +233,11 @@ interface MobileGroupProps {
 
 function MobileGroup({ group, isOpen, onToggle, onNavigate }: MobileGroupProps) {
   const listId = `mobile-product-${group.id}`
-  // Nhóm có trang riêng mà chưa dòng nào trỏ tới (Đệm, Bộ ga phủ, Ruột chăn gối): thêm link xem cả nhóm
-  const hasOwnPage = !group.rows.some((row) => row.to === group.to)
+  const flatRows = group.sections?.length ? group.sections.flatMap((s) => s.rows) : group.rows
+  // Nhóm có trang riêng mà chưa dòng nào trỏ tới: thêm link xem cả nhóm
+  const hasOwnPage = !flatRows.some((row) => row.to === group.to)
+  const groupPrice =
+    group.min > 0 ? `từ ${formatVND(group.min)}` : flatRows.find((r) => r.priceLabel)?.priceLabel ?? ''
   return (
     <div className="rounded-2xl bg-ivory shadow-[var(--shadow-soft)]">
       <button
@@ -221,31 +250,54 @@ function MobileGroup({ group, isOpen, onToggle, onNavigate }: MobileGroupProps) 
         <Placeholder image={{ ...group.image, alt: '' }} note={group.title} tone="mist" sizes="48px" className="h-12 w-12 rounded-xl" />
         <span className="min-w-0">
           <span className="block font-semibold text-deep-900">{group.title}</span>
-          <span className="block text-xs text-ink-faint">
-            <span className="whitespace-nowrap">từ {formatVND(group.min)}</span>
-          </span>
+          {groupPrice && (
+            <span className="block text-xs text-ink-faint">
+              <span className="whitespace-nowrap">{groupPrice}</span>
+            </span>
+          )}
         </span>
         <Icon name="plus" size={20} className={`text-mist-600 transition-transform duration-200 ${isOpen ? 'rotate-45' : ''}`} />
       </button>
       {isOpen && (
-        <ul id={listId} className="px-3.5 pb-2 pl-[4.25rem]">
-          {group.rows.map((row) => (
-            <li key={row.to} className="border-t border-line">
-              <Link to={row.to} onClick={onNavigate} className="flex items-baseline justify-between gap-2 py-2.5 text-small text-deep-900">
-                <span className="min-w-0">{row.label}</span>
-                <span className="tabular text-xs whitespace-nowrap text-ink-faint">{rowPrice(row)}</span>
-              </Link>
-            </li>
-          ))}
+        <div id={listId} className="px-3.5 pb-2 pl-[4.25rem]">
+          {group.sections?.length ? (
+            group.sections.map((section) => (
+              <div key={section.title} className="border-t border-line pt-2 first:border-t-0 first:pt-0">
+                <p className="pt-1 text-[0.68rem] font-semibold tracking-[0.08em] text-mist-600 uppercase">{section.title}</p>
+                {section.note && <p className="mt-0.5 text-[0.7rem] leading-snug text-ink-faint">{section.note}</p>}
+                <ul>
+                  {section.rows.map((row) => (
+                    <li key={`${section.title}-${row.to}-${row.label}`} className="border-t border-line first:border-t-0">
+                      <Link to={row.to} onClick={onNavigate} className="flex items-baseline justify-between gap-2 py-2.5 text-small text-deep-900">
+                        <span className="min-w-0">{row.label}</span>
+                        <span className="tabular text-xs whitespace-nowrap text-ink-faint">{rowPrice(row)}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          ) : (
+            <ul>
+              {group.rows.map((row) => (
+                <li key={`${row.to}-${row.label}`} className="border-t border-line">
+                  <Link to={row.to} onClick={onNavigate} className="flex items-baseline justify-between gap-2 py-2.5 text-small text-deep-900">
+                    <span className="min-w-0">{row.label}</span>
+                    <span className="tabular text-xs whitespace-nowrap text-ink-faint">{rowPrice(row)}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
           {hasOwnPage && (
-            <li className="border-t border-line">
+            <div className="border-t border-line">
               <Link to={group.to} onClick={onNavigate} className="flex items-center gap-1.5 py-2.5 text-small font-semibold text-mist-600">
                 Xem cả nhóm {group.title}
                 <Icon name="arrowRight" size={15} />
               </Link>
-            </li>
+            </div>
           )}
-        </ul>
+        </div>
       )}
     </div>
   )

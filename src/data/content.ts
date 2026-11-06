@@ -117,10 +117,10 @@ export const FAQS: readonly Faq[] = [
     ],
   },
   {
-    q: 'Hệ thống phân phối mở cửa giờ nào?',
+    q: 'Điểm bán Ecopillo mở cửa giờ nào?',
     a: [
       `Văn phòng đại diện Hà Nội và chi nhánh TP. HCM: ${OPENING_HOURS}.`,
-      'Đại lý: giờ mở cửa ghi ở từng điểm trên trang Hệ thống phân phối. Điểm chưa ghi giờ, Quý khách gọi trước khi ghé.',
+      'Đại lý: giờ mở cửa ghi ở từng điểm trên trang Liên hệ mua hàng (mục Tìm Ecopillo gần Quý khách). Điểm chưa ghi giờ, Quý khách gọi trước khi ghé.',
     ],
   },
 ]

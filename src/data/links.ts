@@ -334,7 +334,11 @@ export const OLD_SITE_REDIRECTS: Readonly<Record<string, string>> = {
   '/blocks/chan-trang/': PATHS.home,
 }
 
-/** Link tạm của bản xem thử trước 15/10/2026 (đã gửi Ecopillo xem): đưa về link chính. Web cũ không có các link này */
+/**
+ * Link tạm của bản xem thử trước 15/10/2026 (đã gửi Ecopillo xem): đưa về link chính. Web cũ không có các link này.
+ * /showroom/ và /he-thong-phan-phoi/ (mục 9 phản hồi 05/11 phương án A): gộp vào Liên hệ mua hàng.
+ * Máy chủ không giữ #hash; SPA Navigate / ContactPage tự cuộn #diem-ban (và ?gan-toi=1 hỏi vị trí).
+ */
 const PREVIEW_REDIRECTS: Readonly<Record<string, string>> = {
   '/san-pham/': PATHS.products,
   '/khach-san/': PATHS.hotel,
@@ -344,7 +348,11 @@ const PREVIEW_REDIRECTS: Readonly<Record<string, string>> = {
   '/chinh-sach-doi-hang/': '/chinh-sach-doi-tra-hang-va-hoan-tien/',
   '/chinh-sach-bao-hanh/': '/chinh-sach-bao-hanh-san-pham/',
   '/ve-chung-toi/': PATHS.about,
-  '/showroom/': PATHS.distribution,
+  // Không gắn # vào đích: RedirectOr nối `to+search+hash` — nếu to đã có # thì ?gan-toi=1 rơi sau neo.
+  // SPA: DistributionPage Navigate gắn #diem-ban; ContactPage gắn lại khi có ?gan-toi=1.
+  '/showroom/': PATHS.contact,
+  // Trang điểm bán riêng trước 05/11/2026 → Liên hệ mua hàng
+  '/he-thong-phan-phoi/': PATHS.contact,
   '/cau-hoi-thuong-gap/': PATHS.faq,
 }
 

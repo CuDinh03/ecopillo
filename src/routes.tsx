@@ -75,7 +75,11 @@ const route = (path: string) => path.replace(/^\/|\/$/g, '')
 function RedirectOrNotFound() {
   const { pathname, search, hash } = useLocation()
   const to = redirectFor(pathname, COLLECTIONS)
-  return to ? <Navigate to={`${to}${search}${hash}`} replace /> : <NotFoundPage />
+  if (!to) return <NotFoundPage />
+  // /showroom/ (bản xem thử cũ) → Liên hệ mua hàng, neo điểm bán (khớp _redirects lúc build)
+  const path = pathname.endsWith('/') ? pathname : `${pathname}/`
+  const destHash = path === '/showroom/' && !hash ? '#diem-ban' : hash
+  return <Navigate to={`${to}${search}${destHash}`} replace />
 }
 
 /**

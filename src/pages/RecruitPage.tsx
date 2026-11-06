@@ -9,7 +9,8 @@ import { usePageMeta } from '../hooks/usePageMeta'
 
 /**
  * Trang Tuyển đại lý, ở đúng link của web cũ /tuyen-dai-ly/ (menu "Đăng ký đại lý" của web cũ, Google đang xếp hạng).
- * Nội dung dùng chung khối đăng ký ở cuối trang Hệ thống phân phối. Phía trên form là mô hình phân phối theo catalog 22.07.2026 (kiểu 4B).
+ * Phía trên form là mô hình phân phối theo catalog 22.07.2026 (kiểu 4B).
+ * Điểm bán từ 05/11/2026 nằm trong Liên hệ mua hàng (#diem-ban).
  */
 export function RecruitPage() {
   usePageMeta(
@@ -30,7 +31,7 @@ export function RecruitPage() {
         }
         lead="Ecopillo tìm đối tác phân phối tại các tỉnh, thành: cửa hàng chăn ga, nội thất, đồ cưới. Để lại thông tin, bộ phận kinh doanh sẽ gọi lại."
       >
-        <Link to={PATHS.distribution} className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-deep-900 underline-offset-4 hover:underline">
+        <Link to={`${PATHS.contact}#diem-ban`} className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-deep-900 underline-offset-4 hover:underline">
           Xem các điểm phân phối hiện có <Icon name="arrowRight" size={15} />
         </Link>
       </PageHero>

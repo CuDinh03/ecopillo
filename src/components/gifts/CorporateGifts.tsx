@@ -3,7 +3,7 @@ import { revealDelay } from '../../lib/reveal'
 import { ContactButtons, Container } from '../ui/primitives'
 
 /**
- * Quà tặng doanh nghiệp, sự kiện ở trang Quà tặng và sự kiện, đặt trên khối tri ân (owner chọn mẫu A 27/10/2026:
+ * Quà tặng doanh nghiệp, sự kiện ở trang Quà tặng và sự kiện, đặt trên khối thư cảm ơn (owner chọn mẫu A 27/10/2026:
  * docs/de-xuat-phan-qua-tang.html). Máy tính: khối trắng, chữ bên trái, bên phải ảnh quảng cáo vuông + hai ảnh nhỏ xếp dọc.
  * Ảnh quảng cáo có chữ nên giữ khung vuông như ảnh gốc, không chú thích đè; hai ảnh nhỏ cũng vuông để cột ảnh không bị kéo cao (owner dặn "nhìn được hết các nội dung của ảnh").
  * Điện thoại: ảnh lên trước, chữ sau. Dưới khối là hàng 4 ảnh. Dữ liệu: src/data/corporateGifts.ts.

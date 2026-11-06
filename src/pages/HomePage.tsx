@@ -2,13 +2,14 @@ import { About } from '../components/home/About'
 import { Collections } from '../components/home/Collections'
 import { BrandVideo } from '../components/home/BrandVideo'
 import { BrandStory, TrustStrip } from '../components/home/Craft'
-import { Essentials, Gifts } from '../components/home/Essentials'
+import { Essentials } from '../components/home/Essentials'
 import { Hero } from '../components/home/Hero'
 import { Hospitality } from '../components/home/Hospitality'
 import { MattressPicker } from '../components/home/MattressPicker'
 import { Reviews } from '../components/home/Reviews'
 import { Faq, Showrooms } from '../components/home/Showrooms'
 import { StoryTabs } from '../components/home/StoryTabs'
+import { ThankYouLetters } from '../components/home/ThankYouLetters'
 import { JsonLd } from '../components/seo/JsonLd'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { usePageMeta } from '../hooks/usePageMeta'
@@ -49,7 +50,8 @@ function DesktopHome() {
       <MattressPicker />
       <Collections />
       <Essentials />
-      <Gifts />
+      {/* Mục 11 phản hồi 05/11/2026: thư cảm ơn + ưu đãi 5% thay khối Tri ân (quà kèm) */}
+      <ThankYouLetters />
       <About moreLink />
       <BrandVideo />
       <Hospitality />
@@ -74,6 +76,8 @@ function MobileHome() {
       <MattressPicker />
       <Collections />
       <Essentials withTabs />
+      {/* Thư cảm ơn đứng riêng dưới bảng giá (không còn tab Quà tặng trong Essentials) */}
+      <ThankYouLetters />
       <Reviews />
       <StoryTabs />
       <Showrooms />

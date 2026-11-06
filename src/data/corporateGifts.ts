@@ -2,7 +2,7 @@ import type { ImageSource } from './catalog'
 
 /**
  * Quà tặng doanh nghiệp, sự kiện (Ecopillo gửi 27/10/2026: "Phần này là quà tặng", 7 ảnh), ở trang Quà tặng và sự kiện.
- * Khác quà tri ân kèm khi mua bộ chăn ga (GIFT_TIERS trong catalog.ts). Owner chọn mẫu A: docs/de-xuat-phan-qua-tang.html.
+ * Khác thư cảm ơn + ưu đãi 5% (thankYou.ts, mục 11 phản hồi 05/11/2026; trước đó là quà kèm ruột gối). Owner chọn mẫu A: docs/de-xuat-phan-qua-tang.html.
  * Ảnh gốc đều vuông, nén bằng tools/nen-anh-qua-tang-2026-10-27.py; trên web giữ khung vuông để thấy trọn ảnh (owner dặn 27/10).
  * Giá 99K in trong ảnh quảng cáo của Ecopillo: owner bảo không cần hỏi lại (27/10/2026).
  */

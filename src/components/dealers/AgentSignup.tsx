@@ -5,7 +5,7 @@ import { SectionHeading } from '../ui/primitives'
 import { MessageForm } from '../contact/MessageForm'
 
 /**
- * Khối "Trở thành đại lý": quyền lợi + form đăng ký. Dùng ở cuối trang Hệ thống phân phối
+ * Khối "Trở thành đại lý": quyền lợi + form đăng ký. Dùng ở trang Tuyển đại lý
  * và ở trang Tuyển đại lý (/tuyen-dai-ly/, link của web cũ).
  */
 export function AgentSignup() {

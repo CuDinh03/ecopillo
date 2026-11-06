@@ -1,4 +1,4 @@
-import { useState, type FormEvent, type ReactNode } from 'react'
+import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { OPENING_HOURS } from '../../data/brand'
 import { PATHS } from '../../data/links'
@@ -9,7 +9,7 @@ import { PreviewNotSent } from '../ui/PreviewNotSent'
 import { buttonClass } from '../ui/primitives'
 
 /**
- * Form "Gửi tin nhắn cho chúng tôi" (trang Liên hệ, trang Khách sạn, trang Hệ thống phân phối).
+ * Form "Gửi tin nhắn cho chúng tôi" (trang Liên hệ mua hàng, trang Khách sạn).
  * Trên WordPress, form này nối vào form liên hệ đang dùng (Contact Form 7 / Flatsome) để tin nhắn
  * về email cskh như cũ. Ô "Quý khách cần" giúp Ecopillo biết khách hỏi gì nhiều nhất.
  */
@@ -71,17 +71,40 @@ interface MessageFormProps {
   /** Gợi ý trong ô nội dung */
   placeholder?: string
   submitLabel?: string
+  /**
+   * Chữ điền sẵn vào ô nội dung (ví dụ trang Khách sạn: "Cần báo giá: Chăn ga T300").
+   * Đổi giá trị này khi khách bấm "Liên hệ báo giá" từ một món; form chỉ ghi đè ô nội dung,
+   * giữ nguyên họ tên / điện thoại / chủ đề đã nhập.
+   */
+  defaultMessage?: string
+  /** Tăng mỗi lần bấm báo giá, để bấm lại cùng món vẫn ghi đè ô nội dung */
+  prefillKey?: number
 }
 
 export function MessageForm({
   defaultTopic = 'Tư vấn chọn mẫu',
   placeholder = 'Ví dụ: giường 1m8 × 2m, muốn tư vấn mẫu mát cho mùa hè…',
   submitLabel = 'Gửi tin nhắn',
+  defaultMessage = '',
+  prefillKey = 0,
 }: MessageFormProps) {
-  const initial: ContactForm = { ...EMPTY_FORM, topic: defaultTopic }
+  const initial: ContactForm = { ...EMPTY_FORM, topic: defaultTopic, message: defaultMessage }
   const [form, setForm] = useState<ContactForm>(initial)
   const [errors, setErrors] = useState<ContactErrors>({})
   const [sent, setSent] = useState<ContactForm | null>(null)
+
+  // Khi trang đẩy chữ mới (bấm "Liên hệ báo giá" một món): ghi vào ô nội dung, bỏ trạng thái đã gửi
+  useEffect(() => {
+    if (!defaultMessage || prefillKey === 0) return
+    setSent(null)
+    setForm((f) => ({ ...f, message: defaultMessage }))
+    setErrors((e) => {
+      if (!e.message) return e
+      const next = { ...e }
+      delete next.message
+      return next
+    })
+  }, [defaultMessage, prefillKey])
 
   const change = (patch: Partial<ContactForm>) => {
     setForm((f) => ({ ...f, ...patch }))

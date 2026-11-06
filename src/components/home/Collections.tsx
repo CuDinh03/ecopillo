@@ -1,26 +1,24 @@
-import { useState, type MouseEvent } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   collectionRange,
   coverOf,
-  GIFTS,
   imageOfPattern,
   isPatternSoldOut,
   type Collection,
   type Pattern,
 } from '../../data/catalog'
-import { COLLECTION_GROUPS, type CollectionGroup } from '../../data/collectionGroups'
+import { COLLECTION_GROUPS, SEE_ALL_TILE, type CollectionGroup } from '../../data/collectionGroups'
 import { orderUrl } from '../../data/products'
 import { collectionPath, PATHS } from '../../data/links'
 import { chapterTitle, patternPath } from '../../data/stories'
 import { formatRange } from '../../lib/format'
 import { revealDelay } from '../../lib/reveal'
-import { scrollToElement } from '../../lib/scroll'
 import { Icon } from '../ui/Icon'
 import { preloadImage } from '../../lib/preload'
 import { CrossfadeImage } from '../ui/CrossfadeImage'
 import { Placeholder } from '../ui/Placeholder'
-import { buttonClass, Container, FillIn, SectionHeading } from '../ui/primitives'
+import { buttonClass, Container, SectionHeading } from '../ui/primitives'
 
 export const orderLink = (collectionId: string) => `${PATHS.order}?bo-suu-tap=${collectionId}`
 
@@ -123,13 +121,11 @@ function Swatches({ collection, selected, onSelect, onPreview }: SwatchesProps) 
 
 interface CollectionCardProps {
   collection: Collection
-  /** Chưa xác nhận bộ này thuộc nhóm đang hiện (câu hỏi STT 68) */
-  unconfirmed?: boolean
   index?: number
 }
 
-/** Thẻ bộ sưu tập: mọi thẻ bằng nhau (mục 9, mẫu A), nút và giá dồn xuống đáy để các thẻ cùng hàng thẳng nhau */
-function CollectionCard({ collection, unconfirmed, index = 0 }: CollectionCardProps) {
+/** Thẻ bộ sưu tập: mọi thẻ bằng nhau, nút và giá dồn xuống đáy để các thẻ cùng hàng thẳng nhau */
+function CollectionCard({ collection, index = 0 }: CollectionCardProps) {
   const { min, max } = collectionRange(collection)
   const [patternCode, setPatternCode] = useState(collection.cover ?? collection.patterns[0]?.code)
   const [previewCode, setPreviewCode] = useState<string | null>(null)
@@ -137,14 +133,13 @@ function CollectionCard({ collection, unconfirmed, index = 0 }: CollectionCardPr
   // Ảnh hiện theo mẫu đang rê chuột (xem trước), không thì theo mẫu đã chọn
   const shownPattern = collection.patterns.find((p) => p.code === previewCode) ?? pattern
   const image = imageOfPattern(collection, shownPattern) ?? coverOf(collection)
-  const gift = GIFTS[collection.gift]
   const isTop = collection.id === 'eco-doris'
 
   return (
     <article
       data-reveal
       style={revealDelay(index)}
-      className="group relative flex flex-col overflow-hidden rounded-[1.75rem] bg-ivory shadow-[var(--shadow-soft)] transition duration-500 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]"
+      className="group relative flex h-full min-w-0 flex-col overflow-hidden rounded-[1.75rem] bg-ivory shadow-[var(--shadow-soft)] transition duration-500 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)]"
     >
       <div className="relative aspect-[4/3] overflow-hidden">
         {image ? (
@@ -169,7 +164,6 @@ function CollectionCard({ collection, unconfirmed, index = 0 }: CollectionCardPr
               {collection.badge}
             </span>
           )}
-          {unconfirmed && <FillIn className="text-label">[XÁC NHẬN loại]</FillIn>}
         </div>
       </div>
 
@@ -194,12 +188,6 @@ function CollectionCard({ collection, unconfirmed, index = 0 }: CollectionCardPr
         <div className="mt-auto pt-5">
           <p className="hidden text-label tracking-wide text-ink-faint uppercase sm:block">1m6 → 2m2</p>
           <p className="tabular mt-1 text-lead font-medium text-deep-900">{formatRange(min, max)}</p>
-          {gift.perSet > 0 && (
-            <p className="mt-2 flex items-center gap-2 text-meta text-brass-600">
-              <Icon name="gift" size={15} />
-              {gift.label}
-            </p>
-          )}
           <div className="mt-5 grid grid-cols-2 gap-2">
             <Link
               to={orderUrl(collection, pattern && !isPatternSoldOut(pattern) ? pattern : undefined)}
@@ -223,61 +211,108 @@ function CollectionCard({ collection, unconfirmed, index = 0 }: CollectionCardPr
   )
 }
 
-/** Hàng chip dưới tiêu đề: bấm thì cuộn tới nhóm (đi qua Lenis) */
-function GroupJumps() {
-  const goTo = (e: MouseEvent<HTMLAnchorElement>, group: CollectionGroup) => {
-    const target = document.getElementById(group.id)
-    if (!target) return
-    e.preventDefault()
-    scrollToElement(target)
-  }
+/** Đầu cột loại vải: nhãn nhỏ, tên loại, câu giải thích */
+function FabricHeader({ group, headingId }: { group: CollectionGroup; headingId: string }) {
   return (
-    <nav aria-label="Nhóm bộ sưu tập theo cách làm hoa văn" className="mt-6 sm:mt-8">
-      <ul className="flex flex-wrap gap-2">
-        {COLLECTION_GROUPS.map((group) => (
-          <li key={group.id}>
-            <a
-              href={`#${group.id}`}
-              onClick={(e) => goTo(e, group)}
-              className="group/chip inline-flex h-10 items-center gap-1.5 rounded-full bg-ivory px-4 text-sm font-medium text-deep-900 shadow-[var(--shadow-soft)] transition duration-300 ease-[var(--ease-soft)] hover:bg-deep-800 hover:text-ivory focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mist-600 active:scale-[0.98]"
-            >
-              {group.title}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <header className="mb-3.5 min-h-0 border-t-2 border-deep-800 pt-2.5 sm:mb-3.5 sm:min-h-[5.75rem]">
+      <p className="text-[0.64rem] font-medium tracking-[0.14em] text-mist-600 uppercase">Loại vải</p>
+      <h3 id={headingId} className="font-display mt-0.5 text-[1.2rem] text-deep-900 sm:text-[1.45rem]">
+        {group.title}
+      </h3>
+      <p className="mt-1 text-[0.74rem] leading-snug text-ink-soft sm:text-[0.78rem]">{group.note}</p>
+    </header>
   )
 }
 
-function GroupBlock({ group }: { group: CollectionGroup }) {
-  const headingId = `${group.id}-tieu-de`
+/** Ô chàm cuối lưới máy tính: dẫn sang trang Sản phẩm */
+function SeeAllTile() {
   return (
-    <section id={group.id} aria-labelledby={headingId} className="mt-10 scroll-mt-[5.5rem] sm:mt-14">
-      <header className="mb-5 flex flex-col gap-1 border-b border-line pb-3 sm:grid sm:grid-cols-[auto_1fr] sm:items-baseline sm:gap-5 sm:pb-4">
-        <h3 id={headingId} className="font-display text-[1.6rem] text-deep-900 sm:text-[1.75rem]">
-          {group.title}
-        </h3>
-        <p className="text-meta leading-relaxed text-ink-soft sm:text-sm">{group.note}</p>
+    <div className="flex h-full min-h-0 min-w-0 flex-col">
+      <header className="mb-3.5 min-h-[5.75rem] border-t-2 border-deep-800 pt-2.5">
+        <p className="text-[0.64rem] font-medium tracking-[0.14em] text-mist-600 uppercase">{SEE_ALL_TILE.label}</p>
+        <h3 className="font-display mt-0.5 text-[1.45rem] text-deep-900">{SEE_ALL_TILE.title}</h3>
+        <p className="mt-1 text-[0.78rem] leading-snug text-ink-soft">{SEE_ALL_TILE.note}</p>
       </header>
-      <div className="m-rail grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {group.collections.map((c, index) => (
-          <CollectionCard key={c.id} collection={c} unconfirmed={group.unconfirmed.has(c.id)} index={index} />
+      <Link
+        to={PATHS.products}
+        className="flex min-h-[220px] min-w-0 flex-1 flex-col justify-end gap-2.5 rounded-[1.375rem] bg-deep-800 p-[22px] text-ivory shadow-[var(--shadow-soft)] transition duration-300 ease-[var(--ease-soft)] hover:-translate-y-1 hover:bg-deep-700 hover:shadow-[var(--shadow-lift)] focus-visible:outline-2 focus-visible:outline-offset-2"
+      >
+        <span className="font-display text-[1.5rem] leading-tight">{SEE_ALL_TILE.heading}</span>
+        <span className="text-[0.84rem] text-ivory/80">{SEE_ALL_TILE.lead}</span>
+        <span className="mt-1.5 inline-flex self-start rounded-full bg-ivory px-4 py-2.5 text-[0.84rem] font-medium text-deep-800">
+          {SEE_ALL_TILE.cta}
+          <Icon name="arrowRight" size={16} className="ml-1.5" />
+        </span>
+      </Link>
+    </div>
+  )
+}
+
+/** Cột loại vải trên máy tính: đầu cột + lưới thẻ (nhóm hai bộ chiếm hai cột) */
+function FabricColumn({ group, indexOffset }: { group: CollectionGroup; indexOffset: number }) {
+  const headingId = `${group.id}-tieu-de`
+  const span = group.collections.length
+  return (
+    <section
+      id={group.id}
+      aria-labelledby={headingId}
+      className={`flex min-w-0 flex-col ${span > 1 ? 'sm:col-span-2' : 'sm:col-span-1'}`}
+    >
+      <FabricHeader group={group} headingId={headingId} />
+      {/* minmax(0,1fr): thẻ trong nhóm 2 cột (Rosa+Flora) được phép co, không đẩy lưới tràn ngang */}
+      <div
+        className={`grid min-w-0 flex-1 gap-5 ${
+          span > 1 ? 'sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]' : 'grid-cols-1'
+        }`}
+      >
+        {group.collections.map((c, i) => (
+          <CollectionCard key={c.id} collection={c} index={indexOffset + i} />
         ))}
       </div>
     </section>
   )
 }
 
+/** Điện thoại: một dải vuốt, mỗi mục = đầu loại vải + một thẻ */
+function MobileRail() {
+  const items = COLLECTION_GROUPS.flatMap((group) =>
+    group.collections.map((c) => ({ group, collection: c })),
+  )
+  return (
+    <div
+      className="m-rail -mx-5 flex gap-3 overflow-x-auto scroll-smooth px-5 pb-2 snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+      role="list"
+      aria-label="Bộ sưu tập theo loại vải"
+    >
+      {items.map(({ group, collection }, index) => (
+        <div key={collection.id} role="listitem" className="w-[84%] min-w-0 shrink-0 snap-start">
+          <FabricHeader group={group} headingId={`${group.id}-${collection.id}-tieu-de`} />
+          <CollectionCard
+            collection={collection}
+            index={index}
+          />
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export function Collections() {
+  // Offset chỉ số hiện dần cho từng cột (tính trước, không sửa biến khi render)
+  const offsets = COLLECTION_GROUPS.reduce<number[]>((acc, _group, i) => {
+    const prev = i === 0 ? 0 : acc[i - 1]! + COLLECTION_GROUPS[i - 1]!.collections.length
+    acc.push(prev)
+    return acc
+  }, [])
+
   return (
     <section id="bo-suu-tap" aria-labelledby="collections-title" className="py-14 sm:py-24">
       <Container>
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <SectionHeading
             id="collections-title"
-            title="Bộ sưu tập chăn ga, chọn theo cách làm hoa văn"
-            lead="Giá thay đổi theo kích thước giường 1m6, 1m8 và 2m2. Bấm “Đặt mua” để chọn mẫu, kích thước và xem quà tặng kèm."
+            title="Bộ sưu tập chăn ga, chọn theo loại vải"
+            lead="Giá thay đổi theo kích thước giường 1m6, 1m8 và 2m2. Bấm “Đặt mua” để chọn mẫu và kích thước."
           />
           <ol className="flex gap-6 text-sm text-ink-soft lg:pb-2" aria-label="Phân khúc">
             <li>
@@ -289,19 +324,30 @@ export function Collections() {
           </ol>
         </div>
 
-        <GroupJumps />
-
-        {COLLECTION_GROUPS.map((group) => (
-          <GroupBlock key={group.id} group={group} />
-        ))}
-
-        <div className="mt-8 flex justify-center sm:mt-12">
-          <Link to={PATHS.products} className={buttonClass('secondary', 'lg')}>
-            Xem tất cả sản phẩm
-            <Icon name="arrowRight" size={18} />
-          </Link>
+        {/* Điện thoại: một dải vuốt; máy tính từ sm: lưới cột theo loại vải (phương án 1) */}
+        <div className="mt-8 sm:hidden">
+          <MobileRail />
+          <div className="mt-6 flex justify-center">
+            <Link to={PATHS.products} className={buttonClass('secondary', 'lg')}>
+              {SEE_ALL_TILE.heading}
+              <Icon name="arrowRight" size={18} />
+            </Link>
+          </div>
         </div>
-        {/* Khối "Trong mỗi bộ gồm những gì" bỏ theo khách 05/11/2026 ("nhìn lộn xộn"); thành phần từng bộ vẫn ở dòng "Gồm" trên thẻ và trang bộ */}
+
+        {/*
+          Máy tính: 2 cột (sm–lg) rồi 4 cột từ xl — khớp phương án 1 (docs/de-xuat-nhom-vai-05-11.html).
+          Không dùng lg:grid-cols-3: nhóm "In hoạ tiết" chiếm 2 cột (Rosa+Flora) sẽ lệch/cắt mép phải ở khoảng 1024–1279.
+          minmax(0,1fr) ở cả lưới ngoài và lưới trong cột: thẻ không giữ min-content, không đẩy trang tràn ngang.
+        */}
+        <div className="mt-10 hidden gap-x-5 gap-y-10 sm:grid sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:grid-cols-[repeat(4,minmax(0,1fr))]">
+          {COLLECTION_GROUPS.map((group, i) => (
+            <FabricColumn key={group.id} group={group} indexOffset={offsets[i]!} />
+          ))}
+          <div className="min-w-0 sm:col-span-1">
+            <SeeAllTile />
+          </div>
+        </div>
       </Container>
     </section>
   )

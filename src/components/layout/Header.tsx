@@ -17,29 +17,31 @@ interface NavItem {
 
 /**
  * Biên bản chốt mục 48: Showroom đổi thành Hệ thống phân phối.
- * Góp ý 04/11/2026 mục 3, 13 (owner chọn B + X1 ngày 05/11/2026, mẫu docs/de-xuat-menu-san-pham-04-11.html):
+ * Góp ý 04/11/2026 mục 3, 13 (owner chọn B + X1 ngày 05/11/2026):
  * "Sản phẩm" mở ô xổ năm nhóm (ProductMenu.tsx); bỏ mục "Thêm", thay bằng link "Đăng ký đại lý".
- * Tin tức, Quà tặng, Hỏi đáp rời thanh máy tính nhưng vẫn ở menu điện thoại, chân trang (Quà tặng còn ở cuối ô xổ Sản phẩm).
- * Hai link nhảy tới mục trên trang chủ (Bộ sưu tập, Ruột chăn gối) bỏ: nay nằm trong ô xổ Sản phẩm.
+ * Phản hồi 05/11 mục 9 (phương án A, docs/de-xuat-menu-lien-he-05-11.html):
+ * thanh chỉ còn "Liên hệ mua hàng" (= /lien-he/) và "Đăng ký đại lý"; bỏ "Hệ thống phân phối"
+ * khỏi thanh (điểm bán gộp vào trang Liên hệ, 301 /he-thong-phan-phoi/ → /lien-he/#diem-ban).
+ * Tin tức, Quà tặng, Hỏi đáp rời thanh máy tính nhưng vẫn ở menu điện thoại, chân trang.
+ * [XÁC NHẬN "Khách sạn & dự án" vẫn trên thanh] — giữ vì bán B2B, không phải liên hệ mua lẻ.
  */
 export const NAV_ITEMS: readonly NavItem[] = [
   { href: PATHS.products, label: 'Sản phẩm' },
   // Tên ngắn cho vừa thanh ở 1024px (05/11/2026); link /gioi-thieu/ giữ nguyên
   { href: PATHS.about, label: 'Giới thiệu' },
-  { href: PATHS.distribution, label: 'Hệ thống phân phối' },
   // Owner đổi tên 15/10/2026: "Khách sạn" → "Khách sạn và dự án"; viết "&" cho gọn thanh (05/11/2026)
   { href: PATHS.hotel, label: 'Khách sạn & dự án' },
+  // Mục 9 phản hồi 05/11: gộp Hệ thống phân phối + Liên hệ thành "Liên hệ mua hàng"
+  { href: PATHS.contact, label: 'Liên hệ mua hàng' },
   { href: PATHS.recruit, label: 'Đăng ký đại lý' },
   // Khách yêu cầu 16/10/2026: "Quà tặng" thành "Quà tặng và sự kiện" (link giữ /qua-tang/)
   { href: PATHS.gifts, label: 'Quà tặng và sự kiện' },
   { href: PATHS.blog, label: 'Tin tức' },
   { href: PATHS.faq, label: 'Hỏi đáp' },
-  // Giữ trang Liên hệ như web cũ (yêu cầu của Ecopillo ngày 12/10)
-  { href: PATHS.contact, label: 'Liên hệ' },
 ]
 
-/** Thanh menu máy tính, sau nút "Sản phẩm" (theo mẫu: Liên hệ đứng trước Đăng ký đại lý) */
-const BAR_HREFS: readonly string[] = [PATHS.about, PATHS.distribution, PATHS.hotel, PATHS.contact, PATHS.recruit]
+/** Thanh menu máy tính, sau nút "Sản phẩm" */
+const BAR_HREFS: readonly string[] = [PATHS.about, PATHS.hotel, PATHS.contact, PATHS.recruit]
 const BAR_ITEMS = BAR_HREFS.flatMap((href) => NAV_ITEMS.filter((item) => item.href === href))
 
 /**

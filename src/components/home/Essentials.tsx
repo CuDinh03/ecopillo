@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
 import {
-  COLLECTIONS,
   ESSENTIALS,
   productImage,
   type EssentialItem,
@@ -10,53 +9,39 @@ import {
 import { formatRange } from '../../lib/format'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
-import { buttonClass, Container, SectionHeading } from '../ui/primitives'
+import { Container, SectionHeading } from '../ui/primitives'
 import { productForEssential, productPath, singleOrderUrl } from '../../data/products'
-import { PATHS, productsUrl } from '../../data/links'
+import { PATHS } from '../../data/links'
 import { revealDelay } from '../../lib/reveal'
-import { scrollToElement } from '../../lib/scroll'
 import { orderLink } from './Collections'
 import { MobileTabBar } from './MobileTabBar'
 
 const SUMMER_QUILT_NAME = 'Chăn hè Lyocell'
 const SUMMER_QUILT_ID = 'chan-he-lyocell'
 
-/** Tab của khối gộp trên điện thoại: ruột chăn gối + quà tặng (đệm tách ra khối MattressPicker, C3 02/11/2026) */
-type EssentialTab = 'ruot-goi' | 'ruot-chan' | 'chan-topper' | 'qua-tang'
+/** Tab bảng giá trên điện thoại (đệm tách ra MattressPicker, C3 02/11/2026). Tab Quà tặng bỏ từ 05/11/2026 (mục 11: thư cảm ơn đứng riêng). */
+type EssentialTab = 'ruot-goi' | 'ruot-chan' | 'chan-topper'
 
-const ESSENTIAL_TABS: readonly { id: EssentialTab; label: string }[] = [
-  ...ESSENTIALS.map((g) => ({ id: g.id as EssentialTab, label: g.title })),
-  { id: 'qua-tang', label: 'Quà tặng' },
-]
+const ESSENTIAL_TABS: readonly { id: EssentialTab; label: string }[] = ESSENTIALS.map((g) => ({
+  id: g.id as EssentialTab,
+  label: g.title,
+}))
 
 interface EssentialsProps {
   /**
-   * Trang chủ điện thoại (mẫu 2, owner chốt 15/10/2026): gộp ruột chăn gối và quà tặng thành một khối có tab.
+   * Trang chủ điện thoại (mẫu 2, owner chốt 15/10/2026): bảng giá ruột chăn gối có tab theo nhóm.
    * Đệm tách ra MattressPicker từ 02/11/2026 (C3). Máy tính không dùng tab.
    */
   withTabs?: boolean
 }
 
 export function Essentials({ withTabs = false }: EssentialsProps) {
-  const { hash } = useLocation()
-  // Mở thẳng tab Quà tặng khi đi từ link #qua-tang
-  const [tab, setTab] = useState<EssentialTab>(hash === '#qua-tang' ? 'qua-tang' : 'ruot-goi')
-  // Đi từ link #qua-tang: tab vừa mở nên mục mới có chiều cao, cuộn lại tới đúng chỗ
-  useEffect(() => {
-    if (!withTabs || hash !== '#qua-tang') return
-    setTab('qua-tang')
-    const frame = requestAnimationFrame(() => {
-      const target = document.getElementById('qua-tang')
-      if (target) scrollToElement(target)
-    })
-    return () => cancelAnimationFrame(frame)
-  }, [withTabs, hash])
+  const [tab, setTab] = useState<EssentialTab>('ruot-goi')
   const shownOnMobile = (id: EssentialTab) => !withTabs || tab === id
   const mobileOnly = (id: EssentialTab) => (shownOnMobile(id) ? '' : 'max-sm:hidden')
   const group = (g: PriceGroup) => <PriceGroupBlock key={g.id} group={g} withTabs={withTabs} className={mobileOnly(g.id)} />
   return (
-    <>
-    <section id="ruot-chan-goi" aria-labelledby="essentials-title" className={withTabs && tab === 'qua-tang' ? 'pt-14 sm:py-24' : 'py-14 sm:py-24'}>
+    <section id="ruot-chan-goi" aria-labelledby="essentials-title" className="py-14 sm:py-24">
       <Container>
         <div className="lg:grid lg:grid-cols-12 lg:items-end lg:gap-10">
           <SectionHeading
@@ -89,7 +74,7 @@ export function Essentials({ withTabs = false }: EssentialsProps) {
           </div>
         </div>
 
-        <p className={`mt-8 flex items-start gap-2 text-sm text-ink-soft sm:mt-12 ${withTabs && tab === 'qua-tang' ? 'max-sm:hidden' : ''}`}>
+        <p className="mt-8 flex items-start gap-2 text-sm text-ink-soft sm:mt-12">
           <Icon name="info" size={16} className="mt-0.5 shrink-0 text-mist-600" />
           {/* Gói chữ vào một khối: không thì mỗi mảnh chữ, link thành một cột riêng của flex và số điện thoại bị bẻ dòng */}
           <span>
@@ -108,12 +93,6 @@ export function Essentials({ withTabs = false }: EssentialsProps) {
         </p>
       </Container>
     </section>
-    {withTabs && (
-      <div className={mobileOnly('qua-tang')}>
-        <Gifts />
-      </div>
-    )}
-    </>
   )
 }
 
@@ -207,97 +186,3 @@ function PriceGroupBlock({ group, withTabs, className = '' }: PriceGroupBlockPro
   )
 }
 
-const MICRO_PLUS = ESSENTIALS.flatMap((g) => g.items).find((i) => i.name === 'Micro Plus')
-const MICRO_PLUS_VALUE = MICRO_PLUS ? `Trị giá ${formatRange(MICRO_PLUS.min, MICRO_PLUS.max)} mỗi chiếc` : ''
-
-const GIFT_TIERS = [
-  { count: '1', gift: 'vỏ gối ôm cao cấp', value: 'Vỏ gối ôm 80×100 đồng bộ', ids: ['eco-flora'] },
-  { count: '1', gift: 'ruột gối Micro Plus', value: MICRO_PLUS_VALUE, ids: ['eco-rosa', 'eco-tera', 'eco-vera'] },
-  { count: '2', gift: 'ruột gối Micro Plus', value: MICRO_PLUS_VALUE, ids: ['eco-doris', 'eco-sweet', 'eco-liora'] },
-] as const
-
-const nameOf = (id: string) => COLLECTIONS.find((c) => c.id === id)?.name ?? id
-
-interface GiftsProps {
-  /** Trang Quà tặng: nút dẫn sang danh sách bộ chăn ga thay vì cuộn tới mục Bộ sưu tập của trang chủ */
-  standalone?: boolean
-}
-
-export function Gifts({ standalone = false }: GiftsProps) {
-  return (
-    <section id="qua-tang" aria-labelledby="gifts-title" className={standalone ? 'scroll-mt-24 py-14 sm:py-24' : 'pb-14 sm:pb-24'}>
-      <Container>
-        <div className="grain relative overflow-hidden rounded-[2.25rem] bg-brass-100 px-5 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-16">
-          <div
-            aria-hidden="true"
-            className="absolute -top-24 -right-24 h-80 w-80 rounded-full border border-brass-500/25"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute -top-10 -right-10 h-52 w-52 rounded-full border border-dashed border-brass-500/30"
-          />
-          <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-xl">
-              <p className="eyebrow !text-brass-600">Chương trình tri ân</p>
-              <h2 id="gifts-title" className="font-display mt-4 text-[2rem] text-deep-900 sm:text-[2.9rem]">
-                Tri ân 15.000 khách hàng
-              </h2>
-              <p className="mt-4 text-balance text-ink-soft">
-                Mỗi bộ chăn ga đều kèm quà. Số lượng quà có hạn, áp dụng đến khi hết quà.
-              </p>
-            </div>
-            {standalone ? (
-              <Link to={productsUrl({ 'danh-muc': 'bo-chan-ga' })} className={buttonClass('primary', 'md', 'self-start lg:self-auto')}>
-                Xem bộ chăn ga
-                <Icon name="arrowRight" size={17} />
-              </Link>
-            ) : (
-              <a href="#bo-suu-tap" className={buttonClass('primary', 'md', 'self-start lg:self-auto')}>
-                Chọn bộ sưu tập
-                <Icon name="arrowRight" size={17} />
-              </a>
-            )}
-          </div>
-
-          <ol className="m-rail relative mt-8 grid gap-3 sm:mt-10 sm:gap-4 lg:grid-cols-3">
-            {GIFT_TIERS.map((tier, i) => (
-              <li
-                key={tier.ids.join()}
-                data-reveal
-                style={revealDelay(i)}
-                className={`flex gap-5 rounded-[1.5rem] bg-ivory p-5 shadow-[var(--shadow-soft)] sm:p-7 lg:flex-col lg:gap-0 ${
-                  i === 2 ? 'ring-2 ring-brass-500/60' : ''
-                }`}
-              >
-                <div className="flex shrink-0 items-start gap-3 lg:items-center">
-                  <span className="font-display text-[3.4rem] leading-none text-deep-900 lg:text-6xl">{tier.count}</span>
-                  <span className="mt-2 hidden h-10 w-10 items-center justify-center rounded-full bg-brass-100 text-brass-600 lg:mt-0 lg:flex">
-                    <Icon name="gift" size={18} />
-                  </span>
-                </div>
-                <div className="min-w-0 flex-1 lg:mt-4">
-                  <p className="font-medium text-deep-900 first-letter:uppercase">{tier.gift}</p>
-                  <p className="mt-0.5 text-meta text-ink-soft">{tier.value}</p>
-                  <div className="stitch my-4 text-cream-300" aria-hidden="true" />
-                  <p className="text-label tracking-[0.14em] text-ink-faint uppercase">Khi mua</p>
-                  <ul className="mt-2 flex flex-wrap gap-2">
-                    {tier.ids.map((id) => (
-                      <li key={id}>
-                        <Link
-                          to={orderLink(id)}
-                          className="inline-flex min-h-11 items-center rounded-full bg-cream-100 px-3.5 text-meta text-deep-800 transition-colors hover:bg-mist-200"
-                        >
-                          {nameOf(id)}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </Container>
-    </section>
-  )
-}

@@ -57,7 +57,11 @@ export const GIFTS: Readonly<Record<GiftTier, Gift>> = {
   none: { tier: 'none', label: '', perSet: 0, unit: '', item: '' },
 }
 
-/** Biên bản mục 34: Ecopillo sẽ tuỳ chỉnh lại phần quà tri ân, chưa có nội dung mới */
+/**
+ * Bậc quà kèm khi mua bộ chăn ga. Từ 05/11/2026 mọi bộ để `gift: 'none'`
+ * (thay bằng thư cảm ơn + ưu đãi 5%, xem thankYou.ts). Giữ bảng này để chỗ đọc
+ * `GIFTS[collection.gift]` (thẻ sản phẩm, đặt hàng) vẫn chạy khi `perSet === 0`.
+ */
 
 export interface Pattern {
   code: string
@@ -164,7 +168,8 @@ export const COLLECTIONS: readonly Collection[] = [
     description:
       'Bộ ga chun Lyocell chần thủ công từng đường, họa tiết cánh hoa và vân đá nhẹ nhàng. Lựa chọn khởi đầu cho phòng ngủ thanh lịch.',
     prices: price(3_500_000, 3_600_000, 3_800_000),
-    gift: 'om',
+    // Mục 11 phản hồi 05/11/2026: bỏ quà kèm (ruột gối / vỏ gối ôm), thay bằng thư cảm ơn + ưu đãi 5%
+    gift: 'none',
     contents: SET_CHUN_CONTENTS,
     imageNote: 'Ảnh phòng ngủ trải bộ Eco Flora EF06',
     cover: 'EF06',
@@ -190,7 +195,7 @@ export const COLLECTIONS: readonly Collection[] = [
       'Bộ chăn ga Lyocell được yêu thích nhất của Ecopillo: hoa lá, hình học, họa tiết cho bé, từ gam trung tính đến pastel. In hoạt tính nên màu tươi và bền theo thời gian. Các mẫu mới ER45–ER49 vừa ra mắt.',
     badge: 'Nhiều mẫu nhất',
     prices: price(4_950_000, 4_950_000, 5_690_000),
-    gift: 'one-plus',
+    gift: 'none',
     contents: SET_PHU_OR_CHUN_CONTENTS,
     hasFittedOption: true,
     imageNote: 'Ảnh phòng ngủ trải bộ Eco Rosa ER48',
@@ -240,7 +245,7 @@ export const COLLECTIONS: readonly Collection[] = [
     description:
       'Lyocell trơn một màu với ánh lụa nhẹ, viền chần nổi quanh ga phủ. Sáu gam màu từ xanh da trời, hồng phấn đến kem và xám.',
     prices: price(5_040_000, 5_040_000, 5_720_000),
-    gift: 'one-plus',
+    gift: 'none',
     contents: SET_PHU_OR_CHUN_CONTENTS,
     hasFittedOption: true,
     imageNote: 'Ảnh bộ Eco Tera ET04',
@@ -263,7 +268,7 @@ export const COLLECTIONS: readonly Collection[] = [
     description:
       'Họa tiết hoa lá và hình học mềm mại trên nền Lyocell pastel, hợp phòng ngủ sáng màu và nhiều ánh nắng.',
     prices: price(5_600_000, 5_600_000, 5_790_000),
-    gift: 'one-plus',
+    gift: 'none',
     contents: SET_PHU_OR_CHUN_CONTENTS,
     hasFittedOption: true,
     imageNote: 'Ảnh bộ Eco Vera EV02',
@@ -286,7 +291,7 @@ export const COLLECTIONS: readonly Collection[] = [
     description:
       'Hoa văn được dệt thẳng vào sợi Lyocell bằng kỹ thuật Jacquard, nổi khối tinh tế dưới ánh sáng. Bền màu, càng dùng càng mềm.',
     prices: price(7_890_000, 7_890_000, 9_660_000),
-    gift: 'two-plus',
+    gift: 'none',
     contents: SET_PHU_CONTENTS,
     imageNote: 'Ảnh bộ Eco Sweet ES06',
     cover: 'ES06',
@@ -305,7 +310,7 @@ export const COLLECTIONS: readonly Collection[] = [
     description:
       'Vải dệt kim sa độc quyền, từng sợi kim tuyến lấp lánh nhẹ trên nền hồng đào, xám, vàng ánh kim. Hợp làm quà cưới, quà tân gia cho những người thân yêu.',
     prices: price(8_020_000, 8_020_000, 8_280_000),
-    gift: 'two-plus',
+    gift: 'none',
     contents: SET_PHU_CONTENTS,
     imageNote: 'Ảnh bộ Eco Liora EL10',
     cover: 'EL10',
@@ -327,7 +332,7 @@ export const COLLECTIONS: readonly Collection[] = [
       'Tuyển chọn sợi Lyocell đẹp nhất, chần thêu dày và đều, đường may 4 mũi/cm chắc chắn. Tinh hoa của hơn 15 năm làm nghề.',
     badge: 'Dòng cao nhất',
     prices: price(10_000_000, 10_000_000, 10_360_000),
-    gift: 'two-plus',
+    gift: 'none',
     contents: DORIS_CONTENTS,
     imageNote: 'Ảnh bộ Eco Doris ED25',
     cover: 'ED25',
