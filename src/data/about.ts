@@ -84,8 +84,32 @@ export const VISION =
 
 /** Câu dài (Tầm nhìn) không để chữ tiêu đề cỡ lớn: thẻ sẽ cao gấp mấy lần thẻ bên cạnh */
 export const isLongText = (text: string): boolean => text.length > 160
-export const MISSION_IMAGE = staticImage('/images/about/su-menh.webp', 'Sứ mệnh Ecopillo: thay màu cho yêu thương')
-export const VISION_IMAGE = staticImage('/images/about/tam-nhin.webp', 'Tầm nhìn Ecopillo')
+/**
+ * Ảnh thẻ Sứ mệnh, Tầm nhìn (góp ý 04/11 mục 2, 4: hai ảnh cũ là banner in sẵn chữ). Owner chọn kiểu A "ảnh thật đúng nghĩa" 06/11/2026,
+ * mẫu docs/de-xuat-su-menh-tam-nhin-05-11.html. Cả ba ảnh đều 3:2 hoặc vuông, không có chữ in trong ảnh.
+ */
+export const MISSION_IMAGE: ImageSource = {
+  src: '/images/about/thu-trao-qua-tan-nha.webp',
+  srcSet: '/images/about/thu-trao-qua-tan-nha-sm.webp 700w, /images/about/thu-trao-qua-tan-nha.webp 1200w',
+  alt: 'Ecopillo cùng Hội Chữ thập đỏ trao túi quà tận nhà một hộ gia đình',
+}
+export const VISION_IMAGE: ImageSource = {
+  src: '/images/stores/ha-noi-1.webp',
+  srcSet: '/images/stores/ha-noi-1-sm.webp 640w, /images/stores/ha-noi-1.webp 1200w',
+  alt: 'Đội ngũ Ecopillo trước logo thương hiệu tại văn phòng 273 Xã Đàn, Hà Nội',
+}
+
+/**
+ * Trang Giới thiệu, chương V: ảnh trao quà tận nhà đã nằm trong thư nhà sáng lập cuối trang (FOUNDER_LETTER_IMAGES),
+ * nên thẻ Sứ mệnh ở đó dùng ảnh trao quà tại phòng trưng bày để một trang không lặp ảnh.
+ */
+export const MISSION_IMAGE_ABOUT_PAGE: ImageSource = {
+  src: '/images/qua-tang/trao-qua-showroom-1.webp',
+  srcSet: '/images/qua-tang/trao-qua-showroom-1-sm.webp 520w, /images/qua-tang/trao-qua-showroom-1.webp 1000w',
+  alt: 'Ecopillo trao hộp quà cho một đoàn khách tại phòng trưng bày',
+}
+/** Ảnh vuông 1000×1000 cắt còn 3:2: giữ phần người và hộp quà, bớt trần nhà */
+export const SHOWROOM_GIFT_POSITION = '50% 58%'
 
 export const CORE_VALUES = [
   { icon: 'award', title: 'Chất lượng vượt trội', text: 'Nguyên liệu tự nhiên, công nghệ tiên tiến.' },
@@ -96,9 +120,10 @@ export const CORE_VALUES = [
 
 /**
  * Mục 12 (khách 16/10/2026: bốn khối "phải đồng nhất cấu trúc"), owner chọn kiểu A 17/10: thẻ Giá trị cốt lõi cũng có ảnh.
- * Tạm dùng ảnh đội ngũ Ecopillo tại văn phòng Hà Nội cho tới khi Ecopillo gửi ảnh riêng (câu hỏi 11 trong Excel).
+ * Ảnh đội ngũ Hà Nội chuyển sang thẻ Tầm nhìn (06/11/2026), nên thẻ này dùng ảnh trao quà tại phòng trưng bày (cùng ảnh ở trang Quà tặng)
+ * cho tới khi Ecopillo gửi ảnh riêng (câu hỏi 11 trong Excel).
  */
-export const VALUES_IMAGE = staticImage('/images/stores/ha-noi-1.webp', 'Đội ngũ Ecopillo tại văn phòng 273 Xã Đàn, Hà Nội')
+export const VALUES_IMAGE = MISSION_IMAGE_ABOUT_PAGE
 
 export const AWARD_NAME = 'Thương hiệu dẫn đầu Việt Nam 2025'
 export const AWARD_IMAGE = staticImage('/images/about/thuong-hieu-dan-dau.webp', 'Ecopillo tại lễ công bố Thương hiệu dẫn đầu Việt Nam 2025')

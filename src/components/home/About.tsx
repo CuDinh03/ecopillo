@@ -14,6 +14,7 @@ import {
   AWARD_IMAGE,
   AWARD_NAME,
   VALUES_IMAGE,
+  SHOWROOM_GIFT_POSITION,
 } from '../../data/about'
 import type { ImageSource } from '../../data/catalog'
 import { PATHS } from '../../data/links'
@@ -105,10 +106,10 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
           <MissionCard label="Sứ mệnh" image={MISSION_IMAGE}>
             <MissionText>{MISSION}</MissionText>
           </MissionCard>
-          <MissionCard label="Tầm nhìn" image={VISION_IMAGE} position="50% 0%">
+          <MissionCard label="Tầm nhìn" image={VISION_IMAGE}>
             <MissionText isLong={isLongText(VISION)}>{VISION}</MissionText>
           </MissionCard>
-          <MissionCard label="Giá trị cốt lõi" image={VALUES_IMAGE} position="50% 35%">
+          <MissionCard label="Giá trị cốt lõi" image={VALUES_IMAGE} position={SHOWROOM_GIFT_POSITION}>
             <ul className="mt-4 grid grid-cols-1 gap-x-6 gap-y-3.5 sm:grid-cols-2">
               {CORE_VALUES.map((v) => (
                 <li key={v.title} className="flex gap-3">
@@ -164,8 +165,7 @@ function MissionText({ children, isLong = false }: { children: ReactNode; isLong
 
 /**
  * Một khuôn chung cho cả bốn thẻ: ảnh 3:2 phía trên, nền chàm, nhãn nhỏ, chữ trắng.
- * Ảnh Sứ mệnh, Tầm nhìn là banner có chữ viết tay nên khung giữ 3:2: ảnh Sứ mệnh (3:2) hiện trọn,
- * ảnh Tầm nhìn (vuông) neo mép trên để dòng chữ trong ảnh không bị cắt.
+ * Ảnh Sứ mệnh, Tầm nhìn là ảnh thật 3:2 (owner chọn 06/11/2026) nên hiện trọn; ảnh Giá trị cốt lõi vuông thì căn bằng `position`.
  */
 function MissionCard({ label, image, position, children }: MissionCardProps) {
   return (

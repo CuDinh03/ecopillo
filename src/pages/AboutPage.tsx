@@ -23,8 +23,9 @@ import {
   LYOCELL_INTRO,
   LYOCELL_TRAITS,
   MISSION,
-  MISSION_IMAGE,
+  MISSION_IMAGE_ABOUT_PAGE,
   PHILOSOPHY,
+  SHOWROOM_GIFT_POSITION,
   STORY_OPENING,
   isLongText,
   VISION,
@@ -209,8 +210,8 @@ export function AboutPage() {
       >
         <div className="mt-8 grid gap-8 sm:grid-cols-2">
           {[
-            { label: 'Sứ mệnh', text: MISSION, image: MISSION_IMAGE, position: undefined },
-            { label: 'Tầm nhìn', text: VISION, image: VISION_IMAGE, position: '50% 0%' },
+            { label: 'Sứ mệnh', text: MISSION, image: MISSION_IMAGE_ABOUT_PAGE, position: SHOWROOM_GIFT_POSITION },
+            { label: 'Tầm nhìn', text: VISION, image: VISION_IMAGE, position: undefined },
           ].map((m, i) => (
             <article key={m.label} data-reveal style={revealDelay(i)}>
               <img
