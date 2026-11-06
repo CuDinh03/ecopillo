@@ -212,8 +212,9 @@ export function ContactPage() {
 
       {/* Đầu trang: lời mời + các kênh liên hệ nhanh */}
       <section aria-labelledby="contact-title">
-        <Container className="grid gap-10 pt-10 pb-14 sm:pt-14 sm:pb-20 lg:grid-cols-12 lg:gap-14">
-          <div className="lg:col-span-5">
+        {/* Hai cột từ 1280px: ở 1024–1279 cột thẻ chỉ còn ~258px, số điện thoại và email bị gãy dòng (rà máy tính bảng 06/11/2026) */}
+        <Container className="grid gap-10 pt-10 pb-14 sm:pt-14 sm:pb-20 xl:grid-cols-12 xl:gap-14">
+          <div className="xl:col-span-5">
             <nav aria-label="Đường dẫn" className="flex items-center gap-2 text-sm text-ink-soft">
               <Link to="/" className="-my-3 inline-block py-3 hover:text-deep-900">
                 Trang chủ
@@ -246,7 +247,7 @@ export function ContactPage() {
             </ul>
           </div>
 
-          <ul className="grid grid-cols-2 content-center gap-3 lg:col-span-7">
+          <ul className="grid grid-cols-2 content-center gap-3 xl:col-span-7">
             {CHANNELS.map(({ key, ...c }, i) => (
               <li key={key} className={i === 0 ? 'col-span-2' : c.long ? 'col-span-2 sm:col-span-1' : ''}>
                 <Channel {...c} />

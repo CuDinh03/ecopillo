@@ -57,8 +57,9 @@ export function BrandStory() {
   return (
     <section aria-labelledby="story-title" className="py-14 sm:py-24">
       <Container>
-        <div className="grid gap-8 sm:gap-14 lg:grid-cols-12 lg:gap-10">
-          <div className="lg:col-span-5">
+        {/* Hai cột từ 1280px: ở 1024–1279 cột chữ của ô "Đường may", "Dệt Jacquard" chỉ còn ~115px, tiêu đề gãy 3 dòng (rà máy tính bảng 06/11/2026) */}
+        <div className="grid gap-8 sm:gap-14 xl:grid-cols-12 xl:gap-10">
+          <div className="xl:col-span-5">
             <SectionHeading
               id="story-title"
               title="Từ thiên nhiên đến giấc ngủ"
@@ -82,7 +83,7 @@ export function BrandStory() {
             tabIndex={0}
             role="group"
             aria-label="Chất liệu và tay nghề"
-            className="m-rail grid gap-4 focus-visible:outline-2 focus-visible:outline-deep-700 sm:grid-cols-6 lg:col-span-7"
+            className="m-rail grid gap-4 focus-visible:outline-2 focus-visible:outline-deep-700 sm:grid-cols-6 xl:col-span-7"
           >
             <article data-reveal className="relative overflow-hidden rounded-[1.75rem] bg-deep-800 text-ivory sm:col-span-6 sm:grid sm:grid-cols-[1.35fr_1fr]">
               <div className="p-7 sm:p-9">
