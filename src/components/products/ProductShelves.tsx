@@ -71,7 +71,7 @@ function ShelfHeader({ shelf, onPick }: { shelf: Shelf; onPick: (category: Categ
       <button
         type="button"
         onClick={() => onPick(shelf.category)}
-        className="-my-2 inline-flex shrink-0 items-center gap-1 py-2 text-small font-medium whitespace-nowrap text-mist-600 hover:text-deep-900"
+        className="-my-3 inline-flex min-h-11 shrink-0 items-center gap-1 py-3 text-small font-medium whitespace-nowrap text-mist-600 hover:text-deep-900"
       >
         {action}
         <Icon name="arrowRight" size={14} />

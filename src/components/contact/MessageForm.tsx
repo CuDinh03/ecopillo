@@ -168,7 +168,7 @@ export function MessageForm({
                 type="button"
                 aria-pressed={active}
                 onClick={() => change({ topic: t })}
-                className={`rounded-full px-4 py-2 text-small transition ${
+                className={`inline-flex min-h-11 items-center rounded-full px-4 py-2 text-small transition ${
                   active ? 'bg-deep-800 text-ivory' : 'bg-cream-50 text-deep-900 ring-1 ring-cream-200 hover:ring-deep-700/40'
                 }`}
               >

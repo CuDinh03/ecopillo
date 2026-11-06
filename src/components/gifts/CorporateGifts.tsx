@@ -53,7 +53,12 @@ export function CorporateGifts() {
           </div>
         </div>
 
-        <ul className="m-rail mt-3 grid grid-cols-2 gap-3 sm:mt-4 sm:grid-cols-4 sm:gap-4">
+        {/* Điện thoại: dải vuốt ngang chỉ có ảnh, tự nhận tiêu điểm để cuộn được bằng phím */}
+        <ul
+          tabIndex={0}
+          aria-label="Thêm ảnh quà tặng doanh nghiệp"
+          className="m-rail mt-3 grid grid-cols-2 gap-3 focus-visible:outline-2 focus-visible:outline-deep-700 sm:mt-4 sm:grid-cols-4 sm:gap-4"
+        >
           {GIFT_MORE_IMAGES.map((item, i) => (
             <li key={item.image.src} data-reveal style={revealDelay(i)}>
               <GiftPhoto item={item} className="aspect-square" sizes="(min-width: 1240px) 290px, (min-width: 640px) 25vw, 50vw" />

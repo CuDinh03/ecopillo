@@ -359,7 +359,7 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
                 role="tab"
                 aria-selected={mobileView === v}
                 onClick={() => setMobileView(v)}
-                className={`inline-flex min-h-10 items-center gap-1.5 rounded-full px-4 py-1.5 text-sm transition active:scale-[0.97] ${
+                className={`inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 py-1.5 text-sm transition active:scale-[0.97] ${
                   mobileView === v ? 'bg-deep-800 text-ivory' : 'text-deep-900'
                 }`}
               >

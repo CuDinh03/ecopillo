@@ -77,8 +77,13 @@ export function BrandStory() {
             </div>
           </div>
 
-          {/* Bento chất liệu */}
-          <div className="m-rail grid gap-4 sm:grid-cols-6 lg:col-span-7">
+          {/* Bento chất liệu. Điện thoại: dải vuốt ngang (m-rail) không có nút nào bên trong, nên tự nhận tiêu điểm để cuộn được bằng phím */}
+          <div
+            tabIndex={0}
+            role="group"
+            aria-label="Chất liệu và tay nghề"
+            className="m-rail grid gap-4 focus-visible:outline-2 focus-visible:outline-deep-700 sm:grid-cols-6 lg:col-span-7"
+          >
             <article data-reveal className="relative overflow-hidden rounded-[1.75rem] bg-deep-800 text-ivory sm:col-span-6 sm:grid sm:grid-cols-[1.35fr_1fr]">
               <div className="p-7 sm:p-9">
                 <p className="eyebrow !text-mist-300">Chất liệu</p>

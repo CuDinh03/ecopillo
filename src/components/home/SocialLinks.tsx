@@ -16,7 +16,7 @@ export function SocialIcons({ tone = 'light' }: { tone?: 'light' | 'dark' }) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Ecopillo trên ${s.label}`}
-            className={`flex h-10 w-10 items-center justify-center rounded-full transition ${style}`}
+            className={`flex h-11 w-11 items-center justify-center rounded-full transition ${style}`}
           >
             {s.id === 'zalo' ? <span className="text-label font-medium">Zalo</span> : <Icon name={s.id} size={17} />}
           </a>

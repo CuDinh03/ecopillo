@@ -105,7 +105,7 @@ export function GiftsPage() {
                         <Link
                           key={id}
                           to={collectionPathById(id)}
-                          className="inline-flex min-h-10 items-center gap-1 rounded-full bg-cream-100 px-3.5 py-1.5 text-small text-deep-800 transition-colors hover:bg-mist-200 active:bg-mist-200"
+                          className="inline-flex min-h-11 items-center gap-1 rounded-full bg-cream-100 px-3.5 py-1.5 text-small text-deep-800 transition-colors hover:bg-mist-200 active:bg-mist-200"
                         >
                           {collectionById(id)?.name}
                           <Icon name="arrowRight" size={13} />

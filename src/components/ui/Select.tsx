@@ -240,7 +240,7 @@ export function Select({
                 onMouseDown={(e) => e.preventDefault()}
                 onMouseMove={() => active !== i && setActive(i)}
                 onClick={() => choose(i)}
-                className={`flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-body-sm whitespace-nowrap ${
+                className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-body-sm whitespace-nowrap ${
                   i === active ? 'bg-mist-100' : ''
                 } ${selected ? 'font-medium text-deep-900' : o.value === '' ? 'text-ink-soft' : 'text-deep-900'}`}
               >
