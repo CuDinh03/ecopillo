@@ -78,7 +78,8 @@ const VALUE_ICONS: readonly IconName[] = ['award', 'recycle', 'lightbulb', 'comm
 export function AboutPage() {
   usePageMeta(
     'Giới thiệu',
-    'Câu chuyện Ecopillo: hơn 15 năm làm chăn ga gối đệm, chị Phạm Thị Phương và “Chốn Yên”, triết lý kinh doanh Tốt · Thật · Thiện, vải Lyocell, chứng nhận ISO 9001:2015 và TQC.',
+    // Mô tả viết tay 08/11/2026 (C2, chờ Ecopillo duyệt): dưới 160 ký tự để Google không cắt
+    'Hơn 15 năm làm chăn ga gối đệm, triết lý Tốt · Thật · Thiện, vải Lyocell, chứng nhận ISO 9001:2015 và TQC. Câu chuyện của Ecopillo.',
   )
 
   return (

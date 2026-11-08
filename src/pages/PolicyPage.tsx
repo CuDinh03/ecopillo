@@ -13,7 +13,7 @@ export function PolicyPage() {
   const alias = POLICY_ALIASES[path]
   const policy = policyBySlug(alias?.slug ?? path)
   const title = alias?.title ?? policy?.title
-  usePageMeta(title ?? null, policy?.description)
+  usePageMeta(title ?? null, alias?.description ?? policy?.description)
   if (!policy || !title) return <NotFoundPage />
   return (
     <PolicyLayout title={title} intro={policy.intro}>

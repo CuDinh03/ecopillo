@@ -95,6 +95,8 @@ export interface Collection {
   /** Câu khẩu hiệu của bộ, theo catalog Ecopillo 22.07.2026 (owner chọn 24/10/2026) */
   tagline: string
   description: string
+  /** Mô tả cho Google viết tay của trang bộ (chờ Ecopillo duyệt); không có thì ghép tự động từ description và giá */
+  metaDescription?: string
   badge?: string
   prices: PriceTable
   gift: GiftTier
@@ -193,6 +195,9 @@ export const COLLECTIONS: readonly Collection[] = [
     description:
       // Catalog Ecopillo 22.07.2026: in hoạt tính
       'Bộ chăn ga Lyocell được yêu thích nhất của Ecopillo: hoa lá, hình học, họa tiết cho bé, từ gam trung tính đến pastel. In hoạt tính nên màu tươi và bền theo thời gian. Các mẫu mới ER45–ER49 vừa ra mắt.',
+    // Mô tả Google viết tay 08/11/2026 (C2), chờ Ecopillo duyệt
+    metaDescription:
+      'Bộ chăn ga Lyocell Eco Rosa in hoạt tính: hoa lá, hình học, họa tiết cho bé, màu tươi và bền. Mẫu mới ER45–ER49, thanh toán khi nhận hàng.',
     badge: 'Nhiều mẫu nhất',
     prices: price(4_950_000, 4_950_000, 5_690_000),
     gift: 'none',

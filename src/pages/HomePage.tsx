@@ -23,7 +23,11 @@ import { organizationLd } from '../lib/structuredData'
  * Xem docs/ke-hoach-ssg-va-wordpress.md mục 5.
  */
 export function HomePage() {
-  usePageMeta(null)
+  // Mô tả viết tay 08/11/2026 (C2, chờ Ecopillo duyệt), trùng chữ với index.html
+  usePageMeta(
+    null,
+    'Chăn ga gối đệm cao cấp Ecopillo, vải Lyocell nhập khẩu, chần thêu độc quyền. Đặt online, thanh toán khi nhận hàng, miễn phí giao từ 500.000đ.',
+  )
   const isMobile = useIsMobile()
   return (
     <>

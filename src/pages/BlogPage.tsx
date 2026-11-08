@@ -23,7 +23,7 @@ export function BlogPage() {
         eyebrow="Tin tức · Cẩm nang"
         title={
           <>
-            Cẩm nang
+            Cẩm nang{' '}
             <br />
             cho giấc ngủ ngon
           </>

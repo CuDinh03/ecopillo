@@ -36,7 +36,8 @@ const twoDigits = (n: number) => String(n).padStart(2, '0')
 export function HotelPage() {
   usePageMeta(
     'Chăn ga gối khách sạn và dự án',
-    'Ecopillo chuyên cung cấp chăn, ga, gối, đệm số lượng lớn cho khách sạn, resort, nhà nghỉ và dự án lưu trú: đường may 4 mũi/cm, giải pháp đồng bộ, báo giá ưu đãi theo số lượng.',
+    // Mô tả viết tay 08/11/2026 (C2, chờ Ecopillo duyệt)
+    'Ecopillo cung cấp chăn ga gối đệm số lượng lớn cho khách sạn, resort, nhà nghỉ: đường may 4 mũi/cm, giải pháp đồng bộ, báo giá theo số lượng.',
   )
   // Chữ điền sẵn vào form khi bấm "Liên hệ báo giá" từ một món Hàng trắng
   const [quotePrefill, setQuotePrefill] = useState({ message: '', key: 0 })

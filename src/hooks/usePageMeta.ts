@@ -4,7 +4,8 @@ import { SITE_ORIGIN, withSlash } from '../data/links'
 import type { ShareImage } from '../lib/structuredData'
 
 const SITE = 'Ecopillo'
-export const DEFAULT_TITLE = 'Ecopillo - Nâng niu giấc mơ xanh'
+// Tiêu đề trang chủ (A2, 08/11/2026): mở đầu bằng từ khoá khách tìm, giữ câu khẩu hiệu
+export const DEFAULT_TITLE = 'Chăn ga gối đệm cao cấp Ecopillo - Nâng niu giấc mơ xanh'
 
 /**
  * Thẻ đầu trang mà trang đang dựng khai báo. Khi dựng sẵn HTML (src/entry-server.tsx) không có `useEffect`,

@@ -16,6 +16,7 @@ import { ExploreMore } from '../components/ui/ExploreMore'
 import { categoryLabel, priceLabel, productBySlug, singleOrderUrl, variantPrice, type Product } from '../data/products'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { formatVND } from '../lib/format'
+import { productMetaDescription } from '../lib/metaDescription'
 import { productLd, shareImageOf } from '../lib/structuredData'
 import { NotFoundPage } from './NotFoundPage'
 
@@ -47,13 +48,11 @@ function MissingProduct() {
 }
 
 /**
- * Mô tả SEO của sản phẩm lẻ: câu giới thiệu, giá, cách đặt. Trước 24/10/2026 trang này không đặt mô tả,
- * 16 sản phẩm lẻ dùng chung mô tả của trang chủ (rà toàn web 24/10/2026)
+ * Mô tả SEO của sản phẩm lẻ theo công thức C2 (08/11/2026): câu đầu phần giới thiệu, tên, giá, thanh toán khi nhận.
+ * Trước 24/10/2026 trang này không đặt mô tả, 16 sản phẩm lẻ dùng chung mô tả của trang chủ (rà toàn web 24/10/2026)
  */
-const productDescription = (product: Product): string => {
-  const summary = product.summary.trim().replace(/[.!?]?$/, '.')
-  return `${product.name}: ${summary.charAt(0).toLowerCase()}${summary.slice(1)} Giá ${priceLabel(product)}. Đặt online, thanh toán khi nhận hàng.`
-}
+const productDescription = (product: Product): string =>
+  productMetaDescription(product.summary, product.name, priceLabel(product))
 
 /** Sản phẩm lẻ (ruột gối, ruột chăn, topper, đệm): ảnh chính + ảnh phụ, chọn kích thước rồi đặt online */
 function ProductDetail({ product }: { product: Product }) {

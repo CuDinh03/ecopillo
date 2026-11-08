@@ -18,7 +18,7 @@ export function FaqPage() {
         eyebrow="Hỏi đáp"
         title={
           <>
-            Mua sắm an tâm
+            Mua sắm an tâm{' '}
             <br />
             với Ecopillo
           </>

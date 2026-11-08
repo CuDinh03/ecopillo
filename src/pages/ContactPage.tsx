@@ -224,7 +224,7 @@ export function ContactPage() {
             </nav>
             <p className="eyebrow mt-8">Liên hệ mua hàng</p>
             <h1 id="contact-title" className="font-display mt-4 text-[2.4rem] leading-[1.05] text-deep-900 sm:text-[3.6rem]">
-              Ecopillo luôn
+              Ecopillo luôn{' '}
               <br />
               lắng nghe <span className="whitespace-nowrap">Quý khách</span>
             </h1>

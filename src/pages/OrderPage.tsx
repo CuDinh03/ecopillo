@@ -37,7 +37,11 @@ type View = StepNumber | 'done'
 const PRODUCT_PARAM = 'san-pham'
 
 export function OrderPage() {
-  usePageMeta('Đặt hàng online')
+  // Mô tả riêng 08/11/2026 (C2, chờ Ecopillo duyệt): trước đó trang này dùng chung mô tả trang chủ
+  usePageMeta(
+    'Đặt hàng online',
+    'Đặt chăn ga gối đệm Ecopillo online: chọn mẫu, chọn kích thước, nhập địa chỉ nhận. Thanh toán khi nhận hàng, miễn phí giao từ 500.000đ.',
+  )
   const [searchParams] = useSearchParams()
   // Biên bản mục 47: ruột gối, ruột chăn, topper, đệm cũng đặt online được
   const product = productBySlug(searchParams.get(PRODUCT_PARAM) ?? undefined)

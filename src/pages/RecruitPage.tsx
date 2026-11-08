@@ -14,7 +14,8 @@ import { usePageMeta } from '../hooks/usePageMeta'
  */
 export function RecruitPage() {
   usePageMeta(
-    'Tuyển đại lý, nhà phân phối chăn ga gối đệm Ecopillo',
+    // Bỏ chữ "Ecopillo" trong tiêu đề vì đuôi "· Ecopillo" đã có (08/11/2026)
+    'Tuyển đại lý, nhà phân phối chăn ga gối đệm',
     'Ecopillo tuyển đại lý, nhà phân phối chăn ga gối đệm cao cấp vải Lyocell tại các tỉnh, thành. Để lại thông tin, bộ phận kinh doanh gọi lại.',
   )
   return (
@@ -24,7 +25,7 @@ export function RecruitPage() {
         eyebrow="Hợp tác phân phối"
         title={
           <>
-            Tuyển đại lý
+            Tuyển đại lý{' '}
             <br />
             chăn ga gối đệm Ecopillo
           </>

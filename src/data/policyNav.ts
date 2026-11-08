@@ -18,9 +18,14 @@ export type PolicySlug = (typeof POLICY_PAGES)[number]['slug']
 /**
  * Web cũ có riêng trang "Chính sách kiểm tra hàng"; web mới gộp kiểm hàng vào trang đổi hàng.
  * Link cũ vẫn mở đúng nội dung đó (không chuyển hướng), tiêu đề giữ như web cũ.
+ * `description`: mô tả Google riêng để không trùng với trang gốc (08/11/2026, chờ Ecopillo duyệt).
  */
-export const POLICY_ALIASES: Readonly<Record<string, { slug: PolicySlug; title: string }>> = {
-  'chinh-sach-kiem-tra-hang': { slug: 'chinh-sach-doi-tra-hang-va-hoan-tien', title: 'Chính sách kiểm tra hàng' },
+export const POLICY_ALIASES: Readonly<Record<string, { slug: PolicySlug; title: string; description?: string }>> = {
+  'chinh-sach-kiem-tra-hang': {
+    slug: 'chinh-sach-doi-tra-hang-va-hoan-tien',
+    title: 'Chính sách kiểm tra hàng',
+    description: 'Quý khách được kiểm hàng, trải thử khi nhận. Có lỗi thì báo Ecopillo trong 24 giờ, gửi đổi trong 7 ngày.',
+  },
 }
 
 export const policyPath = (slug: string): string => `/${slug}/`

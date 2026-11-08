@@ -12,10 +12,12 @@ import {
   type Pattern,
   type SizeId,
 } from '../../data/catalog'
-import type { Product } from '../../data/products'
+import { priceLabel, type Product } from '../../data/products'
 import { chapterTitle, patternByParam, patternPath, sameToneElsewhere, storyOf, storySummary, toneById, volumesOf } from '../../data/stories'
 import { relatedForProduct } from '../../data/related'
 import { usePageMeta } from '../../hooks/usePageMeta'
+import { formatRange } from '../../lib/format'
+import { productMetaDescription } from '../../lib/metaDescription'
 import { productLd, shareImageOf } from '../../lib/structuredData'
 import { JsonLd } from '../seo/JsonLd'
 import { ExploreMore } from '../ui/ExploreMore'
@@ -63,17 +65,22 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
   const chapter = patternParam ? pattern : undefined
   // Tên đầy đủ như web cũ: "Bộ chăn ga Lyocell Eco Rosa ER25" (H1, tên trong dữ liệu cấu trúc, đường dẫn)
   const fullName = chapter ? `${product.name} ${chapter.code}` : product.name
+  // Đoạn giới thiệu cho dữ liệu cấu trúc (JSON-LD)
   const description = chapter && story ? storySummary(story) : product.summary
   const image = chapter ? imageOfPattern(collection, chapter) : coverOf(collection)
+  const range = chapter ? patternRange(collection, chapter) : { min: product.min, max: product.max }
+  // Mô tả cho Google (công thức C2, 08/11/2026): câu đầu câu chuyện + tên + giá; trang bộ có chữ viết tay thì dùng chữ đó
+  const metaDescription = chapter
+    ? productMetaDescription(story?.text ?? product.summary, fullName, formatRange(range.min, range.max))
+    : (collection.metaDescription ?? productMetaDescription(product.summary, product.name, priceLabel(product)))
   // Trang bộ (chưa chọn chương) mở sẵn chương đầu nhưng đặt tiêu đề theo tên bộ, để không trùng tiêu đề với trang
-  // riêng của chương đó (audit 16/10/2026); trang chương giữ tiêu đề chương
-  usePageMeta(chapter ? `${title} · ${fullName}` : product.name, description, {
+  // riêng của chương đó (audit 16/10/2026). Trang chương (B3, 08/11/2026): "tên + mã · màu", câu chuyện chỉ là chữ lớn trên trang
+  usePageMeta(chapter ? `${fullName} · ${chapter.colorName}` : product.name, metaDescription, {
     image: shareImageOf(image),
     type: 'product',
   })
 
   if (!pattern) return null
-  const range = chapter ? patternRange(collection, chapter) : { min: product.min, max: product.max }
   // Link cũ dạng ?mau=ER42: chuyển sang link riêng của phối màu
   if (legacy) return <Navigate to={patternPath(collection, legacy)} replace />
 

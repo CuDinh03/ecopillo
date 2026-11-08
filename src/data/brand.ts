@@ -26,7 +26,7 @@ export const CONTACT = {
   instagramUrl: 'https://www.instagram.com/ecopillo.com.vn/',
   youtubeUrl: 'https://www.youtube.com/@EcopilloVietNam',
   /** Trang thông báo website với Bộ Công Thương (online.gov.vn), theo web cũ */
-  moitUrl: 'http://online.gov.vn/nen-tang/94e80465-51e2-4e05-a37c-b1fc532d4bc3',
+  moitUrl: 'https://online.gov.vn/nen-tang/94e80465-51e2-4e05-a37c-b1fc532d4bc3',
 } as const
 
 export interface SocialLink {

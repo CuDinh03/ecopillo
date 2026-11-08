@@ -218,7 +218,8 @@ export interface ListingPreset {
 export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
   '/danh-muc-san-pham/san-pham/bo-ga-phu/': {
     title: 'Bộ ga phủ',
-    description: 'Bộ ga phủ, bộ chăn ga gối Ecopillo vải Lyocell: Eco Rosa, Eco Tera, Eco Vera, Eco Sweet, Eco Liora, Eco Doris. Giá rõ theo kích thước, đặt online, thanh toán khi nhận.',
+    // Mô tả viết tay 08/11/2026 (C2, chờ Ecopillo duyệt): dưới 160 ký tự
+    description: 'Bộ ga phủ Ecopillo vải Lyocell: Eco Rosa, Tera, Vera, Sweet, Liora, Doris. Giá theo kích thước, đặt online, thanh toán khi nhận hàng.',
     category: 'bo-chan-ga',
     collections: ['eco-rosa', 'eco-tera', 'eco-vera', 'eco-sweet', 'eco-liora', 'eco-doris'],
   },

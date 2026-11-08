@@ -44,7 +44,8 @@ const SERVICES = [
 export function GiftsPage() {
   usePageMeta(
     'Quà tặng và sự kiện',
-    'Hộp quà chăn ga Ecopillo cho doanh nghiệp, sự kiện; thư cảm ơn kèm ưu đãi 5% cho đơn tiếp theo và gợi ý chọn chăn ga gối Ecopillo làm quà cưới, quà tân gia, quà biếu Tết.',
+    // Mô tả viết tay 08/11/2026 (C2, chờ Ecopillo duyệt)
+    'Hộp quà chăn ga Ecopillo cho doanh nghiệp, sự kiện, quà cưới, tân gia, biếu Tết. Thư cảm ơn kèm ưu đãi 5% cho đơn tiếp theo.',
   )
 
   return (
