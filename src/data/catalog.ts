@@ -505,7 +505,7 @@ export const patternImage = (code: string, alt: string): ImageSource => ({
 
 /**
  * Số ảnh phụ chi tiết theo mã (public/images/patterns/<MÃ>-2.webp …).
- * Đếm từ dãy ảnh web cũ (images/web-cu-anh-mau, tải 05/11/2026, thêm 31 mẫu ngày 08/11/2026): bỏ ảnh trùng ảnh chính, tối đa 8.
+ * Đếm từ dãy ảnh web cũ (images/web-cu-anh-mau, tải 05/11/2026, thêm 33 mẫu ngày 08/11/2026): bỏ ảnh trùng ảnh chính, tối đa 8.
  * Chăn hè dùng khoá ảnh 'chan-he-<MÃ>' (imageKey) để khỏi lẫn với dãy ảnh bộ chăn ga cùng mã.
  * Nén bằng tools/nen-anh-mau-chi-tiet-2026-11-05.py; script in ra _gallery-counts.json (đã chuyển ra ngoài public/), số ở đây phải khớp file đó.
  * Mẫu không có trong bảng → chỉ hiện ảnh chính.
@@ -575,6 +575,8 @@ export const PATTERN_GALLERY_COUNTS: Readonly<Record<string, number>> = {
   EV06: 2,
   'chan-he-ER09': 3,
   'chan-he-ER16': 2,
+  'chan-he-ER36': 3,
+  'chan-he-ER38': 3,
 }
 
 /** Ảnh phụ của một phối màu (không gồm ảnh chính). */
