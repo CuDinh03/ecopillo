@@ -15,9 +15,9 @@ export const CONTACT = {
   hotlineDisplay: '0988 832 072',
   hotlineTel: 'tel:0988832072',
   zaloUrl: 'https://zalo.me/0988832072',
-  /** Số điện thoại thứ hai, giữ như trang Liên hệ web cũ */
-  phoneDisplay: '0978 678 378',
-  phoneTel: 'tel:0978678378',
+  /** Số thứ hai. Khách 08/11/2026: "Chỉ để 2 số này: 0988 832 072 hoặc 0922 926 678" (thay 0978 678 378) */
+  phoneDisplay: '0922 926 678',
+  phoneTel: 'tel:0922926678',
   messengerUrl: 'https://m.me/Ecopillo.com.vn',
   email: 'cskh@ecopillo.com.vn',
   fanpageDisplay: 'facebook.com/Ecopillo.com.vn',

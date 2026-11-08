@@ -33,7 +33,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { href: PATHS.hotel, label: 'Khách sạn & dự án' },
   // Mục 9 phản hồi 05/11: gộp Hệ thống phân phối + Liên hệ thành "Liên hệ mua hàng"
   { href: PATHS.contact, label: 'Liên hệ mua hàng' },
-  { href: PATHS.recruit, label: 'Đăng ký đại lý' },
+  { href: PATHS.recruit, label: 'Đăng ký mở đại lý' },
   // Khách yêu cầu 16/10/2026: "Quà tặng" thành "Quà tặng và sự kiện" (link giữ /qua-tang/)
   { href: PATHS.gifts, label: 'Quà tặng và sự kiện' },
   { href: PATHS.blog, label: 'Tin tức' },

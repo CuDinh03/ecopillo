@@ -49,7 +49,7 @@ export function AgentSignup() {
       </div>
       <div className="rounded-[1.5rem] bg-ivory p-6 shadow-[var(--shadow-soft)] sm:p-8 lg:col-span-7">
         <MessageForm
-          defaultTopic="Đăng ký đại lý"
+          defaultTopic="Đăng ký mở đại lý"
           placeholder="Ví dụ: cửa hàng chăn ga tại Nam Định, diện tích 60 m², muốn nhận bảng giá sỉ…"
           submitLabel="Gửi đăng ký"
         />

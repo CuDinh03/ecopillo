@@ -3,7 +3,8 @@
  *
  * Khoảng giá của từng bộ sưu tập lấy theo bảng giá thật (1m6 → 2m2).
  * Giá 180×200 theo web cũ (lấy 28/10/2026): bộ ga phủ bán một cỡ Free Size dùng cho cả giường 1m6 và 1m8 nên bằng giá 160×200;
- * Eco Flora (ga chun) 3.600.000đ. Chăn hè chưa đối chiếu được (web cũ một giá mỗi mẫu, khác bảng giá này).
+ * Eco Flora (ga chun) 3.600.000đ. Riêng Rosa, Tera, Sweet: owner chốt 09/11/2026 trả cỡ 180×200 về giá trước 28/10
+ * (khách 08/11: "5.320.000đ là giá chuẩn" cho Rosa 1m8); 160×200 và 200×220 giữ nguyên. Chăn hè chưa đối chiếu được (web cũ một giá mỗi mẫu, khác bảng giá này).
  * Mã mẫu lấy theo ảnh sản phẩm thật (thư mục images/ và web cũ ecopillo.com.vn).
  * Tên màu do mình đặt theo ảnh; màu ô mẫu lấy từ ảnh. Tình trạng "Tạm hết hàng" là DỮ LIỆU GIẢ LẬP.
  */
@@ -150,6 +151,8 @@ const TERA_ET06 = price(5_540_000, 5_540_000, 5_720_000)
 const ROSA_ER39_CHUN = price(4_700_000, 4_950_000, 5_300_000)
 const ROSA_NEW_CHUN = price(5_080_000, 5_200_000, 5_400_000)
 const TERA_CHUN = price(5_040_000, 5_180_000, 5_380_000)
+/** Bảng giá niêm yết 2026 khách gửi 08/11/2026 (khoanh đỏ) */
+const VERA_CHUN = price(5_100_000, 5_250_000, 5_450_000)
 
 /** Mẫu có ảnh thật */
 const real = (code: string, colorName: string, swatch: string, extra: Partial<Pattern> = {}): Pattern => ({
@@ -199,7 +202,7 @@ export const COLLECTIONS: readonly Collection[] = [
     metaDescription:
       'Bộ chăn ga Lyocell Eco Rosa in hoạt tính: hoa lá, hình học, họa tiết cho bé, màu tươi và bền. Mẫu mới ER45–ER49, thanh toán khi nhận hàng.',
     badge: 'Nhiều mẫu nhất',
-    prices: price(4_950_000, 4_950_000, 5_690_000),
+    prices: price(4_950_000, 5_320_000, 5_690_000),
     gift: 'none',
     contents: SET_PHU_OR_CHUN_CONTENTS,
     hasFittedOption: true,
@@ -249,7 +252,7 @@ export const COLLECTIONS: readonly Collection[] = [
     tagline: 'Thanh lịch và hiện đại',
     description:
       'Lyocell trơn một màu với ánh lụa nhẹ, viền chần nổi quanh ga phủ. Sáu gam màu từ xanh da trời, hồng phấn đến kem và xám.',
-    prices: price(5_040_000, 5_040_000, 5_720_000),
+    prices: price(5_040_000, 5_380_000, 5_720_000),
     gift: 'none',
     contents: SET_PHU_OR_CHUN_CONTENTS,
     hasFittedOption: true,
@@ -279,12 +282,12 @@ export const COLLECTIONS: readonly Collection[] = [
     imageNote: 'Ảnh bộ Eco Vera EV02',
     cover: 'EV02',
     patterns: [
-      real('EV02', 'Lá xanh nhạt', '#c9cfdb'),
-      real('EV01', 'Lá vàng nền kem', '#d3d0c5'),
-      real('EV03', 'Hoa tím nền kem', '#f5eee4', { soldOut: ['200x220'] }),
-      real('EV04', 'Hoa tím hồng', '#f2e3eb'),
-      real('EV05', 'Hình học xám', '#b9b8be'),
-      real('EV06', 'Hoa lá xanh lam', '#a9b8cd'),
+      real('EV02', 'Lá xanh nhạt', '#c9cfdb', { fittedPrices: VERA_CHUN }),
+      real('EV01', 'Lá vàng nền kem', '#d3d0c5', { fittedPrices: VERA_CHUN }),
+      real('EV03', 'Hoa tím nền kem', '#f5eee4', { soldOut: ['200x220'], fittedPrices: VERA_CHUN }),
+      real('EV04', 'Hoa tím hồng', '#f2e3eb', { fittedPrices: VERA_CHUN }),
+      real('EV05', 'Hình học xám', '#b9b8be', { fittedPrices: VERA_CHUN }),
+      real('EV06', 'Hoa lá xanh lam', '#a9b8cd', { fittedPrices: VERA_CHUN }),
     ],
   },
   {
@@ -295,7 +298,7 @@ export const COLLECTIONS: readonly Collection[] = [
     tagline: 'Ngọt ngào và quý phái',
     description:
       'Hoa văn được dệt thẳng vào sợi Lyocell bằng kỹ thuật Jacquard, nổi khối tinh tế dưới ánh sáng. Bền màu, càng dùng càng mềm.',
-    prices: price(7_890_000, 7_890_000, 9_660_000),
+    prices: price(7_890_000, 8_780_000, 9_660_000),
     gift: 'none',
     contents: SET_PHU_CONTENTS,
     imageNote: 'Ảnh bộ Eco Sweet ES06',
@@ -347,7 +350,7 @@ export const COLLECTIONS: readonly Collection[] = [
       real('ED10', 'Trắng tinh', '#f4f4f3'),
       real('ED20', 'Đỏ trầm thêu chỉ vàng', '#ba544c', { soldOut: ['180x200'] }),
       real('ED25', 'Kem thêu hoa', '#e5d7c7'),
-      real('ED26', 'Hoa tuyết nền tím', '#b1b8c3'),
+      real('ED26', 'Hoa tuyết nền ghi', '#b1b8c3'),
     ],
   },
   {

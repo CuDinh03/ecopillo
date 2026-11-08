@@ -19,7 +19,7 @@ export const TOPICS = [
   'Hỏi về đơn hàng',
   'Bảo hành, đổi hàng',
   'Khách sạn, nhà nghỉ',
-  'Đăng ký đại lý',
+  'Đăng ký mở đại lý',
   'Khác',
 ] as const
 

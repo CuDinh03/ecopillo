@@ -77,7 +77,7 @@ function Channel({ href, icon, label, value, note, external, highlight, long }: 
 
 /** ?chu-de=… chọn sẵn chủ đề khi khách đi từ trang khác sang */
 const TOPIC_PARAM: Readonly<Record<string, Topic>> = {
-  'dai-ly': 'Đăng ký đại lý',
+  'dai-ly': 'Đăng ký mở đại lý',
   'khach-san': 'Khách sạn, nhà nghỉ',
   'bao-hanh': 'Bảo hành, đổi hàng',
   'don-hang': 'Hỏi về đơn hàng',

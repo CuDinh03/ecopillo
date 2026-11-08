@@ -27,7 +27,7 @@ export interface MenuRow {
   /** Có giá cao hơn (theo kích thước, độ dày, mẫu) thì ghi "từ …" */
   isFromPrice: boolean
   /**
-   * Chữ giá thay cho số (vd. ga chun chần Eco Vera chưa có giá catalog).
+   * Chữ giá thay cho số (khi một bộ chưa có giá ga chun chần).
    * Khi có thì ProductMenu hiện nguyên chữ này, không format VND.
    */
   priceLabel?: string
@@ -92,7 +92,7 @@ const fittedMinOf = (collection: Collection): number | undefined => {
   return values.length ? Math.min(...values) : undefined
 }
 
-/** Dòng ga chun chần: cùng link bộ sưu tập (chọn kiểu ga ở bước đặt). Vera chưa có giá catalog. */
+/** Dòng ga chun chần: cùng link bộ sưu tập (chọn kiểu ga ở bước đặt). Bộ chưa có giá thì ghi chữ thay số. */
 const fittedRow = (id: string): MenuRow => {
   const collection = collectionById(id)
   if (!collection) throw new Error(`productMenu: thiếu bộ ${id}`)
@@ -102,7 +102,7 @@ const fittedRow = (id: string): MenuRow => {
     to: collectionPathById(id),
     min: min ?? 0,
     isFromPrice: min != null,
-    // [XÁC NHẬN giá ga chun chần Eco Vera] — catalog chưa có số
+    // Vera đã có giá từ bảng giá 2026 (khách gửi 08/11/2026); giữ nhánh này cho bộ mới chưa có giá
     ...(min == null ? { priceLabel: 'báo giá khi gọi xác nhận' } : {}),
   }
 }

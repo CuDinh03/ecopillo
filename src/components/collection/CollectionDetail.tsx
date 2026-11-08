@@ -143,8 +143,6 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
                 pattern={pattern}
                 story={story}
                 title={title}
-                index={index}
-                total={siblings.length}
                 volume={story?.volume}
                 heading={chapter && fullName}
               />
