@@ -23,7 +23,8 @@ SRC = Path(sys.argv[1] if len(sys.argv) > 1 else 'images/web-cu-anh-mau')
 OUT = Path(sys.argv[2] if len(sys.argv) > 2 else 'public/images/patterns')
 # So sánh ảnh 01 với ảnh chính: nếu gần giống thì bỏ 01
 MAIN_DIR = OUT
-CODE_RE = re.compile(r'^[A-Z]{2}\d+$')
+# Mã mẫu (ER08) hoặc khoá ảnh chăn hè (chan-he-ER09), khớp imageKey trong catalog.ts
+CODE_RE = re.compile(r'^(?:chan-he-)?[A-Z]{2}\d+$')
 
 
 def perceptual_hash(im: Image.Image, size: int = 16) -> list[bool]:

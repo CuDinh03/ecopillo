@@ -505,11 +505,15 @@ export const patternImage = (code: string, alt: string): ImageSource => ({
 
 /**
  * Số ảnh phụ chi tiết theo mã (public/images/patterns/<MÃ>-2.webp …).
- * Đếm từ dãy ảnh web cũ (images/web-cu-anh-mau, tải 05/11/2026): bỏ ảnh trùng ảnh chính, tối đa 8.
+ * Đếm từ dãy ảnh web cũ (images/web-cu-anh-mau, tải 05/11/2026, thêm 31 mẫu ngày 08/11/2026): bỏ ảnh trùng ảnh chính, tối đa 8.
+ * Chăn hè dùng khoá ảnh 'chan-he-<MÃ>' (imageKey) để khỏi lẫn với dãy ảnh bộ chăn ga cùng mã.
  * Nén bằng tools/nen-anh-mau-chi-tiet-2026-11-05.py; script in ra _gallery-counts.json (đã chuyển ra ngoài public/), số ở đây phải khớp file đó.
  * Mẫu không có trong bảng → chỉ hiện ảnh chính.
  */
 export const PATTERN_GALLERY_COUNTS: Readonly<Record<string, number>> = {
+  ED08: 4,
+  ED09: 4,
+  ED10: 3,
   ED25: 8,
   ED26: 6,
   EF06: 8,
@@ -524,12 +528,39 @@ export const PATTERN_GALLERY_COUNTS: Readonly<Record<string, number>> = {
   EL08: 8,
   EL12: 8,
   ER06: 7,
+  ER08: 4,
+  ER09: 6,
+  ER10: 6,
+  ER11: 6,
+  // ER12 có hai bộ ảnh: bộ chăn ga (khoá ER12) có dãy ảnh; chăn hè ER12 vẫn ẩn ảnh vì ảnh cũ in chữ chất liệu cũ
+  ER12: 7,
+  ER15: 4,
+  ER16: 2,
+  ER19: 2,
+  ER21: 2,
+  ER22: 3,
+  ER24: 3,
+  ER25: 2,
+  ER26: 2,
+  ER28: 2,
+  ER29: 2,
+  ER30: 2,
+  ER31: 2,
+  ER32: 2,
+  ER33: 2,
+  ER34: 2,
+  ER35: 2,
+  ER37: 2,
+  ER39: 2,
   ER42: 8,
   ER45: 4,
   ER46: 4,
   ER47: 4,
   ER48: 5,
   ER49: 5,
+  ES06: 3,
+  ES08: 6,
+  ES10: 3,
   ET01: 7,
   ET02: 5,
   ET03: 5,
@@ -542,6 +573,8 @@ export const PATTERN_GALLERY_COUNTS: Readonly<Record<string, number>> = {
   EV04: 6,
   EV05: 2,
   EV06: 2,
+  'chan-he-ER09': 3,
+  'chan-he-ER16': 2,
 }
 
 /** Ảnh phụ của một phối màu (không gồm ảnh chính). */
