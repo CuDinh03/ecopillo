@@ -2,8 +2,7 @@ import { COLLECTIONS } from './catalog'
 import { collectionPathById, LISTINGS, PATHS, productsUrl } from './links'
 import { POLICY_PAGES, policyPath } from './policyNav'
 import { POSTS, postPath, type Post } from './posts'
-import { formatRange } from '../lib/format'
-import { PRODUCTS, productPath, type CategoryId, type Product } from './products'
+import { PRODUCTS, priceLabel, productPath, type CategoryId, type Product } from './products'
 
 /**
  * Khối "Khám phá thêm" ở cuối trang: link qua lại giữa sản phẩm, danh mục, bài viết, chính sách
@@ -65,7 +64,7 @@ export const relatedForProduct = (product: Product): readonly RelatedGroup[] => 
     groups.push({
       title: 'Cùng nhóm',
       links: [
-        ...siblings.map((p) => ({ label: p.name, note: formatRange(p.min, p.max), to: productPath(p) })),
+        ...siblings.map((p) => ({ label: p.name, note: priceLabel(p), to: productPath(p) })),
         ...listingsOf(product.category),
         CATEGORY_LINKS[product.category],
       ],

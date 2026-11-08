@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { COLORWAY_HINT, colorwayCount, SHELVES, type Shelf } from '../../data/productShelves'
-import { productPath, type CategoryId, type Product } from '../../data/products'
-import { formatVND } from '../../lib/format'
+import { productPath, shortPriceLabel, type CategoryId, type Product } from '../../data/products'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
@@ -80,9 +79,6 @@ function ShelfHeader({ shelf, onPick }: { shelf: Shelf; onPick: (category: Categ
   )
 }
 
-/** Giá trên thẻ kệ: chỉ giá thấp nhất cho gọn, giá đủ khoảng ở trang sản phẩm */
-const shelfPrice = (p: Product): string => (p.min === p.max ? formatVND(p.min) : `từ ${formatVND(p.min)}`)
-
 /** Thẻ gọn trên kệ: bộ ghi nhãn "Nhiều phối màu" (không ghi số), sản phẩm lẻ ghi một dòng giới thiệu. Liên kết phủ cả thẻ */
 function ShelfCard({ product }: { product: Product }) {
   const colorways = colorwayCount(product)
@@ -110,7 +106,7 @@ function ShelfCard({ product }: { product: Product }) {
         ) : (
           <p className="mt-1 line-clamp-1 text-label text-ink-faint sm:line-clamp-2 sm:text-meta">{product.summary}</p>
         )}
-        <p className="tabular mt-auto pt-2.5 text-meta font-semibold text-deep-900 sm:pt-3.5 sm:text-small">{shelfPrice(product)}</p>
+        <p className="tabular mt-auto pt-2.5 text-meta font-semibold text-deep-900 sm:pt-3.5 sm:text-small">{shortPriceLabel(product)}</p>
       </div>
     </article>
   )

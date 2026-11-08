@@ -92,7 +92,8 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
     )
   }
 
-  const hint = hasChoice ? null : 'Chọn kích thước để tiếp tục'
+  const choiceLabel = product.choiceLabel ?? 'Kích thước'
+  const hint = hasChoice ? null : `Chọn ${choiceLabel.toLowerCase()} để tiếp tục`
 
   return (
     <div ref={topRef} className="scroll-mt-20 pb-36 lg:pb-24">
@@ -139,7 +140,7 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
               )}
               {product.choices && (
                 <ChoiceGroup
-                  label="Kích thước"
+                  label={choiceLabel}
                   options={product.choices}
                   value={draft.choiceId}
                   onChange={(id) => update({ choiceId: id })}

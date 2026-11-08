@@ -1,5 +1,5 @@
 import { patternImage, productImage, type ImageSource } from './catalog'
-import { CATEGORIES, PRODUCTS, type CategoryId, type Product } from './products'
+import { CATEGORIES, hasPrice, PRODUCTS, type CategoryId, type Product } from './products'
 import { COLORWAYS } from './stories'
 
 /**
@@ -67,7 +67,7 @@ export const SHELVES: readonly Shelf[] = SHELF_ORDER.map((category) => {
     count: cardCount(category),
     products,
     tileImage: TILE_IMAGES[category](label),
-    min: Math.min(...inGroup.map((p) => p.min)),
+    min: Math.min(...inGroup.filter(hasPrice).map((p) => p.min)),
   }
 })
 

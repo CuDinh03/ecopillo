@@ -12,6 +12,7 @@ import { Container, FillIn } from '../components/ui/primitives'
 import { BEDDING_SETS, collectionRange, type Collection } from '../data/catalog'
 import {
   CATEGORIES,
+  hasPrice,
   inPriceBand,
   LEGACY_CATEGORY,
   priceBandsOf,
@@ -48,10 +49,16 @@ const TILE_DOTS = 5
 
 const isCategory = (v: string | null): v is CategoryId => CATEGORIES.some((c) => c.id === v)
 
+/** Sắp theo giá; giá 0 (chưa có giá, báo khi gọi) luôn xếp cuối dù tăng hay giảm */
 const bySort = <T,>(items: readonly T[], sort: SortId, priceOf: (item: T) => number): readonly T[] => {
   if (sort === 'noi-bat') return items
   const dir = sort === 'gia-tang' ? 1 : -1
-  return [...items].sort((a, b) => (priceOf(a) - priceOf(b)) * dir)
+  return [...items].sort((a, b) => {
+    const pa = priceOf(a)
+    const pb = priceOf(b)
+    if (!pa || !pb) return Number(!pa) - Number(!pb)
+    return (pa - pb) * dir
+  })
 }
 
 export function ProductsPage() {
@@ -80,14 +87,14 @@ export function ProductsPage() {
    */
   const itemsAnyPrice = useMemo(() => gridItems(category, tone, collection), [category, tone, collection])
   const items = useMemo(
-    () => bySort(itemsAnyPrice.filter((item) => !band || inPriceBand(rangeOf(item), band)), sort, (item) => rangeOf(item).min),
+    () => bySort(itemsAnyPrice.filter((item) => !band || isInBand(item, band)), sort, (item) => rangeOf(item).min),
     [itemsAnyPrice, band, sort],
   )
   /** Số trên nút mức giá: đếm đúng số thẻ sẽ hiện bên dưới */
-  const countInBand = (b: PriceBand) => itemsAnyPrice.filter((item) => inPriceBand(rangeOf(item), b)).length
+  const countInBand = (b: PriceBand) => itemsAnyPrice.filter((item) => isInBand(item, b)).length
   /** Số trên dòng bộ sưu tập trong khối lọc: tính cả mức giá đang chọn */
   const countInCollection = (c: Collection | undefined) =>
-    gridItems(category, tone, c).filter((item) => !band || inPriceBand(rangeOf(item), band)).length
+    gridItems(category, tone, c).filter((item) => !band || isInBand(item, band)).length
 
   const pageCount = Math.max(1, Math.ceil(items.length / PAGE_SIZE))
   const rawPage = Number(params.get(PAGE_PARAM))
@@ -400,6 +407,10 @@ type GridItem = { kind: 'colorway'; colorway: Colorway } | { kind: 'product'; pr
 
 const rangeOf = (item: GridItem): { min: number; max: number } =>
   item.kind === 'colorway' ? collectionRange(item.colorway.collection) : item.product
+
+/** Thẻ chưa có giá (báo khi gọi) không thuộc mốc giá nào */
+const isInBand = (item: GridItem, b: PriceBand): boolean =>
+  (item.kind === 'colorway' || hasPrice(item.product)) && inPriceBand(rangeOf(item), b)
 
 /** Thẻ của lưới theo loại, gam, bộ sưu tập (chưa xét mức giá). Gối, đệm, chăn lẻ không có gam, bộ nên bị loại khi lọc theo hai thứ đó */
 const gridItems = (category: CategoryId | null, tone: Tone | undefined, collection: Collection | undefined): GridItem[] =>

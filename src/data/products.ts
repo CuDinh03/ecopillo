@@ -58,6 +58,8 @@ export interface ProductChoice {
   id: string
   label: string
   price?: number
+  /** Lựa chọn là một mẫu (chăn đông kiểu Hàn): bấm thì đổi sang ảnh của mẫu đó */
+  image?: ImageSource
 }
 
 export interface Product {
@@ -82,7 +84,20 @@ export interface Product {
   variants?: ProductVariants
   /** Sản phẩm lẻ không có bảng giá kích thước × độ dày: các lựa chọn để đặt online */
   choices?: readonly ProductChoice[]
+  /** Tên nhóm lựa chọn, mặc định "Kích thước" (chăn đông kiểu Hàn chọn theo "Mẫu") */
+  choiceLabel?: string
+  /**
+   * Ecopillo chưa gửi giá (08/11/2026): min = max = 0, mọi chỗ hiện giá ghi PRICE_ON_CALL_LABEL thay cho số,
+   * không vào mức giá nào khi lọc, xếp cuối khi sắp theo giá. Có giá thì bỏ cờ này và điền min, max.
+   */
+  isPriceOnCall?: boolean
 }
+
+/** Chữ thay cho giá khi Ecopillo chưa gửi giá (owner 28/10/2026: không để nhãn chờ trên web) */
+export const PRICE_ON_CALL_LABEL = 'Báo giá khi gọi xác nhận'
+
+/** Sản phẩm đã có giá (để tính giá thấp nhất của nhóm, lọc theo mức giá) */
+export const hasPrice = (p: Product): boolean => !p.isPriceOnCall && p.min > 0
 
 export interface ProductVariants {
   sizes: readonly string[]
@@ -142,7 +157,8 @@ const choicesFor = (category: CategoryId, min: number, max: number): ProductChoi
 
 /**
  * Bảo vệ đệm, divan: giá từng cỡ khách gửi Zalo 05/11/2026; chữ theo catalog Ecopillo 22.07.2026 (trang 64, 66).
- * Chưa có ảnh [ECOPILLO GỬI ẢNH DIVAN, BẢO VỆ ĐỆM]. Dòng bảng giá ở ESSENTIALS (catalog.ts) ghi giá thấp – cao, phải khớp.
+ * Ảnh divan khách gửi Zalo 08/11/2026 (tools/nen-anh-khach-gui-2026-11-09.py). Bảo vệ đệm chưa có ảnh [ECOPILLO GỬI ẢNH BẢO VỆ ĐỆM].
+ * Dòng bảng giá ở ESSENTIALS (catalog.ts) ghi giá thấp – cao, phải khớp.
  */
 const BAO_VE_DEM: Product = {
   slug: 'bao-ve-dem-chong-tham',
@@ -168,11 +184,23 @@ const DIVAN: Product = {
   summary: 'Kệ giường khung gỗ thông, mặt foam bọc vải Canvas, cao 30 cm. Bảo hành 5 năm.',
   min: 6_580_000,
   max: 9_250_000,
+  image: productImage('divan-ecopillo', 'Divan Ecopillo bọc vải xám trong phòng ngủ'),
   imageNote: 'Ảnh divan Ecopillo',
+  // Ảnh chi tiết rồi 17 màu vải. Ecopillo chưa gửi tên màu nên alt ghi số thứ tự [ECOPILLO GỬI TÊN MÀU VẢI DIVAN]
+  gallery: [
+    productImage('divan-ecopillo-2', 'Góc divan Ecopillo bọc đồng'),
+    productImage('divan-ecopillo-3', 'Bánh xe dưới chân divan Ecopillo'),
+    productImage('divan-ecopillo-4', 'Mép divan Ecopillo bọc vải'),
+    productImage('divan-ecopillo-5', 'Mặt vải bọc divan Ecopillo'),
+    ...Array.from({ length: 17 }, (_, i) =>
+      productImage(`divan-ecopillo-mau-${String(i + 1).padStart(2, '0')}`, `Divan Ecopillo, màu vải ${i + 1}`),
+    ),
+  ],
   details: [
     'Khung gỗ thông chắc chắn; gỗ ván ép công nghiệp 8 mm chống mối mọt.',
     'Mặt foam PU 10 mm, sợi Micro Fiber, bọc vải Canvas.',
     'Khoá chân trụ và bánh xe.',
+    'Nhiều màu vải bọc như trong ảnh: Quý khách chọn màu khi nhân viên gọi xác nhận đơn.',
     'Nhận đặt theo kích thước riêng: gọi hoặc nhắn Zalo để báo giá.',
   ],
   specs: [
@@ -294,6 +322,106 @@ const ECO_LUXE: Product = {
   },
 }
 
+/**
+ * Đệm lò xo Eco Fresh: chữ, giá, bảo hành khách gửi Zalo 08/11/2026 (bảng giá Eco Fresh, dày 24 cm).
+ * Mở lại trang ở link cũ /san-pham/dem-lo-xo-eco-fresh/ (trước đó 301 sang danh mục Đệm lò xo).
+ */
+const ECO_FRESH: Product = {
+  slug: 'dem-lo-xo-eco-fresh',
+  name: 'Đệm lò xo Eco Fresh',
+  category: 'dem',
+  summary:
+    'Dòng đệm lò xo tiêu chuẩn, rất phù hợp cho gia đình, nhà cho thuê, khách sạn, homestay cần mức đầu tư hợp lý nhưng vẫn đảm bảo độ bền và cảm giác nằm êm ái.',
+  min: 4_700_000,
+  max: 7_650_000,
+  imageNote: 'Ảnh đệm lò xo Eco Fresh',
+  gallery: [
+    productImage('dem-lo-xo-eco-fresh-2', 'Góc đệm lò xo Eco Fresh thêu chữ Ecopillo'),
+    productImage('dem-lo-xo-eco-fresh-3', 'Mặt đệm Eco Fresh chần foam'),
+    productImage('dem-lo-xo-eco-fresh-4', 'Viền đệm lò xo Eco Fresh'),
+  ],
+  details: [
+    'Độ êm vừa phải, đàn hồi và nâng đỡ tốt.',
+    'Mặt đệm chần foam mềm mại, có thể nằm êm cả 2 mặt.',
+    'Hệ thống lò xo thép chống gỉ, chịu lực tốt, độ bền cao.',
+    'Thoáng khí, dễ vệ sinh, phù hợp sử dụng thường xuyên.',
+    'Sản xuất tại Việt Nam từ nguyên liệu nhập khẩu.',
+  ],
+  specs: [
+    { label: 'Độ dày', value: '24 cm' },
+    { label: 'Bảo hành', value: '7 năm' },
+    { label: 'Mặt đệm', value: 'Chần foam, nằm cả 2 mặt' },
+    { label: 'Lõi', value: 'Lò xo thép chống gỉ' },
+  ],
+  variants: {
+    sizes: ['120×200', '140×200', '160×200', '180×200', '200×220'],
+    thicknesses: ['24 cm'],
+    prices: {
+      '120×200|24 cm': 4_700_000,
+      '140×200|24 cm': 5_180_000,
+      '160×200|24 cm': 5_750_000,
+      '180×200|24 cm': 6_500_000,
+      '200×220|24 cm': 7_650_000,
+    },
+  },
+}
+
+/** Sáu mẫu chăn đông kiểu Hàn khách gửi 08/11/2026, theo thứ tự khách liệt kê. Mã in sẵn trên ảnh */
+const CHAN_HAN_CODES = ['EF18', 'EV05', 'EV06', 'EF10', 'ER09', 'ER42'] as const
+const chanHanImage = (code: string) => productImage(`chan-dong-kieu-han-${code.toLowerCase()}`, `Chăn đông kiểu Hàn mẫu ${code}`)
+
+/**
+ * Chăn đông kiểu Hàn: chữ khách gửi Zalo 08/11/2026. Chưa có giá, cỡ [ECOPILLO GỬI GIÁ, KÍCH THƯỚC CHĂN ĐÔNG KIỂU HÀN]:
+ * khách chọn mẫu, nhân viên báo giá khi gọi xác nhận. Khác chăn đông Micro Fiber (ruột chăn rời).
+ */
+const CHAN_DONG_KIEU_HAN: Product = {
+  slug: 'chan-dong-kieu-han',
+  name: 'Chăn đông kiểu Hàn cao cấp',
+  category: 'chan',
+  summary:
+    'Dành cho những ai yêu thích sự ấm áp nhưng không muốn cảm giác nặng nề, bí bách khi ngủ: chỉ hơn 2 kg mà ấm áp bất ngờ.',
+  min: 0,
+  max: 0,
+  isPriceOnCall: true,
+  image: chanHanImage(CHAN_HAN_CODES[0]),
+  imageNote: 'Ảnh chăn đông kiểu Hàn',
+  gallery: CHAN_HAN_CODES.slice(1).map(chanHanImage),
+  details: [
+    'Lớp bông Microfiber cao cấp chần trực tiếp vào vỏ, vừa mềm nhẹ vừa giữ ấm tốt.',
+    'Vải Lyocell mềm mịn, êm ái mỗi khi chạm vào.',
+    'Không cần mua riêng ruột chăn hay vỏ chăn, không lo lớp bông xô lệch như chăn lồng ruột thông thường.',
+    'Gọn nhẹ, tiện lợi, đồng hành cùng gia đình qua nhiều mùa đông.',
+  ],
+  specs: [
+    { label: 'Trọng lượng', value: 'Hơn 2 kg' },
+    { label: 'Vỏ', value: 'Vải Lyocell' },
+    { label: 'Bông', value: 'Microfiber chần liền vỏ' },
+    { label: 'Mẫu', value: `${CHAN_HAN_CODES.length} mẫu` },
+  ],
+  choiceLabel: 'Mẫu',
+  choices: CHAN_HAN_CODES.map((code) => ({ id: code.toLowerCase(), label: code, image: chanHanImage(code) })),
+}
+
+/**
+ * Ruột gối bông PE: ảnh khách gửi Zalo 08/11/2026, xếp vào nhóm Đồ ruột.
+ * Chưa có giá, cỡ, chữ giới thiệu [ECOPILLO GỬI GIÁ, KÍCH THƯỚC, MÔ TẢ RUỘT GỐI BÔNG PE]: câu dưới đây chỉ nêu điều đã biết.
+ */
+const RUOT_GOI_BONG_PE: Product = {
+  slug: 'ruot-goi-bong-pe',
+  name: 'Ruột gối bông PE',
+  category: 'goi',
+  summary: 'Ruột gối nằm Ecopillo nhồi bông PE, vỏ vải trắng viền chỉ.',
+  min: 0,
+  max: 0,
+  isPriceOnCall: true,
+  image: productImage('ruot-goi-bong-pe', 'Ruột gối bông PE Ecopillo'),
+  imageNote: 'Ảnh ruột gối bông PE',
+  details: [
+    'Ruột gối nhồi bông PE, vỏ vải trắng viền chỉ, may nhãn Ecopillo.',
+    'Đặt ngay trên web, nhân viên gọi xác nhận và báo giá trước khi giao. Giao cùng chính sách như bộ chăn ga.',
+  ],
+}
+
 const NANO_CHAN_FOAM: Product = {
   slug: 'dem-bong-nano-chan-foam',
   name: 'Đệm bông Nano chần foam',
@@ -376,6 +504,7 @@ const PRODUCT_PHOTOS = new Set([
   'dem-bong-gam-thuan-khiet',
   'dem-lo-xo-tui-cao-cap-eco-luxe',
   'dem-bong-nano-chan-foam',
+  'dem-lo-xo-eco-fresh',
 ])
 
 const withPhoto = (p: Product): Product =>
@@ -384,10 +513,13 @@ const withPhoto = (p: Product): Product =>
 export const PRODUCTS: readonly Product[] = [
   ...COLLECTIONS.map(collectionProduct),
   ...essentialProducts,
+  CHAN_DONG_KIEU_HAN,
+  RUOT_GOI_BONG_PE,
   GAM_THUAN_KHIET,
   NANO_CHAN_FOAM,
   ...mattressProducts,
   ECO_LUXE,
+  ECO_FRESH,
   BAO_VE_DEM,
   DIVAN,
 ].map(withPhoto)
@@ -401,7 +533,7 @@ export const productPath = (p: Product): string => (p.collection ? collectionPat
 export const singleUnitPrice = (p: Product, choiceId: string | null, thickness: string | null): number | undefined => {
   if (p.variants) return choiceId && thickness ? variantPrice(p.variants, choiceId, thickness) : undefined
   if (p.choices) return p.choices.find((c) => c.id === choiceId)?.price
-  return p.min
+  return p.isPriceOnCall ? undefined : p.min
 }
 
 /** Lựa chọn hợp lệ của sản phẩm lẻ (kích thước, độ dày) */
@@ -420,7 +552,16 @@ export const singleOrderUrl = (p: Product, choiceId?: string | null, thickness?:
   return `${PATHS.order}?${params}`
 }
 
-export const priceLabel = (p: Product): string => (p.isFromPrice ? `từ ${formatVND(p.min)}` : formatRange(p.min, p.max))
+export const priceLabel = (p: Product): string => {
+  if (!hasPrice(p)) return PRICE_ON_CALL_LABEL
+  return p.isFromPrice ? `từ ${formatVND(p.min)}` : formatRange(p.min, p.max)
+}
+
+/** Giá ngắn trên thẻ kệ: chỉ giá thấp nhất cho gọn, giá đủ khoảng ở trang sản phẩm */
+export const shortPriceLabel = (p: Product): string => {
+  if (!hasPrice(p)) return PRICE_ON_CALL_LABEL
+  return p.min === p.max ? formatVND(p.min) : `từ ${formatVND(p.min)}`
+}
 
 /** Mở trang đặt hàng với bộ sưu tập, mẫu, kích thước đã chọn sẵn */
 export const orderUrl = (collection: Collection, pattern?: Pattern, size?: SizeId | null): string => {

@@ -13,7 +13,7 @@ import { COLLECTION_BY_PATH, productPageTarget, withSlash } from '../data/links'
 import { PRODUCT_INFO, type InfoSection } from '../data/productInfo'
 import { relatedForProduct } from '../data/related'
 import { ExploreMore } from '../components/ui/ExploreMore'
-import { categoryLabel, priceLabel, productBySlug, singleOrderUrl, variantPrice, type Product } from '../data/products'
+import { categoryLabel, hasPrice, priceLabel, productBySlug, singleOrderUrl, variantPrice, type Product } from '../data/products'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { formatVND } from '../lib/format'
 import { productMetaDescription } from '../lib/metaDescription'
@@ -52,7 +52,8 @@ function MissingProduct() {
  * Trước 24/10/2026 trang này không đặt mô tả, 16 sản phẩm lẻ dùng chung mô tả của trang chủ (rà toàn web 24/10/2026)
  */
 const productDescription = (product: Product): string =>
-  productMetaDescription(product.summary, product.name, priceLabel(product))
+  // Chưa có giá: "…, giá báo khi gọi xác nhận." thay vì "giá Báo giá khi gọi xác nhận."
+  productMetaDescription(product.summary, product.name, hasPrice(product) ? priceLabel(product) : 'báo khi gọi xác nhận')
 
 /** Sản phẩm lẻ (ruột gối, ruột chăn, topper, đệm): ảnh chính + ảnh phụ, chọn kích thước rồi đặt online */
 function ProductDetail({ product }: { product: Product }) {
@@ -120,7 +121,10 @@ function ProductDetail({ product }: { product: Product }) {
             <h1 className="font-display mt-3 text-[2.1rem] leading-tight text-deep-900 sm:text-[2.6rem]">
               {product.name}
             </h1>
-            <p className="tabular mt-5 font-display text-[2rem] leading-none text-deep-900">
+            {/* Chưa có giá: chữ báo giá nhỏ hơn số tiền, để không rớt hai dòng trên điện thoại */}
+            <p
+              className={`tabular mt-5 font-display leading-none text-deep-900 ${hasPrice(product) ? 'text-[2rem]' : 'text-[1.45rem]'}`}
+            >
               {singlePrice ? formatVND(singlePrice) : priceLabel(product)}
             </p>
             <p className="mt-2 text-sm text-ink-soft">{product.summary}</p>
@@ -134,15 +138,23 @@ function ProductDetail({ product }: { product: Product }) {
               )}
               {product.choices && choiceId && (
                 <VariantGroup
-                  label="Kích thước"
+                  label={product.choiceLabel ?? 'Kích thước'}
                   options={product.choices.map((c) => c.label)}
                   value={choice?.label ?? ''}
-                  onChange={(label) => setChoiceId(product.choices?.find((c) => c.label === label)?.id ?? null)}
+                  onChange={(label) => {
+                    const next = product.choices?.find((c) => c.label === label)
+                    setChoiceId(next?.id ?? null)
+                    // Lựa chọn có ảnh riêng (mẫu chăn đông Hàn): đổi luôn ảnh chính sang ảnh mẫu đó
+                    const nextPhoto = next?.image ? photos.findIndex((p) => p.src === next.image?.src) : -1
+                    if (nextPhoto >= 0) setPhotoIndex(nextPhoto)
+                  }}
                 />
               )}
               {product.choices && choice && choice.price === undefined && (
                 <p className="text-sm text-ink-soft">
-                  Giá cỡ {choice.label} theo độ dày và dòng đệm: nhân viên báo giá chính xác khi gọi xác nhận đơn.
+                  {product.isPriceOnCall
+                    ? 'Nhân viên báo giá chính xác khi gọi xác nhận đơn.'
+                    : `Giá cỡ ${choice.label} theo độ dày và dòng đệm: nhân viên báo giá chính xác khi gọi xác nhận đơn.`}
                 </p>
               )}
               {specs.length > 0 && (

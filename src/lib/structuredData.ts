@@ -94,10 +94,13 @@ export function productLd({ name, description, path, image, sku, min, max, isInS
   const url = pageUrl(path)
   const availability =
     isInStock === undefined ? {} : { availability: `${CONTEXT}/${isInStock ? 'InStock' : 'OutOfStock'}` }
+  // Chưa có giá (min = 0, báo giá khi gọi): không ghi offers, để Google không hiện giá 0đ
   const offers =
-    min === max
-      ? { '@type': 'Offer', price: min, priceCurrency: 'VND', url, ...availability }
-      : { '@type': 'AggregateOffer', lowPrice: min, highPrice: max, priceCurrency: 'VND', url, ...availability }
+    min <= 0
+      ? undefined
+      : min === max
+        ? { '@type': 'Offer', price: min, priceCurrency: 'VND', url, ...availability }
+        : { '@type': 'AggregateOffer', lowPrice: min, highPrice: max, priceCurrency: 'VND', url, ...availability }
   return {
     '@context': CONTEXT,
     '@type': 'Product',
@@ -107,7 +110,7 @@ export function productLd({ name, description, path, image, sku, min, max, isInS
     ...(image ? { image: absoluteUrl(image.src) } : {}),
     ...(sku ? { sku } : {}),
     brand: { '@type': 'Brand', name: BRAND.name },
-    offers,
+    ...(offers ? { offers } : {}),
   }
 }
 

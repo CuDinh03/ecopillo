@@ -168,6 +168,11 @@ const PRODUCT_SLUGS: Readonly<Record<string, string>> = {
   'divan-ecopillo': 'divan-ke-giuong-khach-san',
   // Web cũ không có trang này: link mới, không cần 301
   'bao-ve-dem-chong-tham': 'bao-ve-dem-chong-tham',
+  // Khách gửi chữ, giá, ảnh 08/11/2026: dùng lại trang Eco Fresh của web cũ thay cho 301 sang Đệm lò xo
+  'dem-lo-xo-eco-fresh': 'dem-lo-xo-eco-fresh',
+  // Sản phẩm mới khách gửi 08/11/2026, web cũ không có: link mới, không cần 301
+  'chan-dong-kieu-han': 'chan-dong-kieu-han',
+  'ruot-goi-bong-pe': 'ruot-goi-bong-pe',
 }
 
 const productPagePath = (slug: string): string => `/san-pham/${slug}/`
@@ -225,9 +230,10 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
   },
   '/danh-muc-san-pham/san-pham/ruot-chan-goi/': {
     title: 'Ruột chăn gối',
-    description: 'Ruột chăn, ruột gối Ecopillo: Micro Fiber, Micro Plus, tơ tằm, cao su thiên nhiên, lông vũ tự nhiên. Đặt online, thanh toán khi nhận.',
+    description: 'Ruột chăn, ruột gối Ecopillo: Micro Fiber, chăn đông kiểu Hàn, tơ tằm, cao su thiên nhiên, lông vũ, bông PE. Đặt online, thanh toán khi nhận.',
     products: [
       'chan-dong-micro-fiber',
+      'chan-dong-kieu-han',
       'chan-to-tam',
       'chan-long-vu-tu-nhien',
       'ruot-goi-micro-fiber',
@@ -235,11 +241,12 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
       'ruot-goi-to-tam',
       'ruot-goi-cao-su-thien-nhien',
       'ruot-goi-long-vu-tu-nhien',
+      'ruot-goi-bong-pe',
     ],
   },
   '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/': {
     title: 'Ruột gối nằm cao cấp',
-    description: 'Ruột gối nằm Ecopillo, năm độ êm từ Micro Fiber đến lông vũ tự nhiên. Đặt online, thanh toán khi nhận.',
+    description: 'Ruột gối nằm Ecopillo, từ bông PE, Micro Fiber đến lông vũ tự nhiên. Đặt online, thanh toán khi nhận.',
     category: 'goi',
   },
   '/danh-muc-san-pham/dem-ecopillo/': {
@@ -249,9 +256,9 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
   },
   '/danh-muc-san-pham/san-pham/dem-lo-xo/': {
     title: 'Đệm lò xo',
-    description: 'Đệm lò xo Ecopillo: lò xo túi độc lập, Eco Luxe, Eco Royal. Giá theo kích thước và độ dày, nằm thử tại hệ thống phân phối.',
+    description: 'Đệm lò xo Ecopillo: lò xo túi độc lập, Eco Luxe, Eco Royal, Eco Fresh. Giá theo kích thước và độ dày, nằm thử tại hệ thống phân phối.',
     category: 'dem',
-    products: ['dem-lo-xo-tui-doc-lap', 'dem-lo-xo-tui-cao-cap-eco-luxe', 'dem-lo-xo-eco-royal'],
+    products: ['dem-lo-xo-tui-doc-lap', 'dem-lo-xo-tui-cao-cap-eco-luxe', 'dem-lo-xo-eco-royal', 'dem-lo-xo-eco-fresh'],
   },
   '/danh-muc-san-pham/san-pham/dem-cao-su/': {
     title: 'Đệm cao su',
@@ -313,7 +320,6 @@ export const OLD_SITE_REDIRECTS: Readonly<Record<string, string>> = {
   // Sản phẩm lẻ web mới chưa có [XÁC NHẬN]
   '/san-pham/dem-foam-cao-cap-nano-comfort/': '/danh-muc-san-pham/san-pham/dem-foam/',
   '/san-pham/dem-lo-xo-cao-cap-eco-premium/': '/danh-muc-san-pham/san-pham/dem-lo-xo/',
-  '/san-pham/dem-lo-xo-eco-fresh/': '/danh-muc-san-pham/san-pham/dem-lo-xo/',
   '/san-pham/dem-bong-ep-cao-cap-mix-latex/': '/danh-muc-san-pham/san-pham/dem-bong-ep/',
   '/san-pham/dem-tron-cao-cap-ecopillo/': '/danh-muc-san-pham/dem-ecopillo/',
   '/san-pham/ruot-goi-dau-ecopillo/': '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/',

@@ -8,7 +8,7 @@ import {
 } from './catalog'
 import { HOTEL_PHOTOS } from './hotel'
 import { collectionPathById, LISTINGS, PATHS, singleProductPath } from './links'
-import { PRODUCTS, productBySlug, type Product } from './products'
+import { hasPrice, PRICE_ON_CALL_LABEL, PRODUCTS, productBySlug, type Product } from './products'
 
 /**
  * Ô xổ "Sản phẩm" trên thanh đầu trang.
@@ -68,10 +68,14 @@ const listingProducts = (path: string): readonly Product[] => {
   return PRODUCTS.filter((p) => p.category === listing.category)
 }
 
-const rowOf = (label: string, to: string, products: readonly Product[], priceLabel?: string): MenuRow => {
-  const min = Math.min(...products.map((p) => p.min))
-  const max = Math.max(...products.map((p) => p.max))
-  return { label, to, min, isFromPrice: max > min, ...(priceLabel ? { priceLabel } : {}) }
+/** Giá của dòng tính trên sản phẩm đã có giá; cả dòng chưa có giá thì ghi chữ thay số */
+const rowOf = (label: string, to: string, products: readonly Product[]): MenuRow => {
+  const priced = products.filter(hasPrice)
+  if (!priced.length) return { label, to, min: 0, isFromPrice: false, priceLabel: PRICE_ON_CALL_LABEL.toLowerCase() }
+  const min = Math.min(...priced.map((p) => p.min))
+  const max = Math.max(...priced.map((p) => p.max))
+  // Có sản phẩm chưa có giá trong dòng thì cũng ghi "từ …"
+  return { label, to, min, isFromPrice: max > min || priced.length < products.length }
 }
 
 const listingRow = (path: string, label = LISTINGS[path]?.title ?? ''): MenuRow =>
@@ -103,7 +107,7 @@ const fittedRow = (id: string): MenuRow => {
     min: min ?? 0,
     isFromPrice: min != null,
     // Vera đã có giá từ bảng giá 2026 (khách gửi 08/11/2026); giữ nhánh này cho bộ mới chưa có giá
-    ...(min == null ? { priceLabel: 'báo giá khi gọi xác nhận' } : {}),
+    ...(min == null ? { priceLabel: PRICE_ON_CALL_LABEL.toLowerCase() } : {}),
   }
 }
 
@@ -192,6 +196,7 @@ export const PRODUCT_MENU: readonly MenuGroup[] = [
     image: patternImage('ER09', 'Chăn đông và chăn hè'),
     rows: [
       productRow('chan-dong-micro-fiber'),
+      productRow('chan-dong-kieu-han'),
       productRow('chan-to-tam'),
       productRow('chan-long-vu-tu-nhien'),
       collectionRow('chan-he-lyocell'),
