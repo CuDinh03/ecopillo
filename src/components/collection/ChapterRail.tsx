@@ -19,26 +19,38 @@ interface ChapterRailProps {
   className?: string
 }
 
-/** Hàng chương: điện thoại vuốt ngang, máy tính xếp lưới. Bấm một chương thì sân khấu đổi tại chỗ */
+/**
+ * Hàng chương: điện thoại vuốt ngang, máy tính xếp lưới. Bấm một chương thì sân khấu đổi tại chỗ.
+ * C1 (khách 08/11/2026, owner chốt 09/11/2026 phương án 2): trên điện thoại hàng này nằm ngay dưới ảnh, tên "Chọn màu";
+ * thẻ to (~40% bề ngang), chỉ tên thơ + mã, thẻ đang chọn không nền chàm đậm (viền chàm sáng mảnh).
+ */
 export function ChapterRail({ collection, chapters, current, volumes, volume, onVolume, onOpen, onPreview, className = '' }: ChapterRailProps) {
   const listRef = useRef<HTMLUListElement>(null)
   // Hàng chương nằm ngay màn đầu trên điện thoại: ảnh nhỏ gắn sau khi ảnh chính đã về (LCP, xem usePageLoaded)
   const isPageLoaded = usePageLoaded()
 
-  // Điện thoại: đổi chương bằng mũi tên thì kéo thẻ đang mở vào giữa hàng (chỉ cuộn ngang, không kéo cả trang)
+  // Điện thoại: đổi chương bằng mũi tên thì kéo thẻ đang mở vào giữa hàng (chỉ cuộn ngang, không kéo cả trang).
+  // Thẻ đã nằm trọn trong tầm nhìn (khách vừa bấm nó) thì để yên: bấm màu nào chỉ đổi ảnh và tên (C1)
   useEffect(() => {
     const list = listRef.current
     const active = list?.querySelector<HTMLElement>('[aria-pressed="true"]')
     if (!list || !active || list.scrollWidth <= list.clientWidth) return
+    const card = active.parentElement ?? active
+    const isVisible = card.offsetLeft >= list.scrollLeft && card.offsetLeft + card.offsetWidth <= list.scrollLeft + list.clientWidth
+    if (isVisible) return
     list.scrollTo({ left: active.offsetLeft - (list.clientWidth - active.offsetWidth) / 2, behavior: 'smooth' })
   }, [current.code, volume])
 
   return (
     <section aria-labelledby="chapters-title" className={className}>
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
-        <h2 id="chapters-title" className="font-display text-[1.5rem] leading-tight text-deep-900 sm:text-[2rem]">
-          Các chương màu của {collection.name}
-        </h2>
+        <div>
+          <h2 id="chapters-title" className="font-display text-[1.35rem] leading-tight text-deep-900 sm:text-[2rem]">
+            <span className="lg:hidden">Chọn màu</span>
+            <span className="max-lg:hidden">Các chương màu của {collection.name}</span>
+          </h2>
+          {chapters.length > 2 && <p className="mt-0.5 text-meta text-ink-soft lg:hidden">Vuốt ngang để xem thêm màu</p>}
+        </div>
         {volumes.length > 1 && (
           <div role="group" aria-label="Chọn tập" className="-mx-5 flex gap-2 overflow-x-auto px-5 [mask-image:linear-gradient(to_right,#000_85%,transparent)] [scrollbar-width:none] sm:mx-0 sm:px-0 sm:[mask-image:none]">
             {volumes.map((v) => {
@@ -70,7 +82,7 @@ export function ChapterRail({ collection, chapters, current, volumes, volume, on
           const soldOut = isPatternSoldOut(pattern)
           const image = imageOfPattern(collection, pattern)
           return (
-            <li key={pattern.code} className="w-[8.5rem] shrink-0 snap-start lg:w-auto">
+            <li key={pattern.code} className="w-[40vw] max-w-[12rem] shrink-0 snap-start lg:w-auto lg:max-w-none">
               <button
                 type="button"
                 aria-pressed={active}
@@ -82,19 +94,27 @@ export function ChapterRail({ collection, chapters, current, volumes, volume, on
                 }}
                 onPointerLeave={() => onPreview(null)}
                 onFocus={() => preloadImage(image)}
-                className={`block h-full w-full rounded-2xl p-1.5 pb-3 text-left transition duration-300 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] ${
-                  active ? 'bg-deep-900 text-ivory' : 'bg-cream-50 text-deep-900 shadow-[var(--shadow-soft)]'
+                // Thẻ đang chọn: viền chàm sáng mảnh, nền trắng như thẻ khác (khách: "không khung chàm đậm").
+                // flex-col: nút tự canh giữa nội dung theo chiều dọc, thẻ cao hơn (tên 3 dòng cùng hàng) thì ảnh bị đẩy xuống
+                className={`flex h-full w-full flex-col overflow-hidden rounded-2xl bg-ivory pb-3 text-left text-deep-900 shadow-[var(--shadow-soft)] transition duration-300 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] ${
+                  active ? 'outline-2 outline-offset-2 outline-deep-700' : ''
                 }`}
               >
-                <span className={`block aspect-[4/3] overflow-hidden rounded-xl ${soldOut ? 'opacity-50' : ''}`}>
-                  <Placeholder compact className="h-full w-full" tint={pattern.swatch} note={pattern.code} image={image} sizes="170px" defer={!isPageLoaded} />
+                <span className={`block aspect-[4/3] overflow-hidden ${soldOut ? 'opacity-50' : ''}`}>
+                  <Placeholder
+                    compact
+                    className="h-full w-full"
+                    tint={pattern.swatch}
+                    note={pattern.code}
+                    image={image}
+                    sizes="(min-width: 1024px) 170px, 40vw"
+                    defer={!isPageLoaded}
+                  />
                 </span>
-                {/* Tên trên thẻ đứng, đậm như thẻ phối màu (mẫu A 04/11/2026) */}
-                <span className="font-display mt-2.5 block px-1.5 text-body leading-tight">
-                  {chapterTitle(collection, pattern)}
-                </span>
-                <span className={`mt-1 block px-1.5 text-label leading-snug ${active ? 'text-ivory/75' : 'text-ink-faint'}`}>
-                  {pattern.colorName} · {pattern.code}
+                {/* Chỉ tên thơ + mã; câu tả màu đã có trên ảnh lớn và dưới tên chương (C1) */}
+                <span className="font-display mt-2.5 block px-3 text-body leading-tight">{chapterTitle(collection, pattern)}</span>
+                <span className="tabular mt-1 block px-3 text-label leading-snug text-ink-soft">
+                  {pattern.code}
                   {soldOut && ' · tạm hết'}
                 </span>
               </button>

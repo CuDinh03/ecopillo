@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
 import {
@@ -148,17 +148,54 @@ export function ChapterStory({ pattern, story, title, volume, heading, className
               {title}
             </h2>
             <p className="mt-2 text-sm font-medium text-deep-900">
-              {pattern.colorName} · {pattern.code}
+              {pattern.code} · {pattern.colorName}
             </p>
           </>
         )}
-        {story && <p className="mt-4 max-w-xl text-body leading-relaxed text-ink-soft">{story.text}</p>}
+        {story && <StoryText text={story.text} />}
         {story && !story.fromCatalog && !STORIES_APPROVED && (
           <p className="mt-3">
             <FillIn>[ECOPILLO DUYỆT CÂU CHUYỆN PHỐI MÀU]</FillIn>
           </p>
         )}
       </div>
+    </div>
+  )
+}
+
+/**
+ * Câu chuyện phối màu. Điện thoại: thu còn 3 dòng + "Đọc tiếp" để giá, kích thước không bị đẩy xa (C1, 08/11/2026).
+ * Máy tính: hiện đủ. Nằm trong khối có key theo mã màu, nên đổi màu thì thu lại.
+ */
+function StoryText({ text }: { text: string }) {
+  const [isOpen, setIsOpen] = useState(false)
+  // Câu chuyện ngắn vừa 3 dòng thì không cần nút
+  const [isClamped, setIsClamped] = useState(false)
+  const textRef = useRef<HTMLParagraphElement>(null)
+  useLayoutEffect(() => {
+    const el = textRef.current
+    if (!el) return
+    const measure = () => setIsClamped(el.scrollHeight > el.clientHeight + 1)
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+  return (
+    <div className="mt-4 max-w-xl">
+      <p ref={textRef} className={`text-body leading-relaxed text-ink-soft ${isOpen ? '' : 'max-lg:line-clamp-3'}`}>
+        {text}
+      </p>
+      {!isOpen && isClamped && (
+        <button
+          type="button"
+          onClick={() => setIsOpen(true)}
+          // Vùng bấm cao 44px nhưng không đẩy chữ (lề âm)
+          className="-my-2 inline-flex h-11 items-center text-sm font-medium text-deep-700 underline underline-offset-4 lg:hidden"
+        >
+          Đọc tiếp
+        </button>
+      )}
     </div>
   )
 }

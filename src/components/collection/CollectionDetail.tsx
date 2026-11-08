@@ -124,7 +124,8 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
         <CollectionCover collection={collection} isCompactOnMobile={Boolean(patternParam)} />
 
         {/*
-          Điện thoại: ảnh → câu chuyện → hàng chương → mua (các khối bọc dùng `contents` để xếp lại thứ tự).
+          Điện thoại (C1, khách 08/11/2026): ảnh → chọn màu (hàng chương) → tên + câu chuyện → giá, kích thước.
+          Các khối bọc dùng `contents` để xếp lại thứ tự bằng `order`. Bấm màu chỉ đổi ảnh và chữ bên dưới, trang không nhảy.
           Máy tính: ảnh bên trái dính khi cuộn, câu chuyện và mua bên phải; hàng chương nằm NGOÀI khối hai cột,
           nên ảnh dính không bao giờ trôi đè lên hàng chương.
         */}
@@ -145,6 +146,7 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
                 title={title}
                 volume={story?.volume}
                 heading={chapter && fullName}
+                className="max-lg:order-2"
               />
               <ChapterBuy
                 collection={collection}
@@ -165,7 +167,7 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
             onVolume={setBrowsedVolume}
             onOpen={open}
             onPreview={setPreviewCode}
-            className="min-w-0 lg:mt-14"
+            className="min-w-0 max-lg:order-1 lg:mt-14"
           />
         </section>
 
