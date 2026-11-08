@@ -179,6 +179,10 @@
   /* Đỏ khẩu hiệu theo logo; chữ nhỏ cần 4,5:1 nên đậm hơn đỏ logo (#ed1c24 chỉ 4,38:1, audit 16/10/2026) */
   --color-tagline: #d9141c;
 
+  /* Nền khung xem ảnh toàn màn hình (Lightbox): chàm rất đậm, để soi màu vải không bị nền sáng làm lệch.
+     CHỈ dùng cho khung đó; theo mẫu C3 owner chốt 09/11/2026 (docs/de-xuat-gop-y-08-11.html) */
+  --color-night: #0f1030;
+
   /* Màu trời lấy từ ảnh nền Bảng EC, dùng cho lớp phủ phần đầu trang chủ */
   --color-hero-sky: #ebf6fd;
   --color-hero-sky-top: #eef7fd;

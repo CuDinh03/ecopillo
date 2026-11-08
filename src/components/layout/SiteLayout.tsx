@@ -16,6 +16,9 @@ const RENAMED_SECTIONS: Readonly<Record<string, string>> = { showroom: 'he-thong
 
 interface SmoothScroll {
   scrollTo: (target: number, options?: { immediate?: boolean; force?: boolean }) => void
+  /** Dừng / chạy lại cuộn trôi (khung xem ảnh toàn màn hình khoá cuộn trang phía sau) */
+  stop?: () => void
+  start?: () => void
 }
 
 declare global {

@@ -13,12 +13,14 @@ import {
   type SizeId,
 } from '../../data/catalog'
 import { orderUrl } from '../../data/products'
+import { useLightbox } from '../../hooks/useLightbox'
 import { usePageLoaded } from '../../hooks/usePageLoaded'
 import { STORIES_APPROVED, type PatternStory } from '../../data/stories'
 import { formatRange, formatVND } from '../../lib/format'
 import { NearMeLine, TrustList } from '../products/DetailParts'
 import { CrossfadeImage } from '../ui/CrossfadeImage'
 import { Icon, ZaloMark } from '../ui/Icon'
+import { Lightbox, ZoomTrigger } from '../ui/Lightbox'
 import { Placeholder } from '../ui/Placeholder'
 import { buttonClass, FillIn } from '../ui/primitives'
 
@@ -49,6 +51,8 @@ export function ChapterImage({ image, gallery = [], shown, note, onPrev, onNext,
   const current = photos[safeIndex]
   // Dãy ảnh nhỏ dưới ảnh chính: gắn sau khi ảnh chính đã về (LCP, xem usePageLoaded)
   const isPageLoaded = usePageLoaded()
+  // Bấm ảnh chính: xem toàn màn hình (C3); đổi ảnh trong khung thì ảnh trên trang đổi theo
+  const lightbox = useLightbox()
 
   return (
     <div className={`min-w-0 lg:sticky lg:top-24 lg:self-start ${className}`}>
@@ -58,10 +62,11 @@ export function ChapterImage({ image, gallery = [], shown, note, onPrev, onNext,
         ) : (
           <Placeholder className="absolute inset-0 h-full w-full" tone="mist" tint={shown.swatch} note={note} />
         )}
+        {current && <ZoomTrigger onOpen={lightbox.open} label={`Phóng to ảnh ${shown.code}`} />}
         {/* Góc trái trên: góc trái dưới ảnh gốc có vòng mã in sẵn, chip đặt ở đó thì đè lên vòng (rà 23/10/2026) */}
         <span
           key={shown.code}
-          className="fade-in absolute top-4 left-4 rounded-full bg-ivory/95 px-3.5 py-1.5 text-meta font-medium text-deep-900 shadow-[var(--shadow-soft)]"
+          className="fade-in pointer-events-none absolute top-4 left-4 rounded-full bg-ivory/95 px-3.5 py-1.5 text-meta font-medium text-deep-900 shadow-[var(--shadow-soft)]"
         >
           {shown.code} · {shown.colorName}
         </span>
@@ -92,6 +97,16 @@ export function ChapterImage({ image, gallery = [], shown, note, onPrev, onNext,
             </li>
           ))}
         </ul>
+      )}
+      {lightbox.isOpen && photos.length > 0 && (
+        <Lightbox
+          photos={photos}
+          index={safeIndex}
+          onIndexChange={setPhotoIndex}
+          onClose={lightbox.close}
+          caption={shown.code}
+          label={`Ảnh phối màu ${shown.code} · ${shown.colorName}`}
+        />
       )}
     </div>
   )

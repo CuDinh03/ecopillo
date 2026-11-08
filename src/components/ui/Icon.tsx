@@ -46,6 +46,7 @@ import {
   Compass,
   Feather,
   SlidersHorizontal,
+  ZoomIn,
 } from 'lucide-react'
 
 /** Bộ icon Lucide, đặt tên theo nghĩa dùng trên web */
@@ -99,6 +100,7 @@ const ICONS = {
   feather: Feather,
   // Nút "Bộ lọc" trang Sản phẩm trên điện thoại
   filter: SlidersHorizontal,
+  zoom: ZoomIn,
 } satisfies Record<string, LucideIcon>
 
 const BRAND_PATHS = {

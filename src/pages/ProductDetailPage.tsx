@@ -6,6 +6,8 @@ import { ProductReviews } from '../components/products/ProductReviews'
 import { JsonLd } from '../components/seo/JsonLd'
 import { CrossfadeImage } from '../components/ui/CrossfadeImage'
 import { Icon, ZaloMark } from '../components/ui/Icon'
+import { Lightbox, ZoomTrigger } from '../components/ui/Lightbox'
+import { useLightbox } from '../hooks/useLightbox'
 import { Placeholder } from '../components/ui/Placeholder'
 import { buttonClass, Container } from '../components/ui/primitives'
 import { CONTACT } from '../data/brand'
@@ -61,6 +63,8 @@ function ProductDetail({ product }: { product: Product }) {
   usePageMeta(product.name, productDescription(product), { image: shareImageOf(product.image), type: 'product' })
   const photos = product.image ? [product.image, ...(product.gallery ?? [])] : []
   const [photoIndex, setPhotoIndex] = useState(0)
+  // Bấm ảnh chính: xem toàn màn hình (C3, dùng chung với trang bộ sưu tập)
+  const lightbox = useLightbox()
   const variants = product.variants
   const [variantSize, setVariantSize] = useState(variants?.sizes[1] ?? variants?.sizes[0] ?? '')
   const [thickness, setThickness] = useState(variants?.thicknesses[0] ?? '')
@@ -93,6 +97,7 @@ function ProductDetail({ product }: { product: Product }) {
               ) : (
                 <Placeholder className="absolute inset-0 h-full w-full" tone="mist" note={product.imageNote} />
               )}
+              {image && <ZoomTrigger onOpen={lightbox.open} />}
             </div>
             {photos.length > 1 && (
               <ul aria-label="Ảnh sản phẩm" className="mt-3 flex gap-2.5">
@@ -112,6 +117,15 @@ function ProductDetail({ product }: { product: Product }) {
                   </li>
                 ))}
               </ul>
+            )}
+            {lightbox.isOpen && photos.length > 0 && (
+              <Lightbox
+                photos={photos}
+                index={Math.min(photoIndex, photos.length - 1)}
+                onIndexChange={setPhotoIndex}
+                onClose={lightbox.close}
+                label={`Ảnh ${product.name}`}
+              />
             )}
           </div>
 
