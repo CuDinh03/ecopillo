@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-do
 import { CONTACT, mapEmbedUrl, OPENING_HOURS, SHOWROOMS } from '../data/brand'
 import { PATHS } from '../data/links'
 import { policyPath } from '../data/policyNav'
-import { Icon, ZaloMark, type IconName } from '../components/ui/Icon'
+import { Icon, ZaloMark } from '../components/ui/Icon'
 import { buttonClass, Container } from '../components/ui/primitives'
 import { SocialIcons } from '../components/home/SocialLinks'
 import { MessageForm, TOPICS, type Topic } from '../components/contact/MessageForm'
@@ -23,54 +23,63 @@ interface ChannelProps {
   icon: ReactNode
   label: string
   value: string
-  note: string
   external?: boolean
-  highlight?: boolean
-  /** Chữ dài (email): nhỏ hơn và được xuống dòng thay vì bị cắt */
-  long?: boolean
 }
 
-/** Một kênh liên hệ dạng thẻ bấm được */
-function Channel({ href, icon, label, value, note, external, highlight, long }: ChannelProps) {
+/** Email ngắt dòng sau "ecopillo" (C2, 09/11/2026): "cskh@ecopillo / .com.vn", không bẻ giữa chữ */
+function breakEmail(value: string): ReactNode {
+  const dot = value.indexOf('.', value.indexOf('@'))
+  if (dot < 0) return value
+  return (
+    <>
+      {value.slice(0, dot)}
+      <wbr />
+      {value.slice(dot)}
+    </>
+  )
+}
+
+/** Ô hotline chàm trên cùng: thứ đầu tiên Quý khách thấy */
+function HotlineCard() {
+  return (
+    <a
+      href={CONTACT.hotlineTel}
+      className="group flex items-center gap-4 rounded-2xl bg-deep-800 p-4 text-ivory shadow-[var(--shadow-lift)] transition duration-300 hover:-translate-y-0.5 hover:bg-deep-700 sm:p-5"
+    >
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ivory/15 sm:h-12 sm:w-12">
+        <Icon name="phone" size={22} />
+      </span>
+      <span className="min-w-0 flex-1 leading-tight">
+        <span className="block text-label font-medium tracking-[0.12em] text-ivory/75 uppercase">Hotline</span>
+        <span className="tabular mt-1 block text-[1.35rem] font-medium sm:text-[1.5rem]">{CONTACT.hotlineDisplay}</span>
+        <span className="mt-0.5 block text-meta text-ivory/80">{OPENING_HOURS} · có Zalo</span>
+      </span>
+      <Icon name="arrowRight" size={18} className="shrink-0 opacity-60 transition group-hover:translate-x-0.5 group-hover:opacity-100" />
+    </a>
+  )
+}
+
+/**
+ * Ô kênh liên hệ thấp (C2 phương án 2, owner chốt 09/11/2026): biểu tượng cạnh nhãn, giá trị bên dưới.
+ * Điện thoại 2×2, từ 640px bốn ô một hàng dưới ô hotline.
+ */
+function Channel({ href, icon, label, value, external }: ChannelProps) {
+  const isEmail = value.includes('@')
   return (
     <a
       href={href}
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-      className={`group flex h-full gap-4 rounded-2xl p-4 transition duration-300 hover:-translate-y-0.5 sm:items-center sm:p-5 ${
-        highlight ? 'items-center' : 'flex-col items-start gap-3 sm:flex-row sm:gap-4'
-      } ${
-        highlight
-          ? 'bg-deep-800 text-ivory shadow-[var(--shadow-lift)] hover:bg-deep-700'
-          : 'bg-ivory text-deep-900 shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-soft)]'
-      }`}
+      className="group flex h-full min-h-[5.75rem] flex-col justify-between gap-2.5 rounded-2xl bg-ivory px-2.5 py-3 text-deep-900 min-[360px]:p-3 shadow-[var(--shadow-soft)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] sm:p-4"
     >
-      <span
-        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full sm:h-12 sm:w-12 ${
-          highlight ? 'bg-ivory/15' : 'bg-mist-100 text-deep-800'
-        }`}
-      >
-        {icon}
+      {/* Biểu tượng nhỏ, chữ giãn vừa: "Điện thoại" nằm một dòng ở cả 320px và ô máy tính */}
+      <span className="flex items-center gap-1.5 min-[360px]:gap-2">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-mist-100 text-deep-800">{icon}</span>
+        <span className="text-label font-medium tracking-[0.06em] whitespace-nowrap text-mist-600 uppercase">{label}</span>
       </span>
-      <span className="min-w-0 flex-1 leading-tight">
-        <span className={`block text-label font-medium tracking-[0.12em] uppercase ${highlight ? 'text-ivory/75' : 'text-mist-600'}`}>
-          {label}
-        </span>
-        {/* Email: chỉ cho xuống dòng ngay sau @ (trước bẻ giữa chữ "…com.v / n"). Số điện thoại xuống dòng chứ không cắt
-            khi khách bật chữ to (rà 23/10/2026: "không bao giờ cắt số") */}
-        <span className={`tabular mt-1 block font-medium ${long ? 'text-body' : highlight ? 'text-[1.25rem]' : 'text-body sm:text-[1.25rem]'}`}>
-          {long && value.includes('@') ? (
-            <>
-              {value.slice(0, value.indexOf('@') + 1)}
-              <wbr />
-              <span className="whitespace-nowrap">{value.slice(value.indexOf('@') + 1)}</span>
-            </>
-          ) : (
-            value
-          )}
-        </span>
-        <span className={`mt-0.5 text-meta ${highlight ? 'block text-ivory/80' : 'hidden text-ink-soft sm:block'}`}>{note}</span>
+      {/* Số điện thoại xuống dòng chứ không cắt khi khách bật chữ to (rà 23/10/2026: "không bao giờ cắt số") */}
+      <span className={`tabular block leading-tight font-medium ${isEmail ? 'text-small' : 'text-[0.875rem] min-[360px]:text-[0.95rem] sm:text-body'}`}>
+        {isEmail ? breakEmail(value) : value}
       </span>
-      <Icon name="arrowRight" size={18} className={`${highlight ? '' : 'hidden sm:block'} shrink-0 opacity-60 transition group-hover:translate-x-0.5 group-hover:opacity-100`} />
     </a>
   )
 }
@@ -83,51 +92,18 @@ const TOPIC_PARAM: Readonly<Record<string, Topic>> = {
   'don-hang': 'Hỏi về đơn hàng',
 }
 
-const CHANNELS: readonly (ChannelProps & { key: string; iconName?: IconName })[] = [
-  {
-    key: 'hotline',
-    href: CONTACT.hotlineTel,
-    icon: <Icon name="phone" size={22} />,
-    label: 'Hotline · có Zalo',
-    value: CONTACT.hotlineDisplay,
-    note: 'Tư vấn và đặt hàng',
-    highlight: true,
-  },
-  {
-    key: 'phone',
-    href: CONTACT.phoneTel,
-    icon: <Icon name="phone" size={22} />,
-    label: 'Điện thoại',
-    value: CONTACT.phoneDisplay,
-    note: 'Chăm sóc khách hàng',
-  },
-  {
-    key: 'zalo',
-    href: CONTACT.zaloUrl,
-    icon: <ZaloMark />,
-    label: 'Zalo',
-    value: 'Nhắn Zalo',
-    note: 'Gửi ảnh phòng, số đo giường',
-    external: true,
-  },
+const CHANNELS: readonly (ChannelProps & { key: string })[] = [
+  { key: 'phone', href: CONTACT.phoneTel, icon: <Icon name="phone" size={18} />, label: 'Điện thoại', value: CONTACT.phoneDisplay },
+  { key: 'zalo', href: CONTACT.zaloUrl, icon: <ZaloMark />, label: 'Zalo', value: CONTACT.hotlineDisplay, external: true },
   {
     key: 'messenger',
     href: CONTACT.messengerUrl,
-    icon: <Icon name="messenger" size={22} />,
+    icon: <Icon name="messenger" size={18} />,
     label: 'Messenger',
-    value: 'Nhắn Facebook',
-    note: 'Fanpage Ecopillo.com.vn',
+    value: 'Ecopillo.com.vn',
     external: true,
   },
-  {
-    key: 'email',
-    href: `mailto:${CONTACT.email}`,
-    icon: <Icon name="mail" size={22} />,
-    label: 'Email',
-    value: CONTACT.email,
-    note: 'Hợp đồng, báo giá dự án',
-    long: true,
-  },
+  { key: 'email', href: `mailto:${CONTACT.email}`, icon: <Icon name="mail" size={18} />, label: 'Email', value: CONTACT.email },
 ]
 
 /** Bản đồ địa chỉ văn phòng / chi nhánh; bấm Hà Nội / TP. HCM để đổi điểm */
@@ -247,13 +223,18 @@ export function ContactPage() {
             </ul>
           </div>
 
-          <ul className="grid grid-cols-2 content-center gap-3 xl:col-span-7">
-            {CHANNELS.map(({ key, ...c }, i) => (
-              <li key={key} className={i === 0 ? 'col-span-2' : c.long ? 'col-span-2 sm:col-span-1' : ''}>
-                <Channel {...c} />
-              </li>
-            ))}
-          </ul>
+          {/* Hotline trên cùng, bốn kênh 2×2 bên dưới (từ 640px: một hàng bốn ô) */}
+          <div className="flex flex-col justify-center gap-3 xl:col-span-7">
+            <HotlineCard />
+            {/* auto-rows-fr: hai hàng cao bằng nhau dù ô email hai dòng */}
+          <ul className="grid auto-rows-fr grid-cols-2 gap-2 min-[360px]:gap-3 sm:grid-cols-4">
+              {CHANNELS.map(({ key, ...c }) => (
+                <li key={key} className="min-w-0">
+                  <Channel {...c} />
+                </li>
+              ))}
+            </ul>
+          </div>
         </Container>
       </section>
 
