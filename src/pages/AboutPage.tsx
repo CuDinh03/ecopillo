@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { CertificateCabinet, PartnerLogos, PressQuotes } from '../components/about/Recognition'
-import { Chapter, PullQuote, Prose, STORY_COLUMN, StoryFigure } from '../components/about/StoryParts'
-import { BrandVideo } from '../components/home/BrandVideo'
+import { Chapter, PullQuote, Prose, STORY_LABEL, StoryFigure, StoryRail } from '../components/about/StoryParts'
+import { BrandVideoPlayer, YoutubeChannelLink } from '../components/home/BrandVideo'
 import { TrustStrip } from '../components/home/Craft'
 import { CountUp } from '../components/ui/CountUp'
 import { Icon, type IconName } from '../components/ui/Icon'
@@ -24,10 +24,9 @@ import {
   LYOCELL_TRAITS,
   MISSION,
   MISSION_IMAGE_ABOUT_PAGE,
+  MISSION_IMAGE_ABOUT_PAGE_POSITION,
   PHILOSOPHY,
-  SHOWROOM_GIFT_POSITION,
   STORY_OPENING,
-  isLongText,
   VISION,
   VISION_IMAGE,
 } from '../data/about'
@@ -42,6 +41,8 @@ import { revealDelay } from '../lib/reveal'
  * Trang Giới thiệu (/gioi-thieu, giữ đường link web cũ) dạng chương sách (mẫu 1, owner chọn 16/10/2026,
  * bìa là ảnh chị Phương tại VTV3 theo yêu cầu owner; mẫu: docs/de-xuat-trang-ve-chung-toi.html).
  * Bìa + mục lục → Lời mở → 6 chương số La Mã → Lời kết mời ghé thăm. Chữ dùng chung với trang chủ ở data/about.ts.
+ * Từ 09/11/2026 (mẫu 2, docs/de-xuat-gioi-thieu-dai-ly-09-11.html): mỗi phần một khối trắng nối bằng đường chỉ,
+ * xem StoryParts.tsx.
  * Tên chương là chữ nối mạch truyện, chờ Ecopillo duyệt cùng phần câu chuyện.
  */
 
@@ -73,7 +74,6 @@ const VISIT_IMAGE: ImageSource = {
   srcSet: '/images/details/hero-ed25-sm.webp 640w, /images/details/hero-ed25.webp 1200w',
   alt: 'Phòng ngủ trải bộ Eco Doris ED25',
 }
-const VALUE_ICONS: readonly IconName[] = ['award', 'recycle', 'lightbulb', 'community']
 
 export function AboutPage() {
   usePageMeta(
@@ -87,181 +87,183 @@ export function AboutPage() {
       <Cover />
       <TableOfContents />
 
-      <section id="loi-mo" aria-labelledby="loi-mo-tieu-de" className={`${STORY_COLUMN} scroll-mt-[5.5rem] pt-16 sm:pt-24`}>
-        <p className="eyebrow flex items-center gap-2">
-          <Icon name="night" size={15} className="text-deep-700" /> Lời mở
-        </p>
-        <h2 id="loi-mo-tieu-de" className="sr-only">
-          Lời mở: một giấc ngủ không trọn
-        </h2>
-        <Prose dropCap>{STORY_OPENING}</Prose>
-      </section>
+      <StoryRail>
+        <Chapter id="loi-mo" icon="night" eyebrow="Lời mở" title="Lời mở: một giấc ngủ không trọn" isTitleHidden>
+          <Prose dropCap>{STORY_OPENING}</Prose>
+        </Chapter>
 
-      <FounderLetter />
+        <FounderLetter />
 
-      <Chapter
-        id="chuong-1"
-        numeral="I"
-        icon="feather"
-        eyebrow="Người sáng lập"
-        title={
-          <>
-            Người làm nghề
-          </>
-        }
-      >
-        <Prose>
-          Người đặt nền móng cho thương hiệu là <strong>{FOUNDER_NAME}</strong>, hơn 15 năm trong nghề chăn ga, từ sản xuất đến bán lẻ.
-          Chị luôn trăn trở làm sao để mỗi sản phẩm giúp khách hàng tạo dựng một <em className="text-deep-900">“Chốn Yên”</em>.
-        </Prose>
-        <PullQuote>“{FOUNDER_QUOTE}”</PullQuote>
-      </Chapter>
+        <Chapter
+          id="chuong-1"
+          numeral="I"
+          icon="feather"
+          eyebrow="Người sáng lập"
+          title={
+            <>
+              Người làm nghề
+            </>
+          }
+        >
+          <Prose>
+            Người đặt nền móng cho thương hiệu là <strong>{FOUNDER_NAME}</strong>, hơn 15 năm trong nghề chăn ga, từ sản xuất đến bán lẻ.
+            Chị luôn trăn trở làm sao để mỗi sản phẩm giúp khách hàng tạo dựng một <em className="text-deep-900">“Chốn Yên”</em>.
+          </Prose>
+          <PullQuote>“{FOUNDER_QUOTE}”</PullQuote>
+        </Chapter>
 
-      <Chapter
-        id="chuong-2"
-        numeral="II"
-        icon="home"
-        eyebrow="Khát vọng"
-        title={
-          <>
-            Chốn Yên
-          </>
-        }
-      >
-        <p data-reveal className="font-display mt-8 rounded-[0.35rem] bg-mist-50 px-6 py-8 text-center text-[1.35rem] leading-snug text-balance text-deep-900 sm:text-[1.6rem]">
-          “Chốn Yên”: nơi giấc ngủ lành mạnh được vun đắp và cơ thể được phục hồi trọn vẹn.
-        </p>
-        <Prose>{BRAND_PROMISE}</Prose>
-      </Chapter>
-      <StoryFigure image={CHON_YEN_IMAGE} caption="Một Chốn Yên: phòng ngủ trải bộ Eco Doris ED25." />
+        <Chapter
+          id="chuong-2"
+          numeral="II"
+          icon="home"
+          eyebrow="Khát vọng"
+          title={
+            <>
+              Chốn Yên
+            </>
+          }
+        >
+          {/* Câu định nghĩa cùng kiểu ô trích các chương (trước là hộp trắng lạc màu) */}
+          <PullQuote isQuote={false}>“Chốn Yên”: nơi giấc ngủ lành mạnh được vun đắp và cơ thể được phục hồi trọn vẹn.</PullQuote>
+          <Prose>{BRAND_PROMISE}</Prose>
+          <StoryFigure image={CHON_YEN_IMAGE} caption="Một Chốn Yên: phòng ngủ trải bộ Eco Doris ED25." />
+        </Chapter>
 
-      <Chapter
-        id="chuong-3"
-        numeral="III"
-        icon="community"
-        eyebrow="Tốt · Thật · Thiện"
-        title={
-          <>
-            {/* Tên chương theo web cũ (khách 05/11/2026: "triết lý kinh doanh") */}
-            Triết lý kinh doanh
-          </>
-        }
-      >
-        <ol className="mt-8 border-b border-line">
-          {PHILOSOPHY.map((p, i) => (
-            <li key={p.word} data-reveal style={revealDelay(i)} className="grid gap-1 border-t border-line py-5 sm:grid-cols-[9rem_1fr] sm:items-baseline sm:gap-6">
-              <p className="font-display text-[3rem] leading-none text-deep-700 italic">{p.word}</p>
-              <p className="text-body leading-relaxed text-ink-soft">{p.text}</p>
-            </li>
-          ))}
-        </ol>
-      </Chapter>
+        <Chapter
+          id="chuong-3"
+          numeral="III"
+          icon="community"
+          eyebrow="Tốt · Thật · Thiện"
+          title={
+            <>
+              {/* Tên chương theo web cũ (khách 05/11/2026: "triết lý kinh doanh") */}
+              Triết lý kinh doanh
+            </>
+          }
+        >
+          {/* Chữ Tốt / Thật / Thiện đứng thẳng, đậm 600 (chị Phương 09/11/2026 chê chữ nghiêng to) */}
+          <ol className="mt-6 border-b border-line">
+            {PHILOSOPHY.map((p, i) => (
+              <li key={p.word} data-reveal style={revealDelay(i)} className="grid gap-1 border-t border-line py-4 sm:grid-cols-[8rem_1fr] sm:items-baseline sm:gap-5">
+                <p className="font-display text-[1.7rem] leading-none text-deep-900 sm:text-[2.1rem]">{p.word}</p>
+                <p className="text-body leading-relaxed text-ink-soft">{p.text}</p>
+              </li>
+            ))}
+          </ol>
+        </Chapter>
 
-      <Chapter
-        id="chuong-4"
-        numeral="IV"
-        icon="leaf"
-        eyebrow="Chất liệu và tay nghề"
-        title={
-          <>
-            Từ sợi gỗ đến giấc ngủ
-          </>
-        }
-      >
-        <Prose>{LYOCELL_INTRO}</Prose>
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4">
-          {[LYOCELL_IMAGE, EMBROIDERY_IMAGE].map((img, i) => (
-            <img
-              key={img.src}
-              src={img.src}
-              alt={img.alt}
-              loading="lazy"
-              decoding="async"
-              className={`aspect-[3/4] w-full rounded-[0.35rem] bg-cream-100 object-cover ${i === 1 ? 'mt-8 sm:mt-12' : ''}`}
-            />
-          ))}
-        </div>
-        <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-5">
-          {LYOCELL_TRAITS.map((t) => (
-            <div key={t.title}>
-              <dt className="font-display flex items-center gap-2 text-[1.15rem] text-deep-900">
-                <Icon name="leaf" size={15} className="text-deep-700" />
-                {t.title}
-              </dt>
-              <dd className="mt-1 text-small leading-relaxed text-ink-soft">{t.text}</dd>
-            </div>
-          ))}
-        </dl>
-        <PullQuote>“{CRAFT_QUOTE}”</PullQuote>
-      </Chapter>
-      <div className="mt-12 sm:mt-16">
-        <BrandVideo />
-      </div>
-
-      <Chapter
-        id="chuong-5"
-        numeral="V"
-        icon="compass"
-        eyebrow="Sứ mệnh, tầm nhìn"
-        title={
-          <>
-            Điều chúng tôi theo đuổi
-          </>
-        }
-      >
-        <div className="mt-8 grid gap-8 sm:grid-cols-2">
-          {[
-            { label: 'Sứ mệnh', paragraphs: MISSION, image: MISSION_IMAGE_ABOUT_PAGE, position: SHOWROOM_GIFT_POSITION },
-            { label: 'Tầm nhìn', paragraphs: [VISION], image: VISION_IMAGE, position: undefined },
-          ].map((m, i) => (
-            <article key={m.label} data-reveal style={revealDelay(i)}>
+        <Chapter
+          id="chuong-4"
+          numeral="IV"
+          icon="leaf"
+          eyebrow="Chất liệu và tay nghề"
+          title={
+            <>
+              Từ sợi gỗ đến giấc ngủ
+            </>
+          }
+        >
+          <Prose>{LYOCELL_INTRO}</Prose>
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4">
+            {[LYOCELL_IMAGE, EMBROIDERY_IMAGE].map((img, i) => (
               <img
-                src={m.image.src}
-                srcSet={m.image.srcSet || undefined}
-                alt={m.image.alt}
+                key={img.src}
+                src={img.src}
+                alt={img.alt}
                 loading="lazy"
                 decoding="async"
-                style={m.position ? { objectPosition: m.position } : undefined}
-                className="aspect-[3/2] w-full rounded-[0.35rem] bg-cream-100 object-cover"
+                className={`aspect-[3/4] w-full rounded-2xl bg-mist-100 object-cover ${i === 1 ? 'mt-8 sm:mt-12' : ''}`}
               />
-              <p className="eyebrow mt-4">{m.label}</p>
-              {m.paragraphs.map((text) => (
-                <p key={text} className={`font-display mt-2 text-deep-900 ${isLongText(m.paragraphs.join(' ')) ? 'text-[1.05rem] leading-relaxed' : 'text-[1.2rem] leading-snug'}`}>
-                  {text}
-                </p>
-              ))}
-            </article>
-          ))}
-        </div>
-        <p className="eyebrow mt-10">Giá trị cốt lõi</p>
-        <ul className="mt-3 border-b border-line">
-          {CORE_VALUES.map((v, i) => (
-            <li key={v.title} className="flex gap-4 border-t border-line py-4">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-mist-100 text-deep-700">
-                <Icon name={VALUE_ICONS[i]} size={18} />
-              </span>
-              <span>
-                <span className="block font-medium text-deep-900">{v.title}</span>
-                <span className="mt-0.5 block text-small text-ink-soft">{v.text}</span>
-              </span>
-            </li>
-          ))}
-        </ul>
-      </Chapter>
+            ))}
+          </div>
+          <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-5">
+            {LYOCELL_TRAITS.map((t) => (
+              <div key={t.title}>
+                <dt className="font-display flex items-center gap-2 text-[1.15rem] text-deep-900">
+                  <Icon name="leaf" size={15} className="text-deep-700" />
+                  {t.title}
+                </dt>
+                <dd className="mt-1 text-small leading-relaxed text-ink-soft">{t.text}</dd>
+              </div>
+            ))}
+          </dl>
+          <PullQuote>“{CRAFT_QUOTE}”</PullQuote>
+        </Chapter>
 
-      <Chapter
-        id="chuong-6"
-        numeral="VI"
-        icon="award"
-        eyebrow="Chứng nhận, đối tác"
-        title={
-          <>
-            Được ghi nhận
-          </>
-        }
-      >
-        <Recognition />
-      </Chapter>
+        {/* Phim thương hiệu cùng kiểu khối như các chương (trước là một dải riêng giống trang chủ) */}
+        <Chapter id="phim" icon="play" eyebrow="Phim thương hiệu" title="Một giấc ngủ được nâng niu">
+          <Prose>Ba phút để cảm nhận chất vải Lyocell, đường chần thêu và không gian phòng ngủ Ecopillo.</Prose>
+          <BrandVideoPlayer className="mt-6 rounded-2xl" />
+          <YoutubeChannelLink />
+        </Chapter>
+
+        <Chapter
+          id="chuong-5"
+          numeral="V"
+          icon="compass"
+          eyebrow="Sứ mệnh, tầm nhìn"
+          title={
+            <>
+              Điều chúng tôi theo đuổi
+            </>
+          }
+        >
+          <div className="mt-6 grid gap-7 sm:grid-cols-2">
+            {[
+              { label: 'Sứ mệnh', paragraphs: MISSION, image: MISSION_IMAGE_ABOUT_PAGE, position: MISSION_IMAGE_ABOUT_PAGE_POSITION },
+              { label: 'Tầm nhìn', paragraphs: [VISION], image: VISION_IMAGE, position: undefined },
+            ].map((m, i) => (
+              <article key={m.label} data-reveal style={revealDelay(i)}>
+                <img
+                  src={m.image.src}
+                  srcSet={m.image.srcSet || undefined}
+                  alt={m.image.alt}
+                  loading="lazy"
+                  decoding="async"
+                  style={m.position ? { objectPosition: m.position } : undefined}
+                  className="aspect-[3/2] w-full rounded-xl bg-mist-100 object-cover"
+                />
+                <p className={`mt-4 ${STORY_LABEL}`}>{m.label}</p>
+                {/* Chữ thường của web, không nghiêng (chị Phương 09/11/2026: "in thường, điều chỉnh font chữ") */}
+                {m.paragraphs.map((text) => (
+                  <p key={text} className="mt-2 text-body-sm leading-[1.75] text-ink-soft">
+                    {text}
+                  </p>
+                ))}
+              </article>
+            ))}
+          </div>
+          {/* Giá trị cốt lõi: lưới 2 × 2 ô xanh nhạt có số (mẫu 2, chị Phương 09/11/2026 "in đậm") */}
+          <p className={`mt-9 ${STORY_LABEL}`}>Giá trị cốt lõi</p>
+          <ol className="mt-3 grid gap-2.5 sm:grid-cols-2">
+            {CORE_VALUES.map((v, i) => (
+              <li key={v.title} data-reveal style={revealDelay(i)} className="flex gap-3 rounded-[0.875rem] bg-mist-100 p-3.5">
+                <span aria-hidden="true" className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full bg-ivory text-[0.9rem] font-semibold text-deep-900">
+                  {i + 1}
+                </span>
+                <span>
+                  <span className="block font-semibold text-deep-900">{v.title}</span>
+                  <span className="mt-0.5 block text-meta leading-relaxed text-ink-soft">{v.text}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </Chapter>
+
+        <Chapter
+          id="chuong-6"
+          numeral="VI"
+          icon="award"
+          eyebrow="Chứng nhận, đối tác"
+          title={
+            <>
+              Được ghi nhận
+            </>
+          }
+        >
+          <Recognition />
+        </Chapter>
+      </StoryRail>
 
       <div className="mt-16 sm:mt-24">
         <TrustStrip />
@@ -361,14 +363,14 @@ function Recognition() {
           alt={AWARD_IMAGE.alt}
           loading="lazy"
           decoding="async"
-          className="aspect-[2/1] w-full rounded-[0.35rem] bg-cream-100 object-cover"
+          className="aspect-[2/1] w-full rounded-2xl bg-mist-100 object-cover"
         />
-        <figcaption className="font-display mt-3 text-center text-body-sm text-ink-faint italic">Lễ công bố {AWARD_NAME}.</figcaption>
+        <figcaption className="font-display mt-2.5 text-body-sm text-ink-faint italic">Lễ công bố {AWARD_NAME}.</figcaption>
       </figure>
       {/* 1A: tủ chứng nhận, ảnh giấy cắt từ catalog 22.07.2026 (owner chọn 24/10/2026) */}
       <CertificateCabinet />
       {/* 2A: báo chí, bấm logo đổi câu trích */}
-      <p className="eyebrow mt-14 flex items-center gap-2">
+      <p className={`mt-12 flex items-center gap-2 ${STORY_LABEL}`}>
         <Icon name="quote" size={15} className="text-deep-700" /> Báo chí nói về Ecopillo
       </p>
       <h3 className="font-display mt-3 text-[1.6rem] leading-tight text-deep-900 sm:text-[2rem]">
@@ -376,11 +378,12 @@ function Recognition() {
       </h3>
       <PressQuotes />
       {/* Đối tác (3A): May 10, DBV Insurance không phải khách sạn nên gọi chung là đối tác */}
-      <p className="eyebrow mt-14 flex items-center gap-2">
+      <p className={`mt-12 flex items-center gap-2 ${STORY_LABEL}`}>
         <Icon name="building" size={15} className="text-deep-700" /> Đối tác
       </p>
       <Prose>Ngoài các gia đình, Ecopillo may chăn ga gối theo kích thước cho khách sạn, khu nghỉ dưỡng và doanh nghiệp trên cả nước.</Prose>
-      <PartnerLogos partners={HOTEL_PARTNERS} className="mt-6" />
+      {/* Trong khối trắng: ô logo xanh nhạt, không bóng (như ô Giá trị cốt lõi) */}
+      <PartnerLogos partners={HOTEL_PARTNERS} className="mt-6" itemClassName="h-16 sm:h-20 !bg-mist-100 !shadow-none" />
       <Link to={PATHS.hotel} className={buttonClass('secondary', 'md', 'mt-6')}>
         <Icon name="building" size={17} />
         Khách sạn và dự án
@@ -440,22 +443,14 @@ function Closing() {
  */
 function FounderLetter() {
   return (
-    <section id="thu-sang-lap" aria-labelledby="thu-sang-lap-tieu-de" className={`${STORY_COLUMN} scroll-mt-[5.5rem] pt-16 sm:pt-24`}>
-      <header data-reveal="left">
-        <p className="eyebrow flex items-center gap-2">
-          <Icon name="feather" size={15} className="text-deep-700" /> Thư
-        </p>
-        <h2 id="thu-sang-lap-tieu-de" className="font-display mt-3 text-[2rem] leading-[1.1] text-balance text-deep-900 sm:text-[3rem]">
-          Chia sẻ từ người sáng lập
-        </h2>
-      </header>
+    <Chapter id="thu-sang-lap" icon="feather" eyebrow="Thư" title="Chia sẻ từ người sáng lập">
       <blockquote className="mt-2">
         {FOUNDER_LETTER.map((paragraph) => (
           <Prose key={paragraph.slice(0, 24)}>{paragraph}</Prose>
         ))}
       </blockquote>
       {/* Hai ảnh đi kèm thư trong catalog, cùng một chương trình nên chung một chú thích */}
-      <figure data-reveal className="mt-8 overflow-hidden rounded-[0.35rem] bg-ivory shadow-[var(--shadow-soft)]">
+      <figure data-reveal className="mt-6 overflow-hidden rounded-2xl bg-mist-100">
         <div className="grid gap-1 sm:grid-cols-2">
           {FOUNDER_LETTER_IMAGES.map((image) => (
             <img
@@ -476,13 +471,13 @@ function FounderLetter() {
           {FEATURED_EVENT.title} · {FEATURED_EVENT.when}.
         </figcaption>
       </figure>
-      <p data-reveal className="font-display mt-10 text-center text-[1.35rem] leading-snug text-deep-800">
+      <p data-reveal className="font-display mt-8 text-center text-[1.35rem] leading-snug text-deep-800">
         <span className="mx-auto mb-5 block h-px w-40 bg-deep-700/40" aria-hidden="true" />
         {FOUNDER_SIGNATURE[0]}
         <span className="mt-1 block text-body-sm text-ink-soft italic">
           {FOUNDER_SIGNATURE[1]} · {FOUNDER_SIGNATURE[2]}
         </span>
       </p>
-    </section>
+    </Chapter>
   )
 }

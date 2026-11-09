@@ -28,6 +28,45 @@ const command = (frame: HTMLIFrameElement | null, func: 'playVideo' | 'pauseVide
  * để trang vẫn nhẹ. Khách bật "giảm chuyển động" thì không tự phát, bấm mới phát.
  */
 export function BrandVideo() {
+  return (
+    <section aria-labelledby="video-title" className="py-14 sm:py-24">
+      <Container className="grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
+        <div className="lg:col-span-4">
+          <SectionHeading
+            id="video-title"
+            title="Một giấc ngủ được nâng niu"
+            lead="Ba phút để cảm nhận chất vải Lyocell, đường chần thêu và không gian phòng ngủ Ecopillo."
+          />
+          <YoutubeChannelLink />
+        </div>
+
+        <div className="lg:col-span-8">
+          <BrandVideoPlayer />
+        </div>
+      </Container>
+    </section>
+  )
+}
+
+/** Link kênh YouTube Ecopillo */
+export function YoutubeChannelLink() {
+  return (
+    <a
+      href={CONTACT.youtubeUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="mt-4.5 -mb-2.5 inline-flex items-center gap-2 py-2.5 text-sm font-medium text-deep-800 underline-offset-4 hover:underline"
+    >
+      <Icon name="youtube" size={18} /> Xem thêm trên kênh YouTube Ecopillo
+    </a>
+  )
+}
+
+/**
+ * Khung phim (ảnh bìa, tự phát khi lướt tới). Tách riêng để trang Giới thiệu đặt phim vào khối chương của mình
+ * (mẫu 2, owner chọn 09/11/2026); trang chủ và StoryTabs vẫn dùng BrandVideo đầy đủ như cũ.
+ */
+export function BrandVideoPlayer({ className = 'rounded-[1.75rem] shadow-[var(--shadow-lift)]' }: { className?: string }) {
   const [mode, setMode] = useState<Mode>('cover')
   const [isMuted, setIsMuted] = useState(true)
   const [isFrameReady, setIsFrameReady] = useState(false)
@@ -61,87 +100,65 @@ export function BrandVideo() {
   }
 
   return (
-    <section aria-labelledby="video-title" className="py-14 sm:py-24">
-      <Container className="grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
-        <div className="lg:col-span-4">
-          <SectionHeading
-            id="video-title"
-            title="Một giấc ngủ được nâng niu"
-            lead="Ba phút để cảm nhận chất vải Lyocell, đường chần thêu và không gian phòng ngủ Ecopillo."
+    <div ref={boxRef} data-reveal className={`relative aspect-video overflow-hidden bg-deep-950 ${className}`}>
+      {mode === 'cover' ? (
+        <button
+          type="button"
+          onClick={() => {
+            setIsMuted(false)
+            setMode('manual')
+          }}
+          className="group absolute inset-0 h-full w-full text-left"
+          aria-label={`Phát video: ${BRAND_VIDEO.title}`}
+        >
+          <Placeholder
+            className="absolute inset-0 h-full w-full transition-transform duration-700 ease-[var(--ease-soft)] group-hover:scale-[1.03]"
+            tone="deep"
+            note="Ảnh bìa video"
+            image={COVER}
+            sizes="(min-width: 1024px) 800px, 100vw"
+            position="50% 25%"
           />
-          <a
-            href={CONTACT.youtubeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-4.5 -mb-2.5 inline-flex items-center gap-2 py-2.5 text-sm font-medium text-deep-800 underline-offset-4 hover:underline"
-          >
-            <Icon name="youtube" size={18} /> Xem thêm trên kênh YouTube Ecopillo
-          </a>
-        </div>
-
-        <div className="lg:col-span-8">
-          <div ref={boxRef} data-reveal className="relative aspect-video overflow-hidden rounded-[1.75rem] bg-deep-950 shadow-[var(--shadow-lift)]">
-            {mode === 'cover' ? (
-              <button
-                type="button"
-                onClick={() => {
-                  setIsMuted(false)
-                  setMode('manual')
-                }}
-                className="group absolute inset-0 h-full w-full text-left"
-                aria-label={`Phát video: ${BRAND_VIDEO.title}`}
-              >
-                <Placeholder
-                  className="absolute inset-0 h-full w-full transition-transform duration-700 ease-[var(--ease-soft)] group-hover:scale-[1.03]"
-                  tone="deep"
-                  note="Ảnh bìa video"
-                  image={COVER}
-                  sizes="(min-width: 1024px) 800px, 100vw"
-                  position="50% 25%"
-                />
-                <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-deep-950/75 via-deep-950/10 to-transparent" />
-                <span className="absolute inset-0 flex items-center justify-center">
-                  <span className="relative flex h-16 w-16 items-center sm:h-20 sm:w-20 justify-center rounded-full bg-ivory/95 text-deep-800 shadow-[var(--shadow-lift)] transition-transform duration-300 group-hover:scale-110">
-                    {/* Vòng lan nhẹ quanh nút phát */}
-                    <span aria-hidden="true" className="pulse-ring absolute inset-0 rounded-full ring-2 ring-ivory/70" />
-                    <Icon name="play" size={30} className="translate-x-0.5" fill="currentColor" />
-                  </span>
-                </span>
-                <span className="absolute inset-x-6 bottom-5 hidden text-ivory sm:block">
-                  <span className="block text-label tracking-[0.12em] text-mist-200 uppercase">YouTube · Ecopillo Việt Nam</span>
-                  <span className="font-display mt-1 block text-xl sm:text-2xl">{BRAND_VIDEO.title}</span>
-                </span>
-              </button>
-            ) : (
-              <>
-                {/* Ảnh bìa nằm dưới, khung YouTube mờ dần hiện lên khi tải xong: không còn mảng chàm trống lúc chờ.
-                    Lúc còn trong suốt thì không nhận phím Tab (rà bàn phím 06/11/2026: YouTube tải chậm hoặc bị chặn thì tiêu điểm rơi vào khung vô hình) */}
-                <Placeholder className="absolute inset-0 h-full w-full" tone="deep" note="Ảnh bìa video" image={COVER} sizes="(min-width: 1024px) 800px, 100vw" position="50% 25%" />
-                <iframe
-                  ref={frameRef}
-                  onLoad={() => setIsFrameReady(true)}
-                  tabIndex={isFrameReady ? undefined : -1}
-                  className={`absolute inset-0 h-full w-full transition-opacity duration-300 ${isFrameReady ? 'opacity-100' : 'opacity-0'}`}
-                  src={embedUrl(mode === 'auto')}
-                  title={BRAND_VIDEO.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  referrerPolicy="strict-origin-when-cross-origin"
-                />
-                {mode === 'auto' && isMuted && (
-                  <button
-                    type="button"
-                    onClick={unmute}
-                    className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-ivory/95 px-4 py-2 text-sm font-medium text-deep-900 shadow-[var(--shadow-soft)] transition hover:bg-ivory"
-                  >
-                    <Icon name="volume" size={16} /> Bật tiếng
-                  </button>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-      </Container>
-    </section>
+          <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-deep-950/75 via-deep-950/10 to-transparent" />
+          <span className="absolute inset-0 flex items-center justify-center">
+            <span className="relative flex h-16 w-16 items-center sm:h-20 sm:w-20 justify-center rounded-full bg-ivory/95 text-deep-800 shadow-[var(--shadow-lift)] transition-transform duration-300 group-hover:scale-110">
+              {/* Vòng lan nhẹ quanh nút phát */}
+              <span aria-hidden="true" className="pulse-ring absolute inset-0 rounded-full ring-2 ring-ivory/70" />
+              <Icon name="play" size={30} className="translate-x-0.5" fill="currentColor" />
+            </span>
+          </span>
+          <span className="absolute inset-x-6 bottom-5 hidden text-ivory sm:block">
+            <span className="block text-label tracking-[0.12em] text-mist-200 uppercase">YouTube · Ecopillo Việt Nam</span>
+            <span className="font-display mt-1 block text-xl sm:text-2xl">{BRAND_VIDEO.title}</span>
+          </span>
+        </button>
+      ) : (
+        <>
+          {/* Ảnh bìa nằm dưới, khung YouTube mờ dần hiện lên khi tải xong: không còn mảng chàm trống lúc chờ.
+              Lúc còn trong suốt thì không nhận phím Tab (rà bàn phím 06/11/2026: YouTube tải chậm hoặc bị chặn thì tiêu điểm rơi vào khung vô hình) */}
+          <Placeholder className="absolute inset-0 h-full w-full" tone="deep" note="Ảnh bìa video" image={COVER} sizes="(min-width: 1024px) 800px, 100vw" position="50% 25%" />
+          <iframe
+            ref={frameRef}
+            onLoad={() => setIsFrameReady(true)}
+            tabIndex={isFrameReady ? undefined : -1}
+            className={`absolute inset-0 h-full w-full transition-opacity duration-300 ${isFrameReady ? 'opacity-100' : 'opacity-0'}`}
+            src={embedUrl(mode === 'auto')}
+            title={BRAND_VIDEO.title}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
+          />
+          {mode === 'auto' && isMuted && (
+            <button
+              type="button"
+              onClick={unmute}
+              className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-ivory/95 px-4 py-2 text-sm font-medium text-deep-900 shadow-[var(--shadow-soft)] transition hover:bg-ivory"
+            >
+              <Icon name="volume" size={16} /> Bật tiếng
+            </button>
+          )}
+        </>
+      )}
+    </div>
   )
 }

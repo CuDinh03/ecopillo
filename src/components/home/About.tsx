@@ -14,7 +14,7 @@ import {
   AWARD_IMAGE,
   AWARD_NAME,
   VALUES_IMAGE,
-  SHOWROOM_GIFT_POSITION,
+  VALUES_IMAGE_POSITION,
 } from '../../data/about'
 import type { ImageSource } from '../../data/catalog'
 import { PATHS } from '../../data/links'
@@ -113,7 +113,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
           <MissionCard label="Tầm nhìn" image={VISION_IMAGE}>
             <MissionText isLong={isLongText(VISION)}>{VISION}</MissionText>
           </MissionCard>
-          <MissionCard label="Giá trị cốt lõi" image={VALUES_IMAGE} position={SHOWROOM_GIFT_POSITION}>
+          <MissionCard label="Giá trị cốt lõi" image={VALUES_IMAGE} position={VALUES_IMAGE_POSITION}>
             <ul className="mt-4 grid grid-cols-1 gap-x-6 gap-y-3.5 sm:grid-cols-2">
               {CORE_VALUES.map((v) => (
                 <li key={v.title} className="flex gap-3">

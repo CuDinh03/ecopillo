@@ -64,16 +64,19 @@ export const VALUES_SHORT = [
   { word: 'Thiện', text: 'với thiên nhiên' },
 ] as const
 
-/** Triết lý kinh doanh: chép nguyên văn web cũ (khách yêu cầu 05/11/2026). Chữ to là `word`, câu đọc liền: "Tốt trong từng…" */
+/**
+ * Triết lý kinh doanh: chép nguyên văn web cũ (khách yêu cầu 05/11/2026). Chữ to là `word`.
+ * Câu mô tả viết hoa đầu câu (chị Phương 09/11/2026 "in hoa", owner duyệt cách a), chữ `word` đứng thẳng.
+ */
 export const PHILOSOPHY = [
   {
     word: 'Tốt',
-    text: 'trong từng nguyên liệu được lựa chọn, từng chi tiết được chế tác, đảm bảo mang lại trải nghiệm trọn vẹn nhất cho bạn.',
+    text: 'Trong từng nguyên liệu được lựa chọn, từng chi tiết được chế tác, đảm bảo mang lại trải nghiệm trọn vẹn nhất cho bạn.',
   },
-  { word: 'Thật', text: 'trong cách chúng tôi làm việc, thể hiện sự chính trực, tận tâm và minh bạch.' },
+  { word: 'Thật', text: 'Trong cách chúng tôi làm việc, thể hiện sự chính trực, tận tâm và minh bạch.' },
   {
     word: 'Thiện',
-    text: 'trong từng hành động hướng đến cộng đồng và môi trường, bởi chúng tôi tin rằng kinh doanh không chỉ để phát triển mà còn để lan tỏa những điều tốt đẹp nhất.',
+    text: 'Trong từng hành động hướng đến cộng đồng và môi trường, bởi chúng tôi tin rằng kinh doanh không chỉ để phát triển mà còn để lan tỏa những điều tốt đẹp nhất.',
   },
 ] as const
 
@@ -104,16 +107,18 @@ export const VISION_IMAGE: ImageSource = {
 }
 
 /**
- * Trang Giới thiệu, chương V: ảnh trao quà tận nhà đã nằm trong thư nhà sáng lập cuối trang (FOUNDER_LETTER_IMAGES),
- * nên thẻ Sứ mệnh ở đó dùng ảnh trao quà tại phòng trưng bày để một trang không lặp ảnh.
+ * Trang Giới thiệu, chương V: ảnh trao quà tận nhà đã nằm trong thư nhà sáng lập (FOUNDER_LETTER_IMAGES),
+ * nên thẻ Sứ mệnh ở đó dùng ảnh khác để một trang không lặp ảnh.
+ * Ảnh khai trương chi nhánh TP. HCM (chị Phương 09/11/2026: "đưa hình cty mình, ko đưa hình cty khách", owner duyệt cách 1),
+ * thay ảnh trao quà tại phòng trưng bày của khách. Cùng ảnh với sự kiện lớn ở trang Quà tặng và sự kiện (data/events.ts).
+ * Ảnh 1200×750 (16:10) cắt còn 3:2: lệch xuống một chút để giữ băng khai trương và người.
  */
 export const MISSION_IMAGE_ABOUT_PAGE: ImageSource = {
-  src: '/images/qua-tang/trao-qua-showroom-1.webp',
-  srcSet: '/images/qua-tang/trao-qua-showroom-1-sm.webp 520w, /images/qua-tang/trao-qua-showroom-1.webp 1000w',
-  alt: 'Ecopillo trao hộp quà cho một đoàn khách tại phòng trưng bày',
+  src: '/images/events/khai-truong-hcm-ngang.webp',
+  srcSet: '/images/events/khai-truong-hcm-ngang-sm.webp 640w, /images/events/khai-truong-hcm-ngang.webp 1200w',
+  alt: 'Lễ cắt băng khai trương chi nhánh Ecopillo TP. Hồ Chí Minh',
 }
-/** Ảnh vuông 1000×1000 cắt còn 3:2: giữ phần người và hộp quà, bớt trần nhà */
-export const SHOWROOM_GIFT_POSITION = '50% 58%'
+export const MISSION_IMAGE_ABOUT_PAGE_POSITION = '50% 55%'
 
 export const CORE_VALUES = [
   { icon: 'award', title: 'Chất lượng vượt trội', text: 'Nguyên liệu tự nhiên, công nghệ tiên tiến.' },
@@ -124,10 +129,11 @@ export const CORE_VALUES = [
 
 /**
  * Mục 12 (khách 16/10/2026: bốn khối "phải đồng nhất cấu trúc"), owner chọn kiểu A 17/10: thẻ Giá trị cốt lõi cũng có ảnh.
- * Ảnh đội ngũ Hà Nội chuyển sang thẻ Tầm nhìn (06/11/2026), nên thẻ này dùng ảnh trao quà tại phòng trưng bày (cùng ảnh ở trang Quà tặng)
- * cho tới khi Ecopillo gửi ảnh riêng (câu hỏi 11 trong Excel).
+ * Ảnh đội ngũ Hà Nội chuyển sang thẻ Tầm nhìn (06/11/2026). Từ 09/11/2026 dùng ảnh khai trương chi nhánh TP. HCM
+ * (ảnh của chính Ecopillo, thay ảnh trao quà ở phòng trưng bày khách) cho tới khi Ecopillo gửi ảnh riêng (câu hỏi 11 trong Excel).
  */
 export const VALUES_IMAGE = MISSION_IMAGE_ABOUT_PAGE
+export const VALUES_IMAGE_POSITION = MISSION_IMAGE_ABOUT_PAGE_POSITION
 
 export const AWARD_NAME = 'Thương hiệu dẫn đầu Việt Nam 2025'
 export const AWARD_IMAGE = staticImage('/images/about/thuong-hieu-dan-dau.webp', 'Ecopillo tại lễ công bố Thương hiệu dẫn đầu Việt Nam 2025')
@@ -200,7 +206,7 @@ export const FOUNDER_HONOURS: readonly Certificate[] = [
 export const BRAND_STATS = [
   { value: '15+', label: 'năm trong nghề chăn ga gối đệm' },
   { value: '15.000+', label: 'gia đình, khách sạn tin dùng' },
-  { value: '3', label: 'văn phòng tại Hà Nội, Đà Nẵng và TP. HCM' },
+  { value: '2', label: 'văn phòng tại Hà Nội và TP. HCM' },
 ] as const
 
 /** Chất liệu và tay nghề (dùng chung với BrandStory ở trang chủ) */
