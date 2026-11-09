@@ -96,5 +96,6 @@ export const MATTRESS_CHIPS: readonly MattressChip[] = [
 export const MATTRESS_ALL_PATH = DEM_PATH
 /** Khách 09/11/2026: "bộ sưu tập đệm - bộ sưu tập chăn ga nó bằng chữ nhau": tiêu đề cùng kiểu với "Bộ sưu tập chăn ga", bỏ nhãn nhỏ "Đệm Ecopillo" */
 export const MATTRESS_PICKER_TITLE = 'Bộ sưu tập đệm'
+/** Khách 09/11/2026 (chị Phương): "hệ thống phân phối và showroom Ecopillo trên toàn quốc" thay "ở Hà Nội, Đà Nẵng và TP. HCM" */
 export const MATTRESS_PICKER_LEAD =
-  'Lò xo, cao su thiên nhiên, foam, bông ép và topper, bảo hành tới 15 năm. Nằm thử tại hệ thống phân phối ở Hà Nội, Đà Nẵng và TP. HCM.'
+  'Lò xo, cao su thiên nhiên, foam, bông ép và topper, bảo hành tới 15 năm. Nằm thử tại hệ thống phân phối và showroom Ecopillo trên toàn quốc.'
