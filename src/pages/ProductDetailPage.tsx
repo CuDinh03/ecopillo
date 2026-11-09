@@ -100,9 +100,10 @@ function ProductDetail({ product }: { product: Product }) {
               {image && <ZoomTrigger onOpen={lightbox.open} />}
             </div>
             {photos.length > 1 && (
-              <ul aria-label="Ảnh sản phẩm" className="mt-3 flex gap-2.5">
+              // Vuốt ngang như trang bộ sưu tập (ChapterParts): divan có 22 ảnh, không cuộn thì hàng ảnh đẩy rộng cả trang (khách báo 09/11/2026)
+              <ul aria-label="Ảnh sản phẩm" className="mt-3 flex gap-2.5 overflow-x-auto p-1 [scrollbar-width:none]">
                 {photos.map((photo, i) => (
-                  <li key={photo.src}>
+                  <li key={photo.src} className="shrink-0">
                     <button
                       type="button"
                       onClick={() => setPhotoIndex(i)}

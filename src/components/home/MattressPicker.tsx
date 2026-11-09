@@ -25,7 +25,6 @@ export function MattressPicker() {
           <SectionHeading
             id="chon-dem-title"
             className="sm:max-w-2xl"
-            eyebrow="Đệm Ecopillo"
             title={MATTRESS_PICKER_TITLE}
             lead={MATTRESS_PICKER_LEAD}
           />
