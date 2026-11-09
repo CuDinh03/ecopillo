@@ -182,6 +182,8 @@ const PRODUCT_SLUGS: Readonly<Record<string, string>> = {
   'vo-goi-nam': 'vo-goi-nam',
   'vo-goi-tre-em': 'vo-goi-tre-em',
   'vo-goi-om': 'vo-goi-om',
+  // Khách yêu cầu thêm 09/11/2026: dùng lại trang đệm tròn của web cũ thay cho 301 sang danh mục Đệm
+  'dem-tron-cao-cap-ecopillo': 'dem-tron-cao-cap-ecopillo',
 }
 
 const productPagePath = (slug: string): string => `/san-pham/${slug}/`
@@ -344,9 +346,9 @@ export const OLD_SITE_REDIRECTS: Readonly<Record<string, string>> = {
   // Sản phẩm lẻ web mới chưa có [XÁC NHẬN]
   '/san-pham/dem-foam-cao-cap-nano-comfort/': '/danh-muc-san-pham/san-pham/dem-foam/',
   '/san-pham/dem-lo-xo-cao-cap-eco-premium/': '/danh-muc-san-pham/san-pham/dem-lo-xo/',
-  '/san-pham/dem-tron-cao-cap-ecopillo/': '/danh-muc-san-pham/dem-ecopillo/',
   '/san-pham/ruot-goi-dau-ecopillo/': '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/',
   '/san-pham/chan-he-e-cool-ecopillo/': COLLECTION_PATHS['chan-he-lyocell'],
+  // Khăn: bảng giá 2026 ghi "Giá liên hệ", không có trang riêng; trang Khách sạn có thẻ khăn trong khối Sản phẩm (09/11/2026)
   '/san-pham/khan-tam-khan-tay-khan-mat-ecopillo/': PATHS.hotel,
   // Thẻ bài viết, trang tác giả (web cũ đã chặn /author/ trong robots.txt), khối giao diện của theme cũ
   '/tag/menh-duong-lieu-moc/': PATHS.blog,

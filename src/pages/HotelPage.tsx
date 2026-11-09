@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { CertificateBadges, PartnerLogos } from '../components/about/Recognition'
 import { MessageForm } from '../components/contact/MessageForm'
+import { HotelProducts } from '../components/hotel/HotelProducts'
 import { WhiteGoods } from '../components/hotel/WhiteGoods'
+import { scrollToElement } from '../lib/scroll'
 import { Icon } from '../components/ui/Icon'
 import { Breadcrumb } from '../components/ui/PageHero'
 import { buttonClass, Container } from '../components/ui/primitives'
@@ -16,6 +18,7 @@ import { revealDelay } from '../lib/reveal'
  * Trang Khách sạn và dự án (biên bản mục 30, 48): chăn ga gối cho khách sạn, resort, nhà nghỉ, dự án.
  * Bố cục kiểu tạp chí (mẫu 1, owner chọn 15/10/2026): ảnh lớn nửa trang, chữ serif lớn,
  * khối Hàng trắng ba tab (phản hồi 05/11 mục 12, phương án C — thay "sáu lớp đồ vải"),
+ * chín sản phẩm của danh mục khách sạn web cũ (khách yêu cầu 09/11/2026),
  * câu trích trên nền chàm, quy trình 5 số nghiêng, form báo giá cạnh ảnh phòng.
  * Form báo giá dùng chung form Liên hệ, chọn sẵn chủ đề "Khách sạn, nhà nghỉ".
  */
@@ -41,15 +44,21 @@ export function HotelPage() {
   )
   // Chữ điền sẵn vào form khi bấm "Liên hệ báo giá" từ một món Hàng trắng
   const [quotePrefill, setQuotePrefill] = useState({ message: '', key: 0 })
+  const prefillQuote = (message: string) => setQuotePrefill((prev) => ({ message, key: prev.key + 1 }))
+  // Thẻ "Giá liên hệ" ở khối Sản phẩm: điền sẵn form rồi cuộn xuống (Hàng trắng tự cuộn trong component của nó)
+  const quoteProduct = (name: string) => {
+    prefillQuote(`Cần báo giá: ${name}`)
+    const target = document.getElementById('bao-gia')
+    if (target) scrollToElement(target, 'start')
+  }
 
   return (
     // Không chừa khoảng dưới: phần báo giá tràn hết bề ngang, nối thẳng xuống chân trang
     <div>
       <HotelHero />
       <Partners />
-      <WhiteGoods
-        onQuote={(message) => setQuotePrefill((prev) => ({ message, key: prev.key + 1 }))}
-      />
+      <WhiteGoods onQuote={prefillQuote} />
+      <HotelProducts onQuote={quoteProduct} />
       <Reasons />
       <Steps />
       <Quote defaultMessage={quotePrefill.message} prefillKey={quotePrefill.key} />

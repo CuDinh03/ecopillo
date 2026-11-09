@@ -63,6 +63,8 @@ export const HOTEL_PARTNERS: readonly Partner[] = [
   { name: 'Cherry Hotel', logo: '/images/partners/cherry-hotel.webp' },
   { name: 'Đào Thuỷ Harry Hotel', logo: '/images/partners/dao-thuy-harry-hotel.webp' },
   { name: 'Doson Resort Hotel', logo: '/images/partners/doson-resort-hotel.webp' },
+  // Khách gửi logo qua Zalo 09/11/2026 (anh Quang): cắt bỏ dòng địa chỉ, nền trong suốt
+  { name: 'Panhou Retreat', logo: '/images/partners/panhou-retreat.webp' },
 ]
 
 export interface Faq {

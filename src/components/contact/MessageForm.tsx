@@ -11,7 +11,7 @@ import { buttonClass } from '../ui/primitives'
 /**
  * Form "Gửi tin nhắn cho chúng tôi" (trang Liên hệ mua hàng, trang Khách sạn).
  * Trên WordPress, form này nối vào form liên hệ đang dùng (Contact Form 7 / Flatsome) để tin nhắn
- * về email cskh như cũ. Ô "Quý khách cần" giúp Ecopillo biết khách hỏi gì nhiều nhất.
+ * về ecopillo.com.vn@gmail.com (khách chốt 09/11/2026: mọi form đăng ký đều gửi về email này). Ô "Quý khách cần" giúp Ecopillo biết khách hỏi gì nhiều nhất.
  */
 
 export const TOPICS = [

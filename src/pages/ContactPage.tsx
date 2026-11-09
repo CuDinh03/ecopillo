@@ -26,15 +26,15 @@ interface ChannelProps {
   external?: boolean
 }
 
-/** Email ngắt dòng sau "ecopillo" (C2, 09/11/2026): "cskh@ecopillo / .com.vn", không bẻ giữa chữ */
+/** Email ngắt dòng trước "@" (đổi email 09/11/2026): "ecopillo.com.vn / @gmail.com", không bẻ giữa chữ */
 function breakEmail(value: string): ReactNode {
-  const dot = value.indexOf('.', value.indexOf('@'))
-  if (dot < 0) return value
+  const at = value.indexOf('@')
+  if (at <= 0) return value
   return (
     <>
-      {value.slice(0, dot)}
+      {value.slice(0, at)}
       <wbr />
-      {value.slice(dot)}
+      {value.slice(at)}
     </>
   )
 }

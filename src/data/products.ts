@@ -238,6 +238,47 @@ const DIVAN: Product = {
   ],
 }
 
+/**
+ * Đệm tròn cao cấp Ecopillo: khách yêu cầu thêm qua Zalo 09/11/2026 (anh Quang), mở lại trang ở link cũ
+ * /san-pham/dem-tron-cao-cap-ecopillo/ (trước đó 301 sang danh mục Đệm). Chữ, giá, ảnh theo trang đó của web cũ
+ * (lấy 09/11/2026); bảng giá 2026 không có đệm tròn. Web cũ không có giá Ø220 dày 24 cm nên không có lựa chọn đó.
+ * [XÁC NHẬN bảo hành, cấu tạo lõi đệm tròn]: web cũ không ghi, chưa đưa vào thông số.
+ */
+const DEM_TRON: Product = {
+  slug: 'dem-tron-cao-cap-ecopillo',
+  name: 'Đệm tròn cao cấp Ecopillo',
+  category: 'dem',
+  summary:
+    'Dòng đệm tròn cao cấp cho phòng khách sạn 5 sao hoặc phòng ngủ gia đình hiện đại, hợp phòng có diện tích rộng.',
+  min: 20_715_000,
+  max: 27_614_000,
+  isFromPrice: true,
+  image: productImage('dem-tron-cao-cap-ecopillo', 'Đệm tròn cao cấp Ecopillo mặt chần trắng, viền xám, đặt trong phòng ngủ'),
+  imageNote: 'Ảnh đệm tròn cao cấp Ecopillo',
+  gallery: [
+    productImage('dem-tron-cao-cap-ecopillo-2', 'Viền ba lớp của đệm tròn Ecopillo nhìn nghiêng'),
+    productImage('dem-tron-cao-cap-ecopillo-3', 'Đệm tròn Ecopillo mặt chần hoa văn lá trong phòng rèm xám'),
+    productImage('dem-tron-cao-cap-ecopillo-4', 'Đệm tròn Ecopillo đặt giữa phòng ngủ'),
+  ],
+  details: [
+    'Đệm hình tròn, tạo điểm nhấn cho phòng khách sạn cao cấp và phòng ngủ hiện đại.',
+    'Nhiều mẫu, độ cao và kích thước. Ngoài các cỡ có giá trên web, Ecopillo nhận đặt riêng: gọi hoặc nhắn Zalo để báo giá.',
+    'Đơn đặt riêng nhận hàng trong 7 ngày làm việc.',
+  ],
+  specs: [
+    { label: 'Hình dáng', value: 'Tròn' },
+    { label: 'Đường kính', value: '200 cm · 220 cm' },
+    { label: 'Độ dày', value: '24 cm · 28 cm' },
+    { label: 'Viền', value: '24 cm: 2 viền · 28 cm: 3 viền' },
+  ],
+  choiceLabel: 'Cỡ và độ dày',
+  choices: [
+    { id: 'd200-24', label: 'Ø 200 cm · dày 24 cm', price: 20_715_000 },
+    { id: 'd200-28', label: 'Ø 200 cm · dày 28 cm', price: 25_280_000 },
+    { id: 'd220-28', label: 'Ø 220 cm · dày 28 cm', price: 27_614_000 },
+  ],
+}
+
 /** Dòng bảng giá đã có sản phẩm riêng: chăn hè (có mẫu, đặt online), bảo vệ đệm và divan (giá từng cỡ) */
 const OWN_PRODUCT_ITEMS: ReadonlySet<string> = new Set(['Chăn hè Lyocell', BAO_VE_DEM.name, DIVAN.name])
 
@@ -748,6 +789,7 @@ export const PRODUCTS: readonly Product[] = [
   ECO_LATEX,
   ECO_LUXE,
   ECO_FRESH,
+  DEM_TRON,
   BAO_VE_DEM,
   DIVAN,
 ].map(withPhoto)

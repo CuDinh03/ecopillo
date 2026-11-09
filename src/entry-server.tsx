@@ -15,7 +15,8 @@ import {
 } from './data/links'
 import { POLICY_ALIASES, POLICY_PAGES, policyPath } from './data/policyNav'
 import { POSTS, postPath } from './data/posts'
-import { PRODUCTS } from './data/products'
+import { HOTEL_PRODUCTS } from './data/hotel'
+import { PRODUCTS, productBySlug } from './data/products'
 import { PageMetaContext, type PrerenderCollector } from './hooks/usePageMeta'
 import { appRoutes } from './routes'
 
@@ -39,6 +40,10 @@ export function listPrerenderPaths(): string[] {
   for (const path of Object.keys(LISTINGS)) paths.add(withSlash(path))
   for (const collection of COLLECTIONS) {
     for (const pattern of collection.patterns) paths.add(withSlash(patternPath(collection, pattern)))
+  }
+  // Khối "Sản phẩm cho khách sạn" trỏ tới sản phẩm theo mã: mã sai thì dừng build thay vì lặng lẽ thiếu thẻ
+  for (const entry of HOTEL_PRODUCTS) {
+    if (entry.kind === 'product' && !productBySlug(entry.slug)) throw new Error(`HOTEL_PRODUCTS: không có sản phẩm "${entry.slug}" trong products.ts`)
   }
   for (const product of PRODUCTS) {
     if (!product.collection) paths.add(withSlash(singleProductPath(product.slug)))

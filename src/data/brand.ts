@@ -19,7 +19,8 @@ export const CONTACT = {
   phoneDisplay: '0922 926 678',
   phoneTel: 'tel:0922926678',
   messengerUrl: 'https://m.me/Ecopillo.com.vn',
-  email: 'cskh@ecopillo.com.vn',
+  /** Khách 09/11/2026 (Zalo anh Quang): liên hệ qua email này, mọi form đăng ký cũng gửi về đây (thay cskh@ecopillo.com.vn) */
+  email: 'ecopillo.com.vn@gmail.com',
   fanpageDisplay: 'facebook.com/Ecopillo.com.vn',
   fanpageUrl: 'https://www.facebook.com/Ecopillo.com.vn',
   tiktokUrl: 'https://www.tiktok.com/@ecopillo.official',

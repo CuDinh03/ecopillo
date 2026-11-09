@@ -171,3 +171,37 @@ export const HOTEL_WHITE_GOODS: readonly HotelWhiteGoodsGroup[] = [
     ],
   },
 ] as const
+
+/** Thẻ khối "Sản phẩm cho khách sạn": trang sản phẩm có sẵn, hoặc món chưa có trang riêng (bấm thì điền sẵn form báo giá) */
+export type HotelProductEntry =
+  | { kind: 'product'; slug: string }
+  | { kind: 'quote'; name: string; note: string; image: ImageSource }
+
+/**
+ * Chín sản phẩm của danh mục khách sạn web cũ (/danh-muc-san-pham/du-an-khach-san-nha-nghi/), theo thứ tự anh Quang
+ * gửi qua Zalo 09/11/2026: "làm sao cho xuất hiện được những sp này ở phần Khách sạn & dự án".
+ * Chăn ga khách sạn và khăn chưa có trang riêng: bảng giá 2026 ghi "Giá liên hệ", nên bấm thẻ là điền sẵn form báo giá.
+ */
+export const HOTEL_PRODUCTS: readonly HotelProductEntry[] = [
+  { kind: 'product', slug: 'dem-tron-cao-cap-ecopillo' },
+  {
+    kind: 'quote',
+    name: 'Chăn ga gối đệm khách sạn',
+    // Mật độ sợi theo catalog trang 65, khớp món Chăn ga của Hàng trắng
+    note: 'Cotton T250, T255, T300, T400 · may theo cỡ giường',
+    image: HOTEL_PHOTOS.sheets,
+  },
+  { kind: 'product', slug: 'divan-ecopillo' },
+  { kind: 'product', slug: 'dem-lo-xo-tui-doc-lap' },
+  { kind: 'product', slug: 'ruot-goi-micro-fiber' },
+  { kind: 'product', slug: 'chan-dong-micro-fiber' },
+  { kind: 'product', slug: 'topper-micro-fiber' },
+  { kind: 'product', slug: 'dem-lo-xo-eco-fresh' },
+  {
+    kind: 'quote',
+    name: 'Khăn tắm, khăn tay, khăn mặt',
+    // Cỡ theo bảng giá 2026 trang 20 (Đồ vải khách sạn); chất liệu theo catalog trang 65
+    note: 'Cotton · khăn tắm 70×140, khăn tay 35×70, khăn mặt 35×35 cm',
+    image: HOTEL_PHOTOS.towels,
+  },
+]
