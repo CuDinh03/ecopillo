@@ -115,23 +115,6 @@ export const PROVINCES: readonly ProvinceInfo[] = PROVINCE_ROWS.map(([name, lat,
 const provinceOrder = new Map(PROVINCES.map((p, i) => [p.name, i]))
 export const provinceById = (id: string) => PROVINCES.find((p) => p.id === id)
 
-/** Văn phòng Hà Nội và Chi nhánh TP. HCM: điểm chính hãng */
-const OFFICIAL: readonly Dealer[] = SHOWROOMS.map((s) => ({
-  id: s.id,
-  ten: s.kind === 'Văn phòng đại diện' ? 'Ecopillo Hà Nội' : 'Ecopillo Gò Vấp',
-  loai: s.kind === 'Văn phòng đại diện' ? 'van-phong' : 'chi-nhanh',
-  dia_chi: s.address,
-  tinh: s.province,
-  lat: s.lat,
-  lng: s.lng,
-  dien_thoai: s.hotline ?? CONTACT.hotlineDisplay,
-  gio_mo: '08:30',
-  gio_dong: '22:00',
-  ngay_nghi: [],
-  anh: s.photo ? [s.photo.src.replace('.webp', '-sm.webp')] : [],
-  ghi_chu: 'Có trưng bày đệm, gối để nằm thử',
-}))
-
 /**
  * Ảnh cửa hàng Ecopillo gửi qua Zalo 16/10/2026 (yêu cầu sửa mục 16–23), ảnh đầu là ảnh đại diện.
  * Nén bằng tools/nen-anh-khach-gui-2026-10-16.py. Điểm chưa có ảnh dùng DEFAULT_DEALER_PHOTO.
@@ -142,7 +125,7 @@ const OFFICIAL: readonly Dealer[] = SHOWROOMS.map((s) => ({
 const storePhotos = (id: string, count: number): string[] =>
   Array.from({ length: count }, (_, i) => `/images/stores/${id}-${i + 1}-sm.webp`)
 
-const AGENT_PHOTOS: Readonly<Record<string, readonly string[]>> = {
+const STORE_PHOTOS: Readonly<Record<string, readonly string[]>> = {
   'phu-ly': storePhotos('phu-ly', 2),
   'quoc-oai': storePhotos('quoc-oai', 2),
   'nguyen-hue': storePhotos('nguyen-hue', 2),
@@ -153,7 +136,24 @@ const AGENT_PHOTOS: Readonly<Record<string, readonly string[]>> = {
   'hien-long': storePhotos('hien-long', 1),
 }
 
-/** Thứ tự mặc định: Văn phòng Hà Nội, Chi nhánh TP. HCM, rồi các đại lý theo tỉnh từ Bắc vào Nam */
+/** Văn phòng Hà Nội, Chi nhánh TP. HCM, Văn phòng Đà Nẵng: điểm chính hãng (danh sách ở SHOWROOMS, data/brand.ts) */
+const OFFICIAL: readonly Dealer[] = SHOWROOMS.map((s) => ({
+  id: s.id,
+  ten: s.dealerName,
+  loai: s.kind === 'Văn phòng đại diện' ? 'van-phong' : 'chi-nhanh',
+  dia_chi: s.address,
+  tinh: s.province,
+  lat: s.lat,
+  lng: s.lng,
+  dien_thoai: s.hotline ?? CONTACT.hotlineDisplay,
+  gio_mo: '08:30',
+  gio_dong: '22:00',
+  ngay_nghi: [],
+  anh: STORE_PHOTOS[s.id] ?? (s.photo ? [s.photo.src.replace(/(?<!-sm)\.webp$/, '-sm.webp')] : []),
+  ghi_chu: 'Có trưng bày đệm, gối để nằm thử',
+}))
+
+/** Thứ tự mặc định: văn phòng (Hà Nội, Đà Nẵng), Chi nhánh TP. HCM, rồi các đại lý theo tỉnh từ Bắc vào Nam */
 export const sortDefault = (list: readonly Dealer[]): Dealer[] => {
   const rank = (d: Dealer) => (d.loai === 'van-phong' ? 0 : d.loai === 'chi-nhanh' ? 1 : 2)
   return [...list].sort(
@@ -176,7 +176,6 @@ export const sortDefault = (list: readonly Dealer[]): Dealer[] => {
 const AGENTS: readonly Dealer[] = (
   [
     // [id, tên, địa chỉ, tỉnh, lat, lng, điện thoại]
-    ['da-nang', 'Ecopillo Đà Nẵng', '254 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng', 'Đà Nẵng', 16.0295615, 108.2471201, '0934 767 110'],
     ['hien-long', 'Ecopillo Bắc Ninh', 'E7-E8 Chợ Dầu, Lê Quang Đạo, Từ Sơn, Bắc Ninh', 'Bắc Ninh', 21.11749, 105.96335, '0356 658 198'],
     ['minh-khai', 'Ecopillo Minh Khai', '81 Minh Khai, Bạch Mai, Hà Nội', 'Hà Nội', 20.9954183, 105.8528493, '0916 292 286'],
     // File ghi số 57, ghim Google Maps đặt ở số 54 Đồng Bụt: [XÁC NHẬN SỐ NHÀ ĐẠI LÝ QUỐC OAI]
@@ -204,7 +203,7 @@ const AGENTS: readonly Dealer[] = (
   lng,
   dien_thoai,
   ngay_nghi: [],
-  anh: AGENT_PHOTOS[id] ?? [],
+  anh: STORE_PHOTOS[id] ?? [],
 }))
 
 /** Danh sách dựng sẵn (dự phòng khi WordPress không trả lời) */

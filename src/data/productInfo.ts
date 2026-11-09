@@ -304,6 +304,35 @@ export const PRODUCT_INFO: Readonly<Record<string, ProductInfo>> = {
       { title: 'Tiêu chuẩn', list: ['Đạt ISO 9001:2015 và QCVN 01:2017/BCT.'] },
     ],
   },
+  // Theo training sản phẩm 2026 trang 25–26 và bảng giá 2026 trang 3 (khách gửi 09/11/2026)
+  'dem-bong-ep-cao-cap-mix-latex': {
+    specs: [
+      { label: 'Độ dày', value: '12 · 14 · 17 · 21 cm' },
+      { label: 'Lõi', value: 'Bông ép Nano Bạc, mặt cao su 2 cm' },
+      { label: 'Vỏ', value: 'Gấm xốp 400 g/m chần foam' },
+      { label: 'Kiểu', value: 'Gập 2' },
+    ],
+    sections: [
+      {
+        title: 'Cấu tạo',
+        list: [
+          'Lõi bông ép xanh Nano Bạc Ag+: kháng khuẩn, kháng nấm, kháng mạt bụi; không xẹp, không biến dạng.',
+          'Mặt trên 2 cm cao su thiên nhiên: tăng độ êm, đàn hồi nhẹ, phân bổ áp lực đều vùng lưng, hông, vai.',
+          'Vỏ vải gấm xốp nhập khẩu 400 g/m chần foam, êm và thoáng.',
+          'Gập 2, dễ di chuyển, cất gọn.',
+        ],
+      },
+      {
+        title: 'Hợp với ai',
+        list: [
+          'Người thích nằm cứng nhưng vẫn muốn êm nhẹ: không quá cứng như bông ép truyền thống, không mềm như foam.',
+          'Trẻ em, người già, người đau lưng, có vấn đề cột sống, thoái hoá.',
+          'Ấm mùa đông, thoáng mùa hè. Nhận đặt theo kích thước riêng.',
+        ],
+      },
+      { title: 'Bảo hành', list: ['Bảo hành 7 năm theo Sổ bảo hành Ecopillo.'] },
+    ],
+  },
   'dem-lo-xo-tui-doc-lap': {
     specs: [
       { label: 'Độ dày', value: '24 cm' },
@@ -315,9 +344,10 @@ export const PRODUCT_INFO: Readonly<Record<string, ProductInfo>> = {
       {
         title: 'Cấu tạo',
         list: [
-          'Lõi lò xo túi độc lập: mỗi lò xo một túi, nằm cạnh nhau trở mình không rung.',
-          'Các lớp tiện nghi foam PU và bông kháng khuẩn PE phía trên.',
-          'Vải mặt đệm êm, chần hoạ tiết.',
+          // Theo training sản phẩm 2026 (khách gửi 09/11/2026), trang 21
+          'Lõi lò xo túi độc lập thép chống rỉ nhập khẩu, 6 vòng xoắn: mỗi lò xo một túi, nâng đỡ 3 vùng vai, lưng, hông; nằm cạnh nhau trở mình không rung.',
+          'Lớp tiện nghi foam PU đàn hồi và bông tiện nghi phía trên, phân tán áp lực, tăng độ êm.',
+          'Vải Quilted Jacquard 350 gsm thoáng mát, mềm, kháng mạt bụi; hoa văn độc quyền Ecopillo.',
         ],
       },
       {

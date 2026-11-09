@@ -204,48 +204,134 @@ export const POLICIES: readonly Policy[] = [
     ],
   },
   {
+    // Viết lại theo Sổ bảo hành Ecopillo 2026 (khách gửi 09/11/2026). Ecopillo duyệt lại câu chữ.
     slug: 'chinh-sach-bao-hanh-san-pham',
     title: 'Chính sách bảo hành',
-    description: 'Bảo hành theo từng sản phẩm tính từ ngày mua: đệm 5–15 năm tuỳ dòng, chăn ga 90 ngày.',
-    intro: 'Mỗi sản phẩm Ecopillo đều có thời hạn bảo hành rõ ràng, tính từ ngày mua và ghi ngay trên trang sản phẩm.',
+    description: 'Bảo hành Ecopillo: đệm cao su thiên nhiên 15 năm, lò xo và Eco Foam 10 năm, Mix Latex 7 năm, divan và bông ép 5 năm, chăn ga 90 ngày.',
+    intro:
+      'Bảo hành là cam kết của Ecopillo với lỗi kỹ thuật, lỗi kết cấu hoặc lỗi do nhà sản xuất, trong phạm vi và thời hạn của từng nhóm sản phẩm. Ecopillo tiếp nhận minh bạch, kiểm tra theo tình trạng thực tế rồi đưa ra phương án phù hợp.',
     highlights: [
-      { value: '5–15 năm', label: 'Đệm, tuỳ dòng đệm' },
+      { value: '15 năm', label: 'Đệm cao su thiên nhiên' },
+      { value: '10 năm', label: 'Đệm lò xo, Eco Foam đa tầng' },
       { value: '90 ngày', label: 'Chăn ga' },
-      { value: 'Ngày mua', label: 'Mốc tính thời hạn bảo hành' },
     ],
     sections: [
       {
         title: 'Thời hạn bảo hành',
         list: [
-          'Đệm: 5–15 năm tuỳ dòng đệm, ghi trên trang từng sản phẩm.',
+          'Đệm cao su thiên nhiên: 15 năm.',
+          'Đệm lò xo, đệm Eco Foam đa tầng: 10 năm.',
+          'Đệm bông ép Mix Latex: 7 năm.',
+          'Divan, đệm bông ép: 5 năm.',
           'Chăn ga: 90 ngày.',
-          'Thời hạn tính từ ngày Quý khách nhận hàng.',
+        ],
+        body: [
+          'Thời hạn tính từ ngày mua hoặc ngày giao hàng ghi trên chứng từ của Quý khách hoặc dữ liệu bán hàng của Ecopillo.',
+          'Tuổi thọ thực tế của chăn ga, đệm còn phụ thuộc trọng lượng người nằm, tần suất dùng, cách vệ sinh, khung đỡ, cách di chuyển. Vì vậy thời hạn bảo hành không phải cam kết về tuổi thọ tối đa của sản phẩm.',
+          'Sổ bảo hành không thay hoá đơn, chứng từ mua hàng. Khi thông tin trên sổ khác dữ liệu mua hàng, Ecopillo có thể đề nghị Quý khách gửi chứng từ để xác minh.',
+        ],
+      },
+      {
+        title: 'Nguyên tắc bảo hành',
+        list: [
+          'Ecopillo kiểm tra trực tiếp hoặc đề nghị Quý khách gửi ảnh, video để xác định nguyên nhân.',
+          'Năm đầu tiên: lỗi do nhà sản xuất được sửa chữa hoặc đổi mới miễn phí. Từ năm thứ hai: sửa chữa miễn phí theo chính sách bảo hành Ecopillo áp dụng tại thời điểm tiếp nhận.',
+          'Sản phẩm bảo hành được tiếp nhận tại showroom, cửa hàng Ecopillo hoặc theo cách vận chuyển hai bên thống nhất. Chi phí ngoài phạm vi bảo hành (nếu có) được báo trước khi làm.',
+        ],
+      },
+      {
+        title: 'Đổi mới sản phẩm',
+        list: [
+          'Việc đổi mới căn cứ kết quả kiểm tra, nguyên nhân và chính sách Ecopillo tại thời điểm xử lý.',
+          'Quý khách được đổi sang sản phẩm cùng loại hoặc sản phẩm khác giá trị tương đương. Muốn đổi sang sản phẩm giá trị cao hơn thì thanh toán phần chênh lệch.',
+          'Mỗi sản phẩm được hỗ trợ đổi mới tối đa 01 lần. Sau đó nếu còn phát sinh vấn đề, Ecopillo tiếp nhận và xử lý theo chính sách bảo hành.',
+          'Trường hợp đặc biệt, Ecopillo có thể xem xét đổi sang sản phẩm giá trị tương đương hoặc cao hơn. Đây là chính sách hỗ trợ của công ty, không phải quyền đổi mới mặc định.',
         ],
       },
       {
         title: 'Được bảo hành khi',
         list: [
-          'Bung đường may, tuột chỉ trong điều kiện sử dụng thông thường.',
-          'Khoá kéo, chun ga hỏng do lỗi sản xuất.',
-          'Đệm lún, biến dạng vượt mức cho phép của nhà sản xuất.',
-          'Đệm có các tấm dày cứng không đều, mặt cắt không phẳng, bề mặt lồi lõm do lỗi sản xuất.',
+          'Đệm lún, xẹp bất thường; sụt lún nghiêm trọng do lỗi kết cấu hoặc vật liệu.',
+          // [ECOPILLO ĐIỀN số cm]: Sổ bảo hành để trống mức giảm độ dày được tính là lỗi
+          'Đệm mất đàn hồi bất thường, giảm độ dày so với ban đầu, khi được xác định là lỗi kỹ thuật, sản xuất.',
+          'Bung lò xo, lỗi hệ thống lò xo; khung lò xo trồi hoặc lò xo đâm xuyên bề mặt do lỗi sản xuất.',
+          'Divan, khung sản phẩm lỗi kết cấu, cong vênh bất thường do nhà sản xuất.',
+          'Lỗi kết cấu, lỗi kỹ thuật, lỗi vật liệu ảnh hưởng đến công năng, và các lỗi khác Ecopillo xác nhận là lỗi sản xuất.',
+          'Chăn ga xù lông hoặc phai màu trên toàn bộ bề mặt do lỗi sản xuất: được xem xét đổi mới. Hư hỏng cục bộ có thể khắc phục: được xem xét sửa chữa.',
         ],
-      },
-      {
-        title: 'Không thuộc bảo hành',
-        list: [
-          'Hư hỏng do giặt, sấy, là sai hướng dẫn trên nhãn.',
-          'Rách, cháy, ố bẩn, côn trùng cắn, hoặc tự ý sửa chữa.',
-          'Phai màu, xù nhẹ tự nhiên sau thời gian dài sử dụng.',
-          'Dùng sai mục đích, hoặc dùng và bảo quản không đúng hướng dẫn kèm theo sản phẩm.',
-        ],
-      },
-      {
-        title: 'Cách yêu cầu bảo hành',
         body: [
-          `Gọi hoặc nhắn Zalo ${CONTACT.hotlineDisplay}, gửi số điện thoại đặt hàng và ảnh phần cần bảo hành. Ecopillo hẹn cách nhận và trả hàng bảo hành.`,
-          'Thời gian xử lý tuỳ mức độ lỗi và vật tư thay thế; Ecopillo báo cụ thể khi nhận sản phẩm.',
+          'Hiện tượng hình thành theo đặc tính vật liệu hoặc do quá trình sử dụng chỉ được tính là lỗi bảo hành sau khi Ecopillo kiểm tra và kết luận.',
         ],
+      },
+      {
+        title: 'Đệm không thuộc bảo hành',
+        list: [
+          'Vết bẩn, nước tiểu, chất lỏng, nấm mốc, hư hỏng do vệ sinh, bảo quản không đúng cách.',
+          'Va đập, tác động cơ học, vật nuôi, côn trùng, chuột hoặc tác nhân bên ngoài.',
+          'Nước, độ ẩm, hoá chất, chất tẩy mạnh, nguồn nhiệt, cháy nổ, ngập nước, thiên tai.',
+          'Đặt đệm trên nền, khung không chắc, không phẳng, không đủ nâng đỡ hoặc không thông thoáng.',
+          'Dùng sai mục đích; trẻ em nhảy trên đệm, đứng hoặc nhảy trên giường, divan.',
+          'Gấp, bẻ cong đệm sai cách khi vận chuyển; kéo lê hoặc nhấc cả tấm đệm bằng viền trang trí.',
+          'Cảm giác nằm (quá cứng, quá mềm) không hợp sở thích riêng.',
+          'Hao mòn, đổi màu tự nhiên theo thời gian; lỗi thẩm mỹ nhỏ trong tiêu chuẩn kỹ thuật, không ảnh hưởng công năng.',
+          'Tự tháo, cắt, may, thay vỏ, thay đổi cấu trúc hoặc tự sửa đệm.',
+          'Vải bọc, lớp ngoài mòn, rách, hoen ố, xuống cấp tự nhiên theo thời gian dùng.',
+        ],
+      },
+      {
+        title: 'Chăn ga không thuộc bảo hành',
+        list: [
+          'Bẩn, dính mỹ phẩm, dầu, mồ hôi, nước tiểu, thức ăn, đồ uống.',
+          'Rách, thủng, móc sợi, sờn do vật sắc nhọn, thú nuôi hoặc tác động cơ học.',
+          'Xù bề mặt do ma sát, dùng hoặc giặt sai cách; phai, lem màu do giặt chung, chất tẩy, ngâm lâu.',
+          'Co rút, biến dạng do giặt, sấy, ủi sai hướng dẫn; sấy nhiệt cao, hong bằng nguồn nhiệt trực tiếp.',
+          'Dùng chất tẩy mạnh, hoá chất không phù hợp; chà bàn chải cứng, vò, vắt quá mạnh; cất nơi ẩm gây nấm mốc.',
+          'Tự sửa, cắt, may, nhuộm, in, thêu.',
+          'Thay đổi tự nhiên về màu, độ mềm, độ rũ; sai khác màu nhỏ giữa các lô vải hoặc giữa ảnh và thực tế trong tiêu chuẩn cho phép; đặc tính tự nhiên của chất liệu.',
+          'Không còn tem, nhãn hoặc căn cứ xác định sản phẩm khi cần xác minh.',
+        ],
+      },
+      {
+        title: 'Quy trình tiếp nhận',
+        steps: [
+          { title: 'Tiếp nhận', text: `Quý khách gọi hoặc nhắn Zalo ${CONTACT.hotlineDisplay}. Ecopillo ghi nhận thông tin, sản phẩm và tình trạng cần hỗ trợ.` },
+          { title: 'Kiểm tra', text: 'Kiểm tra qua ảnh, video hoặc kiểm tra trực tiếp sản phẩm.' },
+          { title: 'Đánh giá', text: 'Xác định nguyên nhân và đối chiếu điều kiện bảo hành.' },
+          { title: 'Phương án', text: 'Báo Quý khách phương án sửa chữa, đổi mới hoặc hỗ trợ, kèm chi phí ngoài bảo hành nếu có.' },
+          { title: 'Bàn giao', text: 'Hoàn tất xử lý, bàn giao và ghi nhận kết quả vào phiếu bảo hành.' },
+        ],
+      },
+      {
+        title: 'Giới hạn bảo hành',
+        list: [
+          'Với lỗi nhà sản xuất, Ecopillo chọn cách xử lý phù hợp: sửa chữa, thay bộ phận hoặc đổi mới, tuỳ tình trạng thực tế.',
+          'Sửa chữa hoặc thay thế không làm gia hạn thời gian bảo hành còn lại, trừ khi Ecopillo có quy định khác bằng văn bản.',
+          'Bảo hành áp dụng cho người mua đầu tiên theo chứng từ, hệ thống bán hàng, trừ khi Ecopillo có chính sách chuyển nhượng riêng.',
+        ],
+      },
+      {
+        title: 'Dùng và bảo quản đệm',
+        list: [
+          'Đặt đệm trên mặt phẳng, chắc, nâng đỡ đều; khung giường vừa cỡ đệm, không cong võng. Giường cỡ lớn cần thanh đỡ giữa và chân đỡ phù hợp.',
+          'Đệm hút chân không cần thời gian phục hồi: trải phẳng nơi thoáng, chờ khoảng 01–02 tuần. Trong thời gian này không gấp, bẻ, kéo lê hay đặt vật nặng một chỗ. Sau đó đệm vẫn bất thường thì Quý khách báo Ecopillo kiểm tra.',
+          'Dùng tấm bảo vệ đệm chống thấm; không đổ chất lỏng lên đệm, không dùng chất tẩy mạnh.',
+          'Giữ phòng thông thoáng; không phơi hoặc đặt đệm sát nguồn nhiệt mạnh. Xoay, đảo đệm theo hướng dẫn riêng nếu dòng đệm cho phép.',
+          'Đệm lớn, nặng cần ít nhất hai người khiêng; không nhấc bằng viền trang trí, không kéo lê, không gập hay cuộn đệm nếu dòng đệm không thiết kế để làm vậy.',
+        ],
+      },
+      {
+        title: 'Dùng và bảo quản chăn ga',
+        list: [
+          'Giặt trước khi dùng lần đầu, bằng nước giặt hợp chất liệu và nước lạnh không quá 30°C.',
+          'Cần ủi thì lót một lớp vải mỏng, ủi ở khoảng 80–120°C.',
+          'Phơi nơi thoáng, ưu tiên bóng râm, tránh nắng gắt lâu.',
+          'Không dùng chất tẩy mạnh, chất tẩy oxy hoá cao; không giặt chung đồ dễ phai màu; không chà bàn chải cứng; không ngâm.',
+          'Không sấy nhiệt cao hay hong bằng nguồn nhiệt mạnh. Làm đúng hướng dẫn trên tem từng sản phẩm.',
+        ],
+      },
+      {
+        title: 'Chứng nhận chất lượng',
+        body: ['Sản phẩm Ecopillo đạt chứng nhận ISO 9001:2015 và QCVN 01:2017.'],
       },
     ],
   },

@@ -41,7 +41,7 @@ export function Showrooms() {
           </div>
         </div>
 
-        <div className="m-rail mt-8 grid gap-6 sm:mt-14 lg:grid-cols-2">
+        <div className="m-rail mt-8 grid gap-6 sm:mt-14 lg:grid-cols-3">
           {SHOWROOMS.map((s, i) => (
             <article key={s.id} data-reveal style={revealDelay(i)} className="overflow-hidden rounded-[2rem] bg-ivory shadow-[var(--shadow-soft)]">
               <div className="flex h-full flex-col">
@@ -52,8 +52,8 @@ export function Showrooms() {
                     tone={i === 0 ? 'mist' : 'cream'}
                     note={s.imageNote}
                     image={s.photo}
-                    sizes="(min-width: 1024px) 600px, 100vw"
-                    position={s.id === 'tp-hcm' ? 'center 22%' : undefined}
+                    sizes="(min-width: 1024px) 420px, 100vw"
+                    position={s.photoPosition}
                   />
                 </div>
                 <div className="flex flex-1 flex-col p-7 sm:p-9">

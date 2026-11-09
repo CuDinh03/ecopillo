@@ -196,7 +196,7 @@ export const FOUNDER_HONOURS: readonly Certificate[] = [
 export const BRAND_STATS = [
   { value: '15+', label: 'năm trong nghề chăn ga gối đệm' },
   { value: '15.000+', label: 'gia đình, khách sạn tin dùng' },
-  { value: '2', label: 'văn phòng tại Hà Nội và TP. HCM' },
+  { value: '3', label: 'văn phòng tại Hà Nội, Đà Nẵng và TP. HCM' },
 ] as const
 
 /** Chất liệu và tay nghề (dùng chung với BrandStory ở trang chủ) */

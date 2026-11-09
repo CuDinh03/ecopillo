@@ -113,13 +113,13 @@ export const FAQS: readonly Faq[] = [
     q: 'Sản phẩm được bảo hành bao lâu?',
     a: [
       'Bảo hành theo từng sản phẩm, tính từ ngày mua.',
-      'Đệm: 5–15 năm tuỳ dòng đệm. Chăn ga: 90 ngày.',
+      'Đệm cao su thiên nhiên 15 năm, đệm lò xo và Eco Foam 10 năm, đệm bông ép Mix Latex 7 năm, divan và đệm bông ép 5 năm. Chăn ga: 90 ngày.',
     ],
   },
   {
     q: 'Điểm bán Ecopillo mở cửa giờ nào?',
     a: [
-      `Văn phòng đại diện Hà Nội và chi nhánh TP. HCM: ${OPENING_HOURS}.`,
+      `Văn phòng Hà Nội, Đà Nẵng và chi nhánh TP. HCM: ${OPENING_HOURS}.`,
       'Đại lý: giờ mở cửa ghi ở từng điểm trên trang Liên hệ mua hàng (mục Tìm Ecopillo gần Quý khách). Điểm chưa ghi giờ, Quý khách gọi trước khi ghé.',
     ],
   },

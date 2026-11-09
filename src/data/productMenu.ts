@@ -197,6 +197,7 @@ export const PRODUCT_MENU: readonly MenuGroup[] = [
     rows: [
       productRow('chan-dong-micro-fiber'),
       productRow('chan-dong-kieu-han'),
+      productRow('ruot-chan-micro-plus'),
       productRow('chan-to-tam'),
       productRow('chan-long-vu-tu-nhien'),
       collectionRow('chan-he-lyocell'),

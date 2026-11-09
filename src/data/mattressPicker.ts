@@ -96,4 +96,4 @@ export const MATTRESS_CHIPS: readonly MattressChip[] = [
 export const MATTRESS_ALL_PATH = DEM_PATH
 export const MATTRESS_PICKER_TITLE = DEM_GUIDE.title
 export const MATTRESS_PICKER_LEAD =
-  'Lò xo, cao su thiên nhiên, foam, bông ép và topper, bảo hành tới 15 năm. Nằm thử tại hệ thống phân phối ở Hà Nội và TP. HCM.'
+  'Lò xo, cao su thiên nhiên, foam, bông ép và topper, bảo hành tới 15 năm. Nằm thử tại hệ thống phân phối ở Hà Nội, Đà Nẵng và TP. HCM.'

@@ -106,7 +106,7 @@ const CHANNELS: readonly (ChannelProps & { key: string })[] = [
   { key: 'email', href: `mailto:${CONTACT.email}`, icon: <Icon name="mail" size={18} />, label: 'Email', value: CONTACT.email },
 ]
 
-/** Bản đồ địa chỉ văn phòng / chi nhánh; bấm Hà Nội / TP. HCM để đổi điểm */
+/** Bản đồ địa chỉ văn phòng / chi nhánh; bấm tên thành phố để đổi điểm */
 function OfficeMap() {
   const [index, setIndex] = useState(0)
   const navigate = useNavigate()
@@ -164,7 +164,7 @@ export function ContactPage() {
   const topic = TOPIC_PARAM[params.get('chu-de') ?? ''] ?? TOPICS[0]
   usePageMeta(
     'Liên hệ mua hàng',
-    'Hotline, Zalo, email, văn phòng Hà Nội và TP. HCM, cùng hệ thống đại lý Ecopillo trên toàn quốc. Gửi tin nhắn, Ecopillo gọi lại trong giờ làm việc.',
+    'Hotline, Zalo, email, văn phòng Hà Nội, Đà Nẵng, TP. HCM cùng hệ thống đại lý Ecopillo trên toàn quốc. Gửi tin nhắn, Ecopillo gọi lại trong giờ làm việc.',
   )
 
   // 301 máy chủ từ /he-thong-phan-phoi/?gan-toi=1 mất #diem-ban: gắn lại neo qua React Router

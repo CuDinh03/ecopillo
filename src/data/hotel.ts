@@ -115,7 +115,7 @@ export interface HotelWhiteGoodsGroup {
 
 /**
  * Hàng trắng khách sạn (mục 12 phản hồi 05/11, phương án C): ba nhóm thay khối "sáu lớp".
- * Tên nhóm và T200/T250/T300/T400 theo chữ khách; catalog trang 65 ghi T250, T255, T300, T400.
+ * Tên nhóm theo chữ khách; mật độ sợi theo catalog trang 65 (T250, T255, T300, T400), khớp bảng giá 2026.
  * Ruột chăn / ruột gối không có trong danh sách khách nên không đưa vào đây (câu hỏi gửi Ecopillo).
  */
 export const HOTEL_WHITE_GOODS: readonly HotelWhiteGoodsGroup[] = [
@@ -147,8 +147,9 @@ export const HOTEL_WHITE_GOODS: readonly HotelWhiteGoodsGroup[] = [
     items: [
       {
         name: 'Chăn ga',
-        // [XÁC NHẬN T200 hay T255]: khách viết T200/250/300/400; catalog trang 65 ghi T250, T255, T300, T400
-        chips: ['T200', 'T250', 'T300', 'T400'],
+        // T255 thay T200: catalog trang 65 ghi T250, T255, T300, T400; bảng giá 2026 (khách gửi 09/11/2026) có
+        // "Bộ ga trắng khách sạn T255" và "T300" cỡ 180×200, đều "Giá liên hệ" nên không ghi giá
+        chips: ['T250', 'T255', 'T300', 'T400'],
         note: 'Cotton · ga bọc, ga phủ, vỏ chăn, vỏ gối',
         image: HOTEL_PHOTOS.sheets,
       },

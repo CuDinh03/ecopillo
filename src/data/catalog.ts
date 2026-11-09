@@ -4,7 +4,8 @@
  * Khoảng giá của từng bộ sưu tập lấy theo bảng giá thật (1m6 → 2m2).
  * Giá 180×200 theo web cũ (lấy 28/10/2026): bộ ga phủ bán một cỡ Free Size dùng cho cả giường 1m6 và 1m8 nên bằng giá 160×200;
  * Eco Flora (ga chun) 3.600.000đ. Riêng Rosa, Tera, Sweet: owner chốt 09/11/2026 trả cỡ 180×200 về giá trước 28/10
- * (khách 08/11: "5.320.000đ là giá chuẩn" cho Rosa 1m8); 160×200 và 200×220 giữ nguyên. Chăn hè chưa đối chiếu được (web cũ một giá mỗi mẫu, khác bảng giá này).
+ * (khách 08/11: "5.320.000đ là giá chuẩn" cho Rosa 1m8); 160×200 và 200×220 giữ nguyên. Chăn hè theo bảng giá 2026 (khách gửi 09/11/2026): một cỡ 200×220, 1.380.000đ,
+ * nên cỡ nào cũng một giá.
  * Mã mẫu lấy theo ảnh sản phẩm thật (thư mục images/ và web cũ ecopillo.com.vn).
  * Tên màu do mình đặt theo ảnh; màu ô mẫu lấy từ ảnh. Tình trạng "Tạm hết hàng" là DỮ LIỆU GIẢ LẬP.
  */
@@ -360,7 +361,8 @@ export const COLLECTIONS: readonly Collection[] = [
     kindLabel: 'Chăn hè chần bông mỏng',
     tagline: 'Mát lành êm dịu, giấc hè êm ru',
     description: 'Vỏ Lyocell chần bông mỏng, đắp mát mùa hè, dùng riêng hoặc phối cùng bộ ga.',
-    prices: price(1_380_000, 1_650_000, 1_920_000),
+    // Bảng giá 2026 chỉ có một cỡ chăn 200×220 (1.380.000đ), đắp được cho cả ba cỡ giường
+    prices: price(1_380_000, 1_380_000, 1_380_000),
     gift: 'none',
     contents: ['1 chăn hè Lyocell chần bông mỏng'],
     imageNote: 'Ảnh chăn hè Lyocell ER38',
@@ -436,7 +438,7 @@ export const ESSENTIALS: readonly EssentialGroup[] = [
     imageNote: 'Ảnh 5 loại ruột gối xếp tầng',
     imageKey: 'ruot-goi-micro-plus',
     items: [
-      { name: 'Micro Fiber', note: 'Sợi siêu mảnh, êm vừa, dễ giặt', min: 380_000, max: 420_000 },
+      { name: 'Micro Fiber', note: 'Sợi siêu mảnh, êm vừa, dễ giặt', min: 380_000, max: 450_000 },
       { name: 'Micro Plus', note: 'Bông cao cấp, đàn hồi tốt', min: 515_000, max: 550_000 },
       { name: 'Tơ tằm', note: 'Mềm mượt, điều hoà nhiệt', min: 960_000, max: 960_000 },
       { name: 'Cao su thiên nhiên', note: 'Nâng đỡ cổ, thoáng khí', min: 1_260_000, max: 1_260_000 },
@@ -463,30 +465,13 @@ export const ESSENTIALS: readonly EssentialGroup[] = [
     imageNote: 'Ảnh topper trải trên đệm, chăn hè gấp cạnh',
     imageKey: 'topper-micro-fiber',
     items: [
-      { name: 'Chăn hè Lyocell', note: 'Chần bông mỏng, mát cho mùa hè', min: 1_380_000, max: 1_920_000 },
+      { name: 'Chăn hè Lyocell', note: 'Chần bông mỏng, mát cho mùa hè', min: 1_380_000, max: 1_380_000 },
       { name: 'Topper Micro Fiber', note: 'Làm mềm mặt đệm cứng', min: 3_550_000, max: 4_200_000 },
       // Giá từng cỡ ở BAO_VE_DEM, DIVAN (products.ts): đổi giá thì sửa cả hai chỗ
       { name: 'Bảo vệ đệm chống thấm', note: 'Chống thấm, chống bụi, dễ tháo giặt', min: 675_000, max: 889_000 },
       { name: 'Divan Ecopillo', note: 'Kệ giường khung gỗ thông, cao 30 cm', min: 6_580_000, max: 9_250_000 },
     ],
   },
-]
-
-export interface Mattress {
-  name: string
-  note: string
-  from: number
-  /** Giá cao nhất theo kích thước, theo trang web cũ */
-  to: number
-  /** Bảo hành theo catalog Ecopillo 22.07.2026 */
-  warranty: string
-}
-
-export const MATTRESSES: readonly Mattress[] = [
-  { name: 'Đệm lò xo túi độc lập', note: 'Mỗi lò xo một túi, nằm cạnh nhau không bị rung', from: 5_880_000, to: 9_060_000, warranty: '10 năm' },
-  { name: 'Eco Foam đa tầng', note: 'Nhiều lớp foam ôm theo đường cong cơ thể', from: 8_020_000, to: 15_700_000, warranty: '10 năm' },
-  { name: 'Lò xo Eco Royal', note: 'Kết cấu lò xo cao cấp, viền chắc', from: 14_365_000, to: 22_335_000, warranty: '10 năm' },
-  { name: 'Cao su thiên nhiên Eco Latex', note: 'Đàn hồi tự nhiên, thoáng và bền', from: 16_100_000, to: 39_000_000, warranty: '15 năm' },
 ]
 
 /** Đơn vị đếm: chăn hè tính "chiếc", còn lại tính "bộ" */

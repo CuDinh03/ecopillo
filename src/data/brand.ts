@@ -57,6 +57,8 @@ export interface Showroom {
   id: string
   /** Văn phòng đại diện / Chi nhánh */
   kind: 'Văn phòng đại diện' | 'Chi nhánh'
+  /** Tên trên thẻ ở trang Hệ thống phân phối (data/dealers.ts) */
+  dealerName: string
   city: string
   /** Tên tỉnh/thành trong danh sách 34 tỉnh (data/dealers.ts) */
   province: string
@@ -70,6 +72,8 @@ export interface Showroom {
   imageNote: string
   /** Ảnh thật: bản rộng cho thẻ trang chủ và bản nhỏ cho thẻ đại lý. Bỏ trống thì hiện khung chờ ảnh */
   photo?: { src: string; srcSet: string; alt: string }
+  /** Ảnh dọc trên thẻ ngang: chọn phần ảnh được giữ (object-position), ví dụ 'center 22%' */
+  photoPosition?: string
 }
 
 /** Bản đồ nhúng (không cần khoá API) cho một địa chỉ */
@@ -92,6 +96,7 @@ export const SHOWROOMS: readonly Showroom[] = [
   {
     id: 'ha-noi',
     kind: 'Văn phòng đại diện',
+    dealerName: 'Ecopillo Hà Nội',
     city: 'Hà Nội',
     province: 'Hà Nội',
     address: '273 Xã Đàn, Đống Đa, Hà Nội',
@@ -109,6 +114,7 @@ export const SHOWROOMS: readonly Showroom[] = [
   {
     id: 'tp-hcm',
     kind: 'Chi nhánh',
+    dealerName: 'Ecopillo Gò Vấp',
     city: 'TP. Hồ Chí Minh',
     province: 'TP. Hồ Chí Minh',
     // Địa chỉ đủ theo catalog Ecopillo 22.07.2026
@@ -124,6 +130,29 @@ export const SHOWROOMS: readonly Showroom[] = [
       srcSet: '/images/stores/tp-hcm-1-sm.webp 360w, /images/stores/tp-hcm-1.webp 674w',
       alt: 'Mặt tiền chi nhánh Ecopillo, 257A6 Nguyễn Văn Lượng, Gò Vấp',
     },
+    photoPosition: 'center 22%',
+  },
+  {
+    // Hồ sơ năng lực và bảng giá 2026 (khách gửi 09/11/2026) ghi "Văn phòng Đà Nẵng".
+    // Trước đó điểm này nằm trong danh sách đại lý (cùng địa chỉ, số điện thoại, ảnh). [XÁC NHẬN văn phòng đại diện hay chi nhánh]
+    id: 'da-nang',
+    kind: 'Văn phòng đại diện',
+    dealerName: 'Ecopillo Đà Nẵng',
+    city: 'Đà Nẵng',
+    province: 'Đà Nẵng',
+    address: '254 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng',
+    lat: 16.0295615,
+    lng: 108.2471201,
+    hotline: '0934 767 110',
+    mapsUrl: directionsUrl('254 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng'),
+    imageNote: 'Ảnh mặt tiền văn phòng Đà Nẵng (chờ Ecopillo gửi)',
+    // Ảnh khách gửi qua Zalo 16/10/2026, chỉ có bản nhỏ 360×640 [ECOPILLO GỬI ẢNH GỐC VĂN PHÒNG ĐÀ NẴNG]
+    photo: {
+      src: '/images/stores/da-nang-1-sm.webp',
+      srcSet: '/images/stores/da-nang-1-sm.webp 360w',
+      alt: 'Mặt tiền văn phòng Ecopillo, 254 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng',
+    },
+    photoPosition: 'center 30%',
   },
 ]
 

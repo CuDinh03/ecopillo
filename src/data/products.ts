@@ -6,9 +6,9 @@ import {
   collectionRange,
   coverOf,
   ESSENTIALS,
-  MATTRESSES,
   productImage,
   type Collection,
+  type EssentialItem,
   type ImageSource,
   type Pattern,
   type SizeId,
@@ -137,27 +137,46 @@ const ESSENTIAL_CATEGORY: Readonly<Record<string, CategoryId>> = {
 }
 
 const BED_SIZES = ['160 × 200 cm', '180 × 200 cm', '200 × 220 cm'] as const
+/** Năm cỡ đệm trong bảng giá 2026 (khách gửi 09/11/2026) */
+const MATTRESS_SIZES = ['120×200', '140×200', '160×200', '180×200', '200×220'] as const
 const sizeChoices = (prices: readonly (number | undefined)[] = []): ProductChoice[] =>
   BED_SIZES.map((label, i) => ({ id: label.replace(/ × | cm/g, (m) => (m === ' × ' ? 'x' : '')), label, price: prices[i] }))
 
+/** Giá cỡ giữa (180×200) của dòng bảng giá chỉ ghi thấp – cao: bảng giá 2026 trang 21 */
+const MIDDLE_PRICE: Readonly<Record<string, number>> = { 'Topper Micro Fiber': 3_850_000 }
+
 /**
- * Lựa chọn khi đặt sản phẩm lẻ có khoảng giá. Bảng giá cũ chỉ ghi giá thấp nhất – cao nhất,
- * nên ghép giá thấp với cỡ nhỏ, giá cao với cỡ lớn; cỡ không rõ giá thì nhân viên báo khi gọi.
- * [XÁC NHẬN VỚI ECOPILLO: cỡ ruột gối 45×65 / 50×70 và giá topper 180×200]
+ * Lựa chọn khi đặt sản phẩm lẻ có khoảng giá. ESSENTIALS chỉ ghi giá thấp nhất – cao nhất,
+ * nên ruột gối ghép giá thấp với cỡ 45×65, giá cao với cỡ 50×70 (bảng giá 2026 ghi hai cỡ này);
+ * chăn, topper ghép theo ba cỡ giường, cỡ giữa lấy ở MIDDLE_PRICE.
  */
-const choicesFor = (category: CategoryId, min: number, max: number): ProductChoice[] | undefined => {
+const choicesFor = (category: CategoryId, item: EssentialItem): ProductChoice[] | undefined => {
+  const { min, max } = item
   if (min === max) return undefined
   if (category === 'goi')
     return [
       { id: '45x65', label: '45 × 65 cm', price: min },
       { id: '50x70', label: '50 × 70 cm', price: max },
     ]
-  return sizeChoices([min, undefined, max])
+  return sizeChoices([min, MIDDLE_PRICE[item.name], max])
 }
 
+/** Bảng giá đệm: mỗi độ dày một hàng giá, theo thứ tự cỡ trong `sizes` */
+const variantGrid = (
+  sizes: readonly string[],
+  rows: Readonly<Record<string, readonly number[]>>,
+): ProductVariants => ({
+  sizes,
+  thicknesses: Object.keys(rows),
+  prices: Object.fromEntries(
+    Object.entries(rows).flatMap(([thickness, prices]) => sizes.map((size, i) => [`${size}|${thickness}`, prices[i]])),
+  ),
+})
+
 /**
- * Bảo vệ đệm, divan: giá từng cỡ khách gửi Zalo 05/11/2026; chữ theo catalog Ecopillo 22.07.2026 (trang 64, 66).
- * Ảnh divan khách gửi Zalo 08/11/2026 (tools/nen-anh-khach-gui-2026-11-09.py). Bảo vệ đệm chưa có ảnh [ECOPILLO GỬI ẢNH BẢO VỆ ĐỆM].
+ * Bảo vệ đệm, divan: giá từng cỡ khách gửi Zalo 05/11/2026, khớp bảng giá 2026; chữ theo catalog Ecopillo 22.07.2026 (trang 64, 66).
+ * Ảnh divan khách gửi Zalo 08/11/2026 (tools/nen-anh-khach-gui-2026-11-09.py);
+ * ảnh bảo vệ đệm lấy từ bảng giá 2026 (tools/nen-anh-bang-gia-2026-11-09.py).
  * Dòng bảng giá ở ESSENTIALS (catalog.ts) ghi giá thấp – cao, phải khớp.
  */
 const BAO_VE_DEM: Product = {
@@ -167,6 +186,7 @@ const BAO_VE_DEM: Product = {
   summary: 'Tấm bảo vệ trải trên mặt đệm, dây thun 4 góc: chống thấm, chống bụi, giữ đệm luôn sạch, dễ tháo giặt.',
   min: 675_000,
   max: 889_000,
+  image: productImage('bao-ve-dem-chong-tham', 'Tấm bảo vệ đệm chống thấm Ecopillo, dây thun 4 góc'),
   imageNote: 'Ảnh tấm bảo vệ đệm chống thấm',
   details: [
     'Hạn chế lấm bẩn từ mồ hôi, thức ăn, đồ uống, giữ đệm luôn sạch.',
@@ -238,7 +258,7 @@ const essentialProducts: Product[] = ESSENTIALS.flatMap((group) =>
         max: item.max,
         imageNote: `Ảnh ${prefix.toLowerCase()}${itemName}`,
         details: [item.note, 'Đặt ngay trên web, nhân viên gọi xác nhận trước khi giao. Giao cùng chính sách như bộ chăn ga.'],
-        choices: choicesFor(category, item.min, item.max),
+        choices: choicesFor(category, item),
       } satisfies Product
     }),
 )
@@ -285,6 +305,7 @@ const GAM_THUAN_KHIET: Product = {
 /**
  * Mục 42 (Ecopillo trả lời 23/10/2026): thêm đệm lò xo Eco Luxe và đệm bông Nano, giá, thông số, ảnh theo web cũ
  * (/san-pham/dem-lo-xo-tui-cao-cap-eco-luxe/, /san-pham/dem-bong-nano-chan-foam/, lấy ngày 23/10/2026).
+ * Eco Luxe theo bảng giá 2026 (khách gửi 09/11/2026): cỡ nhỏ là 120×200 (không phải 120×190), thêm cỡ 140×200.
  */
 const ECO_LUXE: Product = {
   slug: 'dem-lo-xo-tui-cao-cap-eco-luxe',
@@ -310,16 +331,9 @@ const ECO_LUXE: Product = {
     { label: 'Bảo hành', value: '10 năm' },
     { label: 'Đóng gói', value: 'Hút chân không, cuộn tròn' },
   ],
-  variants: {
-    sizes: ['120×190', '160×200', '180×200', '200×220'],
-    thicknesses: ['28 cm'],
-    prices: {
-      '120×190|28 cm': 10_230_000,
-      '160×200|28 cm': 11_860_000,
-      '180×200|28 cm': 12_950_000,
-      '200×220|28 cm': 15_180_000,
-    },
-  },
+  variants: variantGrid(MATTRESS_SIZES, {
+    '28 cm': [10_230_000, 10_780_000, 11_860_000, 12_950_000, 15_180_000],
+  }),
 }
 
 /**
@@ -402,25 +416,111 @@ const CHAN_DONG_KIEU_HAN: Product = {
   choices: CHAN_HAN_CODES.map((code) => ({ id: code.toLowerCase(), label: code, image: chanHanImage(code) })),
 }
 
+/** Câu về bông PE, theo tài liệu training sản phẩm 2026 (trang 39) */
+const BONG_PE_NOTES: readonly string[] = [
+  'Bông gòn PE (Polyester Fiber): nhẹ, thoáng, đàn hồi tốt, bền form.',
+  'Sợi PE có độ phồng tự nhiên, không xẹp lún nhanh, không hút ẩm nên hạn chế nấm mốc và an toàn cho da.',
+]
+const ORDER_NOTE = 'Đặt ngay trên web, nhân viên gọi xác nhận trước khi giao. Giao cùng chính sách như bộ chăn ga.'
+
 /**
  * Ruột gối bông PE: ảnh khách gửi Zalo 08/11/2026, xếp vào nhóm Đồ ruột.
- * Chưa có giá, cỡ, chữ giới thiệu [ECOPILLO GỬI GIÁ, KÍCH THƯỚC, MÔ TẢ RUỘT GỐI BÔNG PE]: câu dưới đây chỉ nêu điều đã biết.
+ * Giá, cỡ theo bảng giá 2026 (khách gửi 09/11/2026): 45×65 180.000đ, 50×70 215.000đ.
  */
 const RUOT_GOI_BONG_PE: Product = {
   slug: 'ruot-goi-bong-pe',
   name: 'Ruột gối bông PE',
   category: 'goi',
-  summary: 'Ruột gối nằm Ecopillo nhồi bông PE, vỏ vải trắng viền chỉ.',
-  min: 0,
-  max: 0,
-  isPriceOnCall: true,
+  summary: 'Ruột gối nằm nhồi bông PE: nhẹ, thoáng, đàn hồi tốt, không hút ẩm nên hạn chế nấm mốc.',
+  min: 180_000,
+  max: 215_000,
   image: productImage('ruot-goi-bong-pe', 'Ruột gối bông PE Ecopillo'),
   imageNote: 'Ảnh ruột gối bông PE',
-  details: [
-    'Ruột gối nhồi bông PE, vỏ vải trắng viền chỉ, may nhãn Ecopillo.',
-    'Đặt ngay trên web, nhân viên gọi xác nhận và báo giá trước khi giao. Giao cùng chính sách như bộ chăn ga.',
+  details: [...BONG_PE_NOTES, 'Vỏ vải trắng viền chỉ, may nhãn Ecopillo.', ORDER_NOTE],
+  choices: [
+    { id: '45x65', label: '45 × 65 cm', price: 180_000 },
+    { id: '50x70', label: '50 × 70 cm', price: 215_000 },
   ],
 }
+
+/* ——— Sản phẩm mới trong bảng giá 2026 (khách gửi 09/11/2026), web cũ không có ——— */
+
+/** Ruột gối ôm, gối tựa bông PE: giá bảng giá 2026 trang 22–23, cỡ theo training trang 39. Ảnh từ bảng giá */
+const RUOT_GOI_OM: Product = {
+  slug: 'ruot-goi-om',
+  name: 'Ruột gối ôm bông PE',
+  category: 'goi',
+  summary: 'Ruột gối ôm 80 × 100 cm nhồi bông PE: nhẹ, đàn hồi tốt, giữ form lâu.',
+  min: 390_000,
+  max: 390_000,
+  imageNote: 'Ảnh ruột gối ôm bông PE',
+  details: [...BONG_PE_NOTES, ORDER_NOTE],
+  specs: [
+    { label: 'Kích thước', value: '80 × 100 cm' },
+    { label: 'Ruột', value: 'Bông PE' },
+  ],
+}
+
+const RUOT_GOI_TUA: Product = {
+  slug: 'ruot-goi-tua',
+  name: 'Ruột gối tựa bông PE',
+  category: 'goi',
+  summary: 'Ruột gối tựa vuông 45 × 45 cm nhồi bông PE, dùng tựa lưng trên giường, sofa.',
+  min: 158_000,
+  max: 158_000,
+  imageNote: 'Ảnh ruột gối tựa bông PE',
+  details: [...BONG_PE_NOTES, ORDER_NOTE],
+  specs: [
+    { label: 'Kích thước', value: '45 × 45 cm' },
+    { label: 'Ruột', value: 'Bông PE' },
+  ],
+}
+
+/** Ruột chăn Micro Plus: giá bảng giá 2026 trang 23, chữ theo training trang 34. Ảnh từ bảng giá */
+const RUOT_CHAN_MICRO_PLUS: Product = {
+  slug: 'ruot-chan-micro-plus',
+  name: 'Ruột chăn Micro Plus',
+  category: 'chan',
+  summary: 'Cân bằng giữa độ phồng, độ nhẹ và khả năng giữ nhiệt: ấm nhanh mà không cần chăn dày nặng.',
+  min: 1_780_000,
+  max: 1_780_000,
+  imageNote: 'Ảnh ruột chăn Micro Plus',
+  details: [
+    'Lõi sợi Micro Plus mảnh, tơi xốp, đàn hồi tốt; tạo lớp không khí tĩnh khoá nhiệt mà vẫn thông thoáng.',
+    'Chần điểm tròn cố định lõi sợi ở nhiều điểm, hạn chế dồn sợi.',
+    'Vải bọc mềm mịn, mật độ sợi cao, không xô lệch, vón cục sau thời gian dài.',
+    'Nhẹ, không đè người khi ngủ, ít tiếng động khi trở mình.',
+    ORDER_NOTE,
+  ],
+  specs: [
+    { label: 'Kích thước', value: '200 × 220 cm' },
+    { label: 'Ruột', value: 'Sợi Micro Plus' },
+    { label: 'Kiểu chần', value: 'Chần điểm tròn' },
+  ],
+}
+
+/**
+ * Vỏ gối bán lẻ: bảng giá 2026 trang 18 chỉ ghi tên, đơn vị, giá.
+ * [ECOPILLO GỬI ẢNH, CHẤT LIỆU, KÍCH THƯỚC VỎ GỐI]: cỡ vỏ gối nằm, gối ôm lấy theo vỏ gối trong các bộ chăn ga (45×65, 80×100);
+ * vỏ gối trẻ em chưa rõ cỡ nên để trống.
+ */
+const pillowCase = (slug: string, name: string, price: number, summary: string, size?: string): Product => ({
+  slug,
+  name,
+  category: 'goi',
+  summary,
+  min: price,
+  max: price,
+  imageNote: `Ảnh ${name.toLowerCase()}`,
+  details: [summary, ORDER_NOTE],
+  ...(size ? { specs: [{ label: 'Kích thước', value: size }] } : {}),
+})
+
+const VO_GOI: readonly Product[] = [
+  pillowCase('vo-goi-nam', 'Vỏ gối nằm (đôi)', 780_000, 'Một đôi vỏ gối nằm Ecopillo, bán lẻ để thay hoặc thêm cho bộ chăn ga.', '45 × 65 cm'),
+  pillowCase('vo-goi-tre-em', 'Vỏ gối trẻ em', 345_000, 'Vỏ gối trẻ em Ecopillo, bán theo chiếc.'),
+  pillowCase('vo-goi-om', 'Vỏ gối ôm', 280_000, 'Vỏ gối ôm Ecopillo, bán theo chiếc.', '80 × 100 cm'),
+]
 
 const NANO_CHAN_FOAM: Product = {
   slug: 'dem-bong-nano-chan-foam',
@@ -460,33 +560,149 @@ const NANO_CHAN_FOAM: Product = {
   },
 }
 
-const MATTRESS_NAMES: Readonly<Record<string, string>> = {
-  'Eco Foam đa tầng': 'Đệm Eco Foam đa tầng',
-  'Lò xo Eco Royal': 'Đệm lò xo Eco Royal',
-  'Cao su thiên nhiên Eco Latex': 'Đệm cao su thiên nhiên Eco Latex',
+/**
+ * Bốn dòng đệm giá theo kích thước × độ dày: bảng giá 2026 (khách gửi 09/11/2026), chữ theo training sản phẩm 2026.
+ * Bảo hành theo Sổ bảo hành 2026 (lò xo, Eco Foam 10 năm; cao su thiên nhiên 15 năm).
+ */
+const LO_XO_TUI_DOC_LAP: Product = {
+  slug: 'dem-lo-xo-tui-doc-lap',
+  name: 'Đệm lò xo túi độc lập',
+  category: 'dem',
+  summary:
+    'Dòng đệm lò xo bán chạy nhất: nâng đỡ 3 vùng vai, lưng, hông, nằm cạnh nhau trở mình không rung. Cao 24 cm, hợp từ gia đình trẻ đến người lớn tuổi.',
+  min: 6_130_000,
+  max: 9_060_000,
+  isFromPrice: true,
+  imageNote: 'Ảnh đệm lò xo túi độc lập',
+  details: [
+    'Lò xo túi độc lập thép chống rỉ nhập khẩu, 6 vòng xoắn, bền theo thời gian.',
+    'Nâng đỡ 3 vùng cơ thể vai, lưng, hông; không rung, không lắc, hạn chế ảnh hưởng người nằm cạnh.',
+    'Lớp tiện nghi foam PU đàn hồi và bông tiện nghi giúp phân tán áp lực, tăng độ êm.',
+    'Vải Quilted Jacquard 350 gsm thoáng mát, mềm, kháng mạt bụi; hoa văn độc quyền Ecopillo.',
+  ],
+  specs: [
+    { label: 'Độ dày', value: '24 cm' },
+    { label: 'Bảo hành', value: '10 năm' },
+  ],
+  variants: variantGrid(MATTRESS_SIZES, {
+    '24 cm': [6_130_000, 6_420_000, 7_060_000, 7_750_000, 9_060_000],
+  }),
 }
 
-const mattressProducts: Product[] = MATTRESSES.map((m) => {
-  const name = MATTRESS_NAMES[m.name] ?? m.name
-  return {
-    slug: slugify(name),
-    name,
-    category: 'dem',
-    summary: m.note,
-    min: m.from,
-    max: m.to,
-    isFromPrice: true,
-    imageNote: `Ảnh ${name.toLowerCase()}`,
-    details: [
-      m.note,
-      'Giá theo kích thước và độ dày: nhân viên báo giá chính xác khi gọi xác nhận đơn. Có thể nằm thử tại hệ thống phân phối Ecopillo ở Hà Nội và TP. HCM.',
-    ],
-    specs: [{ label: 'Bảo hành', value: m.warranty }],
-    choices: sizeChoices(),
-  } satisfies Product
-})
+const ECO_FOAM: Product = {
+  slug: 'dem-eco-foam-da-tang',
+  name: 'Đệm Eco Foam đa tầng',
+  category: 'dem',
+  summary:
+    'Nhiều lớp foam ôm theo đường cong cơ thể: êm, mát, nâng đỡ chuẩn, không xẹp, không lún võng. Hợp mọi lứa tuổi, nhất là người đau lưng.',
+  min: 7_190_000,
+  max: 18_440_000,
+  isFromPrice: true,
+  imageNote: 'Ảnh đệm Eco Foam đa tầng',
+  details: [
+    'Foam đa tầng: memory foam lạnh, memory foam massage, dưới cùng là foam nguyên khối K50.',
+    'Vải Extra Cool cân bằng nhiệt, kháng khuẩn, kháng nấm mốc.',
+    'Không xẹp, không biến dạng, không lún võng dù dùng lâu dài.',
+    'Đóng gói hút chân không, cuộn tròn, dễ mang vào nhà, lên tầng.',
+  ],
+  specs: [{ label: 'Bảo hành', value: '10 năm' }],
+  variants: variantGrid(MATTRESS_SIZES, {
+    '10 cm': [7_190_000, 8_120_000, 8_700_000, 9_490_000, 11_030_000],
+    '15 cm': [8_020_000, 9_230_000, 10_120_000, 11_060_000, 13_050_000],
+    '20 cm': [9_650_000, 10_980_000, 12_060_000, 13_280_000, 15_700_000],
+    '25 cm': [11_200_000, 12_790_000, 14_090_000, 15_550_000, 18_440_000],
+  }),
+}
 
-/** Sản phẩm lẻ có ảnh thật (lấy từ web cũ), đặt tên file theo slug */
+const ECO_ROYAL: Product = {
+  slug: 'dem-lo-xo-eco-royal',
+  name: 'Đệm lò xo Eco Royal',
+  category: 'dem',
+  summary:
+    'Đệm lò xo cao cấp nhất của Ecopillo: lò xo túi phân 5 vùng, topper 3 tầng có cao su thiên nhiên, vải Extra Cool mát lưng.',
+  min: 14_365_000,
+  max: 22_335_000,
+  isFromPrice: true,
+  imageNote: 'Ảnh đệm lò xo Eco Royal',
+  details: [
+    'Lò xo túi độc lập thép mạ kẽm, phân 5 vùng nâng đỡ; viền foam bao thành dày 7 cm giữ thành đệm chắc.',
+    'Topper 3 tầng: cao su thiên nhiên, memory foam, foam lượn sóng tạo khe thoáng.',
+    'Vải Extra Cool tản nhiệt nhanh; sợi có Nano bạc kháng khuẩn, khử mùi.',
+    'Tĩnh âm khi trở mình. Đóng gói hút chân không, cuộn tròn.',
+  ],
+  specs: [
+    { label: 'Độ dày', value: '29 cm' },
+    { label: 'Bảo hành', value: '10 năm' },
+  ],
+  variants: variantGrid(MATTRESS_SIZES, {
+    '29 cm': [14_365_000, 15_800_000, 17_280_000, 18_965_000, 22_335_000],
+  }),
+}
+
+const ECO_LATEX: Product = {
+  slug: 'dem-cao-su-thien-nhien-eco-latex',
+  name: 'Đệm cao su thiên nhiên Eco Latex',
+  category: 'dem',
+  summary:
+    'Ruột 100% cao su thiên nhiên: đàn hồi tự nhiên, thoáng khí, kháng khuẩn, chống nấm mốc. Dòng đệm bền nhất, bảo hành 15 năm.',
+  min: 16_100_000,
+  max: 39_000_000,
+  isFromPrice: true,
+  imageNote: 'Ảnh đệm cao su thiên nhiên Eco Latex',
+  details: [
+    'Ruột 100% mủ cao su thiên nhiên, lỗ thoáng phân bố đều giúp khí lưu thông, phân tán áp lực vai, lưng, hông.',
+    'Kháng khuẩn, kháng nấm mốc, không gây dị ứng, an toàn cho trẻ nhỏ và làn da nhạy cảm.',
+    'Vỏ ngoài vải Cool Jacquard mát, tháo ra giặt được.',
+  ],
+  specs: [{ label: 'Bảo hành', value: '15 năm' }],
+  variants: variantGrid(['160×200', '180×200', '200×220'], {
+    '10 cm': [16_100_000, 18_760_000, 23_000_000],
+    '15 cm': [22_200_000, 25_900_000, 31_700_000],
+    '20 cm': [29_600_000, 33_000_000, 39_000_000],
+  }),
+}
+
+/**
+ * Đệm bông ép Mix Latex: bảng giá 2026 trang 3 (giá, ảnh), training trang 25–26 (chữ), Sổ bảo hành (7 năm).
+ * Mở lại trang ở link cũ /san-pham/dem-bong-ep-cao-cap-mix-latex/ (trước đó 301 sang danh mục Đệm bông ép).
+ */
+const MIX_LATEX: Product = {
+  slug: 'dem-bong-ep-cao-cap-mix-latex',
+  name: 'Đệm bông ép Mix Latex',
+  category: 'dem',
+  summary:
+    'Cho người thích nằm cứng mà vẫn muốn êm nhẹ: lõi bông ép, mặt 2 cm cao su thiên nhiên. Hợp trẻ em, người già, người đau lưng, cột sống.',
+  min: 6_250_000,
+  max: 13_000_000,
+  isFromPrice: true,
+  imageNote: 'Ảnh đệm bông ép Mix Latex',
+  gallery: [
+    productImage('dem-bong-ep-cao-cap-mix-latex-2', 'Đệm bông ép Mix Latex nhìn chính diện'),
+    productImage('dem-bong-ep-cao-cap-mix-latex-3', 'Đệm bông ép Mix Latex gập 2'),
+    productImage('dem-bong-ep-cao-cap-mix-latex-4', 'Mặt chần đệm bông ép Mix Latex'),
+  ],
+  details: [
+    'Độ êm vừa: không quá cứng như bông ép truyền thống, không mềm như foam; nâng đỡ trục sống tự nhiên.',
+    'Lõi bông ép xanh Nano Bạc Ag+ kháng khuẩn, kháng nấm, kháng mạt bụi; không xẹp, không biến dạng.',
+    'Mặt 2 cm cao su thiên nhiên tăng độ êm, đàn hồi nhẹ, phân bổ áp lực đều vùng lưng, hông, vai.',
+    'Vải gấm xốp nhập khẩu 400 g/m chần foam. Gập 2, dễ di chuyển; ấm mùa đông, thoáng mùa hè.',
+    'Nhận đặt theo kích thước riêng.',
+  ],
+  specs: [
+    { label: 'Độ dày', value: '12 · 14 · 17 · 21 cm' },
+    { label: 'Bảo hành', value: '7 năm' },
+    { label: 'Kiểu', value: 'Gập 2' },
+    { label: 'Lõi', value: 'Bông ép Nano Bạc, mặt cao su 2 cm' },
+  ],
+  variants: variantGrid(MATTRESS_SIZES, {
+    '12 cm': [6_250_000, 7_130_000, 7_380_000, 8_100_000, 9_410_000],
+    '14 cm': [6_660_000, 7_690_000, 7_780_000, 8_680_000, 10_280_000],
+    '17 cm': [7_590_000, 8_840_000, 9_060_000, 10_130_000, 11_890_000],
+    '21 cm': [8_260_000, 9_570_000, 9_860_000, 10_960_000, 13_000_000],
+  }),
+}
+
+/** Sản phẩm lẻ có ảnh thật (web cũ, ảnh khách gửi, bảng giá 2026), đặt tên file theo slug */
 const PRODUCT_PHOTOS = new Set([
   'ruot-goi-micro-fiber',
   'ruot-goi-micro-plus',
@@ -505,6 +721,10 @@ const PRODUCT_PHOTOS = new Set([
   'dem-lo-xo-tui-cao-cap-eco-luxe',
   'dem-bong-nano-chan-foam',
   'dem-lo-xo-eco-fresh',
+  'dem-bong-ep-cao-cap-mix-latex',
+  'ruot-goi-om',
+  'ruot-goi-tua',
+  'ruot-chan-micro-plus',
 ])
 
 const withPhoto = (p: Product): Product =>
@@ -514,10 +734,18 @@ export const PRODUCTS: readonly Product[] = [
   ...COLLECTIONS.map(collectionProduct),
   ...essentialProducts,
   CHAN_DONG_KIEU_HAN,
+  RUOT_CHAN_MICRO_PLUS,
   RUOT_GOI_BONG_PE,
+  RUOT_GOI_OM,
+  RUOT_GOI_TUA,
+  ...VO_GOI,
   GAM_THUAN_KHIET,
+  MIX_LATEX,
   NANO_CHAN_FOAM,
-  ...mattressProducts,
+  LO_XO_TUI_DOC_LAP,
+  ECO_FOAM,
+  ECO_ROYAL,
+  ECO_LATEX,
   ECO_LUXE,
   ECO_FRESH,
   BAO_VE_DEM,
@@ -624,5 +852,5 @@ export const PRICE_BANDS: Readonly<Record<CategoryId | 'tat-ca', readonly PriceB
 
 export const priceBandsOf = (category: CategoryId | null): readonly PriceBand[] => PRICE_BANDS[category ?? 'tat-ca']
 
-/** Thuộc mốc khi có ít nhất một cỡ có giá trong mốc, nên một sản phẩm có thể ở hai mốc (đệm Eco Foam 8 – 15,7 triệu) */
+/** Thuộc mốc khi có ít nhất một cỡ có giá trong mốc, nên một sản phẩm có thể ở hai mốc (đệm Eco Foam 7,19 – 18,44 triệu) */
 export const inPriceBand = (range: { min: number; max: number }, b: PriceBand): boolean => range.min < b.to && range.max >= b.from

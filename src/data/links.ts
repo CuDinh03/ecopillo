@@ -173,6 +173,15 @@ const PRODUCT_SLUGS: Readonly<Record<string, string>> = {
   // Sản phẩm mới khách gửi 08/11/2026, web cũ không có: link mới, không cần 301
   'chan-dong-kieu-han': 'chan-dong-kieu-han',
   'ruot-goi-bong-pe': 'ruot-goi-bong-pe',
+  // Có giá, ảnh trong bảng giá 2026 (khách gửi 09/11/2026): dùng lại trang Mix Latex của web cũ thay cho 301 sang Đệm bông ép
+  'dem-bong-ep-cao-cap-mix-latex': 'dem-bong-ep-cao-cap-mix-latex',
+  // Sản phẩm mới trong bảng giá 2026 (khách gửi 09/11/2026), web cũ không có: link mới, không cần 301
+  'ruot-chan-micro-plus': 'ruot-chan-micro-plus',
+  'ruot-goi-om': 'ruot-goi-om',
+  'ruot-goi-tua': 'ruot-goi-tua',
+  'vo-goi-nam': 'vo-goi-nam',
+  'vo-goi-tre-em': 'vo-goi-tre-em',
+  'vo-goi-om': 'vo-goi-om',
 }
 
 const productPagePath = (slug: string): string => `/san-pham/${slug}/`
@@ -230,10 +239,11 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
   },
   '/danh-muc-san-pham/san-pham/ruot-chan-goi/': {
     title: 'Ruột chăn gối',
-    description: 'Ruột chăn, ruột gối Ecopillo: Micro Fiber, chăn đông kiểu Hàn, tơ tằm, cao su thiên nhiên, lông vũ, bông PE. Đặt online, thanh toán khi nhận.',
+    description: 'Ruột chăn, ruột gối, vỏ gối Ecopillo: Micro Fiber, Micro Plus, tơ tằm, cao su thiên nhiên, lông vũ, bông PE. Đặt online, thanh toán khi nhận.',
     products: [
       'chan-dong-micro-fiber',
       'chan-dong-kieu-han',
+      'ruot-chan-micro-plus',
       'chan-to-tam',
       'chan-long-vu-tu-nhien',
       'ruot-goi-micro-fiber',
@@ -242,12 +252,26 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
       'ruot-goi-cao-su-thien-nhien',
       'ruot-goi-long-vu-tu-nhien',
       'ruot-goi-bong-pe',
+      'ruot-goi-om',
+      'ruot-goi-tua',
+      'vo-goi-nam',
+      'vo-goi-tre-em',
+      'vo-goi-om',
     ],
   },
   '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/': {
     title: 'Ruột gối nằm cao cấp',
     description: 'Ruột gối nằm Ecopillo, từ bông PE, Micro Fiber đến lông vũ tự nhiên. Đặt online, thanh toán khi nhận.',
     category: 'goi',
+    // Ghi rõ từng sản phẩm: nhóm 'goi' nay có cả gối ôm, gối tựa, vỏ gối (bảng giá 2026), không phải ruột gối nằm
+    products: [
+      'ruot-goi-bong-pe',
+      'ruot-goi-micro-fiber',
+      'ruot-goi-micro-plus',
+      'ruot-goi-to-tam',
+      'ruot-goi-cao-su-thien-nhien',
+      'ruot-goi-long-vu-tu-nhien',
+    ],
   },
   '/danh-muc-san-pham/dem-ecopillo/': {
     title: 'Đệm Ecopillo',
@@ -268,9 +292,9 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
   },
   '/danh-muc-san-pham/san-pham/dem-bong-ep/': {
     title: 'Đệm bông ép',
-    description: 'Đệm bông ép Ecopillo: Gấm Thuần Khiết gập 3, bông Nano chần foam gập 2. Giá theo kích thước và độ dày.',
+    description: 'Đệm bông ép Ecopillo: Mix Latex mặt cao su thiên nhiên, Gấm Thuần Khiết gập 3, bông Nano chần foam gập 2. Giá theo kích thước và độ dày.',
     category: 'dem',
-    products: ['dem-bong-gam-thuan-khiet', 'dem-bong-nano-chan-foam'],
+    products: ['dem-bong-ep-cao-cap-mix-latex', 'dem-bong-gam-thuan-khiet', 'dem-bong-nano-chan-foam'],
   },
   '/danh-muc-san-pham/san-pham/dem-foam/': {
     title: 'Đệm foam',
@@ -320,7 +344,6 @@ export const OLD_SITE_REDIRECTS: Readonly<Record<string, string>> = {
   // Sản phẩm lẻ web mới chưa có [XÁC NHẬN]
   '/san-pham/dem-foam-cao-cap-nano-comfort/': '/danh-muc-san-pham/san-pham/dem-foam/',
   '/san-pham/dem-lo-xo-cao-cap-eco-premium/': '/danh-muc-san-pham/san-pham/dem-lo-xo/',
-  '/san-pham/dem-bong-ep-cao-cap-mix-latex/': '/danh-muc-san-pham/san-pham/dem-bong-ep/',
   '/san-pham/dem-tron-cao-cap-ecopillo/': '/danh-muc-san-pham/dem-ecopillo/',
   '/san-pham/ruot-goi-dau-ecopillo/': '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/',
   '/san-pham/chan-he-e-cool-ecopillo/': COLLECTION_PATHS['chan-he-lyocell'],
