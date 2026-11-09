@@ -97,11 +97,12 @@ export function MattressPicker() {
             aria-label="Nhóm đệm"
             className="-mx-5 flex gap-2 overflow-x-auto px-5 py-0.5 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
           >
+            {/* Chị Phương 09/11/2026: "cho nền hoặc chữ đậm hơn": chữ đậm + viền chàm mảnh để nút nổi khỏi nền xanh */}
             {MATTRESS_CHIPS.map((chip) => (
               <li key={chip.to} className="shrink-0">
                 <Link
                   to={chip.to}
-                  className="inline-flex h-10 items-center rounded-full bg-ivory px-4 text-small text-deep-900 shadow-[var(--shadow-soft)] transition duration-300 ease-[var(--ease-soft)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)]"
+                  className="inline-flex h-10 items-center rounded-full bg-ivory px-4 text-small font-semibold text-deep-900 shadow-[var(--shadow-soft)] ring-1 ring-deep-900/15 transition duration-300 ease-[var(--ease-soft)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)]"
                 >
                   {chip.label}
                 </Link>

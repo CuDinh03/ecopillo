@@ -3,7 +3,7 @@ import { BEDDING_SETS, type Collection } from './catalog'
 /**
  * Trang chủ, phần bộ sưu tập chăn ga (C4, owner chốt 09/11/2026, phương án 1 trong docs/de-xuat-gop-y-08-11.html).
  * Khách 08/11: "chị chủ yếu bán ga ER EV ET ED sản phẩm lõi của cty" → bốn bộ lõi ô to 2×2 lên trước,
- * ba bộ còn lại thành dòng gọn "Thêm lựa chọn" bên dưới. Nhãn loại vải (mục 8 phản hồi 05/11, Excel STT 94) thành chữ nhỏ dưới tên bộ.
+ * ba bộ còn lại ở "Thêm lựa chọn" bên dưới (chị Phương 09/11/2026: cùng cỡ ô với bốn bộ lõi, bỏ dòng gọn). Nhãn loại vải (mục 8 phản hồi 05/11, Excel STT 94) thành chữ nhỏ dưới tên bộ.
  * Thứ tự khách đã duyệt giữ nguyên trong từng phần: Doris → Vera → Tera → Rosa, rồi Sweet → Liora → Flora.
  * Thêm bộ sưu tập mới: thêm vào một trong hai danh sách dưới đây, không thì bộ đó không hiện ở trang chủ.
  *
@@ -29,7 +29,7 @@ const CORE_SOURCES: readonly ShowcaseSource[] = [
   { id: 'eco-rosa', fabric: 'In hoạ tiết' },
 ]
 
-/** Ba bộ còn lại: dòng gọn */
+/** Ba bộ còn lại: ô to như bộ lõi, phần "Thêm lựa chọn" */
 const MORE_SOURCES: readonly ShowcaseSource[] = [
   // Catalog: "dệt thẳng vào sợi Lyocell bằng kỹ thuật Jacquard"
   { id: 'eco-sweet', fabric: 'Dệt jacquard' },
@@ -41,7 +41,8 @@ const MORE_SOURCES: readonly ShowcaseSource[] = [
 
 export const COLLECTION_SHOWCASE_TEXT = {
   title: 'Bộ sưu tập chăn ga',
-  lead: 'Bốn dòng chăn ga chủ lực của Ecopillo',
+  // Chị Phương qua Zalo 09/11/2026, giữ nguyên văn (thay "Bốn dòng chăn ga chủ lực của Ecopillo")
+  lead: 'Những dòng chăn ga bán chạy nhất Ecopillo',
   moreTitle: 'Thêm lựa chọn',
   seeAll: 'Xem tất cả sản phẩm',
 } as const

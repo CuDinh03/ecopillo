@@ -6,19 +6,19 @@ import { formatVND } from '../../lib/format'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
-import { buttonClass, Container, SectionHeading } from '../ui/primitives'
+import { Container, SectionHeading } from '../ui/primitives'
 
 export const orderLink = (collectionId: string) => `${PATHS.order}?bo-suu-tap=${collectionId}`
 
 /**
  * Trang chủ, bộ sưu tập chăn ga (C4, phương án 1, owner chốt 09/11/2026; dữ liệu ở src/data/collectionGroups.ts).
- * Điện thoại: bốn bộ lõi ô 2×2, ba bộ còn lại ba dòng gọn, nút Xem tất cả.
- * Máy tính: bốn ô một hàng, ba bộ còn lại một hàng nhỏ bên dưới.
- * Bấm ô hay dòng đều sang trang bộ sưu tập (chọn mẫu, kích thước, đặt mua ở đó).
+ * Bốn bộ lõi (bán chạy nhất) rồi "Thêm lựa chọn" ba bộ, cùng một kiểu ô to (khách 09/11/2026 bỏ dòng gọn).
+ * Điện thoại 2×2 mỗi phần; máy tính 4 ô một hàng. Ô thứ tư của "Thêm lựa chọn" là ô Xem tất cả sản phẩm.
+ * Bấm ô sang trang bộ sưu tập (chọn mẫu, kích thước, đặt mua ở đó).
  */
 
-/** Ô bộ lõi: ảnh vuông, tên, loại vải, "từ" giá thấp nhất */
-function CoreTile({ item, index }: { item: ShowcaseItem; index: number }) {
+/** Ô bộ sưu tập: ảnh vuông, tên, loại vải, "từ" giá thấp nhất (dùng cho cả bộ lõi và Thêm lựa chọn) */
+function CollectionTile({ item, index }: { item: ShowcaseItem; index: number }) {
   const { collection, fabric } = item
   const image = coverOf(collection)
   const { min } = collectionRange(collection)
@@ -50,27 +50,21 @@ function CoreTile({ item, index }: { item: ShowcaseItem; index: number }) {
   )
 }
 
-/** Dòng gọn cho ba bộ còn lại: ảnh nhỏ, tên, loại vải, mũi tên */
-function MoreRow({ item }: { item: ShowcaseItem }) {
-  const { collection, fabric } = item
+/**
+ * Ô cuối hàng "Thêm lựa chọn": nền chàm, sang trang Sản phẩm.
+ * Ba bộ + ô này đủ một hàng 4 (máy tính) và 2×2 (điện thoại), không bị trống chỗ.
+ */
+function SeeAllTile({ index }: { index: number }) {
   return (
-    <li className="min-w-0">
+    <li data-reveal style={revealDelay(index)} className="min-w-0">
       <Link
-        to={collectionPath(collection)}
-        className="group grid grid-cols-[4.5rem_minmax(0,1fr)_auto] items-center gap-3 rounded-2xl bg-ivory p-2 pr-4 shadow-[var(--shadow-soft)] transition duration-300 ease-[var(--ease-soft)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] focus-visible:outline-2 focus-visible:outline-offset-2"
+        to={PATHS.products}
+        className="group flex h-full min-h-40 flex-col justify-between rounded-[1.25rem] bg-deep-900 p-4 text-white shadow-[var(--shadow-soft)] transition duration-500 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] focus-visible:outline-2 focus-visible:outline-offset-2 sm:rounded-[1.75rem] sm:p-6"
       >
-        <Placeholder
-          compact
-          className="h-14 w-[4.5rem] rounded-xl"
-          image={coverOf(collection)}
-          note={collection.imageNote}
-          sizes="72px"
-        />
-        <span className="min-w-0">
-          <span className="block font-display text-[1.1rem] leading-tight text-deep-900">{collection.name}</span>
-          <span className="mt-0.5 block text-label text-ink-soft">{fabric}</span>
+        <span className="font-display text-[1.25rem] leading-tight sm:text-[1.75rem]">{COLLECTION_SHOWCASE_TEXT.seeAll}</span>
+        <span className="mt-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-deep-900 transition-transform duration-300 group-hover:translate-x-1 sm:h-12 sm:w-12">
+          <Icon name="arrowRight" size={20} />
         </span>
-        <Icon name="arrowRight" size={18} className="text-deep-800 transition-transform group-hover:translate-x-0.5" />
       </Link>
     </li>
   )
@@ -84,23 +78,18 @@ export function Collections() {
 
         <ul className="mt-7 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-5 lg:grid-cols-4">
           {CORE_COLLECTIONS.map((item, i) => (
-            <CoreTile key={item.collection.id} item={item} index={i} />
+            <CollectionTile key={item.collection.id} item={item} index={i} />
           ))}
         </ul>
 
         <h3 className="eyebrow mt-9 sm:mt-12">{COLLECTION_SHOWCASE_TEXT.moreTitle}</h3>
-        <ul className="mt-3 grid gap-2.5 sm:mt-4 sm:grid-cols-3 sm:gap-5">
-          {MORE_COLLECTIONS.map((item) => (
-            <MoreRow key={item.collection.id} item={item} />
+        {/* Chị Phương 09/11/2026: "3 dòng dưới e cũng cho to như những dòng trên", "trên to dưới nhỏ buồn cười" */}
+        <ul className="mt-3 grid grid-cols-2 gap-3 sm:mt-4 sm:gap-5 lg:grid-cols-4">
+          {MORE_COLLECTIONS.map((item, i) => (
+            <CollectionTile key={item.collection.id} item={item} index={i} />
           ))}
+          <SeeAllTile index={MORE_COLLECTIONS.length} />
         </ul>
-
-        <div className="mt-8 flex justify-center sm:mt-12">
-          <Link to={PATHS.products} className={buttonClass('secondary', 'lg')}>
-            {COLLECTION_SHOWCASE_TEXT.seeAll}
-            <Icon name="arrowRight" size={18} />
-          </Link>
-        </div>
       </Container>
     </section>
   )
