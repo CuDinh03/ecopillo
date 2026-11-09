@@ -29,7 +29,7 @@ export const LISTING_GUIDES: Readonly<Record<string, ListingGuide>> = {
       { title: 'Đệm 24 cm, êm vừa', text: 'Đệm lò xo túi độc lập Ecopillo: hợp đa số người, giá dễ tiếp cận, bảo hành 10 năm.' },
       { title: 'Đệm 28 cm, mặt Pillow Top', text: 'Eco Luxe: lõi lò xo túi 16 cm, thêm lớp topper foam 4 cm ôm vai, hông, eo. Êm vừa, hợp cả trẻ em và người hay đau lưng.' },
       { title: 'Đệm 29 cm, êm sâu', text: 'Eco Royal: lò xo phân vùng vai, lưng, hông, thêm lớp cao su và memory foam. Hợp người lớn tuổi, người đau lưng.' },
-      { title: 'Nằm thử trước khi mua', text: 'Đệm khó chọn qua ảnh: Quý khách nên nằm thử tại văn phòng Hà Nội hoặc chi nhánh TP. HCM.' },
+      { title: 'Nằm thử trước khi mua', text: 'Đệm khó chọn qua ảnh: Quý khách nên nằm thử tại hệ thống phân phối và showroom Ecopillo trên toàn quốc.' },
     ],
   },
   '/danh-muc-san-pham/san-pham/dem-cao-su/': {

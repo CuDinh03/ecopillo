@@ -6,7 +6,7 @@
  * chỉ cần đổi nguồn. Danh sách dưới đây là bản dựng sẵn, dùng làm dự phòng khi WordPress không trả lời.
  */
 
-import { CONTACT, SHOWROOMS } from './brand'
+import { CONTACT, SHOWROOMS, type Showroom } from './brand'
 import { slugify } from '../lib/slug'
 import { PATHS } from './links'
 
@@ -136,11 +136,17 @@ const STORE_PHOTOS: Readonly<Record<string, readonly string[]>> = {
   'hien-long': storePhotos('hien-long', 1),
 }
 
-/** Văn phòng Hà Nội, Chi nhánh TP. HCM, Văn phòng Đà Nẵng: điểm chính hãng (danh sách ở SHOWROOMS, data/brand.ts) */
+/** Văn phòng Hà Nội, Chi nhánh TP. HCM, Đại lý Đà Nẵng: ba điểm có ảnh, hotline riêng (danh sách ở SHOWROOMS, data/brand.ts) */
+const OFFICIAL_KIND: Record<Showroom['kind'], DealerKind> = {
+  'Văn phòng đại diện': 'van-phong',
+  'Chi nhánh': 'chi-nhanh',
+  'Đại lý': 'dai-ly',
+}
+
 const OFFICIAL: readonly Dealer[] = SHOWROOMS.map((s) => ({
   id: s.id,
   ten: s.dealerName,
-  loai: s.kind === 'Văn phòng đại diện' ? 'van-phong' : 'chi-nhanh',
+  loai: OFFICIAL_KIND[s.kind],
   dia_chi: s.address,
   tinh: s.province,
   lat: s.lat,
@@ -153,9 +159,17 @@ const OFFICIAL: readonly Dealer[] = SHOWROOMS.map((s) => ({
   ghi_chu: 'Có trưng bày đệm, gối để nằm thử',
 }))
 
-/** Thứ tự mặc định: văn phòng (Hà Nội, Đà Nẵng), Chi nhánh TP. HCM, rồi các đại lý theo tỉnh từ Bắc vào Nam */
+/** Mã ba điểm trong SHOWROOMS */
+const OFFICIAL_IDS = new Set(SHOWROOMS.map((s) => s.id))
+
+/**
+ * Thứ tự mặc định: ba điểm của SHOWROOMS (Văn phòng Hà Nội, Chi nhánh TP. HCM, Đại lý Đà Nẵng) đứng đầu,
+ * rồi các đại lý khác; trong mỗi nhóm xếp theo tỉnh từ Bắc vào Nam (nhóm đầu: Hà Nội, Đà Nẵng, TP. HCM).
+ * Đà Nẵng là đại lý nhưng vẫn ở nhóm đầu vì có ảnh, hotline riêng (owner duyệt 09/11/2026).
+ */
 export const sortDefault = (list: readonly Dealer[]): Dealer[] => {
-  const rank = (d: Dealer) => (d.loai === 'van-phong' ? 0 : d.loai === 'chi-nhanh' ? 1 : 2)
+  // Danh sách từ WordPress có thể mang mã khác: văn phòng, chi nhánh vẫn vào nhóm đầu theo loại
+  const rank = (d: Dealer) => (OFFICIAL_IDS.has(d.id) || d.loai !== 'dai-ly' ? 0 : 1)
   return [...list].sort(
     (a, b) =>
       rank(a) - rank(b) ||

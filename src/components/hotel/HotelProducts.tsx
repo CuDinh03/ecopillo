@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import type { ImageSource } from '../../data/catalog'
 import { HOTEL_PRODUCTS, type HotelProductEntry } from '../../data/hotel'
-import { productBySlug, productPath, shortPriceLabel } from '../../data/products'
+import { productBySlug, productPath } from '../../data/products'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
@@ -16,7 +16,9 @@ const IMAGE_SIZES = '(min-width: 1024px) 380px, (min-width: 640px) 45vw, 260px'
 
 /**
  * "Sản phẩm cho khách sạn" (khách yêu cầu qua Zalo 09/11/2026): chín sản phẩm của danh mục khách sạn web cũ.
- * Món có trang riêng: thẻ mở trang sản phẩm (giá, đặt online). Món "Giá liên hệ": bấm thẻ điền sẵn form báo giá cuối trang.
+ * Mọi thẻ ghi "Giá liên hệ" (chị Phương 09/11/2026: "phần trong khách sạn e có thể để giá liên hệ hết được không"):
+ * khách sạn đặt số lượng, Ecopillo báo giá riêng. Món có trang riêng: thẻ mở trang sản phẩm để xem chi tiết;
+ * món chưa có trang: bấm thẻ điền sẵn form báo giá cuối trang.
  * Máy tính 3 thẻ một hàng (đủ 3 hàng); điện thoại một hàng lướt ngang như kệ trang Sản phẩm.
  */
 export function HotelProducts({ onQuote }: { onQuote: (name: string) => void }) {
@@ -31,7 +33,7 @@ export function HotelProducts({ onQuote }: { onQuote: (name: string) => void }) 
             </h2>
           </div>
           <p className="max-w-sm text-body-sm leading-relaxed text-ink-soft">
-            Giá lẻ để Quý khách tham khảo. Đặt số lượng cho khách sạn, dự án: Ecopillo báo giá riêng theo số phòng.
+            Giá theo số lượng và số phòng: Ecopillo báo giá riêng cho từng khách sạn, dự án. Bấm thẻ để xem chi tiết hoặc nhận báo giá.
           </p>
         </header>
         <ul className="mt-8 grid gap-4 max-sm:-mx-5 max-sm:flex max-sm:scroll-px-5 max-sm:snap-x max-sm:snap-mandatory max-sm:overflow-x-auto max-sm:overscroll-x-contain max-sm:px-5 max-sm:pb-3 max-sm:[scrollbar-width:none] sm:mt-10 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
@@ -82,7 +84,7 @@ function EntryCard({ entry, onQuote }: { entry: HotelProductEntry; onQuote: (nam
           </Link>
         }
         note={product.summary}
-        price={shortPriceLabel(product)}
+        price="Giá liên hệ"
         action="Xem sản phẩm"
       />
     </article>

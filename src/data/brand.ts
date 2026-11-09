@@ -56,8 +56,8 @@ export const OPENING_HOURS = '8:30–22:00 hằng ngày'
 /** Biên bản chốt mục 28 và 39: đổi "Showroom" thành "Hệ thống phân phối" */
 export interface Showroom {
   id: string
-  /** Văn phòng đại diện / Chi nhánh */
-  kind: 'Văn phòng đại diện' | 'Chi nhánh'
+  /** Văn phòng đại diện / Chi nhánh / Đại lý (Đà Nẵng, owner chốt 09/11/2026) */
+  kind: 'Văn phòng đại diện' | 'Chi nhánh' | 'Đại lý'
   /** Tên trên thẻ ở trang Hệ thống phân phối (data/dealers.ts) */
   dealerName: string
   city: string
@@ -134,10 +134,10 @@ export const SHOWROOMS: readonly Showroom[] = [
     photoPosition: 'center 22%',
   },
   {
-    // Hồ sơ năng lực và bảng giá 2026 (khách gửi 09/11/2026) ghi "Văn phòng Đà Nẵng".
-    // Trước đó điểm này nằm trong danh sách đại lý (cùng địa chỉ, số điện thoại, ảnh). [XÁC NHẬN văn phòng đại diện hay chi nhánh]
+    // Đại lý Đà Nẵng (chị Phương 09/11/2026: "sửa thành đại lý", owner duyệt). Vẫn đứng đầu danh sách cùng Hà Nội, TP. HCM
+    // vì có ảnh và hotline riêng (sortDefault trong data/dealers.ts). Không tính vào "2 văn phòng" ở BRAND_STATS.
     id: 'da-nang',
-    kind: 'Văn phòng đại diện',
+    kind: 'Đại lý',
     dealerName: 'Ecopillo Đà Nẵng',
     city: 'Đà Nẵng',
     province: 'Đà Nẵng',
@@ -146,12 +146,12 @@ export const SHOWROOMS: readonly Showroom[] = [
     lng: 108.2471201,
     hotline: '0934 767 110',
     mapsUrl: directionsUrl('254 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng'),
-    imageNote: 'Ảnh mặt tiền văn phòng Đà Nẵng (chờ Ecopillo gửi)',
-    // Ảnh khách gửi qua Zalo 16/10/2026, chỉ có bản nhỏ 360×640 [ECOPILLO GỬI ẢNH GỐC VĂN PHÒNG ĐÀ NẴNG]
+    imageNote: 'Ảnh mặt tiền đại lý Đà Nẵng (chờ Ecopillo gửi)',
+    // Ảnh khách gửi qua Zalo 16/10/2026, chỉ có bản nhỏ 360×640 [ECOPILLO GỬI ẢNH GỐC ĐẠI LÝ ĐÀ NẴNG]
     photo: {
       src: '/images/stores/da-nang-1-sm.webp',
       srcSet: '/images/stores/da-nang-1-sm.webp 360w',
-      alt: 'Mặt tiền văn phòng Ecopillo, 254 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng',
+      alt: 'Mặt tiền đại lý Ecopillo, 254 Lê Văn Hiến, Ngũ Hành Sơn, Đà Nẵng',
     },
     photoPosition: 'center 30%',
   },

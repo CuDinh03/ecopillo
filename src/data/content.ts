@@ -121,7 +121,7 @@ export const FAQS: readonly Faq[] = [
   {
     q: 'Điểm bán Ecopillo mở cửa giờ nào?',
     a: [
-      `Văn phòng Hà Nội, Đà Nẵng và chi nhánh TP. HCM: ${OPENING_HOURS}.`,
+      `Văn phòng Hà Nội, chi nhánh TP. HCM và đại lý Đà Nẵng: ${OPENING_HOURS}.`,
       'Đại lý: giờ mở cửa ghi ở từng điểm trên trang Liên hệ mua hàng (mục Tìm Ecopillo gần Quý khách). Điểm chưa ghi giờ, Quý khách gọi trước khi ghé.',
     ],
   },

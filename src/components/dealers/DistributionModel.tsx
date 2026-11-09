@@ -33,7 +33,8 @@ export function DistributionModel() {
       </figure>
       <div>
         <header data-reveal>
-          <p className="eyebrow">Mô hình kinh doanh</p>
+          {/* Nhãn in đậm, chàm đậm (chị Phương 09/11/2026: "in đậm cho c đoạn này") */}
+          <p className="eyebrow font-bold text-deep-900">Mô hình kinh doanh</p>
           <h2 id="mo-hinh-tieu-de" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.6rem]">
             Một hệ thống, ba kênh song song
           </h2>

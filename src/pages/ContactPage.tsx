@@ -164,7 +164,7 @@ export function ContactPage() {
   const topic = TOPIC_PARAM[params.get('chu-de') ?? ''] ?? TOPICS[0]
   usePageMeta(
     'Liên hệ mua hàng',
-    'Hotline, Zalo, email, văn phòng Hà Nội, Đà Nẵng, TP. HCM cùng hệ thống đại lý Ecopillo trên toàn quốc. Gửi tin nhắn, Ecopillo gọi lại trong giờ làm việc.',
+    'Hotline, Zalo, email, văn phòng Hà Nội, chi nhánh TP. HCM cùng hệ thống đại lý Ecopillo trên toàn quốc. Gửi tin nhắn, Ecopillo gọi lại trong giờ làm việc.',
   )
 
   // 301 máy chủ từ /he-thong-phan-phoi/?gan-toi=1 mất #diem-ban: gắn lại neo qua React Router

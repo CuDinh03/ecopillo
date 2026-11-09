@@ -145,7 +145,7 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
           </div>
         </div>
         <p className="mt-4 text-xs leading-relaxed text-ink-soft">
-          Muốn trả tiền mặt hoặc quẹt thẻ tại cửa hàng? Ghé hệ thống phân phối Ecopillo tại Hà Nội hoặc TP. HCM. Khi bấm “Đặt
+          Muốn trả tiền mặt hoặc quẹt thẻ tại cửa hàng? Ghé hệ thống phân phối và showroom Ecopillo trên toàn quốc. Khi bấm “Đặt
           hàng”, Quý khách đồng ý để Ecopillo dùng thông tin trên để gọi xác nhận và giao hàng, theo{' '}
           <Link to={PATHS.privacy} className="-my-2 inline-block py-2 font-medium text-deep-900 underline underline-offset-2">
             chính sách bảo vệ thông tin

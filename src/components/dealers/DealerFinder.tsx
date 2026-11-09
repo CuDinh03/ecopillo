@@ -59,7 +59,7 @@ interface Row {
   km?: number
 }
 
-/** Dữ liệu cấu trúc LocalBusiness cho Văn phòng đại diện và Chi nhánh */
+/** Dữ liệu cấu trúc LocalBusiness cho Văn phòng Hà Nội, Chi nhánh TP. HCM và Đại lý Đà Nẵng (tên ghi đúng loại điểm) */
 export function LocalBusinessData() {
   const data = SHOWROOMS.map((s) => ({
     '@context': 'https://schema.org',

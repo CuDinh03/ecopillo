@@ -39,7 +39,8 @@ function FooterGroup({ id, title, listClassName, children }: FooterGroupProps) {
   const listId = `chan-trang-${id}`
   return (
     <div className="max-sm:border-t max-sm:border-line max-sm:last:border-b">
-      <h3 className="eyebrow">
+      {/* Tiêu đề nhóm đậm, chàm đậm (chị Phương 09/11/2026: "in đậm tiêu đề") */}
+      <h3 className="eyebrow font-bold text-deep-900">
         <button
           type="button"
           aria-expanded={isOpen}
@@ -70,9 +71,9 @@ export function Footer() {
         <div className="grid gap-12 max-sm:gap-0 sm:grid-cols-2 lg:grid-cols-[1.3fr_0.85fr_0.95fr_1.1fr_1.2fr] lg:gap-10">
           <div className="max-sm:pb-10">
             <Logo className="h-14" />
-            <p className="mt-6 max-w-xs text-sm leading-relaxed text-ink-soft">
-              {BRAND.company}. <span className="font-medium text-tagline">Chăn ga gối đệm cao cấp</span>, hơn 15 năm nâng niu giấc ngủ của{' '}
-              {BRAND.customers} gia đình Việt.
+            {/* Một màu chàm, đậm (chị Phương 09/11/2026: "in đậm chỗ này, chữ về 1 màu"; trước có chữ đỏ) */}
+            <p className="mt-6 max-w-xs text-sm leading-relaxed font-semibold text-deep-900">
+              {BRAND.company}. Chăn ga gối đệm cao cấp, hơn 15 năm nâng niu giấc ngủ của {BRAND.customers} gia đình Việt.
             </p>
             {/* Điện thoại: hotline và nhắn tin luôn hiện, không nằm trong nhóm gập (D2, 08/11/2026) */}
             <ul className="mt-4 text-sm sm:hidden">
