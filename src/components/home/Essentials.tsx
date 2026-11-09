@@ -1,80 +1,82 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
-import {
-  ESSENTIALS,
-  productImage,
-  type EssentialItem,
-} from '../../data/catalog'
-import { formatRange } from '../../lib/format'
+import { collectionById, coverOf, ESSENTIALS, type EssentialItem, type ImageSource } from '../../data/catalog'
+import { collectionPath, PATHS, productsUrl } from '../../data/links'
+import { productForEssential, productPath } from '../../data/products'
+import { formatVND } from '../../lib/format'
+import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { Container, SectionHeading } from '../ui/primitives'
-import { productForEssential, productPath, singleOrderUrl } from '../../data/products'
-import { PATHS } from '../../data/links'
-import { revealDelay } from '../../lib/reveal'
-import { orderLink } from './Collections'
-import { MobileTabBar } from './MobileTabBar'
+
+/**
+ * Ruột chăn, ruột gối và phụ kiện ở trang chủ. Chị Phương (Zalo 09/11/2026 15:30): "phần này e cho hiển thị như đệm và chăn ga
+ * đk không chứ c thấy hơi loạn". Owner chọn mẫu 1 (docs/de-xuat-ruot-chan-goi-09-11.html), thay bảng giá chữ hai cột:
+ * ba nhóm xếp dọc, mỗi nhóm một hàng ô ảnh vuông cùng kiểu ô Bộ sưu tập chăn ga (Collections.tsx).
+ * Máy tính thấy 4 ô một lúc (ruột gối 5 món thì vuốt sang), điện thoại vuốt ngang gần 2 ô. Bấm ô sang trang sản phẩm.
+ */
 
 const SUMMER_QUILT_NAME = 'Chăn hè Lyocell'
-const SUMMER_QUILT_ID = 'chan-he-lyocell'
+const SUMMER_QUILT = collectionById('chan-he-lyocell')
 
-/** Tab bảng giá trên điện thoại (đệm tách ra MattressPicker, C3 02/11/2026). Tab Quà tặng bỏ từ 05/11/2026 (mục 11: thư cảm ơn đứng riêng). */
-type EssentialTab = 'ruot-goi' | 'ruot-chan' | 'chan-topper'
-
-const ESSENTIAL_TABS: readonly { id: EssentialTab; label: string }[] = ESSENTIALS.map((g) => ({
-  id: g.id as EssentialTab,
-  label: g.title,
-}))
-
-interface EssentialsProps {
-  /**
-   * Trang chủ điện thoại (mẫu 2, owner chốt 15/10/2026): bảng giá ruột chăn gối có tab theo nhóm.
-   * Đệm tách ra MattressPicker từ 02/11/2026 (C3). Máy tính không dùng tab.
-   */
-  withTabs?: boolean
+/** "Xem tất cả" của từng nhóm: trang danh mục của web cũ, không thì trang Sản phẩm đã lọc */
+const GROUP_LINKS: Readonly<Record<string, string>> = {
+  'ruot-goi': '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/',
+  'ruot-chan': '/danh-muc-san-pham/san-pham/ruot-chan-goi/',
+  'chan-topper': productsUrl({ 'danh-muc': 'dem' }),
 }
 
-export function Essentials({ withTabs = false }: EssentialsProps) {
-  const [tab, setTab] = useState<EssentialTab>('ruot-goi')
-  const shownOnMobile = (id: EssentialTab) => !withTabs || tab === id
-  const mobileOnly = (id: EssentialTab) => (shownOnMobile(id) ? '' : 'max-sm:hidden')
-  const group = (g: PriceGroup) => <PriceGroupBlock key={g.id} group={g} withTabs={withTabs} className={mobileOnly(g.id)} />
+interface EssentialTile {
+  name: string
+  note: string
+  price: string
+  to: string
+  image?: ImageSource
+  imageNote: string
+}
+
+/** Một khoảng giá thì ghi "từ" giá thấp nhất (chi tiết từng cỡ ở trang sản phẩm) */
+const priceText = (item: EssentialItem): string => (item.min === item.max ? formatVND(item.min) : `từ ${formatVND(item.min)}`)
+
+/** Chăn hè là bộ sưu tập có phối màu, không phải sản phẩm lẻ: ảnh bìa và trang của bộ đó */
+const toTile = (item: EssentialItem): EssentialTile => {
+  const base = { name: item.name, note: item.note, price: priceText(item) }
+  if (item.name === SUMMER_QUILT_NAME && SUMMER_QUILT) {
+    return { ...base, to: collectionPath(SUMMER_QUILT), image: coverOf(SUMMER_QUILT), imageNote: item.name }
+  }
+  const product = productForEssential(item.name)
+  // Tên trong ESSENTIALS ngắn ("Micro Fiber"), tên ô dùng tên đầy đủ của trang sản phẩm ("Ruột gối Micro Fiber")
+  return product
+    ? { ...base, name: product.name, to: productPath(product), image: product.image, imageNote: product.imageNote }
+    : { ...base, to: PATHS.products, imageNote: item.name }
+}
+
+const GROUPS = ESSENTIALS.map((g) => ({
+  id: g.id,
+  title: g.title,
+  subtitle: g.subtitle,
+  to: GROUP_LINKS[g.id] ?? PATHS.products,
+  tiles: g.items.map(toTile),
+}))
+
+export function Essentials() {
   return (
     <section id="ruot-chan-goi" aria-labelledby="essentials-title" className="py-14 sm:py-24">
       <Container>
-        <div className="lg:grid lg:grid-cols-12 lg:items-end lg:gap-10">
-          <SectionHeading
-            id="essentials-title"
-            className="lg:col-span-7"
-            title="Ruột chăn, ruột gối và phụ kiện"
-            lead="Phần êm ái bên trong. Chọn độ êm hợp với thói quen ngủ của Quý khách: đặt online ngay, hoặc ghé cửa hàng Ecopillo để nằm thử từng loại gối."
-          />
-          {/* Một ảnh cho cả bảng giá, chỉ trên máy tính (rà mẫu C 23/10: bảng không còn ảnh, chăn và topper không có ảnh nào trên trang chủ) */}
-          <div data-reveal className="hidden aspect-[16/10] overflow-hidden rounded-[1.75rem] shadow-[var(--shadow-soft)] lg:col-span-5 lg:block">
-            <Placeholder
-              className="h-full w-full"
-              note={ESSENTIALS_PHOTO.imageNote}
-              image={ESSENTIALS_PHOTO.imageKey ? productImage(ESSENTIALS_PHOTO.imageKey, ESSENTIALS_PHOTO.title) : undefined}
-              sizes="480px"
-            />
-          </div>
+        <SectionHeading
+          id="essentials-title"
+          title="Ruột chăn, ruột gối và phụ kiện"
+          lead="Phần êm ái bên trong. Chọn độ êm hợp với thói quen ngủ của Quý khách: đặt online ngay, hoặc ghé cửa hàng Ecopillo để nằm thử từng loại gối."
+        />
+
+        <div className="mt-8 grid gap-10 sm:mt-12 sm:gap-14">
+          {GROUPS.map((group) => (
+            <EssentialRow key={group.id} group={group} />
+          ))}
         </div>
 
-        {withTabs && <MobileTabBar label="Nhóm sản phẩm" tabs={ESSENTIAL_TABS} value={tab} onChange={setTab} className="mt-6" />}
-
-        {/* Bảng giá liền thay cho ba thẻ ảnh (mẫu C, owner duyệt 23/10/2026). Hai cột:
-            trái ruột gối, phải ruột chăn + chăn, topper và phụ kiện. Đệm tách ra MattressPicker (C3 02/11). Điện thoại: một nhóm mỗi tab. */}
-        <div className={`grid gap-x-16 sm:mt-14 lg:grid-cols-2 ${withTabs ? 'mt-2' : 'mt-8'}`}>
-          <div data-reveal className="grid gap-10 sm:gap-12">
-            {[PRICE_GROUPS[0]].map(group)}
-          </div>
-          <div data-reveal style={revealDelay(1)} className="grid gap-10 sm:gap-12 max-lg:mt-10 max-sm:mt-0">
-            {[PRICE_GROUPS[1], PRICE_GROUPS[2]].map(group)}
-          </div>
-        </div>
-
-        <p className="mt-8 flex items-start gap-2 text-sm text-ink-soft sm:mt-12">
+        <p className="mt-6 flex items-start gap-2 text-sm text-ink-soft sm:mt-10">
           <Icon name="info" size={16} className="mt-0.5 shrink-0 text-mist-600" />
           {/* Gói chữ vào một khối: không thì mỗi mảnh chữ, link thành một cột riêng của flex và số điện thoại bị bẻ dòng */}
           <span>
@@ -96,89 +98,80 @@ export function Essentials({ withTabs = false }: EssentialsProps) {
   )
 }
 
-/** Chăn hè đi luồng chọn mẫu; ruột gối, ruột chăn, topper, phụ kiện đặt theo kích thước */
-const essentialOrderUrl = (name: string): string => {
-  if (name === SUMMER_QUILT_NAME) return orderLink(SUMMER_QUILT_ID)
-  const product = productForEssential(name)
-  return product ? singleOrderUrl(product) : PATHS.order
-}
+type Group = (typeof GROUPS)[number]
 
-/** Một dòng của bảng giá: tên (link sang trang sản phẩm nếu có), giá, ghi chú, link đặt mua */
-interface PriceRow {
-  name: string
-  note: string
-  price: string
-  productTo?: string
-  orderTo: string
-}
+const RAIL_BUTTON =
+  'flex h-9 w-9 items-center justify-center rounded-full bg-ivory text-deep-900 shadow-[var(--shadow-soft)] transition hover:bg-mist-100 active:scale-95 disabled:pointer-events-none disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-deep-700'
 
-interface PriceGroup {
-  id: EssentialTab
-  title: string
-  subtitle: string
-  rows: readonly PriceRow[]
-}
+/**
+ * Một nhóm: tiêu đề, "Xem tất cả", hàng ô vuốt ngang. Hàng dài hơn khung (ruột gối 5 món trên máy tính) thì có nút ‹ ›
+ * cạnh "Xem tất cả" để khách biết còn ô phía sau (cùng ý owner hỏi cho dãy ảnh nhỏ trang sản phẩm 09/11/2026).
+ * Điện thoại không cần nút: ô thứ ba lấp ló ở mép phải đã cho biết vuốt được.
+ */
+function EssentialRow({ group }: { group: Group }) {
+  const listRef = useRef<HTMLUListElement>(null)
+  const [edge, setEdge] = useState({ canPrev: false, canNext: false })
 
-const essentialRow = (item: EssentialItem): PriceRow => {
-  const product = productForEssential(item.name)
-  return {
-    name: item.name,
-    note: item.note,
-    price: formatRange(item.min, item.max),
-    productTo: product ? productPath(product) : undefined,
-    orderTo: essentialOrderUrl(item.name),
+  useEffect(() => {
+    const list = listRef.current
+    if (!list) return
+    const update = () =>
+      setEdge({ canPrev: list.scrollLeft > 4, canNext: list.scrollLeft + list.clientWidth < list.scrollWidth - 4 })
+    update()
+    list.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update)
+    return () => {
+      list.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+    }
+  }, [])
+
+  // Mỗi lần bấm sang đúng một ô (bề ngang ô + khoảng cách)
+  const step = (dir: 1 | -1) => {
+    const list = listRef.current
+    const first = list?.firstElementChild as HTMLElement | null
+    if (!list || !first) return
+    list.scrollBy({ left: dir * (first.offsetWidth + parseFloat(getComputedStyle(list).columnGap || '0')), behavior: 'smooth' })
   }
-}
+  const hasArrows = edge.canPrev || edge.canNext
 
-/** Thứ tự: ruột gối, ruột chăn, chăn, topper và phụ kiện (khớp hàng tab điện thoại; đệm tách ra MattressPicker) */
-const PRICE_GROUPS: readonly PriceGroup[] = ESSENTIALS.map((g) => ({
-  id: g.id as EssentialTab,
-  title: g.title,
-  subtitle: g.subtitle,
-  rows: g.items.map(essentialRow),
-}))
-
-/** Ảnh đầu bảng giá: ruột chăn (nhóm chưa có ảnh nào khác trên trang chủ) */
-const ESSENTIALS_PHOTO = ESSENTIALS.find((g) => g.id === 'ruot-chan') ?? ESSENTIALS[0]
-
-interface PriceGroupBlockProps {
-  group: PriceGroup
-  withTabs: boolean
-  className?: string
-}
-
-function PriceGroupBlock({ group, withTabs, className = '' }: PriceGroupBlockProps) {
   return (
-    <div className={className}>
-      {/* Điện thoại có tab: tên nhóm đã nằm trên tab, không nhắc lại */}
-      <h3 className={`font-display text-[1.7rem] text-deep-900 ${withTabs ? 'max-sm:sr-only' : ''}`}>{group.title}</h3>
-      <p className={`text-sm text-ink-soft ${withTabs ? 'max-sm:mt-4' : 'mt-1'} sm:mt-1`}>{group.subtitle}</p>
-      <ul className="mt-4 divide-y divide-line border-t border-line">
-        {group.rows.map((row) => (
-          <li key={row.name} className="py-3.5">
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4">
-              {row.productTo ? (
-                <Link
-                  to={row.productTo}
-                  className="-my-2 py-2 font-medium text-deep-900 decoration-mist-300 underline-offset-4 hover:underline"
-                >
-                  {row.name}
-                </Link>
-              ) : (
-                <span className="font-medium text-deep-900">{row.name}</span>
-              )}
-              <span className="tabular ml-auto shrink-0 text-right text-body-sm text-deep-800">{row.price}</span>
-            </div>
-            <div className="mt-0.5 flex items-center justify-between gap-4">
-              <span className="text-meta text-ink-soft">{row.note}</span>
-              <Link
-                to={row.orderTo}
-                aria-label={`Đặt mua ${row.name}`}
-                className="-my-2.5 inline-flex shrink-0 items-center gap-1 py-2.5 text-meta font-medium text-mist-600 underline-offset-4 hover:underline"
-              >
-                Đặt mua <Icon name="arrowRight" size={13} />
-              </Link>
-            </div>
+    <div role="group" aria-labelledby={`essentials-${group.id}`}>
+      <div className="flex items-end justify-between gap-4">
+        <div className="min-w-0">
+          <h3 id={`essentials-${group.id}`} className="font-display text-[1.45rem] leading-tight text-deep-900 sm:text-[1.7rem]">
+            {group.title}
+          </h3>
+          <p className="mt-1 text-sm text-ink-soft">{group.subtitle}</p>
+        </div>
+        <div className="flex shrink-0 items-center gap-3">
+          <Link
+            to={group.to}
+            aria-label={`Xem tất cả ${group.title.toLowerCase()}`}
+            className="-my-2 inline-flex items-center gap-1 py-2 text-sm font-medium whitespace-nowrap text-deep-700 underline-offset-4 hover:underline"
+          >
+            Xem tất cả <Icon name="arrowRight" size={15} />
+          </Link>
+          {hasArrows && (
+            <span className="hidden gap-2 sm:flex">
+              <button type="button" onClick={() => step(-1)} disabled={!edge.canPrev} aria-label={`${group.title}: xem ô trước`} className={RAIL_BUTTON}>
+                <Icon name="arrowLeft" size={16} />
+              </button>
+              <button type="button" onClick={() => step(1)} disabled={!edge.canNext} aria-label={`${group.title}: xem ô sau`} className={RAIL_BUTTON}>
+                <Icon name="arrowRight" size={16} />
+              </button>
+            </span>
+          )}
+        </div>
+      </div>
+      {/* Một hàng vuốt ngang: máy tính 4 ô, máy tính bảng 3 ô, điện thoại 46% bề ngang, tràn ra hai mép màn hình */}
+      <ul
+        ref={listRef}
+        className="-mx-5 mt-4 grid scroll-px-5 auto-cols-[46%] grid-flow-col gap-3 overflow-x-auto overscroll-x-contain px-5 pt-1 pb-3 [scrollbar-width:none] snap-x snap-mandatory sm:mx-0 sm:scroll-px-0 sm:auto-cols-[calc((100%-2*1rem)/3)] sm:gap-4 sm:px-0 lg:auto-cols-[calc((100%-3*1.25rem)/4)] lg:gap-5"
+      >
+        {group.tiles.map((tile, i) => (
+          <li key={tile.name} data-reveal style={revealDelay(i)} className="min-w-0 snap-start">
+            <EssentialCard tile={tile} />
           </li>
         ))}
       </ul>
@@ -186,3 +179,23 @@ function PriceGroupBlock({ group, withTabs, className = '' }: PriceGroupBlockPro
   )
 }
 
+/** Ô ảnh vuông, cùng khuôn với ô Bộ sưu tập chăn ga (CollectionTile) */
+function EssentialCard({ tile }: { tile: EssentialTile }) {
+  return (
+    <Link
+      to={tile.to}
+      className="group flex h-full flex-col overflow-hidden rounded-[1.25rem] bg-ivory shadow-[var(--shadow-soft)] transition duration-500 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] focus-visible:outline-2 focus-visible:outline-offset-2 sm:rounded-[1.75rem]"
+    >
+      <span className="relative block aspect-square overflow-hidden">
+        <span className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.04]">
+          <Placeholder className="h-full w-full" image={tile.image} note={tile.imageNote} sizes="(min-width: 1024px) 290px, (min-width: 640px) 33vw, 46vw" />
+        </span>
+      </span>
+      <span className="flex flex-1 flex-col px-3 pt-2.5 pb-3 sm:px-5 sm:pt-4 sm:pb-5">
+        <span className="font-display text-[1.1rem] leading-tight text-deep-900 sm:text-[1.35rem]">{tile.name}</span>
+        <span className="mt-1 text-label text-ink-soft sm:text-meta">{tile.note}</span>
+        <span className="tabular mt-auto pt-2 text-small font-medium text-deep-900">{tile.price}</span>
+      </span>
+    </Link>
+  )
+}

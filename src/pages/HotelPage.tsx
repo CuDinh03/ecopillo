@@ -85,8 +85,15 @@ function HotelHero() {
       <div className="flex flex-col justify-center px-5 pt-7 pb-10 sm:px-8 lg:py-16 lg:pr-12 lg:pl-[max(2.5rem,calc((100vw-1240px)/2+2.5rem))]">
         <Breadcrumb items={[{ label: 'Khách sạn và dự án' }]} />
         <p className="eyebrow mt-8">{HOTEL_EYEBROW}</p>
-        <h1 id="page-title" className="font-display mt-4 text-[2.6rem] leading-[1.02] text-balance text-deep-900 sm:text-[3.6rem] xl:text-[4rem]">
-          Giấc ngủ năm sao <span className="block">cho khách lưu trú</span>
+        {/*
+          Đúng hai dòng ở mọi bề ngang (chị Phương 09/11/2026: "cái này có thể ghi 2 dòng đk k", "4 dòng hơi dài").
+          Mỗi nửa câu rộng ~8,5 lần cỡ chữ; cột chữ máy tính chỉ rộng 532px nên cỡ chữ theo bề ngang, tối đa 3,6rem.
+        */}
+        <h1
+          id="page-title"
+          className="font-display mt-4 text-[clamp(2rem,9.6vw,2.6rem)] leading-[1.05] text-deep-900 sm:text-[3.6rem] lg:text-[clamp(3rem,4.6vw,3.6rem)]"
+        >
+          <span className="block">Giấc ngủ năm sao</span> <span className="block">cho khách lưu trú</span>
         </h1>
         {/* Viết thường như câu dẫn, trước in hoa giãn chữ chạy hai dòng khó đọc (B10, owner duyệt 24/10/2026) */}
         <p className="mt-5 max-w-sm text-lead leading-snug font-medium text-balance text-deep-800">{HOTEL_INTRO_HEADING}</p>

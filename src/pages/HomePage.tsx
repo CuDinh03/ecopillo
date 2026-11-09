@@ -69,7 +69,7 @@ function DesktopHome() {
 /**
  * Điện thoại, mẫu 2 "Sản phẩm lên trước, câu chuyện xuống sau" (owner chốt 15/10/2026,
  * docs/de-xuat-thu-gon-trang-chu-mobile.html). Đủ mọi khối như máy tính, không bỏ nội dung nào:
- * chỉ đổi thứ tự và gộp bằng tab (StoryTabs, Essentials withTabs), phần dài nằm sau nút "Xem thêm".
+ * chỉ đổi thứ tự và gộp bằng tab (StoryTabs; Essentials từ 09/11/2026 là hàng ô vuốt ngang), phần dài nằm sau nút "Xem thêm".
  * Phần ẩn vẫn có trong trang để Google (xếp hạng theo bản điện thoại) đọc đủ chữ.
  * Dải mạng xã hội bỏ theo mẫu C (owner duyệt 23/10/2026): còn ở chân trang, menu và thanh liên hệ đáy màn hình.
  */
@@ -79,8 +79,8 @@ function MobileHome() {
       {/* Khối đệm C3 ngay sau phần mở đầu chung (owner chốt 02/11/2026), trước bộ sưu tập */}
       <MattressPicker />
       <Collections />
-      <Essentials withTabs />
-      {/* Thư cảm ơn đứng riêng dưới bảng giá (không còn tab Quà tặng trong Essentials) */}
+      <Essentials />
+      {/* Thư cảm ơn đứng riêng dưới khối ruột chăn gối (không còn tab Quà tặng trong Essentials) */}
       <ThankYouLetters />
       <Reviews />
       <StoryTabs />

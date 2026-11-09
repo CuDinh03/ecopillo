@@ -9,6 +9,7 @@ import { Icon, ZaloMark } from '../components/ui/Icon'
 import { Lightbox, ZoomTrigger } from '../components/ui/Lightbox'
 import { useLightbox } from '../hooks/useLightbox'
 import { Placeholder } from '../components/ui/Placeholder'
+import { ThumbStrip } from '../components/ui/ThumbStrip'
 import { buttonClass, Container } from '../components/ui/primitives'
 import { CONTACT } from '../data/brand'
 import { COLLECTION_BY_PATH, productPageTarget, withSlash } from '../data/links'
@@ -99,26 +100,8 @@ function ProductDetail({ product }: { product: Product }) {
               )}
               {image && <ZoomTrigger onOpen={lightbox.open} />}
             </div>
-            {photos.length > 1 && (
-              // Vuốt ngang như trang bộ sưu tập (ChapterParts): divan có 22 ảnh, không cuộn thì hàng ảnh đẩy rộng cả trang (khách báo 09/11/2026)
-              <ul aria-label="Ảnh sản phẩm" className="mt-3 flex gap-2.5 overflow-x-auto p-1 [scrollbar-width:none]">
-                {photos.map((photo, i) => (
-                  <li key={photo.src} className="shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => setPhotoIndex(i)}
-                      aria-label={`Xem ảnh ${i + 1}`}
-                      aria-pressed={i === photoIndex}
-                      className={`block h-16 w-[5.5rem] overflow-hidden rounded-xl transition ${
-                        i === photoIndex ? 'ring-2 ring-deep-800 ring-offset-2 ring-offset-ivory' : 'opacity-80 hover:opacity-100'
-                      }`}
-                    >
-                      <Placeholder compact className="h-full w-full" note={`Ảnh ${i + 1}`} image={photo} sizes="88px" />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
+            {/* Vuốt ngang, có nút ‹ › hai bên (divan 22 ảnh, owner 09/11/2026) */}
+            <ThumbStrip photos={photos} index={photoIndex} onIndexChange={setPhotoIndex} />
             {lightbox.isOpen && photos.length > 0 && (
               <Lightbox
                 photos={photos}

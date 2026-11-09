@@ -152,31 +152,38 @@ const DESKTOP_LOCKUP: LockupSize = {
   slogan: 'text-[clamp(1.9rem,3vw,2.9rem)]',
 }
 
-const BAR_LABEL = 'text-label font-medium tracking-[0.12em] text-mist-600 uppercase'
+/** Khung vàng dùng chung cho hai khối của dải: viền vàng, tiêu đề trên dải vàng, ruột vàng nhạt */
+const GOLD_FRAME = 'flex flex-col overflow-hidden rounded-2xl border-2 border-brand-gold'
+const GOLD_TITLE = 'bg-brand-gold px-3.5 py-1.5 text-label font-medium tracking-[0.14em] text-deep-900 uppercase sm:px-4'
+const GOLD_CELL = 'rounded-xl bg-ivory shadow-[0_6px_14px_-10px_rgb(45_46_141/0.45)]'
 
-/** Dải trắng duy nhất: Hệ sinh thái sản phẩm | Vì một giấc ngủ chất lượng hơn */
+/**
+ * Dải trắng duy nhất: Hệ sinh thái sản phẩm | Vì một giấc ngủ chất lượng hơn.
+ * Chị Phương 09/11/2026: "bên tốt thật thiện e cũng làm khung cam như bên hệ sinh thái cho cân": hai khối cùng khung vàng,
+ * cao bằng nhau, bỏ vạch ngăn giữa.
+ */
 function BangEcBar() {
   return (
     <div
       style={delay(240)}
-      className="hero-in grid gap-5 rounded-[1.5rem] bg-ivory/92 p-4 shadow-[var(--shadow-lift)] ring-1 ring-ivory backdrop-blur-md sm:p-5 lg:grid-cols-[1.25fr_auto_1fr] lg:items-center lg:gap-7 lg:px-7 lg:py-5"
+      className="hero-in grid gap-4 rounded-[1.5rem] bg-ivory/92 p-4 shadow-[var(--shadow-lift)] ring-1 ring-ivory backdrop-blur-md sm:p-5 lg:grid-cols-[1.25fr_1fr] lg:gap-5 lg:px-6 lg:py-5"
     >
       {/*
         Mục 4 (khách yêu cầu 16/10/2026), kiểu B owner chọn 17/10/2026 (mẫu: docs/de-xuat-dau-trang-chu-goi-4.html):
         một khung vàng bao cả bốn ô, tiêu đề nằm trên dải vàng ở đầu khung, bốn ô to hơn trước.
         Vàng #FFC271 ngoài quà tặng, ưu đãi: ngoại lệ owner duyệt cho riêng dải này.
       */}
-      <section aria-labelledby="hero-ecosystem" className="overflow-hidden rounded-2xl border-2 border-brand-gold">
-        <h2 id="hero-ecosystem" className="bg-brand-gold px-3.5 py-1.5 text-label font-medium tracking-[0.14em] text-deep-900 uppercase sm:px-4">
+      <section aria-labelledby="hero-ecosystem" className={GOLD_FRAME}>
+        <h2 id="hero-ecosystem" className={GOLD_TITLE}>
           Hệ sinh thái sản phẩm<span className="hidden sm:inline"> · cho giấc ngủ trọn vẹn</span>
         </h2>
-        <ul className="grid grid-cols-4 gap-2 bg-brand-gold/10 p-2 sm:gap-2.5 sm:p-2.5">
+        <ul className="grid flex-1 grid-cols-4 gap-2 bg-brand-gold/10 p-2 sm:gap-2.5 sm:p-2.5">
           {ECOSYSTEM.map((item) => (
             <li key={item.name}>
               <Link
                 to={item.to}
                 title={item.text}
-                className="group flex flex-col items-center gap-1.5 rounded-xl bg-ivory p-1.5 pb-2 text-center text-body-sm font-medium text-deep-900 shadow-[0_6px_14px_-10px_rgb(45_46_141/0.45)] transition hover:-translate-y-0.5 hover:text-deep-700"
+                className={`group flex flex-col items-center gap-1.5 p-1.5 pb-2 text-center text-body-sm font-medium text-deep-900 transition hover:-translate-y-0.5 hover:text-deep-700 ${GOLD_CELL}`}
               >
                 <img
                   src={item.thumb}
@@ -194,29 +201,29 @@ function BangEcBar() {
         </ul>
       </section>
 
-      <span aria-hidden="true" className="h-px bg-cream-200 lg:h-16 lg:w-px" />
-
-      <section aria-labelledby="hero-quality">
-        <h2 id="hero-quality" className={BAR_LABEL}>
+      <section aria-labelledby="hero-quality" className={GOLD_FRAME}>
+        <h2 id="hero-quality" className={GOLD_TITLE}>
           Vì một giấc ngủ chất lượng hơn
         </h2>
-        {/* Như bảng hiệu: mỗi chữ kèm một câu ngắn bên dưới (mục 5, khách yêu cầu 16/10/2026) */}
-        <ul className="mt-2 grid grid-cols-3 gap-3">
-          {VALUES_SHORT.map((v) => (
-            <li key={v.word}>
-              <span className="font-display block text-[1.45rem] leading-tight text-deep-900">{v.word}</span>
-              <span className="mt-0.5 block text-meta leading-snug text-ink-soft">{v.text}</span>
-            </li>
-          ))}
-        </ul>
-        <ul className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1.5 text-meta text-ink-soft">
-          {BENEFITS.map((b) => (
-            <li key={b.text} className="inline-flex items-center gap-1.5">
-              <Icon name={b.icon} size={15} className="text-mist-600" />
-              {b.text}
-            </li>
-          ))}
-        </ul>
+        <div className="flex flex-1 flex-col gap-2 bg-brand-gold/10 p-2 sm:gap-2.5 sm:p-2.5">
+          {/* Như bảng hiệu: mỗi chữ kèm một câu ngắn bên dưới (mục 5, khách yêu cầu 16/10/2026); ô trắng như ô Hệ sinh thái */}
+          <ul className="grid flex-1 grid-cols-3 gap-2 sm:gap-2.5">
+            {VALUES_SHORT.map((v) => (
+              <li key={v.word} className={`flex flex-col items-center justify-center px-1 py-2 text-center sm:px-1.5 ${GOLD_CELL}`}>
+                <span className="font-display block text-[1.25rem] leading-tight text-deep-900 sm:text-[1.45rem]">{v.word}</span>
+                <span className="mt-0.5 block text-meta leading-snug text-ink-soft">{v.text}</span>
+              </li>
+            ))}
+          </ul>
+          <ul className="flex flex-wrap justify-center gap-x-4 gap-y-1 px-1 text-meta text-deep-800">
+            {BENEFITS.map((b) => (
+              <li key={b.text} className="inline-flex items-center gap-1.5">
+                <Icon name={b.icon} size={15} className="text-mist-600" />
+                {b.text}
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
     </div>
   )

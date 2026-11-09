@@ -22,6 +22,7 @@ import { CrossfadeImage } from '../ui/CrossfadeImage'
 import { Icon, ZaloMark } from '../ui/Icon'
 import { Lightbox, ZoomTrigger } from '../ui/Lightbox'
 import { Placeholder } from '../ui/Placeholder'
+import { ThumbStrip } from '../ui/ThumbStrip'
 import { buttonClass, FillIn } from '../ui/primitives'
 
 /* Sân khấu của một chương (phần lấy từ hướng A): ảnh lớn, câu chuyện, lựa chọn mua */
@@ -79,25 +80,8 @@ export function ChapterImage({ image, gallery = [], shown, note, onPrev, onNext,
           </button>
         </div>
       </div>
-      {photos.length > 1 && (
-        <ul aria-label="Ảnh sản phẩm" className="mt-3 flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:none]">
-          {photos.map((photo, i) => (
-            <li key={photo.src} className="shrink-0">
-              <button
-                type="button"
-                onClick={() => setPhotoIndex(i)}
-                aria-label={`Xem ảnh ${i + 1}`}
-                aria-pressed={i === safeIndex}
-                className={`block h-16 w-[5.5rem] overflow-hidden rounded-xl transition ${
-                  i === safeIndex ? 'ring-2 ring-deep-800 ring-offset-2 ring-offset-ivory' : 'opacity-80 hover:opacity-100'
-                }`}
-              >
-                <Placeholder compact className="h-full w-full" note={`Ảnh ${i + 1}`} image={photo} sizes="88px" defer={!isPageLoaded} />
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+      {/* Nút ‹ › hai bên dãy ảnh nhỏ (owner 09/11/2026), dùng chung với trang sản phẩm lẻ */}
+      <ThumbStrip photos={photos} index={safeIndex} onIndexChange={setPhotoIndex} defer={!isPageLoaded} />
       {lightbox.isOpen && photos.length > 0 && (
         <Lightbox
           photos={photos}
