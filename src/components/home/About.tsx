@@ -104,7 +104,11 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
           className="m-rail mt-12 grid gap-5 focus-visible:outline-2 focus-visible:outline-deep-700 sm:mt-20 lg:grid-cols-2"
         >
           <MissionCard label="Sứ mệnh" image={MISSION_IMAGE}>
-            <MissionText>{MISSION}</MissionText>
+            {MISSION.map((para) => (
+              <MissionText key={para} isLong>
+                {para}
+              </MissionText>
+            ))}
           </MissionCard>
           <MissionCard label="Tầm nhìn" image={VISION_IMAGE}>
             <MissionText isLong={isLongText(VISION)}>{VISION}</MissionText>

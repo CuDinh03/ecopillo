@@ -211,8 +211,8 @@ export function AboutPage() {
       >
         <div className="mt-8 grid gap-8 sm:grid-cols-2">
           {[
-            { label: 'Sứ mệnh', text: MISSION, image: MISSION_IMAGE_ABOUT_PAGE, position: SHOWROOM_GIFT_POSITION },
-            { label: 'Tầm nhìn', text: VISION, image: VISION_IMAGE, position: undefined },
+            { label: 'Sứ mệnh', paragraphs: MISSION, image: MISSION_IMAGE_ABOUT_PAGE, position: SHOWROOM_GIFT_POSITION },
+            { label: 'Tầm nhìn', paragraphs: [VISION], image: VISION_IMAGE, position: undefined },
           ].map((m, i) => (
             <article key={m.label} data-reveal style={revealDelay(i)}>
               <img
@@ -225,7 +225,11 @@ export function AboutPage() {
                 className="aspect-[3/2] w-full rounded-[0.35rem] bg-cream-100 object-cover"
               />
               <p className="eyebrow mt-4">{m.label}</p>
-              <p className={`font-display mt-2 text-deep-900 ${isLongText(m.text) ? 'text-[1.05rem] leading-relaxed' : 'text-[1.2rem] leading-snug'}`}>{m.text}</p>
+              {m.paragraphs.map((text) => (
+                <p key={text} className={`font-display mt-2 text-deep-900 ${isLongText(m.paragraphs.join(' ')) ? 'text-[1.05rem] leading-relaxed' : 'text-[1.2rem] leading-snug'}`}>
+                  {text}
+                </p>
+              ))}
             </article>
           ))}
         </div>

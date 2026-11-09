@@ -77,7 +77,11 @@ export const PHILOSOPHY = [
   },
 ] as const
 
-export const MISSION = 'Mang đến giải pháp chăn ga gối đệm vừa nâng niu giấc ngủ, vừa góp phần bảo vệ môi trường.'
+/** Sứ mệnh: chép nguyên văn web cũ, hai đoạn (owner yêu cầu 09/11/2026, thay câu tóm tắt cũ). Mỗi phần tử là một đoạn */
+export const MISSION: readonly string[] = [
+  'Trong một thế giới đang đối mặt với những thách thức lớn lao và nhiều biến động, Ecopillo ra đời như một biểu tượng của sự đổi mới và trách nhiệm, mang đến những giải pháp chăn ga gối đệm không chỉ nâng niu giấc ngủ mà còn góp phần bảo vệ môi trường.',
+  'Được khơi nguồn từ tình yêu với thiên nhiên và cam kết với hành tinh, chúng tôi đồng hành cùng bạn trên hành trình tìm kiếm sự thoải mái, tái tạo năng lượng, và xây dựng một tương lai bền vững hơn.',
+]
 /** Tầm nhìn: chép nguyên văn web cũ (khách yêu cầu 05/11/2026), dài hơn Sứ mệnh nhiều nên chữ hiện nhỏ hơn (`isLongText`) */
 export const VISION =
   'Ecopillo hướng đến trở thành thương hiệu chăn ga gối đệm hàng đầu, biểu tượng cho sự hài hòa giữa chất lượng vượt trội và trách nhiệm với môi trường. Với cam kết đổi mới không ngừng, Ecopillo sẽ là người bạn đồng hành đáng tin cậy của mỗi gia đình Việt, mang đến sự chăm sóc trọn vẹn cho giấc ngủ và góp phần xây dựng một cuộc sống an lành, bền vững cho thế hệ tương lai.'
