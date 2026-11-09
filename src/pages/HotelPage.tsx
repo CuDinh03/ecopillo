@@ -232,7 +232,15 @@ function Quote({ defaultMessage, prefillKey }: { defaultMessage: string; prefill
       <div className="min-w-0 px-5 py-12 sm:px-8 sm:py-16 lg:py-20 lg:pr-[max(2.5rem,calc((100vw-1240px)/2+2.5rem))] lg:pl-14">
         <header data-reveal="left">
           <p className="eyebrow">Nhận báo giá</p>
-          <h2 id="quote-title" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.6rem]">
+          {/*
+            Một dòng từ 640px (owner 09/11/2026: "chữ gửi yêu cầu để thành 1 dòng thôi"). Câu rộng ~17,8 lần cỡ chữ,
+            nên cỡ chữ = bề ngang cột / 18,3: 640–1023px cột = 100vw − 4rem; từ 1024px cột = 7/12 màn hình − 6rem, tối đa 2,15rem.
+            Điện thoại cột chỉ 280–350px, một dòng thì chữ nhỏ ngang chữ thường: giữ hai dòng chia đều.
+          */}
+          <h2
+            id="quote-title"
+            className="font-display mt-4 text-[length:clamp(1.7rem,8.6vw,2rem)] leading-tight text-balance text-deep-900 sm:text-[length:min(2.6rem,calc((100vw_-_4rem)/18.3))] lg:text-[length:min(2.15rem,calc((58.333vw_-_6rem)/18.3))]"
+          >
             Gửi yêu cầu cho dự án của Quý khách
           </h2>
           <p className="mt-4 max-w-xl text-body-sm leading-relaxed text-ink-soft">
