@@ -47,8 +47,8 @@ export function CategoryPage() {
       />
 
       <Container className="mt-10 sm:mt-14">
-        <p className="text-sm text-ink-soft">{products.length} sản phẩm</p>
-        <ul className="mt-5 grid grid-cols-2 gap-3 sm:gap-5 xl:grid-cols-3">
+        {/* Không ghi "N sản phẩm" (chị Phương 09/11/2026: "tất cả các số này bỏ hộ c nha") */}
+        <ul className="grid grid-cols-2 gap-3 sm:gap-5 xl:grid-cols-3">
           {products.map((p, i) => (
             <li key={p.slug} data-reveal style={revealDelay(i, 70)} className="flex">
               <div className="flex w-full flex-col [&>article]:flex-1">

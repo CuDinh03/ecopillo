@@ -23,7 +23,6 @@ import {
   type PriceBand,
   type Product,
 } from '../data/products'
-import { cardCount } from '../data/productShelves'
 import { COLORWAYS, STORIES_APPROVED, toneById, type Colorway, type Tone } from '../data/stories'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useFirstRender } from '../hooks/useFirstRender'
@@ -90,9 +89,9 @@ export function ProductsPage() {
     () => bySort(itemsAnyPrice.filter((item) => !band || isInBand(item, band)), sort, (item) => rangeOf(item).min),
     [itemsAnyPrice, band, sort],
   )
-  /** Số trên nút mức giá: đếm đúng số thẻ sẽ hiện bên dưới */
+  /** Đếm thẻ của mức giá: chỉ để làm mờ nút không có gì, không hiện số */
   const countInBand = (b: PriceBand) => itemsAnyPrice.filter((item) => isInBand(item, b)).length
-  /** Số trên dòng bộ sưu tập trong khối lọc: tính cả mức giá đang chọn */
+  /** Đếm thẻ của bộ sưu tập (tính cả mức giá đang chọn): chỉ để làm mờ dòng không có gì */
   const countInCollection = (c: Collection | undefined) =>
     gridItems(category, tone, c).filter((item) => !band || isInBand(item, band)).length
 
@@ -149,7 +148,6 @@ export function ProductsPage() {
   const clearAll = () => update({ [CATEGORY_PARAM]: null, [PRICE_PARAM]: null, [COLLECTION_PARAM]: null, [TONE_PARAM]: null })
   const panel: Omit<FilterPanelProps, 'idPrefix'> = {
     category,
-    categoryCount: cardCount,
     onCategory: pickCategory,
     bands,
     band,
@@ -164,14 +162,11 @@ export function ProductsPage() {
     onClear: category || band || isFiltered ? clearAll : undefined,
   }
   const activeCount = [band, collection, tone].filter(Boolean).length + (sort === 'noi-bat' ? 0 : 1)
-  const unit = isFiltered ? 'phối màu' : 'sản phẩm'
+  // Dòng trên lưới chỉ nói đang lọc gì, không ghi số (chị Phương 09/11/2026: "tất cả các số này bỏ hộ c nha. K cần đâu")
   const scopeLabel =
     collection && tone ? ` ${collection.name}, ${tone.phrase}` : collection ? ` của ${collection.name}` : tone ? ` ${tone.phrase}` : ''
-  const countLabel =
-    items.length > PAGE_SIZE
-      ? `Hiển thị ${first + 1}–${first + pageItems.length} của ${items.length} ${unit}${scopeLabel}`
-      : `${items.length} ${unit}${scopeLabel}`
-  const resultLabel = band ? `${countLabel}, giá ${band.label.replace(/^\S+/, (w) => w.toLowerCase())}` : countLabel
+  const filterLabel = isFiltered ? `Phối màu${scopeLabel}` : band ? 'Sản phẩm' : ''
+  const resultLabel = band ? `${filterLabel}, giá ${band.label.replace(/^\S+/, (w) => w.toLowerCase())}` : filterLabel
 
   return (
     <div className="pb-24">
@@ -207,7 +202,6 @@ export function ProductsPage() {
         <MobileFilterBar
           panel={{ ...panel, idPrefix: 'loc-dt', hideCategory: isShelfMode }}
           activeCount={activeCount}
-          resultCount={items.length}
           onClose={revealGrid}
           summary={isShelfMode ? 'Tất cả sản phẩm' : undefined}
         />
@@ -236,7 +230,6 @@ export function ProductsPage() {
                       }`}
                     >
                       {c.label}
-                      <span className="tabular text-xs">{cardCount(c.id)}</span>
                     </button>
                   )
                 })}
@@ -475,7 +468,7 @@ interface PriceBandsProps {
 }
 
 /**
- * Hàng nút mức giá dưới tab loại. Mỗi nút ghi sẵn số món; mốc không có gì thì mờ nên không ra trang trống.
+ * Hàng nút mức giá dưới tab loại. Không ghi số món; mốc không có gì thì mờ nên không ra trang trống.
  * Bấm lại nút đang chọn để bỏ lọc. Điện thoại: chữ "Mức giá" ở trên, hàng nút vuốt ngang.
  */
 function PriceBands({ bands, active, countOf, onPick }: PriceBandsProps) {
@@ -504,7 +497,6 @@ function PriceBands({ bands, active, countOf, onPick }: PriceBandsProps) {
               }`}
             >
               {b.label}
-              <span className={`tabular text-label ${isActive ? 'text-ivory/70' : 'text-ink-faint'}`}>{count}</span>
             </button>
           )
         })}

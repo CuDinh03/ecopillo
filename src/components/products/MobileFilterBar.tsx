@@ -14,7 +14,6 @@ interface MobileFilterBarProps {
   panel: FilterPanelProps
   /** Số lựa chọn đang bật ngoài loại sản phẩm (mức giá, bộ, gam, sắp xếp): số trong nút "Bộ lọc" */
   activeCount: number
-  resultCount: number
   /** Gọi khi đóng bảng lọc: trang cuộn về đầu lưới nếu đang ở dưới sâu */
   onClose: () => void
   /**
@@ -29,7 +28,7 @@ interface MobileFilterBarProps {
  * thanh dính ngay dưới thanh đầu trang, gồm hàng loại sản phẩm vuốt ngang và nút "Bộ lọc".
  * Nút mở bảng lọc trượt từ dưới lên (thẻ <dialog> của trình duyệt: giữ focus bên trong, Esc để đóng).
  */
-export function MobileFilterBar({ panel, activeCount, resultCount, onClose, summary }: MobileFilterBarProps) {
+export function MobileFilterBar({ panel, activeCount, onClose, summary }: MobileFilterBarProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [hasOpened, setHasOpened] = useState(false)
   const dialogRef = useRef<HTMLDialogElement>(null)
@@ -146,7 +145,7 @@ export function MobileFilterBar({ panel, activeCount, resultCount, onClose, summ
                 onClick={() => dialogRef.current?.close()}
                 className="tabular h-12 w-full rounded-full bg-deep-800 text-body-sm font-medium text-ivory"
               >
-                Xem {resultCount} sản phẩm
+                Xem kết quả
               </button>
             </div>
           </>

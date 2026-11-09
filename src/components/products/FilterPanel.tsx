@@ -17,7 +17,6 @@ export interface FilterPanelProps {
   /** Tiền tố id: khối lọc có thể có hai bản cùng lúc (cột phải và bảng trượt) */
   idPrefix: string
   category: CategoryId | null
-  categoryCount: (id: CategoryId | null) => number
   onCategory: (id: CategoryId | null) => void
   bands: readonly PriceBand[]
   band: PriceBand | undefined
@@ -38,10 +37,10 @@ export interface FilterPanelProps {
 
 /**
  * Khối lọc dùng chung cho cột dính bên phải (máy tính từ 1280px) và bảng trượt (điện thoại).
- * Owner duyệt phác thảo 18/10/2026: docs/phac-thao-bo-loc-di-theo.html. Lọc đổi ngay, số đếm trên mỗi lựa chọn là số thẻ sẽ hiện.
+ * Owner duyệt phác thảo 18/10/2026: docs/phac-thao-bo-loc-di-theo.html. Lọc đổi ngay. Không ghi số trên lựa chọn (chị Phương 09/11/2026); lựa chọn không có thẻ nào thì mờ.
  */
 export function FilterPanel(props: FilterPanelProps) {
-  const { idPrefix, category, categoryCount, onCategory, bands, band, bandCount, onBand } = props
+  const { idPrefix, category, onCategory, bands, band, bandCount, onBand } = props
   const { collections, collection, collectionCount, onCollection, sort, onSort, onClear, hideCategory } = props
   const id = (name: string) => `${idPrefix}-${name}`
   return (
@@ -58,7 +57,7 @@ export function FilterPanel(props: FilterPanelProps) {
       {!hideCategory && (
         <FilterGroup id={id('loai')} label="Loại sản phẩm" isFirst>
           {[{ id: null, label: 'Tất cả' } as const, ...CATEGORIES].map((c) => (
-            <ChoiceRow key={c.label} isActive={category === c.id} count={categoryCount(c.id)} onPick={() => onCategory(c.id)}>
+            <ChoiceRow key={c.label} isActive={category === c.id} onPick={() => onCategory(c.id)}>
               {c.label}
             </ChoiceRow>
           ))}
@@ -82,7 +81,6 @@ export function FilterPanel(props: FilterPanelProps) {
                 }`}
               >
                 {b.label}
-                <span className={`tabular text-label ${isActive ? 'text-ivory/75' : 'text-ink-faint'}`}>{count}</span>
               </button>
             )
           })}
@@ -91,14 +89,14 @@ export function FilterPanel(props: FilterPanelProps) {
 
       {collections && (
         <FilterGroup id={id('bo')} label="Bộ sưu tập">
-          <ChoiceRow isActive={!collection} count={collectionCount(undefined)} onPick={() => onCollection(undefined)}>
+          <ChoiceRow isActive={!collection} onPick={() => onCollection(undefined)}>
             Tất cả bộ
           </ChoiceRow>
           {collections.map((c) => {
             const isActive = collection?.id === c.id
             const count = collectionCount(c)
             return (
-              <ChoiceRow key={c.id} isActive={isActive} count={count} disabled={count === 0 && !isActive} onPick={() => onCollection(isActive ? undefined : c)}>
+              <ChoiceRow key={c.id} isActive={isActive} disabled={count === 0 && !isActive} onPick={() => onCollection(isActive ? undefined : c)}>
                 <span aria-hidden="true" className="flex shrink-0">
                   {c.patterns.slice(0, COLLECTION_DOTS).map((p) => (
                     <span key={p.code} className="-mr-1 h-3.5 w-3.5 rounded-full ring-[1.5px] ring-ivory" style={{ backgroundColor: p.swatch } as CSSProperties} />
@@ -153,14 +151,13 @@ function FilterGroup({ id, label, isFirst, children }: FilterGroupProps) {
 
 interface ChoiceRowProps {
   isActive: boolean
-  count: number
   disabled?: boolean
   onPick: () => void
   children: ReactNode
 }
 
-/** Một dòng chọn một: chấm tròn, tên, số lượng bên phải */
-function ChoiceRow({ isActive, count, disabled, onPick, children }: ChoiceRowProps) {
+/** Một dòng chọn một: chấm tròn, tên. Không ghi số (chị Phương 09/11/2026); số chỉ dùng để làm mờ lựa chọn không có gì */
+function ChoiceRow({ isActive, disabled, onPick, children }: ChoiceRowProps) {
   return (
     <button
       type="button"
@@ -178,7 +175,6 @@ function ChoiceRow({ isActive, count, disabled, onPick, children }: ChoiceRowPro
         }`}
       />
       <span className="flex min-w-0 items-center">{children}</span>
-      <span className="tabular ml-auto text-label font-normal text-ink-faint">{count}</span>
     </button>
   )
 }

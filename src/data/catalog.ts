@@ -7,7 +7,9 @@
  * (khách 08/11: "5.320.000đ là giá chuẩn" cho Rosa 1m8); 160×200 và 200×220 giữ nguyên. Chăn hè theo bảng giá 2026 (khách gửi 09/11/2026): một cỡ 200×220, 1.380.000đ,
  * nên cỡ nào cũng một giá.
  * Mã mẫu lấy theo ảnh sản phẩm thật (thư mục images/ và web cũ ecopillo.com.vn).
- * Tên màu do mình đặt theo ảnh; màu ô mẫu lấy từ ảnh. Tình trạng "Tạm hết hàng" là DỮ LIỆU GIẢ LẬP.
+ * Tên màu do mình đặt theo ảnh; màu ô mẫu lấy từ ảnh.
+ * Chưa có dữ liệu tồn kho: không mẫu nào ghi "Tạm hết hàng". Trước 09/11/2026 có 11 mẫu ghi hết hàng giả lập, khách tưởng thật nên đã bỏ;
+ * khi Ecopillo báo mẫu hết thật thì thêm soldOut: ['180x200'] vào mẫu đó.
  */
 
 export type SizeId = '160x200' | '180x200' | '200x220'
@@ -180,7 +182,7 @@ export const COLLECTIONS: readonly Collection[] = [
     imageNote: 'Ảnh phòng ngủ trải bộ Eco Flora EF06',
     cover: 'EF06',
     patterns: [
-      real('EF06', 'Sọc xanh nước biển', '#b6cfde', { soldOut: ['160x200'] }),
+      real('EF06', 'Sọc xanh nước biển', '#b6cfde'),
       real('EF09', 'Lá dương xỉ nền trắng', '#e6e7e3'),
       real('EF10', 'Cành lá nền xám', '#cdccd1'),
       real('EF11', 'Lá dương xỉ xám', '#cac8c4'),
@@ -226,12 +228,12 @@ export const COLLECTIONS: readonly Collection[] = [
       real('ER21', 'Hoa hồng phấn', '#d1c4c5'),
       real('ER22', 'Hoa tím nhạt', '#e5dfe7'),
       real('ER24', 'Hoa hồng nhạt', '#d1c3c5'),
-      real('ER25', 'Lá xám tro', '#aeb2ba', { soldOut: ['200x220'] }),
+      real('ER25', 'Lá xám tro', '#aeb2ba'),
       real('ER26', 'Hoa hồng đào', '#d4c4c4'),
       real('ER28', 'Xanh biển họa tiết', '#7ea7bd'),
       real('ER29', 'Hoa lá pastel', '#cacdd0'),
       real('ER30', 'Xanh xám', '#9da8b3'),
-      real('ER31', 'Hoa xám nhạt', '#c0c3cb', { soldOut: ['160x200'] }),
+      real('ER31', 'Hoa xám nhạt', '#c0c3cb'),
       real('ER32', 'Hoa tím pastel', '#cecad5'),
       real('ER33', 'Kẻ sọc be', '#c7bdb3'),
       real('ER34', 'Hình học xanh hồng', '#a8a3ab'),
@@ -241,7 +243,7 @@ export const COLLECTIONS: readonly Collection[] = [
       real('ER42', 'Hoa hồng đỏ', '#ded0d5'),
       real('ER45', 'Gấu hồng', '#e6d3d9', { isNew: true, prices: ROSA_NEW, fittedPrices: ROSA_NEW_CHUN }),
       real('ER46', 'Tàu thuyền xanh', '#bacbe3', { isNew: true, prices: ROSA_NEW, fittedPrices: price(5_080_000, 5_200_000, 5_800_000) }),
-      real('ER47', 'Hoa nhí hồng', '#e1dde0', { isNew: true, prices: ROSA_NEW, soldOut: ['180x200'], fittedPrices: ROSA_NEW_CHUN }),
+      real('ER47', 'Hoa nhí hồng', '#e1dde0', { isNew: true, prices: ROSA_NEW, fittedPrices: ROSA_NEW_CHUN }),
       real('ER49', 'Sọc ngang xanh dịu', '#ccccc6', { isNew: true, prices: ROSA_NEW, fittedPrices: ROSA_NEW_CHUN }),
     ],
   },
@@ -261,10 +263,10 @@ export const COLLECTIONS: readonly Collection[] = [
     cover: 'ET04',
     patterns: [
       real('ET01', 'Xanh da trời', '#a2bfe1', { fittedPrices: TERA_CHUN }),
-      real('ET02', 'Hồng phấn', '#f0d2d8', { soldOut: ['160x200'], fittedPrices: TERA_CHUN }),
+      real('ET02', 'Hồng phấn', '#f0d2d8', { fittedPrices: TERA_CHUN }),
       real('ET03', 'Xám bạc', '#bdbdbe', { fittedPrices: TERA_CHUN }),
       real('ET04', 'Vàng kem', '#e5d8c8', { fittedPrices: TERA_CHUN }),
-      real('ET05', 'Trắng ngà', '#f4f3e9', { soldOut: ['160x200', '180x200', '200x220'], fittedPrices: TERA_CHUN }),
+      real('ET05', 'Trắng ngà', '#f4f3e9', { fittedPrices: TERA_CHUN }),
       real('ET06', 'Xám ghi', '#818284', { prices: TERA_ET06 }),
     ],
   },
@@ -285,7 +287,7 @@ export const COLLECTIONS: readonly Collection[] = [
     patterns: [
       real('EV02', 'Lá xanh nhạt', '#c9cfdb', { fittedPrices: VERA_CHUN }),
       real('EV01', 'Lá vàng nền kem', '#d3d0c5', { fittedPrices: VERA_CHUN }),
-      real('EV03', 'Hoa tím nền kem', '#f5eee4', { soldOut: ['200x220'], fittedPrices: VERA_CHUN }),
+      real('EV03', 'Hoa tím nền kem', '#f5eee4', { fittedPrices: VERA_CHUN }),
       real('EV04', 'Hoa tím hồng', '#f2e3eb', { fittedPrices: VERA_CHUN }),
       real('EV05', 'Hình học xám', '#b9b8be', { fittedPrices: VERA_CHUN }),
       real('EV06', 'Hoa lá xanh lam', '#a9b8cd', { fittedPrices: VERA_CHUN }),
@@ -306,7 +308,7 @@ export const COLLECTIONS: readonly Collection[] = [
     cover: 'ES06',
     patterns: [
       real('ES06', 'Trắng ngà', '#eee9e5'),
-      real('ES08', 'Xanh ngọc', '#b6d7e8', { soldOut: ['200x220'] }),
+      real('ES08', 'Xanh ngọc', '#b6d7e8'),
       real('ES10', 'Xám bạc', '#bdbcc2'),
     ],
   },
@@ -325,7 +327,7 @@ export const COLLECTIONS: readonly Collection[] = [
     cover: 'EL10',
     patterns: [
       real('EL06', 'Xám ngọc trai', '#d0c9c8'),
-      real('EL08', 'Loang hồng tím', '#e4d4e0', { soldOut: ['160x200'] }),
+      real('EL08', 'Loang hồng tím', '#e4d4e0'),
       real('EL09', 'Hoa hồng nền ghi xám', '#bebcc7'),
       real('EL10', 'Hồng đào', '#e1d0d1'),
       real('EL12', 'Vàng ánh kim', '#e4d7cb'),
@@ -349,7 +351,7 @@ export const COLLECTIONS: readonly Collection[] = [
       real('ED08', 'Hồng phấn', '#f9ddde'),
       real('ED09', 'Xanh da trời', '#b2d4f7'),
       real('ED10', 'Trắng tinh', '#f4f4f3'),
-      real('ED20', 'Đỏ trầm thêu chỉ vàng', '#ba544c', { soldOut: ['180x200'] }),
+      real('ED20', 'Đỏ trầm thêu chỉ vàng', '#ba544c'),
       real('ED25', 'Kem thêu hoa', '#e5d7c7'),
       real('ED26', 'Hoa tuyết nền ghi', '#b1b8c3'),
     ],
@@ -373,7 +375,7 @@ export const COLLECTIONS: readonly Collection[] = [
       // Ảnh chan-he-ER12.webp in sẵn dòng chất liệu cũ đã bỏ khỏi web (owner yêu cầu 14/10/2026) nên tạm không hiện.
       // Ecopillo gửi ảnh ER12 mới thì đổi lại thành real(…, { imageKey: 'chan-he-ER12' })
       { code: 'ER12', colorName: 'Xanh biển họa tiết', swatch: '#96bed1' },
-      real('ER16', 'Kẻ xám', '#acabb0', { imageKey: 'chan-he-ER16', soldOut: ['160x200'] }),
+      real('ER16', 'Kẻ xám', '#acabb0', { imageKey: 'chan-he-ER16' }),
       real('ER20', 'Kem be', '#d4c9b2', { imageKey: 'chan-he-ER20' }),
       real('ER36', 'Xám ghi', '#acafa9', { imageKey: 'chan-he-ER36' }),
       real('ER38', 'Xanh mây', '#7da5bd', { imageKey: 'chan-he-ER38' }),
