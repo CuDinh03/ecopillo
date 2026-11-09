@@ -114,11 +114,13 @@ export function BrandVideo() {
               </button>
             ) : (
               <>
-                {/* Ảnh bìa nằm dưới, khung YouTube mờ dần hiện lên khi tải xong: không còn mảng chàm trống lúc chờ */}
+                {/* Ảnh bìa nằm dưới, khung YouTube mờ dần hiện lên khi tải xong: không còn mảng chàm trống lúc chờ.
+                    Lúc còn trong suốt thì không nhận phím Tab (rà bàn phím 06/11/2026: YouTube tải chậm hoặc bị chặn thì tiêu điểm rơi vào khung vô hình) */}
                 <Placeholder className="absolute inset-0 h-full w-full" tone="deep" note="Ảnh bìa video" image={COVER} sizes="(min-width: 1024px) 800px, 100vw" position="50% 25%" />
                 <iframe
                   ref={frameRef}
                   onLoad={() => setIsFrameReady(true)}
+                  tabIndex={isFrameReady ? undefined : -1}
                   className={`absolute inset-0 h-full w-full transition-opacity duration-300 ${isFrameReady ? 'opacity-100' : 'opacity-0'}`}
                   src={embedUrl(mode === 'auto')}
                   title={BRAND_VIDEO.title}
