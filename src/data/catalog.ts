@@ -436,10 +436,13 @@ export const ESSENTIALS: readonly EssentialGroup[] = [
   {
     id: 'ruot-goi',
     title: 'Ruột gối',
-    subtitle: 'Năm độ êm, từ nâng đỡ chắc tay đến bồng bềnh như mây',
+    subtitle: 'Từ bông PE giá mềm đến lông vũ bồng bềnh như mây',
     imageNote: 'Ảnh 5 loại ruột gối xếp tầng',
     imageKey: 'ruot-goi-micro-plus',
     items: [
+      // Chị Phương (Zalo 11/11/2026): "cho thêm cái ruột gối pe hiển thị ra đầu vì nó rẻ, dễ hút khách".
+      // Sản phẩm riêng RUOT_GOI_BONG_PE (products.ts): đổi giá thì sửa cả hai chỗ
+      { name: 'Bông PE', note: 'Nhẹ, thoáng, không hút ẩm', min: 180_000, max: 215_000 },
       { name: 'Micro Fiber', note: 'Sợi siêu mảnh, êm vừa, dễ giặt', min: 380_000, max: 450_000 },
       { name: 'Micro Plus', note: 'Bông cao cấp, đàn hồi tốt', min: 515_000, max: 550_000 },
       { name: 'Tơ tằm', note: 'Mềm mượt, điều hoà nhiệt', min: 960_000, max: 960_000 },
@@ -468,6 +471,8 @@ export const ESSENTIALS: readonly EssentialGroup[] = [
     imageKey: 'topper-micro-fiber',
     items: [
       { name: 'Chăn hè Lyocell', note: 'Chần bông mỏng, mát cho mùa hè', min: 1_380_000, max: 1_380_000 },
+      // Chị Phương 11/11/2026 "thiếu chăn Ecool": sản phẩm riêng CHAN_HE_E_COOL (products.ts), đổi giá thì sửa cả hai chỗ
+      { name: 'Chăn hè E-Cool Ecopillo', note: 'Vải mát E-Cool, bông siêu nhẹ', min: 1_380_000, max: 1_380_000 },
       { name: 'Topper Micro Fiber', note: 'Làm mềm mặt đệm cứng', min: 3_550_000, max: 4_200_000 },
       // Giá từng cỡ ở BAO_VE_DEM, DIVAN (products.ts): đổi giá thì sửa cả hai chỗ
       { name: 'Bảo vệ đệm chống thấm', note: 'Chống thấm, chống bụi, dễ tháo giặt', min: 675_000, max: 889_000 },

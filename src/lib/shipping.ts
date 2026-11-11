@@ -3,7 +3,8 @@
  * - Chỉ thu tiền khi nhận hàng (COD), áp dụng toàn quốc, không thu phí thu hộ.
  * - Miễn phí giao toàn quốc cho đơn từ 500.000đ; đơn nhỏ hơn phí giao 50.000đ.
  * - Không nhận chuyển khoản trước trên web.
- * - Thời gian: nội thành HN ~1 ngày, phía Bắc 2–3 ngày, phía Nam 3–5 ngày.
+ * - Thời gian: nội thành Hà Nội và nội thành TP. HCM giao trong ngày (chị Phương, Zalo 11/11/2026), phía Bắc 2–3 ngày, phía Nam 3–5 ngày.
+ *   Ngoại thành hai thành phố vẫn tính theo phía Bắc / phía Nam như trước [XÁC NHẬN với Ecopillo].
  */
 
 import { slugify } from './slug'
@@ -11,7 +12,7 @@ import { slugify } from './slug'
 export const FREE_SHIP_THRESHOLD = 500_000
 export const STANDARD_FEE = 50_000
 
-export type Region = 'hn-inner' | 'north' | 'south'
+export type Region = 'same-day' | 'north' | 'south'
 
 export interface Province {
   id: string
@@ -44,7 +45,7 @@ const NORTH = [
 ]
 
 const SOUTH = [
-  'TP. Hồ Chí Minh',
+  'TP. Hồ Chí Minh (ngoại thành)',
   'Quảng Trị',
   'Huế',
   'Đà Nẵng',
@@ -63,7 +64,8 @@ const SOUTH = [
 ]
 
 export const PROVINCES: readonly Province[] = [
-  { id: 'ha-noi-noi-thanh', name: 'Hà Nội (nội thành)', region: 'hn-inner' },
+  { id: 'ha-noi-noi-thanh', name: 'Hà Nội (nội thành)', region: 'same-day' },
+  { id: 'tp-ho-chi-minh-noi-thanh', name: 'TP. Hồ Chí Minh (nội thành)', region: 'same-day' },
   ...NORTH.map((name) => ({ id: slugify(name), name, region: 'north' as const })),
   ...SOUTH.map((name) => ({ id: slugify(name), name, region: 'south' as const })),
 ]
@@ -71,7 +73,7 @@ export const PROVINCES: readonly Province[] = [
 export const provinceById = (id: string): Province | undefined => PROVINCES.find((p) => p.id === id)
 
 export const DELIVERY_TIME: Readonly<Record<Region, string>> = {
-  'hn-inner': 'Khoảng 1 ngày',
+  'same-day': 'Trong ngày',
   north: '2–3 ngày',
   south: '3–5 ngày',
 }

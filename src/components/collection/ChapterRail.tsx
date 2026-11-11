@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { imageOfPattern, isPatternSoldOut, type Collection, type Pattern } from '../../data/catalog'
-import { chapterTitle } from '../../data/stories'
+import { chapterTitle, storyOf } from '../../data/stories'
 import { usePageLoaded } from '../../hooks/usePageLoaded'
 import { preloadImage } from '../../lib/preload'
 import { Placeholder } from '../ui/Placeholder'
@@ -41,6 +41,8 @@ export function ChapterRail({ collection, chapters, current, volumes, volume, on
     list.scrollTo({ left: active.offsetLeft - (list.clientWidth - active.offsetWidth) / 2, behavior: 'smooth' })
   }, [current.code, volume])
 
+  const countOf = (v: string) => collection.patterns.filter((p) => storyOf(collection, p)?.volume === v).length
+
   return (
     <section aria-labelledby="chapters-title" className={className}>
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
@@ -49,10 +51,17 @@ export function ChapterRail({ collection, chapters, current, volumes, volume, on
             <span className="lg:hidden">Chọn màu</span>
             <span className="max-lg:hidden">Các chương màu của {collection.name}</span>
           </h2>
+          {/* Anh Quang (Zalo 11/11/2026) tưởng bộ Eco Rosa chưa đăng hết vì các mã nằm ở tập 2, 3: ghi rõ tổng số màu và số tập */}
+          {volumes.length > 1 && (
+            <p className="mt-0.5 text-meta text-ink-soft">
+              {collection.patterns.length} màu, chia {volumes.length} tập. Bấm tên tập để xem từng tập.
+            </p>
+          )}
           {chapters.length > 2 && <p className="mt-0.5 text-meta text-ink-soft lg:hidden">Vuốt ngang để xem thêm màu</p>}
         </div>
+        {/* Tập xuống dòng thay vì vuốt ngang: trước đây tập thứ ba bị cắt ở mép phải điện thoại, khách không biết còn tập */}
         {volumes.length > 1 && (
-          <div role="group" aria-label="Chọn tập" className="-mx-5 flex gap-2 overflow-x-auto px-5 [mask-image:linear-gradient(to_right,#000_85%,transparent)] [scrollbar-width:none] sm:mx-0 sm:px-0 sm:[mask-image:none]">
+          <div role="group" aria-label="Chọn tập" className="flex flex-wrap gap-2">
             {volumes.map((v) => {
               const active = v === volume
               return (
@@ -61,11 +70,12 @@ export function ChapterRail({ collection, chapters, current, volumes, volume, on
                   type="button"
                   aria-pressed={active}
                   onClick={() => onVolume(v)}
-                  className={`inline-flex h-10 shrink-0 items-center rounded-full px-4 text-sm whitespace-nowrap transition ${
+                  className={`inline-flex h-10 items-center rounded-full px-4 text-sm whitespace-nowrap transition ${
                     active ? 'bg-deep-800 text-ivory' : 'bg-ivory text-ink-soft shadow-[var(--shadow-soft)] hover:text-deep-900'
                   }`}
                 >
                   Tập {v}
+                  <span className={`tabular ml-1.5 ${active ? 'text-ivory/75' : 'text-ink-soft/80'}`}>{countOf(v)}</span>
                 </button>
               )
             })}

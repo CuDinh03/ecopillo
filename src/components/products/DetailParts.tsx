@@ -25,7 +25,7 @@ const WARRANTY_BY_CATEGORY: Readonly<Record<string, string>> = {
 
 const POLICIES = [
   'Thanh toán khi nhận hàng (COD) toàn quốc, không thu phí thu hộ. Nhân viên gọi xác nhận đơn trước khi giao.',
-  'Miễn phí giao toàn quốc cho đơn từ 500.000đ. Nội thành Hà Nội khoảng 1 ngày, phía Bắc 2–3 ngày, phía Nam 3–5 ngày.',
+  'Miễn phí giao toàn quốc cho đơn từ 500.000đ. Nội thành Hà Nội, TP. HCM giao trong ngày; phía Bắc 2–3 ngày, phía Nam 3–5 ngày.',
   'Kiểm hàng cùng nhân viên giao, được trải thử lên giường. Giao sai được từ chối nhận, không mất tiền.',
   'Chỉ đổi, không trả hàng hoàn tiền. Báo lỗi trong 24 giờ, gửi đổi trong 7 ngày, còn nguyên tem mác, chưa giặt.',
 ] as const

@@ -62,6 +62,29 @@ const preference = (slug: string, pointIndex: number): MattressPreference => {
   }
 }
 
+const BONG_EP_PATH = '/danh-muc-san-pham/san-pham/dem-bong-ep/'
+
+/**
+ * Dòng "Thích nằm cứng, gấp gọn" nói cả hai đệm bông ép (Gấm Thuần Khiết gập 3, Nano chần foam gập 2).
+ * Chị Phương (Zalo 11/11/2026): "thay ảnh này bằng ảnh nano gập 2". Ảnh Nano gập đôi, bấm sang danh mục Đệm bông ép
+ * (thấy cả hai), giá "từ" lấy đệm rẻ hơn.
+ */
+const bongEpPreference = (): MattressPreference => {
+  if (!LISTINGS[BONG_EP_PATH]) throw new Error(`mattressPicker: thiếu danh mục ${BONG_EP_PATH}`)
+  const nano = productOf('dem-bong-nano-chan-foam')
+  const gam = productOf('dem-bong-gam-thuan-khiet')
+  if (!nano.image) throw new Error('mattressPicker: thiếu ảnh dem-bong-nano-chan-foam')
+  const point = DEM_GUIDE.points[3]
+  return {
+    title: point.title,
+    text: point.text,
+    productName: nano.name,
+    min: Math.min(nano.min, gam.min),
+    to: BONG_EP_PATH,
+    thumb: nano.image,
+  }
+}
+
 const ecoLuxe = productOf('dem-lo-xo-tui-cao-cap-eco-luxe')
 
 export const MATTRESS_FEATURED: MattressFeatured = {
@@ -77,7 +100,7 @@ export const MATTRESS_PREFERENCES: readonly MattressPreference[] = [
   preference('dem-eco-foam-da-tang', 0),
   preference('dem-lo-xo-tui-doc-lap', 1),
   preference('dem-cao-su-thien-nhien-eco-latex', 2),
-  preference('dem-bong-gam-thuan-khiet', 3),
+  bongEpPreference(),
 ]
 
 const chipOf = (path: string, label: string): MattressChip => {

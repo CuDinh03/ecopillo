@@ -27,12 +27,15 @@ export function CategoryPage() {
   usePageMeta(listing?.title ?? null, listing?.description)
   if (!listing) return <NotFoundPage />
 
-  const products = PRODUCTS.filter(
+  const matched = PRODUCTS.filter(
     (p) =>
       (!listing.category || p.category === listing.category) &&
       (!listing.products || listing.products.includes(p.slug)) &&
       (!listing.collections || (p.collection && listing.collections.includes(p.collection.id))),
   )
+  // Danh mục có ghi danh sách sản phẩm thì xếp đúng thứ tự đã ghi (ruột gối bông PE đứng đầu: chị Phương, Zalo 11/11/2026)
+  const order = listing.products
+  const products = order ? [...matched].sort((a, b) => order.indexOf(a.slug) - order.indexOf(b.slug)) : matched
   const colorways = listing.collections ? COLORWAYS.filter((c) => listing.collections?.includes(c.collection.id)) : []
   const moreUrl = productsUrl(listing.category ? { 'danh-muc': listing.category } : {})
   const guide = LISTING_GUIDES[withSlash(pathname)]

@@ -65,11 +65,11 @@ export const POLICIES: readonly Policy[] = [
   {
     slug: 'chinh-sach-van-chuyen',
     title: 'Chính sách giao hàng',
-    description: 'Miễn phí giao toàn quốc cho đơn từ 500.000đ. Hà Nội khoảng 1 ngày, phía Bắc 2–3 ngày, phía Nam 3–5 ngày.',
+    description: 'Miễn phí giao toàn quốc cho đơn từ 500.000đ. Nội thành Hà Nội, TP. HCM giao trong ngày; phía Bắc 2–3 ngày, phía Nam 3–5 ngày.',
     intro: 'Ecopillo giao hàng toàn quốc, thu tiền khi nhận hàng. Quý khách được kiểm hàng và trải thử trước khi thanh toán.',
     highlights: [
       { value: 'Miễn phí', label: 'Giao toàn quốc cho đơn từ 500.000đ' },
-      { value: '1–5 ngày', label: 'Tuỳ khu vực nhận hàng' },
+      { value: 'Trong ngày', label: 'Nội thành Hà Nội, TP. HCM; tỉnh khác 2–5 ngày' },
       { value: 'Kiểm hàng', label: 'Được trải thử trước khi trả tiền' },
     ],
     sections: [
@@ -84,7 +84,7 @@ export const POLICIES: readonly Policy[] = [
       {
         title: 'Thời gian giao',
         list: [
-          'Nội thành Hà Nội: khoảng 1 ngày.',
+          'Nội thành Hà Nội và nội thành TP. HCM: giao trong ngày.',
           'Các tỉnh phía Bắc: 2–3 ngày.',
           'Các tỉnh phía Nam: 3–5 ngày.',
           'Hàng may theo kích thước riêng: Ecopillo báo thời gian may khi xác nhận đơn.',
@@ -94,7 +94,8 @@ export const POLICIES: readonly Policy[] = [
       {
         title: 'Giao bằng gì',
         list: [
-          'Nội thành Hà Nội: chăn ga, gối, đệm bông ép giao bằng xe máy; đệm lò xo, đệm cao su giao bằng xe tải.',
+          // Chị Phương sửa câu này (Zalo 11/11/2026)
+          'Nội thành Hà Nội: nhân viên giao hàng của Ecopillo sẽ ship tận nơi và hỗ trợ trải lên giường cho Quý khách một cách nhanh nhất.',
           'Các tỉnh khác: gửi qua đơn vị vận chuyển (Viettel Post, Giao hàng tiết kiệm, Giao hàng nhanh…).',
           'Mọi kiện hàng được Ecopillo đóng gói, niêm phong, ghi tên, số điện thoại người nhận và mã vận đơn.',
         ],

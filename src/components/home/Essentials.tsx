@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
 import { collectionById, coverOf, ESSENTIALS, type EssentialItem, type ImageSource } from '../../data/catalog'
-import { collectionPath, PATHS, productsUrl } from '../../data/links'
+import { collectionPath, PATHS } from '../../data/links'
 import { productForEssential, productPath } from '../../data/products'
 import { formatVND } from '../../lib/format'
 import { revealDelay } from '../../lib/reveal'
@@ -20,11 +20,11 @@ import { Container, SectionHeading } from '../ui/primitives'
 const SUMMER_QUILT_NAME = 'Chăn hè Lyocell'
 const SUMMER_QUILT = collectionById('chan-he-lyocell')
 
-/** "Xem tất cả" của từng nhóm: trang danh mục của web cũ, không thì trang Sản phẩm đã lọc */
+/** "Xem tất cả" của từng nhóm: trang danh mục nhỏ (LISTINGS trong links.ts) có đúng các sản phẩm của nhóm */
 const GROUP_LINKS: Readonly<Record<string, string>> = {
   'ruot-goi': '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/',
   'ruot-chan': '/danh-muc-san-pham/san-pham/ruot-chan-goi/',
-  'chan-topper': productsUrl({ 'danh-muc': 'dem' }),
+  'chan-topper': '/danh-muc-san-pham/san-pham/chan-topper-phu-kien/',
 }
 
 interface EssentialTile {

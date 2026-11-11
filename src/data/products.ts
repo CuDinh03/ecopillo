@@ -279,8 +279,8 @@ const DEM_TRON: Product = {
   ],
 }
 
-/** Dòng bảng giá đã có sản phẩm riêng: chăn hè (có mẫu, đặt online), bảo vệ đệm và divan (giá từng cỡ) */
-const OWN_PRODUCT_ITEMS: ReadonlySet<string> = new Set(['Chăn hè Lyocell', BAO_VE_DEM.name, DIVAN.name])
+/** Dòng bảng giá đã có sản phẩm riêng: chăn hè (có mẫu, đặt online), bảo vệ đệm và divan (giá từng cỡ), ruột gối bông PE, chăn hè E-Cool */
+const OWN_PRODUCT_ITEMS: ReadonlySet<string> = new Set(['Chăn hè Lyocell', BAO_VE_DEM.name, DIVAN.name, 'Bông PE', 'Chăn hè E-Cool Ecopillo'])
 
 const essentialProducts: Product[] = ESSENTIALS.flatMap((group) =>
   group.items
@@ -457,12 +457,48 @@ const CHAN_DONG_KIEU_HAN: Product = {
   choices: CHAN_HAN_CODES.map((code) => ({ id: code.toLowerCase(), label: code, image: chanHanImage(code) })),
 }
 
+const ORDER_NOTE = 'Đặt ngay trên web, nhân viên gọi xác nhận trước khi giao. Giao cùng chính sách như bộ chăn ga.'
+
+/**
+ * Chăn hè E-Cool: chị Phương (Zalo 11/11/2026) "C đang thấy thiếu chăn Ecool". Chữ, giá, cỡ, ảnh lấy từ trang sản phẩm
+ * web cũ (/san-pham/chan-he-e-cool-ecopillo/, sửa 28/08/2026), dùng lại đúng link đó thay cho 301 sang Chăn hè.
+ * Chăn trơn một màu, không có phối màu như Chăn hè Lyocell. Ảnh nén: tools/nen-anh-chan-he-e-cool-2026-11-11.py
+ */
+const CHAN_HE_E_COOL: Product = {
+  slug: 'chan-he-e-cool',
+  name: 'Chăn hè E-Cool Ecopillo',
+  category: 'chan',
+  summary:
+    'Chăn hè mát lạnh may từ vải mát E-Cool, chần bông Micro Fiber siêu nhẹ: đắp êm, thoáng, không nóng lưng giữa đêm.',
+  min: 1_380_000,
+  max: 1_380_000,
+  image: productImage('chan-he-e-cool', 'Chăn hè E-Cool Ecopillo màu xanh nhạt trải trên giường'),
+  imageNote: 'Ảnh chăn hè E-Cool',
+  gallery: [
+    productImage('chan-he-e-cool-2', 'Chăn hè E-Cool trên giường cạnh cửa sổ'),
+    productImage('chan-he-e-cool-3', 'Giũ chăn hè E-Cool trên giường'),
+    productImage('chan-he-e-cool-4', 'Chăn hè E-Cool gấp gọn, thấy điểm chần'),
+    productImage('chan-he-e-cool-5', 'Chăn hè E-Cool cạnh túi đựng Ecopillo'),
+  ],
+  details: [
+    'Vải E-Cool nghiên cứu cho thời tiết nóng ẩm Việt Nam: mát dễ chịu suốt giấc ngủ, không chỉ mát lúc mới chạm vào.',
+    'Bông Micro Fiber siêu nhẹ, ôm người vừa đủ, đắp không nặng người.',
+    'Chần điểm, mật độ may 4 mũi/cm: đường may chắc, hạn chế xô lệch bông, chăn giữ phom gọn.',
+    'Viền paping kim tuyến. Dễ giặt, nhanh khô, dùng bền đẹp.',
+    ORDER_NOTE,
+  ],
+  specs: [
+    { label: 'Kích thước', value: '200 × 220 cm' },
+    { label: 'Chất liệu', value: 'Vải E-Cool, bông Micro Fiber' },
+    { label: 'Trọng lượng', value: '1,5 kg' },
+  ],
+}
+
 /** Câu về bông PE, theo tài liệu training sản phẩm 2026 (trang 39) */
 const BONG_PE_NOTES: readonly string[] = [
   'Bông gòn PE (Polyester Fiber): nhẹ, thoáng, đàn hồi tốt, bền form.',
   'Sợi PE có độ phồng tự nhiên, không xẹp lún nhanh, không hút ẩm nên hạn chế nấm mốc và an toàn cho da.',
 ]
-const ORDER_NOTE = 'Đặt ngay trên web, nhân viên gọi xác nhận trước khi giao. Giao cùng chính sách như bộ chăn ga.'
 
 /**
  * Ruột gối bông PE: ảnh khách gửi Zalo 08/11/2026, xếp vào nhóm Đồ ruột.
@@ -775,6 +811,7 @@ export const PRODUCTS: readonly Product[] = [
   ...COLLECTIONS.map(collectionProduct),
   ...essentialProducts,
   CHAN_DONG_KIEU_HAN,
+  CHAN_HE_E_COOL,
   RUOT_CHAN_MICRO_PLUS,
   RUOT_GOI_BONG_PE,
   RUOT_GOI_OM,

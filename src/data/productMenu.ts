@@ -201,6 +201,8 @@ export const PRODUCT_MENU: readonly MenuGroup[] = [
       productRow('chan-to-tam'),
       productRow('chan-long-vu-tu-nhien'),
       collectionRow('chan-he-lyocell'),
+      // Chị Phương 11/11/2026: "thiếu chăn Ecool"
+      productRow('chan-he-e-cool', 'Chăn hè E-Cool'),
     ],
   }),
   group({

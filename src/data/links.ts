@@ -173,6 +173,8 @@ const PRODUCT_SLUGS: Readonly<Record<string, string>> = {
   // Sản phẩm mới khách gửi 08/11/2026, web cũ không có: link mới, không cần 301
   'chan-dong-kieu-han': 'chan-dong-kieu-han',
   'ruot-goi-bong-pe': 'ruot-goi-bong-pe',
+  // Chị Phương 11/11/2026 "thiếu chăn Ecool": dùng lại trang của web cũ thay cho 301 sang Chăn hè
+  'chan-he-e-cool': 'chan-he-e-cool-ecopillo',
   // Có giá, ảnh trong bảng giá 2026 (khách gửi 09/11/2026): dùng lại trang Mix Latex của web cũ thay cho 301 sang Đệm bông ép
   'dem-bong-ep-cao-cap-mix-latex': 'dem-bong-ep-cao-cap-mix-latex',
   // Sản phẩm mới trong bảng giá 2026 (khách gửi 09/11/2026), web cũ không có: link mới, không cần 301
@@ -275,6 +277,13 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
       'ruot-goi-long-vu-tu-nhien',
     ],
   },
+  // Web cũ không có danh mục này: link mới, không cần 301. "Xem tất cả" của nhóm "Chăn, topper và phụ kiện khác" trang chủ
+  // (chị Phương 11/11/2026: bấm vào "không hiện gì cả", vì trước đó mở cả trang Sản phẩm lọc Đệm, sản phẩm nằm dưới phần giới thiệu)
+  '/danh-muc-san-pham/san-pham/chan-topper-phu-kien/': {
+    title: 'Chăn, topper và phụ kiện khác',
+    description: 'Chăn hè Lyocell, chăn hè E-Cool, topper Micro Fiber, bảo vệ đệm chống thấm và divan Ecopillo. Đặt online, thanh toán khi nhận hàng.',
+    products: ['chan-he-lyocell', 'chan-he-e-cool', 'topper-micro-fiber', 'bao-ve-dem-chong-tham', 'divan-ecopillo'],
+  },
   '/danh-muc-san-pham/dem-ecopillo/': {
     title: 'Đệm Ecopillo',
     description: 'Đệm lò xo, đệm cao su thiên nhiên, đệm bông ép, đệm foam, topper, divan và bảo vệ đệm Ecopillo. Giá theo kích thước và độ dày, nằm thử tại hệ thống phân phối.',
@@ -347,7 +356,6 @@ export const OLD_SITE_REDIRECTS: Readonly<Record<string, string>> = {
   '/san-pham/dem-foam-cao-cap-nano-comfort/': '/danh-muc-san-pham/san-pham/dem-foam/',
   '/san-pham/dem-lo-xo-cao-cap-eco-premium/': '/danh-muc-san-pham/san-pham/dem-lo-xo/',
   '/san-pham/ruot-goi-dau-ecopillo/': '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/',
-  '/san-pham/chan-he-e-cool-ecopillo/': COLLECTION_PATHS['chan-he-lyocell'],
   // Khăn: bảng giá 2026 ghi "Giá liên hệ", không có trang riêng; trang Khách sạn có thẻ khăn trong khối Sản phẩm (09/11/2026)
   '/san-pham/khan-tam-khan-tay-khan-mat-ecopillo/': PATHS.hotel,
   // Thẻ bài viết, trang tác giả (web cũ đã chặn /author/ trong robots.txt), khối giao diện của theme cũ

@@ -78,7 +78,7 @@ export const FAQS: readonly Faq[] = [
     q: 'Đơn hàng có được miễn phí giao không, bao lâu thì nhận?',
     a: [
       'Đơn từ 500.000đ được miễn phí giao hàng trên toàn quốc; đơn dưới mức này phí giao 50.000đ.',
-      'Nội thành Hà Nội nhận trong khoảng 1 ngày, các tỉnh phía Bắc 2–3 ngày, các tỉnh phía Nam 3–5 ngày.',
+      'Nội thành Hà Nội và nội thành TP. HCM nhận trong ngày, các tỉnh phía Bắc 2–3 ngày, các tỉnh phía Nam 3–5 ngày.',
     ],
   },
   {
