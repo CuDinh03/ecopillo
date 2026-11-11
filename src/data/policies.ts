@@ -85,8 +85,9 @@ export const POLICIES: readonly Policy[] = [
         title: 'Thời gian giao',
         list: [
           'Nội thành Hà Nội và nội thành TP. HCM: giao trong ngày.',
-          'Các tỉnh phía Bắc: 2–3 ngày.',
-          'Các tỉnh phía Nam: 3–5 ngày.',
+          // Ngoại thành không giao trong ngày (Ecopillo xác nhận 11/11/2026)
+          'Ngoại thành Hà Nội và các tỉnh phía Bắc: 2–3 ngày.',
+          'Ngoại thành TP. HCM và các tỉnh phía Nam: 3–5 ngày.',
           'Hàng may theo kích thước riêng: Ecopillo báo thời gian may khi xác nhận đơn.',
         ],
         body: ['Thời gian tính từ khi nhân viên gọi xác nhận đơn, không tính ngày lễ, Tết. Nếu giao chậm, Ecopillo gọi báo trước.'],
@@ -94,9 +95,9 @@ export const POLICIES: readonly Policy[] = [
       {
         title: 'Giao bằng gì',
         list: [
-          // Chị Phương sửa câu này (Zalo 11/11/2026)
-          'Nội thành Hà Nội: nhân viên giao hàng của Ecopillo sẽ ship tận nơi và hỗ trợ trải lên giường cho Quý khách một cách nhanh nhất.',
-          'Các tỉnh khác: gửi qua đơn vị vận chuyển (Viettel Post, Giao hàng tiết kiệm, Giao hàng nhanh…).',
+          // Chị Phương sửa câu này (Zalo 11/11/2026); Ecopillo xác nhận cùng ngày: chỉ áp dụng nội thành (Hà Nội và TP. HCM)
+          'Nội thành Hà Nội và TP. HCM: nhân viên giao hàng của Ecopillo sẽ ship tận nơi và hỗ trợ trải lên giường cho Quý khách một cách nhanh nhất.',
+          'Ngoại thành và các tỉnh khác: gửi qua đơn vị vận chuyển (Viettel Post, Giao hàng tiết kiệm, Giao hàng nhanh…).',
           'Mọi kiện hàng được Ecopillo đóng gói, niêm phong, ghi tên, số điện thoại người nhận và mã vận đơn.',
         ],
       },

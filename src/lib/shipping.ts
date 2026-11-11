@@ -4,7 +4,7 @@
  * - Miễn phí giao toàn quốc cho đơn từ 500.000đ; đơn nhỏ hơn phí giao 50.000đ.
  * - Không nhận chuyển khoản trước trên web.
  * - Thời gian: nội thành Hà Nội và nội thành TP. HCM giao trong ngày (chị Phương, Zalo 11/11/2026), phía Bắc 2–3 ngày, phía Nam 3–5 ngày.
- *   Ngoại thành hai thành phố vẫn tính theo phía Bắc / phía Nam như trước [XÁC NHẬN với Ecopillo].
+ *   Ngoại thành hai thành phố không giao trong ngày: ngoại thành Hà Nội tính như phía Bắc, ngoại thành TP. HCM như phía Nam (Ecopillo xác nhận 11/11/2026).
  */
 
 import { slugify } from './slug'
