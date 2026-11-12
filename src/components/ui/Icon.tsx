@@ -47,6 +47,11 @@ import {
   Feather,
   SlidersHorizontal,
   ZoomIn,
+  FlaskConical,
+  PenLine,
+  SearchCheck,
+  Factory,
+  Undo2,
 } from 'lucide-react'
 
 /** Bộ icon Lucide, đặt tên theo nghĩa dùng trên web */
@@ -101,6 +106,12 @@ const ICONS = {
   // Nút "Bộ lọc" trang Sản phẩm trên điện thoại
   filter: SlidersHorizontal,
   zoom: ZoomIn,
+  // Quy trình phát triển sản phẩm 7 bước (trang Giới thiệu chương IV)
+  research: FlaskConical,
+  design: PenLine,
+  review: SearchCheck,
+  factory: Factory,
+  back: Undo2,
 } satisfies Record<string, LucideIcon>
 
 const BRAND_PATHS = {

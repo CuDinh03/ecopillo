@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { ProductProcess } from '../components/about/ProductProcess'
 import { CertificateCabinet, PartnerLogos, PressQuotes } from '../components/about/Recognition'
 import { Chapter, PullQuote, Prose, STORY_LABEL, StoryFigure, StoryRail } from '../components/about/StoryParts'
 import { BrandVideoPlayer, YoutubeChannelLink } from '../components/home/BrandVideo'
@@ -187,6 +188,8 @@ export function AboutPage() {
               </div>
             ))}
           </dl>
+          {/* Quy trình 7 bước: sau 4 ô đặc tính, trước câu trích (cách 1, chị Phương chọn 12/11/2026) */}
+          <ProductProcess />
           <PullQuote>“{CRAFT_QUOTE}”</PullQuote>
         </Chapter>
 

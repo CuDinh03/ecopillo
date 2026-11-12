@@ -213,6 +213,86 @@ export const BRAND_STATS = [
 export const LYOCELL_INTRO =
   'Ecopillo chọn vải Lyocell cao cấp nhập khẩu, dệt từ sợi gỗ tự nhiên, làm chất liệu chủ đạo. Quy trình sản xuất khép kín, thân thiện môi trường và an toàn cho cả làn da nhạy cảm của trẻ nhỏ.'
 export const CRAFT_QUOTE = 'Không chạy theo số lượng, mà kiên định tạo ra từng sản phẩm có linh hồn.'
+/**
+ * Quy trình phát triển sản phẩm 7 bước, chương IV trang Giới thiệu (chị Phương Zalo 12/11/2026).
+ * Chữ chép đúng tài liệu chị Phương gửi. Chị chọn mẫu A + cách 1, bỏ dòng tóm tắt, hiện hết mô tả không cần bấm
+ * (mẫu: docs/de-xuat-quy-trinh-7-buoc-12-11.html). Tên ba chặng là cách chia của owner (Zalo 11:40).
+ */
+export type ProcessIcon = 'research' | 'design' | 'review' | 'box' | 'shield' | 'factory' | 'truck'
+
+export interface ProcessStep {
+  title: string
+  text: string
+  icon: ProcessIcon
+  /** Bước duyệt mẫu: làm nổi bật, kèm kết quả Đạt / Không đạt */
+  isGate?: boolean
+}
+
+export interface ProcessStage {
+  name: string
+  steps: readonly ProcessStep[]
+}
+
+export const PRODUCT_PROCESS_TITLE = 'Quy trình phát triển sản phẩm'
+export const PRODUCT_PROCESS: readonly ProcessStage[] = [
+  {
+    name: 'Ý tưởng và thiết kế',
+    steps: [
+      {
+        title: 'Nghiên cứu & Phát triển (R&D)',
+        icon: 'research',
+        text: 'Ý tưởng sản phẩm được hình thành dựa trên dữ liệu thị trường, thử nghiệm thực tế và phân tích hành vi người dùng, nhằm đảm bảo định hướng phù hợp với triết lý thương hiệu và tiêu chuẩn chất lượng.',
+      },
+      {
+        title: 'Thiết kế sản phẩm',
+        icon: 'design',
+        text: 'R&D phối hợp cùng bộ phận thiết kế để xây dựng bản thiết kế hoàn chỉnh – đảm bảo tính khả thi trong sản xuất, đồng thời cân bằng giữa công năng và thẩm mỹ.',
+      },
+      {
+        title: 'Thẩm định thiết kế (R&D)',
+        icon: 'review',
+        text: 'Thiết kế được rà soát toàn diện về mặt kỹ thuật, cấu trúc và chất liệu. Chỉ khi đáp ứng đầy đủ các tiêu chí nội bộ, mới tiến hành sản xuất mẫu thử.',
+      },
+    ],
+  },
+  {
+    name: 'Mẫu thử',
+    steps: [
+      {
+        title: 'Sản xuất mẫu thử',
+        icon: 'box',
+        text: 'Bản thiết kế được hiện thực hóa thành mẫu thử trên chất liệu thật, phục vụ đánh giá trực quan về phom dáng, độ phồng, độ dày, cảm giác bề mặt và tính đồng nhất.',
+      },
+      {
+        title: 'Duyệt mẫu (Giám đốc Sản xuất)',
+        icon: 'shield',
+        isGate: true,
+        text: 'Mẫu thử được thẩm định bởi Giám đốc Sản xuất theo các tiêu chí kỹ thuật nghiêm ngặt: độ chính xác đường may, độ bền cấu trúc, độ dày chần thêu, khả năng ổn định khi sản xuất số lượng lớn.',
+      },
+    ],
+  },
+  {
+    name: 'Sản xuất',
+    steps: [
+      {
+        title: 'Sản xuất đại trà',
+        icon: 'factory',
+        text: 'Sản phẩm được đưa vào dây chuyền sản xuất khép kín, với quy trình kiểm soát chất lượng tại từng công đoạn nhằm đảm bảo sự đồng bộ tuyệt đối với mẫu chuẩn.',
+      },
+      {
+        title: 'Kiểm định cuối & Xuất xưởng',
+        icon: 'truck',
+        text: 'Trước khi ra mắt thị trường, mỗi lô sản phẩm phải vượt qua hệ thống kiểm định cuối cùng – bao gồm cả đánh giá kỹ thuật lẫn cảm quan. Chỉ những sản phẩm đạt mức hoàn thiện tuyệt đối mới được phép xuất xưởng.',
+      },
+    ],
+  },
+]
+/** Kết quả bước duyệt mẫu, chép đúng tài liệu */
+export const PROCESS_GATE_RESULTS = {
+  pass: { label: 'Đạt yêu cầu', text: 'Chuyển sang sản xuất hàng loạt.' },
+  fail: { label: 'Không đạt', text: 'Quay lại R&D để điều chỉnh, tối ưu.' },
+} as const
+
 export const LYOCELL_TRAITS: readonly { title: string; text: string }[] = [
   { title: 'Mềm', text: 'Bề mặt mịn như lụa, rủ nhẹ theo dáng giường.' },
   { title: 'Mát', text: 'Sợi hút ẩm nhanh, giữ cho lưng khô thoáng suốt đêm.' },
