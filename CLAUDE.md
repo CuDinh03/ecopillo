@@ -20,7 +20,7 @@ bắt đầu từ [`00-phien-sau-doc-truoc.md`](docs/viec-can-lam/00-phien-sau-d
 
 - **Project chỉ nằm ở `/Volumes/KINGSTON/ecopillo`** (ổ rời). Xem `LAM-VIEC-TREN-O-KINGSTON.md`.
   Lệnh báo "No such file" thì kiểm `df -h /Volumes/KINGSTON` trước: gần như chắc là ổ chưa cắm.
-- **Có git từ 14/10/2026** (repo riêng tư `github.com/CuDinh03/ecopillo`, nhánh `main`). `.gitignore` **chặn hết, chỉ cho phép** phần cần để build:
+- **Có git từ 14/10/2026** (repo `github.com/CuDinh03/ecopillo`, nhánh `main`; **công khai từ 12/11/2026**: ai cũng đọc được mọi thứ đã commit, kể cả lịch sử). `.gitignore` **chặn hết, chỉ cho phép** phần cần để build:
   biên bản, hợp đồng, `docs/`, `images/`, `_sao-luu/` **không bao giờ** lên GitHub. Thêm file mới ngoài các thư mục được phép thì sửa `.gitignore` và xem `git status` trước khi commit.
   Đẩy lên `main` là GitHub Actions tự đưa **bản xem thử** lên Cloudflare Pages: xem `docs/phuong-an-dua-ban-xem-thu.md`.
   Tài liệu trong `docs/` không có lịch sử git: trước khi sửa lớn ở đó vẫn nén vào `_sao-luu/<mo-ta>-<ngay>.tgz`.
