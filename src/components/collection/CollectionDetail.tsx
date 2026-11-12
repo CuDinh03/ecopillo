@@ -13,7 +13,7 @@ import {
   type SizeId,
 } from '../../data/catalog'
 import { priceLabel, type Product } from '../../data/products'
-import { chapterTitle, patternByParam, patternPath, sameToneElsewhere, storyOf, storySummary, toneById, volumesOf } from '../../data/stories'
+import { chapterTitle, patternByParam, patternPath, sameToneElsewhere, storyOf, storySummary, toneById } from '../../data/stories'
 import { relatedForProduct } from '../../data/related'
 import { usePageMeta } from '../../hooks/usePageMeta'
 import { formatRange } from '../../lib/format'
@@ -56,8 +56,6 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
 
   const [size, setSize] = useState<SizeId | null>(null)
   const [previewCode, setPreviewCode] = useState<string | null>(null)
-  // Tập đang xem trong hàng chương (bộ nhiều phối màu); null = tập của chương đang mở
-  const [browsedVolume, setBrowsedVolume] = useState<string | null>(null)
 
   const story = pattern ? storyOf(collection, pattern) : undefined
   const title = pattern ? chapterTitle(collection, pattern) : product.name
@@ -84,16 +82,11 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
   // Link cũ dạng ?mau=ER42: chuyển sang link riêng của phối màu
   if (legacy) return <Navigate to={patternPath(collection, legacy)} replace />
 
-  const volumes = volumesOf(collection)
-  const volumeOf = (p: Pattern) => storyOf(collection, p)?.volume
-  // Số chương đếm trong tập (nếu bộ có chia tập), không thì đếm trong cả bộ
-  const siblings = story?.volume ? collection.patterns.filter((p) => volumeOf(p) === story.volume) : collection.patterns
+  // Mũi tên trên ảnh đi qua cả bộ (không chia tập nữa, anh Quang Zalo 12/11/2026)
+  const siblings = collection.patterns
   const index = siblings.findIndex((p) => p.code === pattern.code)
-  const railVolume = browsedVolume ?? story?.volume
-  const railChapters = railVolume ? collection.patterns.filter((p) => volumeOf(p) === railVolume) : collection.patterns
 
   const open = (next: Pattern) => {
-    setBrowsedVolume(null)
     setPreviewCode(null)
     // keepScroll: SiteLayout không kéo trang lên đầu khi chỉ đổi chương
     navigate(patternPath(collection, next), { replace: true, state: { keepScroll: true } })
@@ -144,7 +137,6 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
                 pattern={pattern}
                 story={story}
                 title={title}
-                volume={story?.volume}
                 heading={chapter && fullName}
                 className="max-lg:order-2"
               />
@@ -160,11 +152,8 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
           </div>
           <ChapterRail
             collection={collection}
-            chapters={railChapters}
+            chapters={collection.patterns}
             current={pattern}
-            volumes={volumes}
-            volume={railVolume}
-            onVolume={setBrowsedVolume}
             onOpen={open}
             onPreview={setPreviewCode}
             className="min-w-0 max-lg:order-1 lg:mt-14"

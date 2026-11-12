@@ -115,23 +115,25 @@ export const SHOWROOMS: readonly Showroom[] = [
   {
     id: 'tp-hcm',
     kind: 'Chi nhánh',
-    dealerName: 'Ecopillo Gò Vấp',
+    // Chị Phương (Zalo 12/11/2026): cả TP. HCM có một chi nhánh nên ghi tên thành phố, không ghi quận
+    dealerName: 'Ecopillo Hồ Chí Minh',
     city: 'TP. Hồ Chí Minh',
     province: 'TP. Hồ Chí Minh',
     // Địa chỉ đủ theo catalog Ecopillo 22.07.2026
     address: '257A6 Nguyễn Văn Lượng, KDC Cityland Park Hills, Phường Gò Vấp, TP. HCM',
     lat: 10.838376,
     lng: 106.6677514,
-    hotline: '0869 088 508',
+    // Khách gửi số mới qua Zalo 12/11/2026
+    hotline: '0973 255 508',
     mapsUrl: directionsUrl('257A6 Nguyễn Văn Lượng, KDC Cityland Park Hills, Phường Gò Vấp, TP. HCM'),
-    imageNote: 'Ảnh mặt tiền và không gian trưng bày chi nhánh Gò Vấp (chờ Ecopillo gửi)',
-    // Khách chọn 16/10/2026 (mục 15): ảnh dọc, thẻ ngang chỉ hiện phần biển hiệu và cửa
+    imageNote: 'Ảnh mặt tiền chi nhánh TP. Hồ Chí Minh',
+    // Chị Phương chọn 12/11/2026: ảnh ngày khai trương (ảnh ngang, nén bằng tools/nen-anh-cua-hang-hcm-2026-11-12.py)
     photo: {
       src: '/images/stores/tp-hcm-1.webp',
-      srcSet: '/images/stores/tp-hcm-1-sm.webp 360w, /images/stores/tp-hcm-1.webp 674w',
-      alt: 'Mặt tiền chi nhánh Ecopillo, 257A6 Nguyễn Văn Lượng, Gò Vấp',
+      srcSet: '/images/stores/tp-hcm-1-sm.webp 640w, /images/stores/tp-hcm-1.webp 1200w',
+      alt: 'Ngày khai trương chi nhánh Ecopillo Hồ Chí Minh, 257A6 Nguyễn Văn Lượng, Gò Vấp',
     },
-    photoPosition: 'center 22%',
+    photoPosition: 'center 40%',
   },
   {
     // Đại lý Đà Nẵng (chị Phương 09/11/2026: "sửa thành đại lý", owner duyệt). Vẫn đứng đầu danh sách cùng Hà Nội, TP. HCM

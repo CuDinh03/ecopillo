@@ -100,7 +100,6 @@ interface ChapterStoryProps {
   pattern: Pattern
   story?: PatternStory
   title: string
-  volume?: string
   /**
    * Trang riêng của phối màu: tên đầy đủ "Bộ chăn ga Lyocell Eco Rosa ER25" thành H1 duy nhất của trang
    * (SSG giai đoạn 2; web cũ cũng đặt H1 như vậy). Trang bộ sưu tập không truyền: H1 là tên bộ ở bìa.
@@ -109,11 +108,10 @@ interface ChapterStoryProps {
   className?: string
 }
 
-export function ChapterStory({ pattern, story, title, volume, heading, className = '' }: ChapterStoryProps) {
+export function ChapterStory({ pattern, story, title, heading, className = '' }: ChapterStoryProps) {
   return (
     <div className={className}>
-      {/* Khách 08/11/2026: bỏ dòng đếm "02 chương / 6"; chỉ còn tên tập (nếu bộ có chia tập) */}
-      {volume && <p className="font-display text-lead text-mist-600 italic">Tập {volume}</p>}
+      {/* Khách 08/11/2026 bỏ dòng đếm chương; 12/11/2026 bỏ chia tập nên cũng không ghi "Tập …" nữa */}
       {/* key: đổi chương thì chữ hiện dần lại */}
       <div key={pattern.code} className="fade-in" aria-live="polite">
         {heading ? (

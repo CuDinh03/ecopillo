@@ -1,18 +1,15 @@
 import { useEffect, useRef } from 'react'
 import { imageOfPattern, isPatternSoldOut, type Collection, type Pattern } from '../../data/catalog'
-import { chapterTitle, storyOf } from '../../data/stories'
+import { chapterTitle } from '../../data/stories'
 import { usePageLoaded } from '../../hooks/usePageLoaded'
 import { preloadImage } from '../../lib/preload'
 import { Placeholder } from '../ui/Placeholder'
 
 interface ChapterRailProps {
   collection: Collection
-  /** Các chương đang hiện (cả bộ, hoặc một tập của bộ nhiều phối màu) */
+  /** Mọi phối màu của bộ, một hàng (anh Quang, Zalo 12/11/2026: bỏ nút chọn tập, "để tất cả sp của bộ sưu tập vào 1 chỗ") */
   chapters: readonly Pattern[]
   current: Pattern
-  volumes: readonly string[]
-  volume?: string
-  onVolume: (volume: string) => void
   onOpen: (pattern: Pattern) => void
   /** Rê chuột: xem trước ảnh chương; null khi rời */
   onPreview: (code: string | null) => void
@@ -24,7 +21,7 @@ interface ChapterRailProps {
  * C1 (khách 08/11/2026, owner chốt 09/11/2026 phương án 2): trên điện thoại hàng này nằm ngay dưới ảnh, tên "Chọn màu";
  * thẻ to (~40% bề ngang), chỉ tên thơ + mã, thẻ đang chọn không nền chàm đậm (viền chàm sáng mảnh).
  */
-export function ChapterRail({ collection, chapters, current, volumes, volume, onVolume, onOpen, onPreview, className = '' }: ChapterRailProps) {
+export function ChapterRail({ collection, chapters, current, onOpen, onPreview, className = '' }: ChapterRailProps) {
   const listRef = useRef<HTMLUListElement>(null)
   // Hàng chương nằm ngay màn đầu trên điện thoại: ảnh nhỏ gắn sau khi ảnh chính đã về (LCP, xem usePageLoaded)
   const isPageLoaded = usePageLoaded()
@@ -39,9 +36,7 @@ export function ChapterRail({ collection, chapters, current, volumes, volume, on
     const isVisible = card.offsetLeft >= list.scrollLeft && card.offsetLeft + card.offsetWidth <= list.scrollLeft + list.clientWidth
     if (isVisible) return
     list.scrollTo({ left: active.offsetLeft - (list.clientWidth - active.offsetWidth) / 2, behavior: 'smooth' })
-  }, [current.code, volume])
-
-  const countOf = (v: string) => collection.patterns.filter((p) => storyOf(collection, p)?.volume === v).length
+  }, [current.code])
 
   return (
     <section aria-labelledby="chapters-title" className={className}>
@@ -49,38 +44,11 @@ export function ChapterRail({ collection, chapters, current, volumes, volume, on
         <div>
           <h2 id="chapters-title" className="font-display text-[1.35rem] leading-tight text-deep-900 sm:text-[2rem]">
             <span className="lg:hidden">Chọn màu</span>
-            <span className="max-lg:hidden">Các chương màu của {collection.name}</span>
+            {/* Anh Quang (Zalo 12/11/2026): "Các màu sắc của bộ sưu tập" + tên bộ */}
+            <span className="max-lg:hidden">Các màu sắc của bộ sưu tập {collection.name}</span>
           </h2>
-          {/* Anh Quang (Zalo 11/11/2026) tưởng bộ Eco Rosa chưa đăng hết vì các mã nằm ở tập 2, 3: ghi rõ tổng số màu và số tập */}
-          {volumes.length > 1 && (
-            <p className="mt-0.5 text-meta text-ink-soft">
-              {collection.patterns.length} màu, chia {volumes.length} tập. Bấm tên tập để xem từng tập.
-            </p>
-          )}
           {chapters.length > 2 && <p className="mt-0.5 text-meta text-ink-soft lg:hidden">Vuốt ngang để xem thêm màu</p>}
         </div>
-        {/* Tập xuống dòng thay vì vuốt ngang: trước đây tập thứ ba bị cắt ở mép phải điện thoại, khách không biết còn tập */}
-        {volumes.length > 1 && (
-          <div role="group" aria-label="Chọn tập" className="flex flex-wrap gap-2">
-            {volumes.map((v) => {
-              const active = v === volume
-              return (
-                <button
-                  key={v}
-                  type="button"
-                  aria-pressed={active}
-                  onClick={() => onVolume(v)}
-                  className={`inline-flex h-10 items-center rounded-full px-4 text-sm whitespace-nowrap transition ${
-                    active ? 'bg-deep-800 text-ivory' : 'bg-ivory text-ink-soft shadow-[var(--shadow-soft)] hover:text-deep-900'
-                  }`}
-                >
-                  Tập {v}
-                  <span className={`tabular ml-1.5 ${active ? 'text-ivory/75' : 'text-ink-soft/80'}`}>{countOf(v)}</span>
-                </button>
-              )
-            })}
-          </div>
-        )}
       </div>
 
       <ul

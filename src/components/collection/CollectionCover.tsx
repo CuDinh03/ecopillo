@@ -46,7 +46,7 @@ export function CollectionCover({ collection, isCompactOnMobile = false }: Colle
           {/* Luôn một dòng: ở 320px, lúc font dự phòng còn hiện thì dòng này xuống hai dòng rồi co lại khi font về, kéo cả trang lên (CLS 0,13, đo 28/10/2026) */}
           <span className="min-w-0 truncate">
             <span className="font-medium">Bộ {collection.name}</span>
-            <span className="text-ink-soft"> · chọn chương màu</span>
+            <span className="text-ink-soft"> · chọn màu</span>
           </span>
           <Icon name="arrowRight" size={16} className="shrink-0 text-ink-faint" />
         </Link>
