@@ -12,8 +12,8 @@ W, H = 1200, 630
 # Ảnh vuông (topper) mà cắt đầy khung thì mất gần nửa ảnh: đặt trọn ảnh lên nền xanh nhạt của web
 MIN_COVER_RATIO = 1.4
 BACKGROUND = (233, 248, 255)  # #E9F8FF
-# Ảnh đang ẩn trên web (in sẵn chữ chất liệu cũ, chờ Ecopillo gửi ảnh mới): không tạo ảnh chia sẻ
-SKIP = {'chan-he-ER12'}
+# Ảnh đang ẩn trên web: không tạo ảnh chia sẻ (chăn hè ER12 đã có ảnh sạch từ 17/11/2026)
+SKIP: set[str] = set()
 
 
 def fit(im):

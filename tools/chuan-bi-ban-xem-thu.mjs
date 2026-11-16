@@ -20,9 +20,7 @@ const SOURCE = join(ROOT, 'trien-khai/xem-thu')
 
 /** Ảnh không được đưa lên dù vẫn nằm trong public/. Thêm vào đây khi ẩn ảnh nào khác */
 const EXCLUDED = [
-  // In sẵn dòng chất liệu cũ đã bỏ (src/data/catalog.ts, mẫu ER12). Chờ Ecopillo gửi ảnh mới
-  'images/patterns/chan-he-ER12.webp',
-  'images/patterns/chan-he-ER12-sm.webp',
+  // Trống từ 17/11/2026: ảnh chăn hè ER12 in chữ chất liệu cũ đã thay bằng ảnh sạch (ảnh 03 của web cũ)
 ]
 
 /**

@@ -368,13 +368,12 @@ export const COLLECTIONS: readonly Collection[] = [
     gift: 'none',
     contents: ['1 chăn hè Lyocell chần bông mỏng'],
     imageNote: 'Ảnh chăn hè Lyocell ER38',
-    // Ảnh đại diện trước đây là ER12, nhưng ảnh đó in sẵn dòng chất liệu cũ (xem ghi chú ở mẫu ER12 bên dưới)
+    // Ảnh đại diện trước đây là ER12 (ảnh 01 in chữ chất liệu cũ, đã bỏ); giữ ER38
     cover: 'ER38',
     patterns: [
       real('ER09', 'Lá xanh xám', '#b7bcc5', { imageKey: 'chan-he-ER09' }),
-      // Ảnh chan-he-ER12.webp in sẵn dòng chất liệu cũ đã bỏ khỏi web (owner yêu cầu 14/10/2026) nên tạm không hiện.
-      // Ecopillo gửi ảnh ER12 mới thì đổi lại thành real(…, { imageKey: 'chan-he-ER12' })
-      { code: 'ER12', colorName: 'Xanh biển họa tiết', swatch: '#96bed1' },
+      // Ảnh 01 của web cũ in chữ chất liệu cũ nên bỏ; ảnh chính lấy ảnh 03 (kệ gỗ), ảnh phụ 02 và 04 (17/11/2026)
+      real('ER12', 'Xanh biển họa tiết', '#96bed1', { imageKey: 'chan-he-ER12' }),
       real('ER16', 'Kẻ xám', '#acabb0', { imageKey: 'chan-he-ER16' }),
       real('ER20', 'Kem be', '#d4c9b2', { imageKey: 'chan-he-ER20' }),
       real('ER36', 'Xám ghi', '#acafa9', { imageKey: 'chan-he-ER36' }),
@@ -527,7 +526,7 @@ export const PATTERN_GALLERY_COUNTS: Readonly<Record<string, number>> = {
   ER09: 6,
   ER10: 6,
   ER11: 6,
-  // ER12 có hai bộ ảnh: bộ chăn ga (khoá ER12) có dãy ảnh; chăn hè ER12 vẫn ẩn ảnh vì ảnh cũ in chữ chất liệu cũ
+  // ER12 có hai bộ ảnh: bộ chăn ga (khoá ER12) và chăn hè (khoá chan-he-ER12)
   ER12: 7,
   ER15: 4,
   ER16: 2,
@@ -569,6 +568,7 @@ export const PATTERN_GALLERY_COUNTS: Readonly<Record<string, number>> = {
   EV05: 2,
   EV06: 2,
   'chan-he-ER09': 3,
+  'chan-he-ER12': 2,
   'chan-he-ER16': 2,
   'chan-he-ER36': 3,
   'chan-he-ER38': 3,

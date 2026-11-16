@@ -31,6 +31,3 @@ __pycache__/
 .env
 .env.*
 
-# Ảnh in sẵn chữ chất liệu cũ đã bỏ (src/data/catalog.ts, mẫu ER12). Chờ Ecopillo gửi ảnh mới
-/public/images/patterns/chan-he-ER12.webp
-/public/images/patterns/chan-he-ER12-sm.webp
