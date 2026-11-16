@@ -27,7 +27,7 @@
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Logo Ecopillo, bộ chăn ga Eco Doris ED25 và câu Nâng niu giấc mơ xanh" />
     <meta name="twitter:card" content="summary_large_image" />
-    <!-- Ảnh nền đầu trang chủ (Bảng EC, LCP): điện thoại tải ảnh dọc, máy tính tải ảnh ngang.
+    <!-- Ảnh nền đầu trang chủ (banner "Chốn yên" 16/11/2026, LCP; giữ khớp src/data/heroBanner.ts và sizes trong Hero.tsx): điện thoại tải ảnh dọc, máy tính tải ảnh ngang.
          Chỉ tải trước khi mở trang chủ: ở trang khác nó giành đường truyền với ảnh bìa của chính trang đó
          (audit 16/10/2026: trang Giới thiệu, Khách sạn LCP 4,6–4,8s vì ảnh này). -->
     <!-- Trang Giới thiệu, Khách sạn và dự án: tải trước ảnh bìa (LCP) ngay từ đầu, không chờ mã của trang.
@@ -35,8 +35,8 @@
     <script>
       const COVERS = {
         '/': [
-          ['/images/hero/bang-ec-ai-mobile-900.webp 900w, /images/hero/bang-ec-ai-mobile-1800.webp 1771w', '770px', '(max-width: 767px)'],
-          ['/images/hero/bang-ec-ai-desktop-1600.webp 1600w, /images/hero/bang-ec-ai-desktop-2400.webp 2400w, /images/hero/bang-ec-ai-desktop-3200.webp 3200w', '(min-width: 1280px) 100vw, 1460px', '(min-width: 768px)'],
+          ['/images/hero/chon-yen-mobile-900.webp 900w, /images/hero/chon-yen-mobile-1170.webp 1170w, /images/hero/chon-yen-mobile-1800.webp 1800w', '100vw', '(max-width: 767px)'],
+          ['/images/hero/chon-yen-desktop-1600.webp 1600w, /images/hero/chon-yen-desktop-2400.webp 2400w, /images/hero/chon-yen-desktop-3200.webp 3200w', '(min-width: 1280px) 100vw, 1400px', '(min-width: 768px)'],
         ],
         '/gioi-thieu/': [
           ['/images/about/chi-phuong-sm.webp 800w, /images/about/chi-phuong.webp 1309w', '(min-width: 1024px) 42vw, 100vw', 'all'],
@@ -57,16 +57,6 @@
           link.fetchPriority = 'high'
           document.head.appendChild(link)
         }
-      }
-      // Trang chủ: tải trước font viết tay của câu "Nâng niu giấc mơ xanh" (7 KB, src/index.css) để câu chính hiện ngay
-      if (path === '/') {
-        const font = document.createElement('link')
-        font.rel = 'preload'
-        font.as = 'font'
-        font.type = 'font/woff'
-        font.href = '/fonts/betterlett-slogan.woff'
-        font.crossOrigin = 'anonymous'
-        document.head.appendChild(font)
       }
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />

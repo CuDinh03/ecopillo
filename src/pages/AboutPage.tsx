@@ -147,7 +147,7 @@ export function AboutPage() {
             {PHILOSOPHY.map((p, i) => (
               <li key={p.word} data-reveal style={revealDelay(i)} className="grid gap-1 border-t border-line py-4 sm:grid-cols-[8rem_1fr] sm:items-baseline sm:gap-5">
                 <p className="font-display text-[1.7rem] leading-none text-deep-900 sm:text-[2.1rem]">{p.word}</p>
-                <p className="text-body leading-relaxed text-ink-soft">{p.text}</p>
+                <p className="chu-deu text-body leading-relaxed text-ink-soft">{p.text}</p>
               </li>
             ))}
           </ol>
@@ -229,7 +229,7 @@ export function AboutPage() {
                 <p className={`mt-4 ${STORY_LABEL}`}>{m.label}</p>
                 {/* Chữ thường của web, không nghiêng (chị Phương 09/11/2026: "in thường, điều chỉnh font chữ") */}
                 {m.paragraphs.map((text) => (
-                  <p key={text} className="mt-2 text-body-sm leading-[1.75] text-ink-soft">
+                  <p key={text} className="chu-deu mt-2 text-body-sm leading-[1.75] text-ink-soft">
                     {text}
                   </p>
                 ))}

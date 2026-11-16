@@ -86,7 +86,7 @@ export function PrivacyPage() {
         {SECTIONS.map((section) => (
           <section key={section.title}>
             <h2 className="font-display text-[1.6rem] leading-tight text-deep-900 sm:text-[1.85rem]">{section.title}</h2>
-            <ul className="mt-4 space-y-2.5 leading-relaxed text-ink-soft">
+            <ul className="chu-deu mt-4 space-y-2.5 leading-relaxed text-ink-soft">
               {section.body.map((line) => (
                 <li key={line} className="flex gap-3">
                   <span aria-hidden className="mt-[0.6rem] h-1.5 w-1.5 shrink-0 rounded-full bg-mist-600" />

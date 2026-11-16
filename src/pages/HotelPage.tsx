@@ -98,7 +98,7 @@ function HotelHero() {
         {/* Viết thường như câu dẫn, trước in hoa giãn chữ chạy hai dòng khó đọc (B10, owner duyệt 24/10/2026) */}
         <p className="mt-5 max-w-sm text-lead leading-snug font-medium text-balance text-deep-800">{HOTEL_INTRO_HEADING}</p>
         {/* Chỉ đoạn đầu: đủ 3 đoạn thì phần đầu cao thêm, ảnh bị cắt lệch (owner báo 17/10/2026). Đoạn 2, 3 ở phần nền chàm */}
-        <p className="mt-3 max-w-md text-body leading-relaxed text-ink-soft">{HOTEL_INTRO[0]}</p>
+        <p className="chu-deu mt-3 max-w-md text-body leading-relaxed text-ink-soft">{HOTEL_INTRO[0]}</p>
         <div className="mt-8 flex flex-wrap gap-3">
           <a href="#bao-gia" className={buttonClass('primary', 'lg')}>
             Nhận báo giá
@@ -163,7 +163,7 @@ function Reasons() {
           <h2 id="reason-title" className="font-display text-[2.1rem] leading-[1.12] italic sm:text-[3.1rem]">
             “Bền cho vận hành, êm cho khách nghỉ.”
           </h2>
-          <div className="mt-6 space-y-3 text-body-sm leading-relaxed text-mist-200/90">
+          <div className="chu-deu mt-6 space-y-3 text-body-sm leading-relaxed text-mist-200/90">
             {HOTEL_INTRO.slice(1).map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}

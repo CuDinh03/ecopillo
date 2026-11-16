@@ -165,7 +165,7 @@ function StoryText({ text }: { text: string }) {
   }, [])
   return (
     <div className="mt-4 max-w-xl">
-      <p ref={textRef} className={`text-body leading-relaxed text-ink-soft ${isOpen ? '' : 'max-lg:line-clamp-3'}`}>
+      <p ref={textRef} className={`chu-deu text-body leading-relaxed text-ink-soft ${isOpen ? '' : 'max-lg:line-clamp-3'}`}>
         {text}
       </p>
       {!isOpen && isClamped && (

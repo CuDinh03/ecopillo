@@ -89,7 +89,7 @@ export function ThankYouLetters({ standalone = false }: ThankYouLettersProps) {
             <p className="font-display mt-4 max-w-[46ch] text-[0.98rem] leading-relaxed text-deep-800 italic sm:text-[1.12rem]">
               “{THANK_YOU.quote}”
             </p>
-            <p className="mt-3.5 max-w-[56ch] text-[0.86rem] leading-relaxed text-ink-soft sm:text-[0.95rem]">
+            <p className="chu-deu mt-3.5 max-w-[56ch] text-[0.86rem] leading-relaxed text-ink-soft sm:text-[0.95rem]">
               {THANK_YOU.body}
             </p>
             {/* Không hiện nhãn chờ (owner 28/10): đơn nào kèm thư, mã / hạn dùng chờ Ecopillo (câu hỏi Excel) */}

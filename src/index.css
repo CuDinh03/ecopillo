@@ -385,6 +385,17 @@
 }
 
 @layer utilities {
+  /*
+   * Chữ căn đều hai bên cho đoạn văn dài (Ecopillo, Zalo 16/11/2026: "Tất cả phần text em căn 2 bên", như web cũ).
+   * Chỉ gắn vào đoạn văn: không dùng cho tiêu đề, nút, thẻ, chú thích ảnh, chữ căn giữa, dòng ngắn.
+   * text-wrap: pretty để dòng cuối không còn trơ một chữ; tiếng Việt chữ ngắn nên ít khi hở khoảng trắng.
+   */
+  .chu-deu {
+    text-align: justify;
+    text-wrap: pretty;
+    hyphens: manual;
+  }
+
   /* Điện thoại: biến lưới thành dải vuốt ngang có hít mép; từ 640px trở lên giữ nguyên bố cục */
   @media (max-width: 639px) {
     .m-rail {

@@ -74,7 +74,7 @@ export function Prose({ children, dropCap = false }: { children: ReactNode; drop
   return (
     <p
       data-reveal
-      className={`mt-4 text-body leading-[1.8] text-ink-soft sm:text-[1.0625rem] [&_strong]:font-medium [&_strong]:text-deep-900 ${
+      className={`chu-deu mt-4 text-body leading-[1.8] text-ink-soft sm:text-[1.0625rem] [&_strong]:font-medium [&_strong]:text-deep-900 ${
         dropCap
           ? 'first-letter:font-display first-letter:float-left first-letter:pt-1.5 first-letter:pr-2.5 first-letter:text-[4.4em] first-letter:leading-[0.78] first-letter:text-deep-900'
           : ''

@@ -60,7 +60,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
               id="about-title"
               title="Từ trái tim một người làm nghề lâu năm"
             />
-            <div data-reveal style={revealDelay(1)} className="mt-5 max-w-2xl space-y-5 text-body leading-relaxed text-ink-soft">
+            <div data-reveal style={revealDelay(1)} className="chu-deu mt-5 max-w-2xl space-y-5 text-body leading-relaxed text-ink-soft">
               <p>{STORY_OPENING}</p>
               <div className={isExpanded ? 'space-y-5' : 'hidden space-y-5 sm:block'}>
                 <p>

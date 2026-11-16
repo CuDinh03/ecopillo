@@ -16,10 +16,10 @@ import { NotFoundPage } from './NotFoundPage'
 function Block({ block }: { block: PostBlock }) {
   switch (block.type) {
     case 'h2':
-      return <h2 className="font-display mt-12 text-[1.7rem] leading-tight text-deep-900 sm:text-[2rem]">{block.text}</h2>
+      return <h2 className="text-left font-display mt-12 text-[1.7rem] leading-tight text-deep-900 sm:text-[2rem]">{block.text}</h2>
     case 'list':
       return (
-        <ul className="mt-5 space-y-3">
+        <ul className="mt-5 space-y-3 text-left">
           {block.items.map((item) => (
             <li key={item} className="flex gap-3">
               <span aria-hidden className="mt-[0.7rem] h-1.5 w-1.5 shrink-0 rounded-full bg-mist-600" />
@@ -80,7 +80,7 @@ export function ArticlePage() {
           </div>
         </div>
 
-        <div className="mx-auto mt-4 max-w-3xl text-lead leading-[1.8] text-ink">
+        <div className="chu-deu mx-auto mt-4 max-w-3xl text-lead leading-[1.8] text-ink">
           {post.body.map((block, i) => (
             <Block key={i} block={block} />
           ))}

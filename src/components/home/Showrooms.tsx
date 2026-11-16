@@ -137,7 +137,7 @@ export function Faq({ standalone = false, compact = false }: { standalone?: bool
                       <Icon name="plus" size={18} />
                     </span>
                   </summary>
-                  <div className="space-y-3 pr-12 pb-7 text-body-sm leading-relaxed text-ink-soft">
+                  <div className="chu-deu space-y-3 pr-12 pb-7 text-body-sm leading-relaxed text-ink-soft">
                     {f.a.map((line) => (
                       <p key={line}>
                         <RichLine text={line} />

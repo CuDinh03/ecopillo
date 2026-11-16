@@ -25,7 +25,7 @@ export function Hospitality() {
               // Trang chủ chỉ giữ đoạn đầu cho gọn; đủ ba đoạn ở trang Khách sạn và dự án (mục 38)
               <>
                 <span className="block text-lead leading-snug font-medium text-balance text-ivory">{HOTEL_INTRO_HEADING}</span>
-                <span className="mt-3 block">{HOTEL_INTRO[0]}</span>
+                <span className="chu-deu mt-3 block">{HOTEL_INTRO[0]}</span>
               </>
             }
           />

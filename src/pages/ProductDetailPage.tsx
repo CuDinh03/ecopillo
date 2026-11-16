@@ -245,7 +245,7 @@ function ProductStory({ sections }: { sections: readonly InfoSection[] }) {
           <div key={section.title}>
             <h3 className="eyebrow">{section.title}</h3>
             {section.body?.map((line) => (
-              <p key={line} className="mt-3 text-body-sm leading-relaxed text-ink-soft">
+              <p key={line} className="chu-deu mt-3 text-body-sm leading-relaxed text-ink-soft">
                 {line}
               </p>
             ))}

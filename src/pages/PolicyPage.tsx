@@ -33,7 +33,7 @@ export function PolicyPage() {
           <section key={section.title}>
             <h2 className="font-display text-[1.6rem] leading-tight text-deep-900 sm:text-[1.85rem]">{section.title}</h2>
             {section.body?.map((line) => (
-              <p key={line} className="mt-4 leading-relaxed text-ink-soft">
+              <p key={line} className="chu-deu mt-4 leading-relaxed text-ink-soft">
                 <RichText text={line} />
               </p>
             ))}
