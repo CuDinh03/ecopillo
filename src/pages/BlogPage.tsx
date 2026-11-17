@@ -1,15 +1,15 @@
-import { useSearchParams } from 'react-router-dom'
 import { PostCard } from '../components/blog/PostCard'
 import { PageHero } from '../components/ui/PageHero'
 import { Container } from '../components/ui/primitives'
 import { POST_CATEGORIES, POSTS, type PostCategory } from '../data/posts'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
+import { useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
 
 /** Trang Tin tức: danh sách bài viết, lọc theo chủ đề (?chu-de=…) */
 export function BlogPage() {
   usePageMeta('Tin tức, cẩm nang giấc ngủ', 'Kiến thức về vải Lyocell, cách chọn kích thước chăn ga, giặt và bảo quản để giấc ngủ luôn êm, mát.')
-  const [params, setParams] = useSearchParams()
+  const [params, setParams] = useHydratedSearchParams()
   const active = POST_CATEGORIES.find((c) => c === params.get('chu-de')) ?? null
   const posts = active ? POSTS.filter((p) => p.category === active) : POSTS
   const [first, ...rest] = posts

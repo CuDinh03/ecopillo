@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Confirmation } from '../components/order/Confirmation'
 import { OrderSummary } from '../components/order/OrderSummary'
 import { StepCustomer } from '../components/order/StepCustomer'
@@ -26,6 +26,7 @@ import { MobileOrderBar, OrderAssurances } from '../components/order/OrderChrome
 import { usePageMeta } from '../hooks/usePageMeta'
 import { SEND_ERROR_ID, useSendOrder } from '../hooks/useSendOrder'
 import { focusField, scrollToElement } from '../lib/scroll'
+import { useHydrated, useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
 
 const COLLECTION_PARAM = 'bo-suu-tap'
 const MOBILE_QUERY = '(max-width: 1023px)'
@@ -43,7 +44,8 @@ export function OrderPage() {
     'Đặt hàng online',
     'Đặt chăn ga gối đệm Ecopillo online: chọn mẫu, chọn kích thước, nhập địa chỉ nhận. Thanh toán khi nhận hàng, miễn phí giao từ 500.000đ.',
   )
-  const [searchParams] = useSearchParams()
+  const [searchParams] = useHydratedSearchParams()
+  const hydrated = useHydrated()
   // Biên bản mục 47: ruột gối, ruột chăn, topper, đệm cũng đặt online được
   const product = productBySlug(searchParams.get(PRODUCT_PARAM) ?? undefined)
   if (product && !product.collection) {
@@ -57,11 +59,12 @@ export function OrderPage() {
       />
     )
   }
-  return <SetOrder initialCollection={product?.collection?.id ?? null} />
+  // Bản nháp, bước đầu tiên lấy từ tham số trong useState: gắn lại một lần sau khi React gắn vào trang để nhận tham số thật
+  return <SetOrder key={hydrated ? 'client' : 'ssr'} initialCollection={product?.collection?.id ?? null} />
 }
 
 function SetOrder({ initialCollection }: { initialCollection: string | null }) {
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useHydratedSearchParams()
   const [draft, setDraft] = useState<OrderDraft>(() =>
     createDraft(
       searchParams.get(COLLECTION_PARAM) ?? initialCollection,

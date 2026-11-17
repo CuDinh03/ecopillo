@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import {
   coverOf,
   imageOfPattern,
@@ -28,6 +28,7 @@ import { ChapterBuy, ChapterImage, ChapterStory } from './ChapterParts'
 import { ChapterRail } from './ChapterRail'
 import { CollectionCover } from './CollectionCover'
 import { SAME_TONE_LIMIT, SameTone } from './SameTone'
+import { useHydratedSearchParams } from '../../hooks/useHydratedSearchParams'
 
 interface CollectionDetailProps {
   product: Product
@@ -50,7 +51,7 @@ const defaultPattern = (collection: Collection): Pattern | undefined =>
 export function CollectionDetail({ product, collection, patternParam }: CollectionDetailProps) {
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const [searchParams] = useSearchParams()
+  const [searchParams] = useHydratedSearchParams()
   const legacy = patternParam ? undefined : patternByParam(collection, searchParams.get('mau'))
   const pattern = patternByParam(collection, patternParam) ?? legacy ?? defaultPattern(collection)
 

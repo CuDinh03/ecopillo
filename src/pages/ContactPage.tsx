@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { CONTACT, mapEmbedUrl, OPENING_HOURS, SHOWROOMS } from '../data/brand'
 import { PATHS } from '../data/links'
 import { policyPath } from '../data/policyNav'
@@ -10,6 +10,7 @@ import { MessageForm, TOPICS, type Topic } from '../components/contact/MessageFo
 import { DealerFinder, LocalBusinessData } from '../components/dealers/DealerFinder'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { scrollToElement } from '../lib/scroll'
+import { useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
 
 /**
  * Trang Liên hệ mua hàng (mục 9 phản hồi 05/11, phương án A).
@@ -162,7 +163,7 @@ function OfficeMap() {
 
 export function ContactPage() {
   const office = SHOWROOMS[0]
-  const [params] = useSearchParams()
+  const [params] = useHydratedSearchParams()
   const { hash } = useLocation()
   const navigate = useNavigate()
   const topic = TOPIC_PARAM[params.get('chu-de') ?? ''] ?? TOPICS[0]

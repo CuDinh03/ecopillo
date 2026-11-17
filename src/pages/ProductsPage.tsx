@@ -1,5 +1,5 @@
 import { useMemo, useRef, type CSSProperties, type ReactNode } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { ColorwayCard } from '../components/products/ColorwayCard'
 import { FilterPanel, SORTS, type FilterPanelProps, type SortId } from '../components/products/FilterPanel'
 import { GroupTiles } from '../components/products/GroupTiles'
@@ -28,6 +28,7 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import { useFirstRender } from '../hooks/useFirstRender'
 import { revealDelay } from '../lib/reveal'
 import { scrollToElement } from '../lib/scroll'
+import { useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
 
 const CATEGORY_PARAM = 'danh-muc'
 const COLLECTION_PARAM = 'bo-suu-tap'
@@ -62,7 +63,7 @@ const bySort = <T,>(items: readonly T[], sort: SortId, priceOf: (item: T) => num
 
 export function ProductsPage() {
   usePageMeta('Sản phẩm', 'Bộ chăn ga, chăn, gối, đệm Ecopillo: vải Lyocell mềm mát, giá rõ theo từng kích thước, đặt online thanh toán khi nhận.')
-  const [params, setParams] = useSearchParams()
+  const [params, setParams] = useHydratedSearchParams()
   const rawCategory = params.get(CATEGORY_PARAM)
   const category = isCategory(rawCategory) ? rawCategory : rawCategory ? (LEGACY_CATEGORY[rawCategory] ?? null) : null
   const sort: SortId = SORTS.some((s) => s.id === params.get(SORT_PARAM)) ? (params.get(SORT_PARAM) as SortId) : 'noi-bat'
