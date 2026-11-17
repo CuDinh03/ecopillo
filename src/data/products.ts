@@ -176,7 +176,7 @@ const variantGrid = (
 /**
  * Bảo vệ đệm, divan: giá từng cỡ khách gửi Zalo 05/11/2026, khớp bảng giá 2026; chữ theo catalog Ecopillo 22.07.2026 (trang 64, 66).
  * Ảnh divan khách gửi Zalo 08/11/2026 (tools/nen-anh-khach-gui-2026-11-09.py);
- * ảnh bảo vệ đệm lấy từ bảng giá 2026 (tools/nen-anh-bang-gia-2026-11-09.py).
+ * ảnh bảo vệ đệm chị Phương gửi Zalo 17/11/2026 (tools/nen-anh-bao-ve-dem-2026-11-17.py); ảnh rút từ bảng giá trước đó bị kéo dãn ngang.
  * Dòng bảng giá ở ESSENTIALS (catalog.ts) ghi giá thấp – cao, phải khớp.
  */
 const BAO_VE_DEM: Product = {
@@ -188,6 +188,10 @@ const BAO_VE_DEM: Product = {
   max: 889_000,
   image: productImage('bao-ve-dem-chong-tham', 'Tấm bảo vệ đệm chống thấm Ecopillo, dây thun 4 góc'),
   imageNote: 'Ảnh tấm bảo vệ đệm chống thấm',
+  gallery: [
+    productImage('bao-ve-dem-chong-tham-2', 'Tấm bảo vệ đệm chống thấm Ecopillo lật một góc trên giường'),
+    productImage('bao-ve-dem-chong-tham-3', 'Góc tấm bảo vệ đệm chống thấm với dây thun co giãn'),
+  ],
   details: [
     'Hạn chế lấm bẩn từ mồ hôi, thức ăn, đồ uống, giữ đệm luôn sạch.',
     'Chống bám bụi, ngăn nấm mốc, vi khuẩn và côn trùng.',

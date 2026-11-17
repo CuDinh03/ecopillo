@@ -19,8 +19,8 @@ PHOTOS = {
     1250: 'dem-bong-ep-cao-cap-mix-latex-2',
     1248: 'dem-bong-ep-cao-cap-mix-latex-3',
     1249: 'dem-bong-ep-cao-cap-mix-latex-4',
-    # Trang 21: tấm bảo vệ đệm chống thấm (dây thun 4 góc). Ảnh 1498 là topper, đã có ảnh từ web cũ
-    1500: 'bao-ve-dem-chong-tham',
+    # Trang 21: ảnh 1500 (bảo vệ đệm) trong PDF bị kéo dãn ngang; từ 17/11/2026 dùng ảnh chị Phương gửi
+    # (tools/nen-anh-bao-ve-dem-2026-11-17.py), đừng rút lại. Ảnh 1498 là topper, đã có ảnh từ web cũ
     # Trang 22, 23: ruột gối tựa, ruột gối ôm, ruột chăn Micro Plus
     1510: 'ruot-goi-tua',
     1523: 'ruot-goi-om',
