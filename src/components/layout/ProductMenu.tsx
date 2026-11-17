@@ -238,24 +238,38 @@ function MobileGroup({ group, isOpen, onToggle, onNavigate }: MobileGroupProps) 
   const hasOwnPage = !flatRows.some((row) => row.to === group.to)
   const groupPrice =
     group.min > 0 ? `từ ${formatVND(group.min)}` : flatRows.find((r) => r.priceLabel)?.priceLabel ?? ''
+  const headClass = 'grid w-full grid-cols-[3rem_1fr_auto] items-center gap-3 py-2 pr-3 pl-2 text-left'
+  const head = (
+    <>
+      <Placeholder image={{ ...group.image, alt: '' }} note={group.title} tone="mist" sizes="48px" className="h-12 w-12 rounded-xl" />
+      <span className="min-w-0">
+        <span className="block font-semibold text-deep-900">{group.title}</span>
+        {groupPrice && (
+          <span className="block text-xs text-ink-faint">
+            <span className="whitespace-nowrap">{groupPrice}</span>
+          </span>
+        )}
+      </span>
+    </>
+  )
+
+  /*
+   * Nhóm chỉ có một lựa chọn (Sản phẩm khách sạn): bấm vào sang trang luôn, không mở thêm một dòng con.
+   * Chị Phương (Zalo 17/11/2026): "phải bấm thêm 1 lần nữa, nhiều khi khách tưởng k có gì".
+   */
+  if (flatRows.length === 1) {
+    return (
+      <Link to={flatRows[0].to} onClick={onNavigate} className={`rounded-2xl bg-ivory shadow-[var(--shadow-soft)] ${headClass}`}>
+        {head}
+        <Icon name="arrowRight" size={20} className="text-mist-600" />
+      </Link>
+    )
+  }
+
   return (
     <div className="rounded-2xl bg-ivory shadow-[var(--shadow-soft)]">
-      <button
-        type="button"
-        aria-expanded={isOpen}
-        aria-controls={listId}
-        onClick={onToggle}
-        className="grid w-full grid-cols-[3rem_1fr_auto] items-center gap-3 py-2 pr-3 pl-2 text-left"
-      >
-        <Placeholder image={{ ...group.image, alt: '' }} note={group.title} tone="mist" sizes="48px" className="h-12 w-12 rounded-xl" />
-        <span className="min-w-0">
-          <span className="block font-semibold text-deep-900">{group.title}</span>
-          {groupPrice && (
-            <span className="block text-xs text-ink-faint">
-              <span className="whitespace-nowrap">{groupPrice}</span>
-            </span>
-          )}
-        </span>
+      <button type="button" aria-expanded={isOpen} aria-controls={listId} onClick={onToggle} className={headClass}>
+        {head}
         <Icon name="plus" size={20} className={`text-mist-600 transition-transform duration-200 ${isOpen ? 'rotate-45' : ''}`} />
       </button>
       {isOpen && (
