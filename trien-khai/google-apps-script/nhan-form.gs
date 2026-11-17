@@ -1,8 +1,8 @@
 /**
  * Nhận đơn hàng và tin nhắn từ web Ecopillo: ghi vào Google Trang tính này và gửi email báo.
- * Hàm Cloudflare trien-khai/xem-thu/functions/api/gui.js (bản xem thử) và plugin WordPress
- * trien-khai/wordpress-plugin/ecopillo-giao-dien-moi/nhan-form.php (web thật, từ 18/11/2026) gọi vào đây (owner duyệt Q3 ngày 25/10/2026).
- * Web thật: link /exec và KHOA đặt ở wp-admin → Đơn web → Cài đặt nhận đơn (không cần bước Cloudflare).
+ * Chỉ hàm Cloudflare trien-khai/xem-thu/functions/api/gui.js (bản xem thử) gọi vào đây (owner duyệt Q3 ngày 25/10/2026).
+ * Web thật KHÔNG dùng file này: đơn chỉ lưu trong WordPress (mục Đơn web) + email Ecopillo, không gửi sang Google
+ * (owner 18/11/2026: không để dữ liệu Ecopillo lọt ra ngoài): trien-khai/wordpress-plugin/ecopillo-giao-dien-moi/nhan-form.php.
  * Chạy bằng tài khoản Google của Ecopillo, nên email đi từ chính Gmail đó (không cần máy chủ thư).
  *
  * CÁCH DỰNG (làm một lần, bằng tài khoản Gmail của Ecopillo):
@@ -63,8 +63,7 @@ function saveOrder(d, props) {
   const k = d.khach || {}
   const h = d.hang || {}
   const t = d.tien || {}
-  // Web thật (plugin WordPress) gửi kèm mã đơn đã cấp, để email, mục Đơn web và Trang tính cùng một mã
-  const ma = typeof d.ma === 'string' && /^EP-\d{4}-\d{4,}$/.test(d.ma) ? d.ma : nextOrderCode(props)
+  const ma = nextOrderCode(props)
   const source = d.xemThu ? 'XEM THỬ' : 'Web'
   const row = [
     new Date(), ma, d.xemThu ? 'Thử, bỏ qua' : 'Mới', k.ten, k.sdt, k.tinh, k.diaChi, k.ghiChu,

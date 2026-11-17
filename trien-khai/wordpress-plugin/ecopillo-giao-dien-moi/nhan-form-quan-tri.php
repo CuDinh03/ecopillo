@@ -145,8 +145,7 @@ function eco_form_box_detail($post)
     }
     echo '</tbody></table>';
     $mail = (string) get_post_meta($post->ID, '_eco_email', true);
-    $sheet = (string) get_post_meta($post->ID, '_eco_trang_tinh', true);
-    echo '<p style="color:#555">Email báo: ' . esc_html($mail ?: 'không gửi') . ($sheet ? ' · ' . esc_html($sheet) : '') . '</p>';
+    echo '<p style="color:#555">Email báo: ' . esc_html($mail ?: 'không gửi') . '</p>';
 }
 
 function eco_form_box_status($post)
@@ -225,17 +224,6 @@ function eco_form_settings_save()
         }
     }
     update_option(ECO_FORM_OPT_EMAIL, implode(', ', $emails), false);
-
-    $url = isset($_POST['script_url']) ? esc_url_raw(trim(wp_unslash($_POST['script_url']))) : '';
-    update_option(ECO_FORM_OPT_SCRIPT_URL, strpos($url, 'https://script.google.com/') === 0 ? $url : '', false);
-    // Ô khoá để trống thì giữ khoá cũ (trang không bao giờ hiện lại khoá)
-    $key = isset($_POST['script_khoa']) ? sanitize_text_field(wp_unslash($_POST['script_khoa'])) : '';
-    if ($key !== '') {
-        update_option(ECO_FORM_OPT_SCRIPT_KHOA, $key, false);
-    }
-    if (!empty($_POST['xoa_khoa'])) {
-        update_option(ECO_FORM_OPT_SCRIPT_KHOA, '', false);
-    }
     wp_safe_redirect(add_query_arg('ket-qua', 'ok', $back));
     exit;
 }
@@ -246,8 +234,6 @@ function eco_form_settings_page()
         return;
     }
     $emails = (string) get_option(ECO_FORM_OPT_EMAIL, ECO_FORM_EMAIL_MAC_DINH);
-    $url = (string) get_option(ECO_FORM_OPT_SCRIPT_URL, '');
-    $has_key = (string) get_option(ECO_FORM_OPT_SCRIPT_KHOA, '') !== '';
     $result = isset($_GET['ket-qua']) ? sanitize_key(wp_unslash($_GET['ket-qua'])) : '';
     $notices = array(
         'ok' => array('success', 'Đã lưu.'),
@@ -260,7 +246,8 @@ function eco_form_settings_page()
         <?php if (isset($notices[$result])) : ?>
             <div class="notice notice-<?php echo esc_attr($notices[$result][0]); ?>"><p><?php echo esc_html($notices[$result][1]); ?></p></div>
         <?php endif; ?>
-        <p>Đơn hàng và tin nhắn khách gửi từ web luôn được lưu ở mục <a href="<?php echo esc_url(admin_url('edit.php?post_type=' . ECO_FORM_POST_TYPE)); ?>">Đơn web</a>, kèm email báo tới các địa chỉ dưới.</p>
+        <p>Đơn hàng và tin nhắn khách gửi từ web chỉ được lưu ở mục <a href="<?php echo esc_url(admin_url('edit.php?post_type=' . ECO_FORM_POST_TYPE)); ?>">Đơn web</a>, chỉ người đăng nhập trang quản trị mới xem được.</p>
+        <p>Mỗi đơn có email báo (kèm thông tin khách để gọi lại) tới các địa chỉ dưới. Chỉ điền email của Ecopillo. Đơn không được gửi sang dịch vụ nào khác.</p>
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
             <input type="hidden" name="action" value="eco_form_settings">
             <?php wp_nonce_field('eco_form_settings'); ?>
@@ -269,16 +256,6 @@ function eco_form_settings_page()
                     <th scope="row"><label for="email_nhan">Email nhận báo</label></th>
                     <td><textarea id="email_nhan" name="email_nhan" rows="2" class="large-text"><?php echo esc_textarea($emails); ?></textarea>
                         <p class="description">Nhiều email thì cách nhau bằng dấu phẩy. Để trống: không gửi email, đơn vẫn lưu.</p></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label for="script_url">Google Trang tính (không bắt buộc)</label></th>
-                    <td><input id="script_url" name="script_url" type="url" class="large-text" value="<?php echo esc_attr($url); ?>" placeholder="https://script.google.com/macros/s/…/exec">
-                        <p class="description">Link Apps Script dựng theo hướng dẫn của bên làm web. Có link và khoá thì mỗi đơn được chép thêm sang Trang tính.</p></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label for="script_khoa">Khoá Apps Script</label></th>
-                    <td><input id="script_khoa" name="script_khoa" type="password" class="regular-text" value="" autocomplete="new-password" placeholder="<?php echo $has_key ? 'Đã có khoá (để trống là giữ nguyên)' : 'Chưa có'; ?>">
-                        <?php if ($has_key) : ?><label style="margin-left:12px"><input type="checkbox" name="xoa_khoa" value="1"> Xoá khoá</label><?php endif; ?></td>
                 </tr>
             </table>
             <p class="submit">

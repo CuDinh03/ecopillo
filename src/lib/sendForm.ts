@@ -4,7 +4,7 @@ import { createOrderCode, normalizePhone, type CustomerInfo, type OrderSummaryDa
 /**
  * Gửi đơn hàng và tin nhắn về Ecopillo qua /api/gui. Hai nơi nhận, cùng thân JSON và câu trả:
  * - Web thật ecopillo.com.vn (từ 18/11/2026): plugin WordPress trien-khai/wordpress-plugin/ecopillo-giao-dien-moi/nhan-form.php
- *   → lưu mục "Đơn web" trong wp-admin + email (+ Trang tính nếu đã đặt Apps Script).
+ *   → lưu mục "Đơn web" trong wp-admin (phải đăng nhập mới xem) + email về hộp thư Ecopillo. Không gửi sang dịch vụ khác.
  * - Bản xem thử: hàm Cloudflare trien-khai/xem-thu/functions/api/gui.js → Google Apps Script → Trang tính + email.
  *
  * - Chạy `pnpm dev`: không có hàm Cloudflare, nên không gửi; trả daGui: false để màn hình cảm ơn ghi "chưa gửi đi".

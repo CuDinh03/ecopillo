@@ -6,9 +6,12 @@
  *
  * Mỗi lượt gửi hợp lệ:
  *   1. Lưu vào WordPress: mục "Đơn web" trong trang quản trị (kiểu bài riêng tư, khách ngoài không xem được).
- *   2. Gửi email báo tới các địa chỉ ở Cài đặt → Giao diện mới (mặc định ecopillo.com.vn@gmail.com, anh Quang chốt 09/11).
- *   3. Có link Apps Script + khoá thì chép thêm sang Google Trang tính (trien-khai/google-apps-script/nhan-form.gs).
- * Đã lưu ở bước 1 là trả daGui: true. Bước 2, 3 lỗi thì vẫn còn đơn trong WordPress, không mất đơn.
+ *   2. Gửi email báo kèm thông tin khách tới hộp thư Ecopillo ở Đơn web → Cài đặt nhận đơn (mặc định ecopillo.com.vn@gmail.com, anh Quang chốt 09/11).
+ * Đã lưu ở bước 1 là trả daGui: true. Email lỗi thì đơn vẫn còn trong WordPress, không mất đơn.
+ *
+ * DỮ LIỆU KHÔNG LỌT RA NGOÀI (owner 18/11/2026: "đảm bảo không lọt dữ liệu của Ecopillo ra ngoài, chỉ khi đăng nhập
+ * wp-admin mới xem được"; "dữ liệu về mail của Ecopillo thì được"): chỉ có hai nơi giữ đơn là mục Đơn web (phải đăng nhập)
+ * và hộp thư của Ecopillo. KHÔNG gửi sang Google Trang tính, GitHub hay dịch vụ nào khác.
  *
  * Chặn máy: ô bẫy có chữ, điền dưới 2,5 giây, quá ECO_FORM_MAX_LUOT lượt / 10 phút / một địa chỉ IP, trang khác gửi hộ.
  * Giá trong đơn là giá khách thấy trên web lúc đặt; nhân viên vẫn gọi xác nhận trước khi giao (biên bản mục 50).
@@ -26,8 +29,6 @@ define('ECO_FORM_MIN_FILL_MS', 2500);
 /** Nhiều khách chung một mạng (showroom, văn phòng) có chung địa chỉ IP, nên không đặt quá thấp */
 define('ECO_FORM_MAX_LUOT', 15);
 define('ECO_FORM_OPT_EMAIL', 'ecopillo_form_email_nhan');
-define('ECO_FORM_OPT_SCRIPT_URL', 'ecopillo_form_script_url');
-define('ECO_FORM_OPT_SCRIPT_KHOA', 'ecopillo_form_script_khoa');
 define('ECO_FORM_OPT_SO_DON', 'ecopillo_form_so_don');
 define('ECO_FORM_EMAIL_MAC_DINH', 'ecopillo.com.vn@gmail.com');
 define('ECO_FORM_PHONE', '/^(0|\+84)(3|5|7|8|9)\d{8}$/');
@@ -267,7 +268,6 @@ function eco_form_handle()
         eco_form_reply(array('ok' => false, 'loi' => 'luu'), 500);
     }
     eco_form_notify($data, $post_id);
-    eco_form_forward($data, $post_id);
     eco_form_reply(array('ok' => true, 'ma' => isset($data['ma']) ? $data['ma'] : '', 'daGui' => true));
 }
 
@@ -365,7 +365,10 @@ function eco_form_recipients()
     return $list;
 }
 
-/** Email báo đơn. Lỗi gửi thư không làm hỏng lượt gửi (đơn đã nằm trong WordPress) */
+/**
+ * Email báo đơn tới hộp thư Ecopillo, kèm đủ thông tin khách để gọi lại ngay (owner 18/11: "dữ liệu về mail của ecopillo thì được").
+ * Lỗi gửi thư không làm hỏng lượt gửi (đơn đã nằm trong WordPress).
+ */
 function eco_form_notify($d, $post_id)
 {
     if (!empty($d['thu'])) {
@@ -398,34 +401,10 @@ function eco_form_notify($d, $post_id)
         return 'text/html';
     };
     add_filter('wp_mail_content_type', $set_html);
-    $sent = wp_mail($to, $subject, $html, array('Reply-To: ' . $to[0]));
+    $sent = wp_mail($to, $subject, $html);
     remove_filter('wp_mail_content_type', $set_html);
     update_post_meta($post_id, '_eco_email', $sent ? 'Đã gửi tới ' . implode(', ', $to) : 'Gửi email không được');
     return $sent;
-}
-
-/** Chép sang Google Trang tính qua Apps Script (khi đã đặt link + khoá). Lỗi thì ghi lại, đơn vẫn còn */
-function eco_form_forward($d, $post_id)
-{
-    $url = (string) get_option(ECO_FORM_OPT_SCRIPT_URL, '');
-    $key = (string) get_option(ECO_FORM_OPT_SCRIPT_KHOA, '');
-    if ($url === '' || $key === '' || strpos($url, 'https://script.google.com/') !== 0) {
-        return;
-    }
-    $payload = $d;
-    $payload['khoa'] = $key;
-    $payload['xemThu'] = !empty($d['thu']);
-    $payload['trinhDuyet'] = eco_form_text(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '', 200);
-    unset($payload['thu']);
-    $response = wp_remote_post($url, array(
-        'timeout' => 15,
-        'redirection' => 5,
-        'headers' => array('Content-Type' => 'application/json'),
-        'body' => wp_json_encode($payload),
-    ));
-    $body = is_wp_error($response) ? null : json_decode(wp_remote_retrieve_body($response), true);
-    $ok = is_array($body) && !empty($body['ok']);
-    update_post_meta($post_id, '_eco_trang_tinh', $ok ? 'Đã chép sang Trang tính' : 'Chép sang Trang tính không được');
 }
 
 require_once __DIR__ . '/nhan-form-quan-tri.php';
