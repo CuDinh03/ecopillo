@@ -20,7 +20,9 @@ cái Ecopillo được tự sửa, hay xong một bước chuyển web, thì s�
   Hàm **chưa nối Apps Script** (thiếu `GOOGLE_SCRIPT_URL`, `GOOGLE_SCRIPT_KHOA`) thì không gửi đi đâu: bản xem thử ghi "chưa gửi đi",
   bản chạy thật báo lỗi kèm hotline (không bao giờ hiện "đã nhận" khi chưa gửi được). `pnpm dev` không có hàm nên không gửi.
   Không có máy chủ riêng nào khác. Danh sách đại lý có thể lấy từ WordPress qua `VITE_DEALERS_URL` (xem `src/hooks/useDealers.ts`).
-- Chưa đưa lên tên miền thật. Cách đưa lên và giữ SEO: `docs/de-xuat-seo-trien-khai.html` (đề xuất chuyển sang SSG, giữ link cũ, 301).
+- **Đã chạy trên ecopillo.com.vn từ đêm 18/11/2026** bằng plugin WordPress "Ecopillo giao diện mới" (`trien-khai/wordpress-plugin/`), chế độ đổi ở wp-admin → Cài đặt → Giao diện mới (Tắt là về web cũ ngay).
+  Đưa bản mới lên web thật: `pnpm build` → `node tools/dong-goi-plugin.mjs` → tải zip lên (thay bản cũ) → bấm Lưu chế độ (kế hoạch mục 3). Đẩy `main` chỉ cập nhật bản xem thử.
+  **Chưa nhận đơn, tin nhắn trên web thật** (owner để sau 18/11): `/api/gui` chưa có trên hosting nên khách thấy "Chưa gửi được" + hotline.
 - **Đường link giữ đúng như web cũ** (owner chốt 15/10/2026), chỉ đổi chữ chất liệu cũ trong link thành `lyocell` và 301 link cũ sang.
   Mọi đường link nằm ở `src/data/links.ts`; không viết link cứng trong component.
 
