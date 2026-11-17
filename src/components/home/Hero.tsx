@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
-import { Icon, type IconName } from '../ui/Icon'
+import { Icon } from '../ui/Icon'
 import { buttonClass, Container } from '../ui/primitives'
 import { CONTACT } from '../../data/brand'
 import { VALUES_SHORT } from '../../data/about'
@@ -25,13 +25,6 @@ const ECOSYSTEM: readonly { name: string; text: string; to: string; thumb: strin
   { name: 'Ga', text: 'Mềm mại, thoáng mát', to: productsUrl({ 'danh-muc': 'bo-chan-ga' }), thumb: '/images/details/hero-ed25-sm.webp' },
   { name: 'Gối', text: 'Nâng niu từng giấc ngủ', to: productsUrl({ 'danh-muc': 'goi' }), thumb: '/images/products/ruot-goi-micro-plus-sm.webp' },
   { name: 'Đệm', text: 'Nâng đỡ chuẩn cột sống', to: productsUrl({ 'danh-muc': 'dem' }), thumb: '/images/products/dem-lo-xo-tui-doc-lap-sm.webp' },
-]
-
-// TODO: chờ Ecopillo xác nhận 3 kháng gồm những gì (chữ lấy nguyên từ Bảng EC)
-const BENEFITS: readonly { icon: IconName; text: string }[] = [
-  { icon: 'leaf', text: 'Vải Lyocell nhập khẩu' },
-  { icon: 'shield', text: '3 kháng vượt trội' },
-  { icon: 'air', text: 'Thoáng mát' },
 ]
 
 const DESKTOP_MEDIA = '(min-width: 768px)'
@@ -215,25 +208,18 @@ function BangEcBar() {
         <h2 id="hero-quality" className={GOLD_TITLE}>
           Vì một giấc ngủ chất lượng hơn
         </h2>
-        <div className="flex flex-1 flex-col gap-2 bg-brand-gold/10 p-2 sm:gap-2.5 sm:p-2.5">
-          {/* Như bảng hiệu: mỗi chữ kèm một câu ngắn bên dưới (mục 5, khách yêu cầu 16/10/2026); ô trắng như ô Hệ sinh thái */}
-          <ul className="grid flex-1 grid-cols-3 gap-2 sm:gap-2.5">
-            {VALUES_SHORT.map((v) => (
-              <li key={v.word} className={`flex flex-col items-center justify-center px-1 py-2 text-center sm:px-1.5 ${GOLD_CELL}`}>
-                <span className="font-display block text-[1.25rem] leading-tight text-deep-900 sm:text-[1.45rem]">{v.word}</span>
-                <span className="mt-0.5 block text-meta leading-snug text-ink-soft">{v.text}</span>
-              </li>
-            ))}
-          </ul>
-          <ul className="flex flex-wrap justify-center gap-x-4 gap-y-1 px-1 text-meta text-deep-800">
-            {BENEFITS.map((b) => (
-              <li key={b.text} className="inline-flex items-center gap-1.5">
-                <Icon name={b.icon} size={15} className="text-mist-600" />
-                {b.text}
-              </li>
-            ))}
-          </ul>
-        </div>
+        {/*
+          Như bảng hiệu: mỗi chữ kèm một câu ngắn bên dưới (mục 5, khách yêu cầu 16/10/2026); ô trắng như ô Hệ sinh thái.
+          Chị Phương 17/11/2026 bỏ dòng "Vải Lyocell nhập khẩu · 3 kháng vượt trội · Thoáng mát" dưới ba ô: "ở dưới có rồi, để cho gọn".
+        */}
+        <ul className="grid flex-1 grid-cols-3 gap-2 bg-brand-gold/10 p-2 sm:gap-2.5 sm:p-2.5">
+          {VALUES_SHORT.map((v) => (
+            <li key={v.word} className={`flex flex-col items-center justify-center px-1 py-2 text-center sm:px-1.5 ${GOLD_CELL}`}>
+              <span className="font-display block text-[1.25rem] leading-tight text-deep-900 sm:text-[1.45rem]">{v.word}</span>
+              <span className="mt-0.5 block text-meta leading-snug text-ink-soft">{v.text}</span>
+            </li>
+          ))}
+        </ul>
       </section>
     </div>
   )

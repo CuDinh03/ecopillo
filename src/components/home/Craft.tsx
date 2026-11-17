@@ -7,7 +7,7 @@ import { Placeholder } from '../ui/Placeholder'
 import { Container, SectionHeading } from '../ui/primitives'
 
 const TRUST: readonly { icon: IconName; title: string; text: string }[] = [
-  // "3 kháng vượt trội" đã lên phần đầu trang (3 ý Bảng EC); con số thương hiệu chuyển xuống đây
+  // Con số thương hiệu đặt ở đây; dòng "3 kháng vượt trội" ở đầu trang đã bỏ (chị Phương 17/11/2026: "ở dưới có rồi")
   { icon: 'award', title: '15+ năm trong nghề', text: 'Hơn 15.000 khách hàng tin dùng' },
   { icon: 'certified', title: 'ISO 9001:2015\u00a0·\u00a0TQC', text: 'Quy trình sản xuất được chứng nhận' },
   { icon: 'stitch', title: 'Đường may 4 mũi/cm', text: 'Chắc, phẳng, bền qua nhiều lần giặt' },
