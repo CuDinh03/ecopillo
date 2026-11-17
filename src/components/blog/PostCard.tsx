@@ -17,6 +17,8 @@ export function PostCard({ post, feature = false }: { post: Post; feature?: bool
           note={post.title}
           image={post.cover}
           sizes={feature ? '(min-width: 1024px) 600px, 100vw' : '(min-width: 1024px) 400px, 100vw'}
+          // Bài nổi bật đầu trang Tin tức: ảnh là phần lớn nhất màn hình đầu (LCP), tải ngay (đo 17/11/2026: 3,86s khi để tải chậm)
+          priority={feature}
         />
       </div>
       <div className={`flex flex-1 flex-col ${feature ? 'p-7 sm:p-10 lg:justify-center' : 'p-6 sm:p-7'}`}>

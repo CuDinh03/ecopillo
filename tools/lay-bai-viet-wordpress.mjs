@@ -43,9 +43,18 @@ const raw = await page.evaluate(async () => {
     }
     throw new Error(`không lấy được ${path}`)
   }
-  const posts = await get('/wp-json/wp/v2/posts?per_page=100&_fields=id,slug,date,modified,categories,featured_media,title,content,excerpt,yoast_head_json')
+  // API trả tối đa 100 bài mỗi lần: đọc lần lượt từng trang tới khi hết (chỉ bài "Đã đăng", API không cần mật khẩu)
+  const posts = []
+  for (let page = 1; ; page++) {
+    const batch = await get(`/wp-json/wp/v2/posts?per_page=100&page=${page}&_fields=id,slug,date,modified,categories,featured_media,title,content,excerpt,yoast_head_json`)
+    posts.push(...batch)
+    if (batch.length < 100) break
+  }
   const ids = posts.map((p) => p.featured_media).filter(Boolean)
-  const media = ids.length ? await get(`/wp-json/wp/v2/media?per_page=100&include=${ids.join(',')}&_fields=id,source_url,alt_text,media_details`) : []
+  const media = []
+  for (let i = 0; i < ids.length; i += 100) {
+    media.push(...(await get(`/wp-json/wp/v2/media?per_page=100&include=${ids.slice(i, i + 100).join(',')}&_fields=id,source_url,alt_text,media_details`)))
+  }
   return { posts, media }
 })
 // Trang trống để làm sạch HTML bằng DOMParser của Chrome (không chạy script của bài)
@@ -53,8 +62,8 @@ const cleaner = await browser.newPage()
 await cleaner.goto('about:blank')
 
 /** Làm sạch HTML, trả HTML sạch và số chữ (để tính phút đọc) */
-async function sanitize(html) {
-  return cleaner.evaluate((input) => {
+async function sanitize(html, postTitle) {
+  return cleaner.evaluate(([input, postTitle]) => {
     const ALLOWED = new Set(['NAV', 'P', 'H2', 'H3', 'H4', 'UL', 'OL', 'LI', 'STRONG', 'B', 'EM', 'I', 'U', 'A', 'IMG', 'FIGURE', 'FIGCAPTION', 'BLOCKQUOTE', 'TABLE', 'THEAD', 'TBODY', 'TFOOT', 'TR', 'TH', 'TD', 'BR', 'HR', 'SUB', 'SUP'])
     const DROP = new Set(['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT', 'EMBED', 'FORM', 'INPUT', 'BUTTON', 'SELECT', 'TEXTAREA', 'NOSCRIPT', 'SVG', 'CANVAS', 'VIDEO', 'AUDIO', 'LINK', 'META'])
     const ATTRS = {
@@ -62,6 +71,16 @@ async function sanitize(html) {
       H2: ['id'], H3: ['id'], H4: ['id'], NAV: ['aria-label'],
     }
     const doc = new DOMParser().parseFromString(`<body>${input}</body>`, 'text/html')
+    // Ảnh thiếu alt: ghi tạm "@@ALT@@mã-media@@chữ dự phòng" (mã lấy từ class wp-image-N, phải đọc trước khi bỏ class).
+    // Chữ dự phòng: chú thích ảnh, không có thì tiêu đề mục gần nhất phía trên, không có nữa thì tên bài.
+    let lastHeading = ''
+    for (const el of doc.body.querySelectorAll('*')) {
+      if (/^H[1-6]$/.test(el.tagName)) lastHeading = el.textContent.replace(/\s+/g, ' ').trim()
+      if (el.tagName !== 'IMG' || el.getAttribute('alt')?.trim()) continue
+      const caption = el.closest('figure')?.querySelector('figcaption')?.textContent.replace(/\s+/g, ' ').trim()
+      const media = el.className.match(/wp-image-(\d+)/)?.[1] ?? ''
+      el.setAttribute('alt', `@@ALT@@${media}@@${(caption || lastHeading || postTitle).replace(/@/g, '').slice(0, 140)}`)
+    }
     // Mục lục của plugin Easy Table of Contents: neo nằm trong <span class="ez-toc-section" id>, chuyển id lên tiêu đề
     doc.querySelectorAll('.ez-toc-section[id]').forEach((span) => {
       const heading = span.closest('h1, h2, h3, h4, h5, h6')
@@ -104,6 +123,10 @@ async function sanitize(html) {
     doc.body.querySelectorAll('table').forEach((t) => {
       const wrap = doc.createElement('div')
       wrap.className = 'bang-cuon'
+      // Khung cuộn ngang dùng được bằng bàn phím và có tên cho trình đọc màn hình (axe: scrollable-region-focusable)
+      wrap.setAttribute('tabindex', '0')
+      wrap.setAttribute('role', 'region')
+      wrap.setAttribute('aria-label', 'Bảng, cuộn ngang để xem hết')
       t.replaceWith(wrap)
       wrap.append(t)
     })
@@ -113,7 +136,26 @@ async function sanitize(html) {
       img.setAttribute('decoding', 'async')
     })
     return { html: doc.body.innerHTML, words: doc.body.textContent.trim().split(/\s+/).length }
-  }, html)
+  }, [html, postTitle])
+}
+
+/** Điền alt đã đánh dấu: chữ alt trong thư viện media WordPress nếu có, không thì chữ dự phòng */
+async function fillAlts(html) {
+  const marks = [...html.matchAll(/alt="@@ALT@@(\d*)@@([^"]*)"/g)]
+  const ids = [...new Set(marks.map((m) => m[1]).filter(Boolean))]
+  const alts = new Map()
+  for (let i = 0; i < ids.length; i += 100) {
+    const chunk = ids.slice(i, i + 100)
+    const list = await page.evaluate(async (q) => {
+      const r = await fetch(`/wp-json/wp/v2/media?per_page=100&include=${q}&_fields=id,alt_text`, { credentials: 'omit' })
+      return r.ok ? r.json() : []
+    }, chunk.join(','))
+    for (const m of list) if (m.alt_text?.trim()) alts.set(String(m.id), m.alt_text.trim())
+  }
+  return html.replace(/alt="@@ALT@@(\d*)@@([^"]*)"/g, (_, id, fallback) => {
+    const text = alts.get(id) ?? fallback
+    return `alt="${text.replace(/"/g, '&quot;')}"`
+  })
 }
 
 /** Chữ chất liệu cũ → Lyocell (cả ™, ®); chỉ số sợi "60s" bỏ hẳn */
@@ -241,12 +283,15 @@ const index = []
 const warnings = []
 for (const post of raw.posts) {
   if (SKIP.has(post.slug)) continue
-  const clean = await sanitize(post.content.rendered)
+  const clean = await sanitize(post.content.rendered, decode(post.title.rendered))
+  clean.html = await fillAlts(clean.html)
   // Thứ tự quan trọng: ảnh trước (nhận ra ảnh qua tên file cũ), rồi link (bảng chuyển hướng nhận link cũ), cuối cùng mới đổi chữ
   let html = fixImages(clean.html)
   html = html.replace(/href="([^"]*)"/g, (_, href) => `href="${fixHref(href.replace(/&amp;/g, '&'), post.slug).replace(/&/g, '&amp;')}"`)
   html = fixWords(html)
   html = await addImageSizes(html)
+  // Link chỉ bọc ảnh đã bị bỏ (tên file có chữ cũ) thành link rỗng: bỏ luôn (axe: link-name)
+  html = html.replace(/<a\b[^>]*>(?:\s|&nbsp;)*<\/a>/g, '')
   if (BANNED.test(html)) warnings.push(`${post.slug}: còn chữ chất liệu cũ sau khi làm sạch`)
 
   const yoast = post.yoast_head_json ?? {}

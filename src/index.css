@@ -404,6 +404,10 @@
     border-color: var(--color-line);
   }
   /* Bảng rộng hơn khung: cuộn ngang trong khung, không làm cả trang tràn ngang */
+  .bai-wp .bang-cuon:focus-visible {
+    outline: 2px solid var(--color-mist-600);
+    outline-offset: 3px;
+  }
   .bai-wp .bang-cuon {
     overflow-x: auto;
     border-radius: 1rem;

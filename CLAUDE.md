@@ -5,6 +5,9 @@ Việc đã giao, đang chờ làm: [`docs/viec-can-lam/`](docs/viec-can-lam/). 
 bắt đầu từ [`00-phien-sau-doc-truoc.md`](docs/viec-can-lam/00-phien-sau-doc-truoc.md): trạng thái, việc đang chờ ai, và phải phân tích gì trước khi làm tiếp từng việc.
 **Bộ não dự án** [`docs/bo-nao/`](docs/bo-nao/README.md): sổ quyết định đã chốt (kể cả cái đã bị đè), việc đang chờ ai, ai là ai và cách viết tin cho khách, tóm tắt biên bản, từ điển, dòng thời gian.
 Trước khi đổi thứ gì đã có thì tra `docs/bo-nao/quyet-dinh.md`; xong một đợt góp ý thì cập nhật bộ não (cách làm ở README của nó).
+**Đưa giao diện mới lên ecopillo.com.vn**: kế hoạch `docs/ke-hoach-dua-giao-dien-moi-len-web-that.md`. **Hướng dẫn quản trị cho Ecopillo** `docs/huong-dan-quan-tri-web.html`
+phải luôn khớp code: đổi cách lấy bài (`tools/lay-bai-viet-wordpress.mjs`), trang Tin tức / bài viết, form và đơn (`nhan-form.gs`, `functions/api/gui.js`), mã đo,
+cái Ecopillo được tự sửa, hay xong một bước chuyển web, thì sửa mục tương ứng trong file đó, tăng số bản, thêm dòng "Nhật ký cập nhật" (danh sách file ↔ mục ghi ở đầu file).
 
 ## Dự án là gì
 
