@@ -5,14 +5,14 @@
 //   node tools/dong-goi-plugin.mjs   → ban-dong-goi/ecopillo-giao-dien-moi.zip (+ thư mục cùng tên để xem)
 //
 // Trong zip:
-//   ecopillo-giao-dien-moi.php       plugin (trien-khai/wordpress-plugin/…)
+//   *.php                            plugin (trien-khai/wordpress-plugin/…): chế độ giao diện + nhận đơn /api/gui
 //   site/                            bản build (dist/), trừ _redirects
 //   quy-tac/thu-kin.htaccess         quy tắc chế độ Thử kín (chỉ trình duyệt có cookie thử)
 //   quy-tac/bat.htaccess             quy tắc chế độ Bật cho mọi người
 //   quy-tac/ban-build.txt            mã commit + ngày đóng gói (hiện ở trang cài đặt)
 // {SITE} trong quy tắc được plugin thay bằng đường dẫn thật của site/ (ví dụ /wp-content/plugins/ecopillo-giao-dien-moi/site).
 // Thử quy tắc bằng Apache trên máy: node tools/dong-goi-plugin.mjs --chi-quy-tac <thư-mục-ra>
-import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 
@@ -105,7 +105,7 @@ if (args[0] === '--chi-quy-tac') {
 const stage = join(OUT_ROOT, NAME)
 rmSync(OUT_ROOT, { recursive: true, force: true })
 mkdirSync(stage, { recursive: true })
-cpSync(join(PLUGIN_SRC, `${NAME}.php`), join(stage, `${NAME}.php`))
+for (const file of readdirSync(PLUGIN_SRC).filter((f) => f.endsWith('.php'))) cpSync(join(PLUGIN_SRC, file), join(stage, file))
 cpSync(DIST, join(stage, 'site'), {
   recursive: true,
   filter: (src) => !/(^|\/)(_redirects|\.DS_Store|\._[^/]*)$/.test(src),

@@ -2,8 +2,10 @@ import { IS_PREVIEW } from '../data/preview'
 import { createOrderCode, normalizePhone, type CustomerInfo, type OrderSummaryData } from './order'
 
 /**
- * Gửi đơn hàng và tin nhắn về Ecopillo qua hàm Cloudflare /api/gui
- * (trien-khai/xem-thu/functions/api/gui.js → Google Apps Script → Trang tính + email).
+ * Gửi đơn hàng và tin nhắn về Ecopillo qua /api/gui. Hai nơi nhận, cùng thân JSON và câu trả:
+ * - Web thật ecopillo.com.vn (từ 18/11/2026): plugin WordPress trien-khai/wordpress-plugin/ecopillo-giao-dien-moi/nhan-form.php
+ *   → lưu mục "Đơn web" trong wp-admin + email (+ Trang tính nếu đã đặt Apps Script).
+ * - Bản xem thử: hàm Cloudflare trien-khai/xem-thu/functions/api/gui.js → Google Apps Script → Trang tính + email.
  *
  * - Chạy `pnpm dev`: không có hàm Cloudflare, nên không gửi; trả daGui: false để màn hình cảm ơn ghi "chưa gửi đi".
  * - Bản xem thử: hàm chưa nối Apps Script thì cũng trả daGui: false (cùng lời ghi chú).

@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Ecopillo giao diện mới
- * Description: Thay giao diện ecopillo.com.vn bằng giao diện mới (trang dựng sẵn trong thư mục site/ của plugin). WordPress giữ nguyên làm nơi quản trị. Cài đặt → Giao diện mới.
- * Version: 1.0.0
+ * Description: Thay giao diện ecopillo.com.vn bằng giao diện mới (trang dựng sẵn trong thư mục site/ của plugin). WordPress giữ nguyên làm nơi quản trị. Cài đặt → Giao diện mới. Đơn hàng, tin nhắn khách gửi: mục Đơn web.
+ * Version: 1.1.0
  * Requires PHP: 7.4
  * Author: Ecopillo
  * Text Domain: ecopillo-giao-dien-moi
@@ -16,11 +16,14 @@
  *   Kích hoạt lần đầu luôn ở chế độ Thử kín. Huỷ kích hoạt plugin = Tắt.
  * - Không đụng: theme, bài viết, sản phẩm, cài đặt WordPress, khối .htaccess của WordPress và của plugin khác.
  * - Chạy được trên PHP 7.4 (hosting hiện tại) và PHP 8.
+ * - Nhận đơn hàng, tin nhắn của giao diện mới tại /api/gui: nhan-form.php (lưu vào mục "Đơn web", email báo).
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
+
+require_once __DIR__ . '/nhan-form.php';
 
 const ECO_GDM_OPTION = 'ecopillo_giao_dien_moi_che_do';
 const ECO_GDM_MARKER = 'Ecopillo giao dien moi';
