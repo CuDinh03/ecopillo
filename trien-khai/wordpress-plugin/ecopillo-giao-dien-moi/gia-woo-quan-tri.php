@@ -34,7 +34,7 @@ function eco_gia_action()
     } elseif ($job === 'luu-rieng') {
         $result = eco_gia_save_own(isset($_POST['rieng']) && is_array($_POST['rieng']) ? wp_unslash($_POST['rieng']) : array());
     }
-    eco_gia_write();
+    eco_dl_write();
     wp_safe_redirect(add_query_arg('ket-qua', rawurlencode($result), admin_url('edit.php?post_type=product&page=ecopillo-gia-web')));
     exit;
 }

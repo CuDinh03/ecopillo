@@ -5,7 +5,7 @@
  *
  * - du-lieu/khung-gia.json (sinh lúc build, src/data/priceFrame.ts): mọi ô giá trên web và tên sản phẩm Woo tương ứng.
  * - Mỗi khi Ecopillo lưu sản phẩm Woo, plugin đọc giá từng biến thể, ghép vào ô giá web, ghi
- *   wp-content/uploads/ecopillo-du-lieu/gia.js (`window.__ECO_GIA__ = …`). Trang web nạp file đó trước gói JS (src/data/liveData.ts).
+ *   wp-content/uploads/ecopillo-du-lieu/du-lieu.js (`window.__ECO_GIA__ = …`, cùng file với nội dung: eco_dl_write). Trang web nạp file đó trước gói JS (src/data/liveData.ts).
  * - Chỉ ghi giá công khai (đúng thứ khách thấy trên web). Không gửi đi đâu: dữ liệu không rời hosting.
  * - Mặc định TẮT: giá trong Woo đang là giá cũ. Trang "Giá trên web" có nút nhập giá web vào Woo, nhập xong mới bật.
  * - Ô giá web không có biến thể Woo tương ứng (sản phẩm Woo chưa có, cỡ khác tên): Ecopillo điền "giá riêng" ngay ở trang đó.
@@ -182,7 +182,7 @@ function eco_gia_match_choice($rows, $size_text, $thick_text = null)
 
 /**
  * Ghép giá Woo vào mọi ô của khung giá.
- * @return array{live: array, rows: array} live = nội dung gia.js; rows = bảng đối chiếu cho trang quản trị
+ * @return array{live: array, rows: array} live = phần giá của du-lieu.js; rows = bảng đối chiếu cho trang quản trị
  */
 function eco_gia_compute()
 {
@@ -296,21 +296,27 @@ function eco_gia_dir()
     return trailingslashit($uploads['basedir']) . 'ecopillo-du-lieu';
 }
 
-/** Ghi gia.js (tắt thì ghi null: web dùng giá trong code). Ghi qua file tạm rồi đổi tên để khách không đọc file dở */
-function eco_gia_write()
+/**
+ * Ghi du-lieu.js: giá Woo (`window.__ECO_GIA__`, tắt thì null) và nội dung Ecopillo đã sửa (`window.__ECO_NOI_DUNG__`, noi-dung.php).
+ * Web nạp file này trước gói JS. Ghi qua file tạm rồi đổi tên để khách không đọc file dở.
+ */
+function eco_dl_write()
 {
     $dir = eco_gia_dir();
     if (!wp_mkdir_p($dir)) {
         return false;
     }
-    $rules = "# Plugin Ecopillo giao dien moi: file gia luon kiem lai, khong luu dem lau\n<IfModule mod_headers.c>\nHeader set Cache-Control \"no-cache\"\n</IfModule>\n";
+    $rules = "# Plugin Ecopillo giao dien moi: file du lieu luon kiem lai, khong luu dem lau\n<IfModule mod_headers.c>\nHeader set Cache-Control \"no-cache\"\n</IfModule>\n";
     if (!is_file($dir . '/.htaccess')) {
         file_put_contents($dir . '/.htaccess', $rules);
     }
-    $data = eco_gia_enabled() ? eco_gia_compute()['live'] : null;
-    $js = '/* Giá Ecopillo sửa trong WooCommerce, plugin ghi lúc ' . gmdate('c') . ". Không sửa tay. */\nwindow.__ECO_GIA__=" . wp_json_encode($data) . ";\n";
-    $tmp = $dir . '/gia.js.tmp';
-    if (file_put_contents($tmp, $js) === false || !rename($tmp, $dir . '/gia.js')) {
+    $prices = eco_gia_enabled() && function_exists('wc_get_product') ? eco_gia_compute()['live'] : null;
+    $content = function_exists('eco_nd_live') ? eco_nd_live() : array();
+    $js = '/* Giá và nội dung Ecopillo sửa trong WordPress, plugin ghi lúc ' . gmdate('c') . ". Không sửa tay. */\n"
+        . 'window.__ECO_GIA__=' . wp_json_encode($prices) . ";\n"
+        . 'window.__ECO_NOI_DUNG__=' . wp_json_encode($content ? $content : null) . ";\n";
+    $tmp = $dir . '/du-lieu.js.tmp';
+    if (file_put_contents($tmp, $js) === false || !rename($tmp, $dir . '/du-lieu.js')) {
         return false;
     }
     update_option(ECO_GIA_OPT_GHI_LUC, current_time('mysql'), false);
@@ -341,9 +347,9 @@ function eco_gia_mark_post($post_id)
 add_action('shutdown', 'eco_gia_flush');
 function eco_gia_flush()
 {
-    if (!empty($GLOBALS['eco_gia_dirty']) && function_exists('wc_get_product')) {
+    if (!empty($GLOBALS['eco_gia_dirty'])) {
         $GLOBALS['eco_gia_dirty'] = false;
-        eco_gia_write();
+        eco_dl_write();
     }
 }
 
@@ -351,13 +357,16 @@ function eco_gia_flush()
 add_action('admin_init', 'eco_gia_refresh_if_stale');
 function eco_gia_refresh_if_stale()
 {
-    if (!function_exists('wc_get_product')) {
-        return;
+    $file = eco_gia_dir() . '/du-lieu.js';
+    $stale = !is_file($file);
+    foreach (array('khung-gia.json', 'noi-dung-goc.json') as $frame) {
+        $path = __DIR__ . '/du-lieu/' . $frame;
+        if (!$stale && is_file($path) && filemtime($path) > filemtime($file)) {
+            $stale = true;
+        }
     }
-    $frame = __DIR__ . '/du-lieu/khung-gia.json';
-    $file = eco_gia_dir() . '/gia.js';
-    if (!is_file($file) || (is_file($frame) && filemtime($frame) > filemtime($file))) {
-        eco_gia_write();
+    if ($stale) {
+        eco_dl_write();
     }
 }
 

@@ -165,7 +165,7 @@ async function main() {
   })
 
   const serverEntry = join(SSR_OUT, 'entry-server.js')
-  const { render, listPrerenderPaths, NOT_FOUND_PATH, SITE_ORIGIN, HOST_REDIRECTS, buildPriceFrame } = await import(
+  const { render, listPrerenderPaths, NOT_FOUND_PATH, SITE_ORIGIN, HOST_REDIRECTS, buildPriceFrame, buildContentFrame } = await import(
     pathToFileURL(serverEntry).href
   )
   // Bản xem thử (GitHub Actions đặt XEM_THU_URL): canonical, og:url, sitemap trỏ về chính bản xem thử, không trỏ ecopillo.com.vn
@@ -223,6 +223,8 @@ ${paths.map((url) => `  <url><loc>${siteOrigin}${url}</loc><lastmod>${today}</la
 
   // Khung giá: plugin WordPress ghép giá WooCommerce vào web (src/data/priceFrame.ts). Đóng gói plugin chuyển file này ra ngoài site/
   writeFileSync(join(DIST, 'khung-gia.json'), JSON.stringify(buildPriceFrame()))
+  // Các bộ nội dung Ecopillo tự sửa (src/data/contentFrame.ts), cũng chuyển ra ngoài site/
+  writeFileSync(join(DIST, 'noi-dung-goc.json'), JSON.stringify(buildContentFrame()))
 
   // Cloudflare Pages: có 404.html thì hết fallback SPA — phải có _redirects cho link cũ / link tạm xem thử.
   // Hai link điểm bán (05/11 mục 9): HOST_REDIRECTS chỉ ghi /lien-he/ (SPA nối ?gan-toi=1 không bị lệch neo),

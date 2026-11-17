@@ -3,7 +3,7 @@
  * Kế hoạch: docs/ke-hoach-khach-tu-sua-du-lieu.md (cách A: dữ liệu nạp từ chính WordPress, không qua dịch vụ ngoài).
  *
  * Plugin WordPress (trien-khai/wordpress-plugin/ecopillo-giao-dien-moi/gia-woo.php) ghi file
- * /wp-content/uploads/ecopillo-du-lieu/gia.js mỗi khi Ecopillo lưu sản phẩm. File đó đặt `window.__ECO_GIA__`
+ * /wp-content/uploads/ecopillo-du-lieu/du-lieu.js mỗi khi Ecopillo lưu sản phẩm. File đó đặt `window.__ECO_GIA__`
  * trước khi gói JS chính chạy (thẻ script `defer` đứng trước, vite.config.ts). Không có file (pnpm dev, bản xem thử,
  * plugin chưa bật lấy giá Woo) thì dùng giá trong catalog.ts / products.ts như cũ.
  *

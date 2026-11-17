@@ -1,5 +1,7 @@
 import { OPENING_HOURS } from './brand'
 
+import { liveList, type EditableField, type EditableSet } from './liveContent'
+
 export interface Review {
   name: string
   place: string
@@ -8,7 +10,7 @@ export interface Review {
 }
 
 // Nội dung mẫu — thay bằng đánh giá thật của khách trước khi chạy chính thức.
-export const REVIEWS: readonly Review[] = [
+const BASE_REVIEWS: readonly Review[] = [
   {
     name: 'Chị Minh Anh',
     place: 'Cầu Giấy, Hà Nội',
@@ -38,6 +40,25 @@ export const REVIEWS: readonly Review[] = [
       'Ở ngoài nhìn đẹp hơn trong ảnh, phòng ngủ sang lên hẳn. Được trải thử lên giường lúc nhận nên rất yên tâm.',
   },
 ]
+
+/** Cảm nhận khách hàng ở trang chủ: Ecopillo tự sửa trong WordPress (liveContent.ts) */
+export const REVIEWS_SET: EditableSet = {
+  khoa: 'danh-gia',
+  nhom: 'Trang chủ',
+  ten: 'Cảm nhận khách hàng',
+  moTa: 'Các ô cảm nhận của khách ở trang chủ. Chỉ đưa lời khách thật, có khách đồng ý.',
+  kieu: 'nhieu',
+  goc: BASE_REVIEWS,
+  tieuDeDong: 'name',
+  truong: [
+    { khoa: 'name', nhan: 'Tên khách', kieu: 'chu', batBuoc: true, goiY: 'Ví dụ Chị Minh Anh' },
+    { khoa: 'place', nhan: 'Nơi ở', kieu: 'chu', batBuoc: true },
+    { khoa: 'product', nhan: 'Sản phẩm đã dùng', kieu: 'chu', batBuoc: true },
+    { khoa: 'quote', nhan: 'Lời khách', kieu: 'doan', batBuoc: true },
+  ] satisfies EditableField[],
+}
+
+export const REVIEWS: readonly Review[] = liveList(REVIEWS_SET.khoa, BASE_REVIEWS, REVIEWS_SET.truong, (): Review => ({ name: '', place: '', product: '', quote: '' }))
 
 export interface Partner {
   name: string

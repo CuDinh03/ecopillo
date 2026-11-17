@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Ecopillo giao diện mới
  * Description: Thay giao diện ecopillo.com.vn bằng giao diện mới (trang dựng sẵn trong thư mục site/ của plugin). WordPress giữ nguyên làm nơi quản trị. Cài đặt → Giao diện mới. Đơn hàng, tin nhắn khách gửi: mục Đơn web.
- * Version: 1.2.0
+ * Version: 1.3.0
  * Requires PHP: 7.4
  * Author: Ecopillo
  * Text Domain: ecopillo-giao-dien-moi
@@ -18,6 +18,7 @@
  * - Chạy được trên PHP 7.4 (hosting hiện tại) và PHP 8.
  * - Nhận đơn hàng, tin nhắn của giao diện mới tại /api/gui: nhan-form.php (lưu vào mục "Đơn web", email báo).
  * - Giá, hết hàng Ecopillo sửa trong WooCommerce hiện trên web: gia-woo.php (Sản phẩm → Giá trên web).
+ * - Liên hệ, đại lý, banner, sự kiện, báo chí, cảm nhận khách: noi-dung.php (menu Nội dung web).
  */
 
 if (!defined('ABSPATH')) {
@@ -26,6 +27,7 @@ if (!defined('ABSPATH')) {
 
 require_once __DIR__ . '/nhan-form.php';
 require_once __DIR__ . '/gia-woo.php';
+require_once __DIR__ . '/noi-dung.php';
 
 const ECO_GDM_OPTION = 'ecopillo_giao_dien_moi_che_do';
 const ECO_GDM_MARKER = 'Ecopillo giao dien moi';
@@ -132,9 +134,7 @@ register_activation_hook(__FILE__, function () {
     $mode = get_option(ECO_GDM_OPTION, 'thu-kin');
     eco_gdm_apply(in_array($mode, array('thu-kin', 'bat'), true) ? $mode : 'thu-kin');
     // Trang web luôn nạp file giá (gia-woo.php): ghi ngay để không có lượt nào gặp file thiếu
-    if (function_exists('wc_get_product')) {
-        eco_gia_write();
-    }
+    eco_dl_write();
 });
 
 register_deactivation_hook(__FILE__, function () {

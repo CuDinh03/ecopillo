@@ -9,6 +9,7 @@
 import { CONTACT, SHOWROOMS, type Showroom } from './brand'
 import { slugify } from '../lib/slug'
 import { PATHS } from './links'
+import { liveList, type EditableField, type EditableSet } from './liveContent'
 
 export type DealerKind = 'van-phong' | 'chi-nhanh' | 'dai-ly'
 
@@ -187,7 +188,7 @@ export const sortDefault = (list: readonly Dealer[]): Dealer[] => {
  * (owner chốt, cho khỏi trùng với Thanh Hóa). `id` giữ tên cũ để ảnh và lựa chọn đã lưu không đổi.
  * Dòng "Ecopillo Hải Phòng" trong file 15/10 (địa chỉ "đang cập nhật", số trùng với Quyết Hương) không đưa lên.
  */
-const AGENTS: readonly Dealer[] = (
+const BASE_AGENTS: readonly Dealer[] = (
   [
     // [id, tên, địa chỉ, tỉnh, lat, lng, điện thoại]
     ['hien-long', 'Ecopillo Bắc Ninh', 'E7-E8 Chợ Dầu, Lê Quang Đạo, Từ Sơn, Bắc Ninh', 'Bắc Ninh', 21.11749, 105.96335, '0356 658 198'],
@@ -219,6 +220,39 @@ const AGENTS: readonly Dealer[] = (
   ngay_nghi: [],
   anh: STORE_PHOTOS[id] ?? [],
 }))
+
+export const AGENT_SET: EditableSet = {
+  khoa: 'dai-ly',
+  nhom: 'Thông tin chung',
+  ten: 'Đại lý',
+  moTa: 'Danh sách đại lý ở khối "Điểm bán" trang Liên hệ (tìm điểm gần nhất, chỉ đường, gọi, Zalo). Văn phòng, chi nhánh: mục "Văn phòng, chi nhánh".',
+  kieu: 'nhieu',
+  goc: BASE_AGENTS,
+  tieuDeDong: 'ten',
+  khoaDong: 'id',
+  truong: [
+    { khoa: 'ten', nhan: 'Tên hiện trên web', kieu: 'chu', batBuoc: true, goiY: 'Đặt theo địa phương, ví dụ Ecopillo Hải Dương' },
+    { khoa: 'dia_chi', nhan: 'Địa chỉ', kieu: 'chu', batBuoc: true, goiY: 'Nút "Chỉ đường" đi theo địa chỉ này' },
+    { khoa: 'tinh', nhan: 'Tỉnh/thành', kieu: 'chon', batBuoc: true, luaChon: PROVINCES.map((p) => p.name) },
+    { khoa: 'lat', nhan: 'Vĩ độ', kieu: 'so', batBuoc: true, goiY: 'Lấy từ ghim Google Maps (số sau !3d trong link)' },
+    { khoa: 'lng', nhan: 'Kinh độ', kieu: 'so', batBuoc: true, goiY: 'Số sau !4d trong link Google Maps' },
+    { khoa: 'dien_thoai', nhan: 'Điện thoại', kieu: 'chu', batBuoc: true, goiY: 'Ví dụ 0988 832 072' },
+    { khoa: 'zalo', nhan: 'Zalo (nếu khác số điện thoại)', kieu: 'chu' },
+    { khoa: 'gio_mo', nhan: 'Giờ mở cửa', kieu: 'gio', goiY: 'Ví dụ 08:30. Để trống: thẻ mời khách gọi trước' },
+    { khoa: 'gio_dong', nhan: 'Giờ đóng cửa', kieu: 'gio', goiY: 'Ví dụ 21:30' },
+    { khoa: 'ngay_nghi', nhan: 'Ngày nghỉ trong tuần', kieu: 'ngay-nghi' },
+    { khoa: 'anh', nhan: 'Ảnh (tối đa 3, ảnh đầu là ảnh đại diện)', kieu: 'ds-anh' },
+    { khoa: 'ghi_chu', nhan: 'Ghi chú', kieu: 'chu' },
+  ] satisfies EditableField[],
+}
+
+/** Đại lý Ecopillo tự sửa trong WordPress (liveContent.ts); dòng mới thì mã lấy theo tên */
+const AGENTS: readonly Dealer[] = liveList(AGENT_SET.khoa, BASE_AGENTS, AGENT_SET.truong, (i, row): Dealer => {
+  const base = BASE_AGENTS.find((d) => d.id === row.id)
+  if (base) return { ...base }
+  const name = typeof row.ten === 'string' ? row.ten : ''
+  return { id: slugify(name) || `dai-ly-${i + 1}`, ten: name, loai: 'dai-ly', dia_chi: '', tinh: '', lat: 0, lng: 0, dien_thoai: '', ngay_nghi: [], anh: [] }
+})
 
 /** Danh sách dựng sẵn (dự phòng khi WordPress không trả lời) */
 export const DEALERS: readonly Dealer[] = sortDefault([...OFFICIAL, ...AGENTS])

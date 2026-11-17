@@ -1,3 +1,6 @@
+import { slugify } from '../lib/slug'
+import { liveList, liveObject, type EditableField, type EditableSet } from './liveContent'
+
 export const BRAND = {
   name: 'Ecopillo',
   company: 'Công ty TNHH Ecopillo Eternal Việt Nam',
@@ -11,13 +14,11 @@ export const BRAND = {
  * Biên bản chốt mục 39: Ecopillo sẽ thay số hotline mới và gửi riêng địa chỉ, hotline của
  * từng chi nhánh. Khi có số mới chỉ cần sửa 3 dòng hotline/Zalo dưới đây.
  */
-export const CONTACT = {
+const BASE_CONTACT = {
   hotlineDisplay: '0988 832 072',
-  hotlineTel: 'tel:0988832072',
   zaloUrl: 'https://zalo.me/0988832072',
   /** Số thứ hai. Khách 08/11/2026: "Chỉ để 2 số này: 0988 832 072 hoặc 0922 926 678" (thay 0978 678 378) */
   phoneDisplay: '0922 926 678',
-  phoneTel: 'tel:0922926678',
   messengerUrl: 'https://m.me/Ecopillo.com.vn',
   /** Khách 09/11/2026 (Zalo anh Quang): liên hệ qua email này, mọi form đăng ký cũng gửi về đây (thay cskh@ecopillo.com.vn) */
   email: 'ecopillo.com.vn@gmail.com',
@@ -28,7 +29,41 @@ export const CONTACT = {
   youtubeUrl: 'https://www.youtube.com/@EcopilloVietNam',
   /** Trang thông báo website với Bộ Công Thương (online.gov.vn), theo web cũ */
   moitUrl: 'https://online.gov.vn/nen-tang/94e80465-51e2-4e05-a37c-b1fc532d4bc3',
-} as const
+  gioMoCua: '8:30–22:00 hằng ngày',
+}
+
+/** Thông tin liên hệ Ecopillo tự sửa trong WordPress (liveContent.ts). Số "tel:" tự lấy từ số hiển thị */
+export const CONTACT_SET: EditableSet = {
+  khoa: 'lien-he',
+  nhom: 'Thông tin chung',
+  ten: 'Liên hệ, mạng xã hội',
+  moTa: 'Hotline, Zalo, email, link mạng xã hội, giờ mở cửa: hiện ở đầu trang, chân trang, trang Liên hệ, nút gọi.',
+  kieu: 'mot',
+  goc: BASE_CONTACT,
+  truong: [
+    { khoa: 'hotlineDisplay', nhan: 'Hotline chính', kieu: 'chu', batBuoc: true, goiY: 'Ghi như muốn hiện, ví dụ 0988 832 072' },
+    { khoa: 'phoneDisplay', nhan: 'Số điện thoại thứ hai', kieu: 'chu', batBuoc: true },
+    { khoa: 'zaloUrl', nhan: 'Link Zalo', kieu: 'link', batBuoc: true, goiY: 'https://zalo.me/<số điện thoại>' },
+    { khoa: 'messengerUrl', nhan: 'Link Messenger', kieu: 'link', batBuoc: true },
+    { khoa: 'email', nhan: 'Email liên hệ', kieu: 'chu', batBuoc: true },
+    { khoa: 'gioMoCua', nhan: 'Giờ mở cửa', kieu: 'chu', batBuoc: true },
+    { khoa: 'fanpageDisplay', nhan: 'Tên fanpage hiện trên web', kieu: 'chu', batBuoc: true },
+    { khoa: 'fanpageUrl', nhan: 'Link fanpage Facebook', kieu: 'link', batBuoc: true },
+    { khoa: 'tiktokUrl', nhan: 'Link TikTok', kieu: 'link', batBuoc: true },
+    { khoa: 'instagramUrl', nhan: 'Link Instagram', kieu: 'link', batBuoc: true },
+    { khoa: 'youtubeUrl', nhan: 'Link kênh YouTube', kieu: 'link', batBuoc: true },
+    { khoa: 'moitUrl', nhan: 'Link thông báo Bộ Công Thương', kieu: 'link', batBuoc: true },
+  ] satisfies EditableField[],
+}
+
+const telOf = (display: string): string => `tel:${display.replace(/\D/g, '')}`
+const LIVE_CONTACT = liveObject(CONTACT_SET.khoa, BASE_CONTACT, CONTACT_SET.truong)
+
+export const CONTACT = {
+  ...LIVE_CONTACT,
+  hotlineTel: telOf(LIVE_CONTACT.hotlineDisplay),
+  phoneTel: telOf(LIVE_CONTACT.phoneDisplay),
+}
 
 export interface SocialLink {
   id: 'facebook' | 'tiktok' | 'instagram' | 'youtube' | 'zalo'
@@ -37,7 +72,7 @@ export interface SocialLink {
   url: string
 }
 
-export const SOCIAL_LINKS: readonly SocialLink[] = [
+const BASE_SOCIAL_LINKS: readonly SocialLink[] = [
   { id: 'facebook', label: 'Facebook', handle: 'Ecopillo.com.vn', url: 'https://www.facebook.com/Ecopillo.com.vn' },
   { id: 'tiktok', label: 'TikTok', handle: '@ecopillo.official', url: 'https://www.tiktok.com/@ecopillo.official' },
   { id: 'instagram', label: 'Instagram', handle: 'ecopillo.com.vn', url: 'https://www.instagram.com/ecopillo.com.vn/' },
@@ -45,13 +80,35 @@ export const SOCIAL_LINKS: readonly SocialLink[] = [
   { id: 'zalo', label: 'Zalo', handle: '0988 832 072', url: 'https://zalo.me/0988832072' },
 ]
 
+const SOCIAL_IDS = ['facebook', 'tiktok', 'instagram', 'youtube', 'zalo'] as const
+
+export const SOCIAL_SET: EditableSet = {
+  khoa: 'mang-xa-hoi',
+  nhom: 'Thông tin chung',
+  ten: 'Ô mạng xã hội',
+  moTa: 'Các ô mạng xã hội ở trang chủ và chân trang. Biểu tượng theo ô "Mạng".',
+  kieu: 'nhieu',
+  goc: BASE_SOCIAL_LINKS,
+  tieuDeDong: 'label',
+  truong: [
+    { khoa: 'id', nhan: 'Mạng', kieu: 'chon', batBuoc: true, luaChon: SOCIAL_IDS },
+    { khoa: 'label', nhan: 'Tên hiện', kieu: 'chu', batBuoc: true },
+    { khoa: 'handle', nhan: 'Tên tài khoản', kieu: 'chu', batBuoc: true },
+    { khoa: 'url', nhan: 'Link', kieu: 'link', batBuoc: true },
+  ] satisfies EditableField[],
+}
+
+export const SOCIAL_LINKS: readonly SocialLink[] = liveList(SOCIAL_SET.khoa, BASE_SOCIAL_LINKS, SOCIAL_SET.truong, (i) => ({
+  ...(BASE_SOCIAL_LINKS[i] ?? BASE_SOCIAL_LINKS[0]),
+}))
+
 /** Phim thương hiệu trên kênh YouTube Ecopillo */
 export const BRAND_VIDEO = {
   id: 'MLo9LwZdmVQ',
   title: 'Chăn ga gối đệm Ecopillo – Nâng niu giấc mơ xanh',
 } as const
 
-export const OPENING_HOURS = '8:30–22:00 hằng ngày'
+export const OPENING_HOURS: string = CONTACT.gioMoCua
 
 /** Biên bản chốt mục 28 và 39: đổi "Showroom" thành "Hệ thống phân phối" */
 export interface Showroom {
@@ -93,7 +150,7 @@ export const directionsUrl = (address: string) =>
 
 // Toạ độ lấy từ ghim Google Maps của đúng địa chỉ (14/10/2026). Đổi địa chỉ thì lấy lại toạ độ: tìm địa chỉ trên
 // Google Maps, đọc cặp số sau !3d và !4d trong link (hoặc bấm chuột phải vào ghim → dòng toạ độ đầu tiên).
-export const SHOWROOMS: readonly Showroom[] = [
+const BASE_SHOWROOMS: readonly Showroom[] = [
   {
     id: 'ha-noi',
     kind: 'Văn phòng đại diện',
@@ -158,4 +215,38 @@ export const SHOWROOMS: readonly Showroom[] = [
     photoPosition: 'center 30%',
   },
 ]
+
+const SHOWROOM_KINDS = ['Văn phòng đại diện', 'Chi nhánh', 'Đại lý'] as const
+
+export const SHOWROOM_SET: EditableSet = {
+  khoa: 'van-phong',
+  nhom: 'Thông tin chung',
+  ten: 'Văn phòng, chi nhánh',
+  moTa: 'Các điểm có ảnh lớn ở trang chủ và đầu danh sách điểm bán (Văn phòng Hà Nội, Chi nhánh Hồ Chí Minh, Đại lý Đà Nẵng). Đại lý khác: mục "Đại lý".',
+  kieu: 'nhieu',
+  goc: BASE_SHOWROOMS,
+  tieuDeDong: 'dealerName',
+  khoaDong: 'id',
+  truong: [
+    { khoa: 'dealerName', nhan: 'Tên', kieu: 'chu', batBuoc: true },
+    { khoa: 'kind', nhan: 'Loại', kieu: 'chon', batBuoc: true, luaChon: SHOWROOM_KINDS },
+    { khoa: 'address', nhan: 'Địa chỉ', kieu: 'chu', batBuoc: true, goiY: 'Nút "Chỉ đường" đi theo địa chỉ này' },
+    { khoa: 'city', nhan: 'Thành phố (hiện trên thẻ)', kieu: 'chu', batBuoc: true },
+    { khoa: 'province', nhan: 'Tỉnh/thành (để tìm điểm gần)', kieu: 'chu', batBuoc: true, goiY: 'Đúng tên tỉnh trong danh sách 34 tỉnh, ví dụ Hà Nội, TP. Hồ Chí Minh' },
+    { khoa: 'lat', nhan: 'Vĩ độ', kieu: 'so', batBuoc: true, goiY: 'Lấy từ ghim Google Maps (số sau !3d trong link)' },
+    { khoa: 'lng', nhan: 'Kinh độ', kieu: 'so', batBuoc: true, goiY: 'Số sau !4d trong link Google Maps' },
+    { khoa: 'hotline', nhan: 'Hotline riêng', kieu: 'chu', goiY: 'Để trống: dùng hotline chung' },
+    { khoa: 'photo', nhan: 'Ảnh', kieu: 'anh' },
+    { khoa: 'photoPosition', nhan: 'Phần ảnh được giữ khi cắt', kieu: 'chu', goiY: 'Ví dụ center 30% (ảnh dọc trên thẻ ngang)' },
+  ] satisfies EditableField[],
+}
+
+/** Văn phòng, chi nhánh Ecopillo tự sửa; link chỉ đường luôn theo địa chỉ chữ */
+export const SHOWROOMS: readonly Showroom[] = liveList(SHOWROOM_SET.khoa, BASE_SHOWROOMS, SHOWROOM_SET.truong, (i, row): Showroom => {
+  const base = BASE_SHOWROOMS.find((s) => s.id === row.id) ?? BASE_SHOWROOMS[i]
+  const name = typeof row.dealerName === 'string' ? row.dealerName : ''
+  return base && base.id === row.id
+    ? { ...base }
+    : { id: slugify(name) || `diem-${i + 1}`, kind: 'Đại lý', dealerName: name, city: '', province: '', address: '', lat: 0, lng: 0, mapsUrl: '', imageNote: '' }
+}).map((s) => ({ ...s, mapsUrl: directionsUrl(s.address) }))
 

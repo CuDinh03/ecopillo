@@ -9,6 +9,8 @@
  * (trang báo trả 404 mọi bài, kho lưu web không lưu bài; bài viết dịp khai trương showroom TP. HCM, khoảng 29/9/2025, chưa xác nhận).
  * Các bài báo ngoài vẫn có chữ chất liệu cũ ở đoạn khác: không sửa được trang của báo.
  */
+import { liveList, type EditableField, type EditableSet } from './liveContent'
+
 export interface PressArticle {
   outlet: string
   logo: string
@@ -21,7 +23,7 @@ export interface PressArticle {
   date?: string
 }
 
-export const PRESS: readonly PressArticle[] = [
+const BASE_PRESS: readonly PressArticle[] = [
   {
     outlet: 'Hội Chữ thập đỏ Việt Nam',
     logo: '/images/press/hoi-chu-thap-do.webp',
@@ -58,3 +60,24 @@ export const PRESS: readonly PressArticle[] = [
     date: '08/03/2025',
   },
 ]
+
+/** Báo chí nói về Ecopillo: Ecopillo tự sửa trong WordPress (liveContent.ts) */
+export const PRESS_SET: EditableSet = {
+  khoa: 'bao-chi',
+  nhom: 'Trang chủ',
+  ten: 'Báo chí nói về Ecopillo',
+  moTa: 'Các ô trích lời báo chí (logo, câu trích, link bài gốc).',
+  kieu: 'nhieu',
+  goc: BASE_PRESS,
+  tieuDeDong: 'outlet',
+  truong: [
+    { khoa: 'outlet', nhan: 'Tên báo, đơn vị', kieu: 'chu', batBuoc: true },
+    { khoa: 'logo', nhan: 'Logo (link ảnh)', kieu: 'link', batBuoc: true, goiY: 'Tải logo vào Thư viện, dán link ảnh' },
+    { khoa: 'quote', nhan: 'Câu trích', kieu: 'doan', batBuoc: true },
+    { khoa: 'speaker', nhan: 'Người nói (nếu không phải lời của báo)', kieu: 'chu' },
+    { khoa: 'url', nhan: 'Link bài gốc', kieu: 'link', goiY: 'Để trống thì không hiện nút Đọc bài' },
+    { khoa: 'date', nhan: 'Ngày đăng', kieu: 'chu', goiY: 'dd/mm/yyyy' },
+  ] satisfies EditableField[],
+}
+
+export const PRESS: readonly PressArticle[] = liveList(PRESS_SET.khoa, BASE_PRESS, PRESS_SET.truong, (): PressArticle => ({ outlet: '', logo: '', quote: '' }))

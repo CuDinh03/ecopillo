@@ -1,4 +1,6 @@
 import type { ImageSource } from './catalog'
+import { slugify } from '../lib/slug'
+import { liveList, liveObject, type EditableField, type EditableSet } from './liveContent'
 
 /**
  * Sự kiện Ecopillo đồng hành (yêu cầu khách 16/10/2026, mục 35), hiện ở cuối phần "Về chúng tôi" trang chủ
@@ -38,7 +40,7 @@ const eventWideImage = (key: string, alt: string): ImageSource => ({
 })
 
 /** Sự kiện nổi bật (thẻ lớn): đủ tên, ngày, nơi, con số, và có bài viết trên web cũ */
-export const FEATURED_EVENT: BrandEvent = {
+const BASE_FEATURED_EVENT: BrandEvent = {
   id: 'chan-am-yeu-thuong',
   kind: 'Thiện nguyện',
   title: 'Chương trình trao quà “Chăn ấm yêu thương”',
@@ -50,7 +52,7 @@ export const FEATURED_EVENT: BrandEvent = {
 }
 
 /** Các sự kiện còn lại (lưới nhỏ). Ô cuối kéo rộng hai cột trên máy tính nên cần ảnh ngang */
-export const OTHER_EVENTS: readonly BrandEvent[] = [
+const BASE_OTHER_EVENTS: readonly BrandEvent[] = [
   {
     id: 'esg-dan-tri',
     kind: 'Hội thảo',
@@ -78,7 +80,7 @@ export const OTHER_EVENTS: readonly BrandEvent[] = [
  * Tên, ngày, nơi, con số chép từ bài viết trên web cũ (giữ đúng link); ảnh lấy từ chính bài đó,
  * nén bằng tools/nen-anh-su-kien-lon-2026-10-27.py. Bài khai trương Đà Nẵng (14/06/2026) chưa đưa: ảnh bìa in chữ chất liệu cũ.
  */
-export const MAJOR_EVENTS: readonly BrandEvent[] = [
+const BASE_MAJOR_EVENTS: readonly BrandEvent[] = [
   {
     id: 'thuong-hieu-dan-dau-2025',
     kind: 'Giải thưởng',
@@ -100,3 +102,35 @@ export const MAJOR_EVENTS: readonly BrandEvent[] = [
     image: eventWideImage('khai-truong-hcm-ngang', 'Lễ cắt băng khai trương chi nhánh Ecopillo TP. Hồ Chí Minh, có múa lân'),
   },
 ]
+
+/* ——— Ecopillo tự sửa trong WordPress (liveContent.ts) ——— */
+
+const EVENT_KINDS = ['Thiện nguyện', 'Đồng hành', 'Hội thảo', 'Giải thưởng', 'Khai trương'] as const
+const EVENT_FIELDS: readonly EditableField[] = [
+  { khoa: 'title', nhan: 'Tên sự kiện', kieu: 'chu', batBuoc: true },
+  { khoa: 'kind', nhan: 'Nhãn', kieu: 'chon', batBuoc: true, luaChon: EVENT_KINDS },
+  { khoa: 'when', nhan: 'Ngày, nơi', kieu: 'chu', goiY: 'Ví dụ 14/08/2025 · TP. Hồ Chí Minh' },
+  { khoa: 'summary', nhan: 'Đoạn mô tả', kieu: 'doan' },
+  { khoa: 'postSlug', nhan: 'Đường link bài viết (phần sau ecopillo.com.vn/)', kieu: 'chu', goiY: 'Chỉ hiện nút Đọc bài viết khi bài đã có trên web' },
+  { khoa: 'image', nhan: 'Ảnh dọc (4:5)', kieu: 'anh', batBuoc: true },
+  { khoa: 'wideImage', nhan: 'Ảnh ngang (16:10, cho ô rộng)', kieu: 'anh' },
+]
+
+const eventSet = (khoa: string, ten: string, moTa: string, kieu: 'mot' | 'nhieu', goc: unknown): EditableSet => ({
+  khoa, nhom: 'Trang chủ', ten, moTa, kieu, goc, truong: EVENT_FIELDS, tieuDeDong: 'title', khoaDong: 'id',
+})
+
+export const FEATURED_EVENT_SET = eventSet('su-kien-noi-bat', 'Sự kiện nổi bật', 'Thẻ lớn ở khối "Ecopillo đồng hành" (trang chủ, trang Quà tặng và sự kiện) và câu nhắc ở trang Giới thiệu. Nên dùng ảnh ngang.', 'mot', BASE_FEATURED_EVENT)
+export const OTHER_EVENTS_SET = eventSet('su-kien', 'Sự kiện khác', 'Lưới ô nhỏ cạnh sự kiện nổi bật. Ô cuối kéo rộng trên máy tính: cần ảnh ngang.', 'nhieu', BASE_OTHER_EVENTS)
+export const MAJOR_EVENTS_SET = eventSet('su-kien-lon', 'Sự kiện lớn', 'Hàng sự kiện lớn, chỉ ở trang Quà tặng và sự kiện.', 'nhieu', BASE_MAJOR_EVENTS)
+
+const newEvent = (base: readonly BrandEvent[]) => (i: number, row: Record<string, unknown>): BrandEvent => {
+  const found = base.find((e) => e.id === row.id)
+  if (found) return { ...found }
+  const title = typeof row.title === 'string' ? row.title : ''
+  return { id: slugify(title) || `su-kien-${i + 1}`, kind: 'Đồng hành', title, image: { src: '', srcSet: '', alt: '' } }
+}
+
+export const FEATURED_EVENT: BrandEvent = liveObject(FEATURED_EVENT_SET.khoa, BASE_FEATURED_EVENT, EVENT_FIELDS)
+export const OTHER_EVENTS: readonly BrandEvent[] = liveList(OTHER_EVENTS_SET.khoa, BASE_OTHER_EVENTS, EVENT_FIELDS, newEvent(BASE_OTHER_EVENTS))
+export const MAJOR_EVENTS: readonly BrandEvent[] = liveList(MAJOR_EVENTS_SET.khoa, BASE_MAJOR_EVENTS, EVENT_FIELDS, newEvent(BASE_MAJOR_EVENTS))

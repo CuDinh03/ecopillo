@@ -47,8 +47,8 @@ function trackingHtml(): Plugin {
   }
 }
 
-/** Đường file giá Ecopillo sửa trong WooCommerce, do plugin WordPress ghi (src/data/liveData.ts, gia-woo.php) */
-const LIVE_PRICES_SRC = '/wp-content/uploads/ecopillo-du-lieu/gia.js'
+/** File giá (WooCommerce) và nội dung Ecopillo sửa trong WordPress, do plugin ghi (src/data/liveData.ts, liveContent.ts; gia-woo.php, noi-dung.php) */
+const LIVE_PRICES_SRC = '/wp-content/uploads/ecopillo-du-lieu/du-lieu.js'
 
 /**
  * Bản chạy thật: nạp file giá mới nhất trước gói JS chính (defer giữ thứ tự với script module).

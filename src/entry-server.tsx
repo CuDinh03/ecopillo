@@ -59,6 +59,8 @@ export function listPrerenderPaths(): string[] {
 export { SITE_ORIGIN, HOST_REDIRECTS }
 /** Khung giá cho plugin WordPress đọc giá Ecopillo sửa trong WooCommerce (src/data/priceFrame.ts) */
 export { buildPriceFrame } from './data/priceFrame'
+/** Các bộ nội dung Ecopillo tự sửa (src/data/contentFrame.ts) */
+export { buildContentFrame } from './data/contentFrame'
 
 /**
  * Dựng sẵn HTML một trang lúc build (tools/dung-san-html.mjs gọi). Chạy đúng bộ định tuyến và component của trình duyệt.

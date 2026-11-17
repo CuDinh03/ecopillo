@@ -52,7 +52,7 @@ if (!existsSync(join(BUILD, 'index.html'))) {
 
 rmSync(OUT, { recursive: true, force: true })
 // khung-gia.json chỉ dành cho plugin WordPress (giá WooCommerce, src/data/priceFrame.ts); có tên link cũ chữ chất liệu cũ của Woo
-cpSync(BUILD, SITE, { recursive: true, filter: (src) => !src.endsWith('khung-gia.json') })
+cpSync(BUILD, SITE, { recursive: true, filter: (src) => !/(khung-gia|noi-dung-goc)\.json$/.test(src) })
 cpSync(join(SOURCE, 'tinh'), SITE, { recursive: true })
 cpSync(join(SOURCE, 'functions'), join(OUT, 'functions'), { recursive: true })
 
