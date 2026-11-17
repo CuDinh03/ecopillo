@@ -61,6 +61,9 @@ cái Ecopillo được tự sửa, hay xong một bước chuyển web, thì s�
   chỉ dùng để rà và chau chuốt. Chúng khuyên đổi font, màu, bố cục thì **quy tắc trong file này và quyết định owner đã chốt thắng**.
 - **Không dùng `<select>` của trình duyệt** (danh sách xổ xuống màu xám của macOS, owner chê 15/10/2026): dùng `Select` trong `src/components/ui/Select.tsx`.
 - Dữ liệu (chữ, giá, ảnh, liên hệ) nằm trong `src/data/`, không viết cứng trong component.
+- **Giao diện là khung, Ecopillo tự sửa dữ liệu trong WordPress** (owner 18/11/2026, đè Q1): `docs/ke-hoach-khach-tu-sua-du-lieu.md`. Đừng thêm dữ liệu cứng mới mà Ecopillo sẽ cần đổi.
+  Giá, hết hàng: sửa trong WooCommerce, plugin ghi `gia.js`, web ghép đè lên `catalog.ts`/`products.ts` (`src/data/liveData.ts`); giá trong code chỉ là giá lúc dựng.
+  **Dữ liệu Ecopillo không ra khỏi WordPress** (đơn, tin nhắn chỉ ở mục Đơn web + email Ecopillo): không thêm Google Sheet, GitHub hay dịch vụ ngoài nào nhận dữ liệu.
 - **Không dùng chữ "Tencel" và "60s"** ở bất cứ đâu: chữ trên web, alt ảnh, tên file ảnh, comment, tài liệu gửi khách.
   Chất liệu gọi là **Lyocell** (owner yêu cầu bỏ hoàn toàn ngày 14/10/2026, tiếp theo biên bản mục 32).
   Web cũ còn hai chữ đó (cả trong đường link): giao diện mới đổi **hết** thành Lyocell, kể cả link (owner chốt 15/10/2026).
