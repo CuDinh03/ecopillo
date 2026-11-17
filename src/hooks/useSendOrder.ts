@@ -3,6 +3,7 @@ import type { CustomerInfo, OrderSummaryData } from '../lib/order'
 import { scrollToElement } from '../lib/scroll'
 import { sendOrder, type SendResult } from '../lib/sendForm'
 import { provinceById } from '../lib/shipping'
+import { trackOrder } from '../lib/tracking'
 
 /** id khung báo lỗi gửi đơn, để cuộn tới khi gửi không được (khách bấm ở thanh dưới trên điện thoại) */
 export const SEND_ERROR_ID = 'loi-gui-don'
@@ -36,6 +37,7 @@ export function useSendOrder(): SendOrderState {
         startedAt,
       })
       setResult(sent)
+      if (sent.delivered) trackOrder(sent.code, summary.subtotal ? summary.total : null, summary.line?.name ?? '')
     } catch {
       setFailed(true)
       requestAnimationFrame(() => {

@@ -5,6 +5,7 @@ import { PATHS } from '../../data/links'
 import { isValidPhone } from '../../lib/order'
 import { focusField, scrollToElement } from '../../lib/scroll'
 import { sendMessage, type SendResult } from '../../lib/sendForm'
+import { trackMessage } from '../../lib/tracking'
 import { Icon } from '../ui/Icon'
 import { PreviewNotSent } from '../ui/PreviewNotSent'
 import { SendFailed } from '../ui/SendFailed'
@@ -146,6 +147,7 @@ export function MessageForm({
         startedAt,
       })
       setSent({ form, result })
+      if (result.delivered) trackMessage(form.topic)
     } catch {
       setFailed(true)
       requestAnimationFrame(() => {

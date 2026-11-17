@@ -1,6 +1,7 @@
-import { Suspense, useEffect } from 'react'
+import { Suspense, useEffect, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { hasOwnBuyBar, PATHS } from '../../data/links'
+import { trackPageView } from '../../lib/tracking'
 import { BackToTop } from './BackToTop'
 import { ContactDock } from './ContactDock'
 import { Footer } from './Footer'
@@ -60,8 +61,24 @@ function useScrollOnNavigate() {
   }, [pathname, hash, keepScroll])
 }
 
+/** Báo lượt xem trang cho GTM / Pixel mỗi lần chuyển trang trong web (lần mở đầu mã trong index.html đã đếm) */
+function usePageViewTracking() {
+  const { pathname, search } = useLocation()
+  const first = useRef(true)
+  useEffect(() => {
+    if (first.current) {
+      first.current = false
+      return
+    }
+    // Đợi trang mới đặt tiêu đề tab (usePageMeta) rồi mới báo
+    const timer = window.setTimeout(() => trackPageView(pathname + search), 400)
+    return () => window.clearTimeout(timer)
+  }, [pathname, search])
+}
+
 export function SiteLayout() {
   useScrollOnNavigate()
+  usePageViewTracking()
   // Hiện dần khi cuộn: do public/hieu-ung/ecopillo-hieu-ung.js lo cho cả trang (thay useScrollReveal)
   const { pathname, hash } = useLocation()
   // Trang đặt hàng và chi tiết sản phẩm có thanh dưới riêng (giá + gọi/Zalo)

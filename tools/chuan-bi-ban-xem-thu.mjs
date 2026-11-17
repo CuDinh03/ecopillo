@@ -68,6 +68,8 @@ if (indexHtml.includes('content="https://ecopillo.com.vn/')) problems.push('inde
 if (!readFileSync(join(SITE, 'robots.txt'), 'utf8').includes('Disallow: /')) problems.push('robots.txt không chặn')
 if (!readFileSync(join(SITE, '_headers'), 'utf8').includes('X-Robots-Tag: noindex')) problems.push('_headers thiếu X-Robots-Tag')
 if (!existsSync(join(OUT, 'functions/_middleware.js'))) problems.push('thiếu functions/_middleware.js (cổng hỏi mã)')
+// Bản xem thử không mang mã đo GTM / Pixel (số liệu thật không được lẫn lượt xem thử), xem vite.config.ts
+if (/googletagmanager\.com\/gtm\.js|connect\.facebook\.net/.test(indexHtml)) problems.push('index.html bản xem thử có mã GTM / Pixel')
 
 // Bản xem thử phải mang thông báo "chưa gửi đi"
 const bundle = walk(join(SITE, 'assets'))
