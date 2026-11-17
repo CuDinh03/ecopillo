@@ -1,12 +1,12 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
 import { PATHS } from '../../data/links'
 import { productPath, singleOrderUrl, singleUnitPrice, variantPrice, type Product } from '../../data/products'
 import { formatVND } from '../../lib/format'
+import { SEND_ERROR_ID, useSendOrder } from '../../hooks/useSendOrder'
 import { focusField } from '../../lib/scroll'
 import {
-  createOrderCode,
   createSingleDraft,
   MAX_QUANTITY,
   summarizeSingle,
@@ -16,6 +16,7 @@ import {
   type SingleDraft,
 } from '../../lib/order'
 import { Icon } from '../ui/Icon'
+import { SendFailed } from '../ui/SendFailed'
 import { buttonClass, Container } from '../ui/primitives'
 import { QuantityStepper } from '../ui/QuantityStepper'
 import { Confirmation } from './Confirmation'
@@ -37,7 +38,7 @@ interface SingleOrderProps {
 export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOrderProps) {
   const [draft, setDraft] = useState<SingleDraft>(() => createSingleDraft(product, choiceId, thickness, quantity))
   const [errors, setErrors] = useState<CustomerErrors>({})
-  const [orderCode, setOrderCode] = useState('')
+  const order = useSendOrder()
   const topRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   const summary = useMemo(() => summarizeSingle(draft), [draft])
@@ -61,7 +62,7 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
     })
   }
 
-  const submit = () => {
+  const submit = async () => {
     if (!hasChoice) {
       document.getElementById('chon-lua-chon')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       return
@@ -73,16 +74,21 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
       focusField(`f-${firstError}`)
       return
     }
-    setOrderCode(createOrderCode())
-    requestAnimationFrame(() => topRef.current?.scrollIntoView({ block: 'start' }))
+    await order.send(draft.customer, summary)
   }
 
-  if (orderCode) {
+  // Gửi xong: màn hình cảm ơn thay chỗ form, đưa khách về đầu khung
+  useEffect(() => {
+    if (order.result) requestAnimationFrame(() => topRef.current?.scrollIntoView({ block: 'start' }))
+  }, [order.result])
+
+  if (order.result) {
     return (
       <div ref={topRef} className="scroll-mt-24 bg-ivory py-14 sm:py-20">
         <Container>
           <Confirmation
-            orderCode={orderCode}
+            orderCode={order.result.code}
+            delivered={order.result.delivered}
             summary={summary}
             customer={draft.customer}
             onNewOrder={() => navigate(PATHS.products)}
@@ -160,11 +166,22 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
             </section>
 
             <StepCustomer customer={draft.customer} errors={errors} summary={summary} onChange={changeCustomer} />
+            {order.failed && (
+              <div id={SEND_ERROR_ID} className="scroll-mt-[5.5rem] scroll-mb-40">
+                <SendFailed what="đơn hàng" />
+              </div>
+            )}
 
             <div className="hidden items-center justify-between gap-4 border-t border-ivory pt-8 lg:flex">
               <p className="text-sm text-ink-soft">{hint}</p>
-              <button type="button" onClick={submit} disabled={!hasChoice} className={buttonClass('primary', 'lg')}>
-                Đặt hàng
+              <button
+                type="button"
+                onClick={() => void submit()}
+                disabled={!hasChoice || order.sending}
+                aria-busy={order.sending}
+                className={buttonClass('primary', 'lg')}
+              >
+                {order.sending ? 'Đang gửi đơn…' : 'Đặt hàng'}
                 <Icon name="arrowRight" size={18} />
               </button>
             </div>
@@ -180,10 +197,10 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
       <MobileOrderBar
         amount={summary.subtotal ? summary.total : 0}
         amountLabel={summary.priceOnCall ? 'Giá báo khi gọi xác nhận' : 'Tổng cộng'}
-        nextLabel="Đặt hàng"
+        nextLabel={order.sending ? 'Đang gửi đơn…' : 'Đặt hàng'}
         hint={hint}
-        canContinue={hasChoice}
-        onNext={submit}
+        canContinue={hasChoice && !order.sending}
+        onNext={() => void submit()}
       />
     </div>
   )

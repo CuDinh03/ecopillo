@@ -11,8 +11,7 @@ export const PREVIEW_NOTICE = {
   title: 'Bản xem thử giao diện',
   intro: 'Đây là bản xem thử để Ecopillo duyệt giao diện, chưa phải website chính thức.',
   points: [
-    'Đơn hàng và tin nhắn gửi trên trang này chưa được chuyển tới Ecopillo.',
-    'Ô vàng viền gạch là chỗ còn chờ Ecopillo gửi hoặc xác nhận nội dung.',
+    'Đơn hàng và tin nhắn gửi trên trang này chỉ để thử: Ecopillo không gọi lại hay giao hàng theo các đơn này.',
     'Câu chuyện phối màu có nhãn "Bản nháp" đang chờ Ecopillo duyệt.',
     'Bài viết mới có 3 bài mẫu; bài thật sẽ lấy từ WordPress.',
   ],

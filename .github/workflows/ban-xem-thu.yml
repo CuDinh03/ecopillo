@@ -5,6 +5,8 @@
 #   CLOUDFLARE_API_TOKEN   token Cloudflare, quyền Account → Cloudflare Pages → Edit
 #   CLOUDFLARE_ACCOUNT_ID  mã tài khoản Cloudflare
 #   XEM_THU_MA             mã xem thử gửi khách (đổi là chặn mọi link cũ)
+#   GOOGLE_SCRIPT_URL      (không bắt buộc) link /exec của Apps Script nhận form: trien-khai/google-apps-script/nhan-form.gs
+#   GOOGLE_SCRIPT_KHOA     (không bắt buộc) khoá bí mật, trùng thuộc tính KHOA trong Apps Script
 name: Bản xem thử
 
 on:
@@ -80,9 +82,18 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           XEM_THU_MA: ${{ secrets.XEM_THU_MA }}
+          GOOGLE_SCRIPT_URL: ${{ secrets.GOOGLE_SCRIPT_URL }}
+          GOOGLE_SCRIPT_KHOA: ${{ secrets.GOOGLE_SCRIPT_KHOA }}
           WRANGLER: npx --yes wrangler@4.142.0
         run: |
           # Lần đầu: tạo dự án (đã có thì bỏ qua), rồi đặt mã xem thử cho cổng hỏi mã
           $WRANGLER pages project create "$PROJECT" --production-branch=main || true
           printf '%s' "$XEM_THU_MA" | $WRANGLER pages secret put XEM_THU_MA --project-name="$PROJECT"
+          # Form và đơn hàng (functions/api/gui.js): chỉ nối Google khi đã đặt hai secret dưới.
+          # Chưa đặt: hàm không gửi đi đâu, web ghi "chưa gửi đi" như trước. Đơn từ bản xem thử ghi [XEM THỬ].
+          if [ -n "$GOOGLE_SCRIPT_URL" ] && [ -n "$GOOGLE_SCRIPT_KHOA" ]; then
+            printf '%s' "$GOOGLE_SCRIPT_URL" | $WRANGLER pages secret put GOOGLE_SCRIPT_URL --project-name="$PROJECT"
+            printf '%s' "$GOOGLE_SCRIPT_KHOA" | $WRANGLER pages secret put GOOGLE_SCRIPT_KHOA --project-name="$PROJECT"
+            printf '1' | $WRANGLER pages secret put LA_XEM_THU --project-name="$PROJECT"
+          fi
           $WRANGLER pages deploy site --project-name="$PROJECT" --branch=main --commit-dirty=true

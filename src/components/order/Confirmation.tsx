@@ -10,13 +10,15 @@ import { buttonClass, ContactButtons } from '../ui/primitives'
 
 interface ConfirmationProps {
   orderCode: string
+  /** Đơn đã ghi vào trang tính của Ecopillo (src/lib/sendForm.ts) */
+  delivered: boolean
   summary: OrderSummaryData
   customer: CustomerInfo
   onNewOrder: () => void
 }
 
 /** Biên bản mục 50: màn hình cuối là lời cảm ơn, rồi nhân viên gọi xác nhận đơn */
-export function Confirmation({ orderCode, summary, customer, onNewOrder }: ConfirmationProps) {
+export function Confirmation({ orderCode, delivered, summary, customer, onNewOrder }: ConfirmationProps) {
   const { line, subtotal, shippingFee, total, priceOnCall } = summary
   if (!line) return null
 
@@ -51,7 +53,7 @@ export function Confirmation({ orderCode, summary, customer, onNewOrder }: Confi
           Nhân viên Ecopillo sẽ gọi điện xác nhận đơn trong thời gian sớm nhất.
         </p>
         <p className="mt-2 text-sm text-ink-soft">Quý khách chưa cần thanh toán gì lúc này.</p>
-        <PreviewNotSent className="mx-auto mt-6 max-w-md" />
+        <PreviewNotSent delivered={delivered} className="mx-auto mt-6 max-w-md" />
       </div>
 
       <ol className="mt-10 grid gap-3 sm:grid-cols-3">

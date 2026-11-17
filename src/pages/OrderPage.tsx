@@ -7,13 +7,13 @@ import { StepPattern } from '../components/order/StepPattern'
 import { StepSize } from '../components/order/StepSize'
 import { Stepper, type StepNumber } from '../components/order/Stepper'
 import { Icon } from '../components/ui/Icon'
+import { SendFailed } from '../components/ui/SendFailed'
 import { buttonClass, Container } from '../components/ui/primitives'
 import { CONTACT } from '../data/brand'
 import { collectionById, isSizeSoldOut, type SheetStyle, type SizeId } from '../data/catalog'
 import { productBySlug } from '../data/products'
 import {
   createDraft,
-  createOrderCode,
   MAX_QUANTITY,
   summarize,
   validateCustomer,
@@ -24,6 +24,7 @@ import {
 import { SingleOrder } from '../components/order/SingleOrder'
 import { MobileOrderBar, OrderAssurances } from '../components/order/OrderChrome'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { SEND_ERROR_ID, useSendOrder } from '../hooks/useSendOrder'
 import { focusField, scrollToElement } from '../lib/scroll'
 
 const COLLECTION_PARAM = 'bo-suu-tap'
@@ -72,7 +73,7 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
   // Đến từ trang chi tiết đã chọn mẫu: vào thẳng bước kích thước & số lượng
   const [view, setView] = useState<View>(() => (draft.patternCode ? 2 : 1))
   const [errors, setErrors] = useState<CustomerErrors>({})
-  const [orderCode, setOrderCode] = useState('')
+  const order = useSendOrder()
   const topRef = useRef<HTMLDivElement>(null)
 
   const summary = useMemo(() => summarize(draft), [draft])
@@ -153,7 +154,7 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
     else if (view === 1) showMissing(summary.collection ? 'chon-mau' : 'chon-bo', summary.collection ? 'Quý khách chọn một mẫu để tiếp tục.' : 'Quý khách chọn bộ sưu tập và mẫu để tiếp tục.')
     else if (view === 2 && summary.size) setView(3)
     else if (view === 2) showMissing('chon-kich-thuoc', 'Quý khách chọn một kích thước còn hàng để tiếp tục.')
-    else if (view === 3) submit()
+    else if (view === 3) void submit()
   }
 
   const goBack = () => {
@@ -161,7 +162,7 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
     else if (view === 3) setView(2)
   }
 
-  const submit = () => {
+  const submit = async () => {
     const found = validateCustomer(draft.customer)
     setErrors(found)
     const firstError = Object.keys(found)[0]
@@ -169,28 +170,41 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
       focusField(`f-${firstError}`)
       return
     }
-    setOrderCode(createOrderCode())
-    setView('done')
+    await order.send(draft.customer, summary)
   }
+
+  // Gửi xong thì sang màn hình cảm ơn (đổi bước để hiệu ứng cuộn về đầu khung chạy như khi đổi bước)
+  useEffect(() => {
+    if (order.result) setView('done')
+  }, [order.result])
 
   const startOver = () => {
     setDraft(createDraft(null))
     setErrors({})
     setSearchParams({}, { replace: true })
+    order.reset()
     setView(1)
   }
 
+  // Chỉ sang 'done' khi đã có kết quả gửi (hiệu ứng ngay trên)
   if (view === 'done') {
     return (
       <div ref={topRef} className="scroll-mt-24 py-14 sm:py-20">
         <Container>
-          <Confirmation orderCode={orderCode} summary={summary} customer={draft.customer} onNewOrder={startOver} />
+          <Confirmation
+            orderCode={order.result?.code ?? ''}
+            delivered={order.result?.delivered ?? false}
+            summary={summary}
+            customer={draft.customer}
+            onNewOrder={startOver}
+          />
         </Container>
       </div>
     )
   }
 
-  const nextLabel = view === 1 ? 'Chọn kích thước' : view === 2 ? 'Nhập thông tin nhận' : 'Đặt hàng'
+  const nextLabel =
+    view === 1 ? 'Chọn kích thước' : view === 2 ? 'Nhập thông tin nhận' : order.sending ? 'Đang gửi đơn…' : 'Đặt hàng'
   const hint =
     view === 1 && !summary.pattern
       ? summary.collection
@@ -257,6 +271,11 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
                 onChange={changeCustomer}
               />
             )}
+            {view === 3 && order.failed && (
+              <div id={SEND_ERROR_ID} className="mt-8 scroll-mb-40 scroll-mt-[5.5rem]">
+                <SendFailed what="đơn hàng" />
+              </div>
+            )}
 
             {/* Nút điều hướng trên máy tính — điện thoại dùng thanh dưới */}
             <div className="mt-12 hidden items-center justify-between gap-4 border-t border-ivory pt-8 lg:flex">
@@ -264,8 +283,9 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
               <button
                 type="button"
                 onClick={goNext}
-                aria-disabled={!canContinue}
-                className={buttonClass('primary', 'lg', canContinue ? '' : 'opacity-45')}
+                aria-disabled={!canContinue || order.sending}
+                aria-busy={order.sending}
+                className={buttonClass('primary', 'lg', canContinue && !order.sending ? '' : 'opacity-45')}
               >
                 {nextLabel}
                 <Icon name="arrowRight" size={18} />
@@ -285,7 +305,7 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
         amountLabel={view === 3 ? 'Tổng cộng' : 'Tạm tính'}
         nextLabel={nextLabel}
         hint={hint}
-        canContinue={canContinue}
+        canContinue={canContinue && !order.sending}
         onNext={goNext}
       />
     </div>

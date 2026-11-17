@@ -1,9 +1,18 @@
 import { IS_PREVIEW, PREVIEW_NOTICE } from '../../data/preview'
 import { Icon } from './Icon'
 
-/** Màn hình cảm ơn trên bản xem thử: nói rõ đơn/tin nhắn chưa gửi đi, để khách không chờ cuộc gọi */
-export function PreviewNotSent({ className = '' }: { className?: string }) {
-  if (!IS_PREVIEW) return null
+interface PreviewNotSentProps {
+  /** true: đơn / tin nhắn đã ghi vào trang tính của Ecopillo (src/lib/sendForm.ts), không cần ghi chú */
+  delivered: boolean
+  className?: string
+}
+
+/**
+ * Màn hình cảm ơn trên bản xem thử khi hàm gửi chưa nối Apps Script: nói rõ đơn/tin nhắn chưa gửi đi,
+ * để khách không chờ cuộc gọi. Bản chạy thật không bao giờ tới màn hình cảm ơn khi chưa gửi được.
+ */
+export function PreviewNotSent({ delivered, className = '' }: PreviewNotSentProps) {
+  if (delivered || !IS_PREVIEW) return null
   return (
     <p
       role="note"

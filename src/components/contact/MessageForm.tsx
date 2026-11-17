@@ -1,17 +1,19 @@
-import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
+import { useEffect, useId, useState, type FormEvent, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { OPENING_HOURS } from '../../data/brand'
 import { PATHS } from '../../data/links'
 import { isValidPhone } from '../../lib/order'
-import { focusField } from '../../lib/scroll'
+import { focusField, scrollToElement } from '../../lib/scroll'
+import { sendMessage, type SendResult } from '../../lib/sendForm'
 import { Icon } from '../ui/Icon'
 import { PreviewNotSent } from '../ui/PreviewNotSent'
+import { SendFailed } from '../ui/SendFailed'
 import { buttonClass } from '../ui/primitives'
 
 /**
- * Form "Gửi tin nhắn cho chúng tôi" (trang Liên hệ mua hàng, trang Khách sạn).
- * Trên WordPress, form này nối vào form liên hệ đang dùng (Contact Form 7 / Flatsome) để tin nhắn
- * về ecopillo.com.vn@gmail.com (khách chốt 09/11/2026: mọi form đăng ký đều gửi về email này). Ô "Quý khách cần" giúp Ecopillo biết khách hỏi gì nhiều nhất.
+ * Form "Gửi tin nhắn cho chúng tôi" (trang Liên hệ mua hàng, trang Khách sạn, Đăng ký mở đại lý).
+ * Gửi qua src/lib/sendForm.ts → hàm Cloudflare → Google Apps Script: ghi trang tính và gửi email về Gmail Ecopillo
+ * (khách chốt 09/11/2026: mọi form đều gửi về email này). Ô "Quý khách cần" giúp Ecopillo biết khách hỏi gì nhiều nhất.
  */
 
 export const TOPICS = [
@@ -91,7 +93,13 @@ export function MessageForm({
   const initial: ContactForm = { ...EMPTY_FORM, topic: defaultTopic, message: defaultMessage }
   const [form, setForm] = useState<ContactForm>(initial)
   const [errors, setErrors] = useState<ContactErrors>({})
-  const [sent, setSent] = useState<ContactForm | null>(null)
+  const [sent, setSent] = useState<{ form: ContactForm; result: SendResult } | null>(null)
+  const [sending, setSending] = useState(false)
+  const [failed, setFailed] = useState(false)
+  // Ô bẫy ẩn (người thật không thấy nên để trống) và lúc mở form: để hàm nhận biết máy tự điền
+  const [trap, setTrap] = useState('')
+  const [startedAt] = useState(() => Date.now())
+  const errorId = `c-loi-gui-${useId()}`
 
   // Khi trang đẩy chữ mới (bấm "Liên hệ báo giá" một món): ghi vào ô nội dung, bỏ trạng thái đã gửi
   useEffect(() => {
@@ -116,8 +124,9 @@ export function MessageForm({
     })
   }
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault()
+    if (sending) return
     const found = validate(form)
     setErrors(found)
     const first = Object.keys(found)[0]
@@ -125,7 +134,27 @@ export function MessageForm({
       focusField(`c-${first}`)
       return
     }
-    setSent(form)
+    setSending(true)
+    setFailed(false)
+    try {
+      const result = await sendMessage({
+        topic: form.topic,
+        name: form.name,
+        phone: form.phone,
+        message: form.message,
+        trap,
+        startedAt,
+      })
+      setSent({ form, result })
+    } catch {
+      setFailed(true)
+      requestAnimationFrame(() => {
+        const box = document.getElementById(errorId)
+        if (box) scrollToElement(box, 'nearest')
+      })
+    } finally {
+      setSending(false)
+    }
   }
 
   if (sent) {
@@ -136,11 +165,11 @@ export function MessageForm({
         </span>
         <h3 className="font-display mt-6 text-[1.9rem] leading-tight text-deep-900">Ecopillo đã nhận tin nhắn</h3>
         <p className="mt-3 max-w-sm text-ink-soft">
-          Cảm ơn {sent.name.trim()}. Bộ phận Chăm sóc khách hàng sẽ gọi lại số{' '}
-          <span className="tabular font-medium text-deep-900">{sent.phone}</span> trong giờ làm việc ({OPENING_HOURS}).
+          Cảm ơn {sent.form.name.trim()}. Bộ phận Chăm sóc khách hàng sẽ gọi lại số{' '}
+          <span className="tabular font-medium text-deep-900">{sent.form.phone}</span> trong giờ làm việc ({OPENING_HOURS}).
         </p>
-        <p className="mt-2 text-sm text-ink-faint">Chủ đề: {sent.topic}</p>
-        <PreviewNotSent className="mt-6 max-w-sm" />
+        <p className="mt-2 text-sm text-ink-faint">Chủ đề: {sent.form.topic}</p>
+        <PreviewNotSent delivered={sent.result.delivered} className="mt-6 max-w-sm" />
         <button
           type="button"
           onClick={() => {
@@ -156,7 +185,12 @@ export function MessageForm({
   }
 
   return (
-    <form noValidate onSubmit={submit} className="space-y-6">
+    <form noValidate onSubmit={(e) => void submit(e)} className="space-y-6">
+      {/* Ô bẫy (đứng đầu: Tailwind 4 đặt khoảng space-y vào cạnh dưới mọi phần tử trừ phần tử cuối, ô nằm ngoài luồng nên không xô gì): ẩn với người dùng và trình đọc màn hình, máy tự điền thì hay điền vào */}
+      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label htmlFor="c-website">Website</label>
+        <input id="c-website" name="website" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
+      </div>
       <fieldset>
         <legend className="text-sm font-medium text-deep-900">Quý khách cần</legend>
         <div className="mt-3 flex flex-wrap gap-2">
@@ -221,6 +255,12 @@ export function MessageForm({
         />
       </Field>
 
+      {failed && (
+        <div id={errorId} className="scroll-mt-[5.5rem] scroll-mb-24">
+          <SendFailed what="tin nhắn" />
+        </div>
+      )}
+
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="max-w-sm text-meta leading-relaxed text-ink-faint">
           Ecopillo chỉ dùng thông tin này để liên hệ lại, theo{' '}
@@ -229,8 +269,13 @@ export function MessageForm({
           </Link>
           .
         </p>
-        <button type="submit" className={buttonClass('primary', 'lg', 'shrink-0')}>
-          {submitLabel}
+        <button
+          type="submit"
+          disabled={sending}
+          aria-busy={sending}
+          className={buttonClass('primary', 'lg', 'shrink-0')}
+        >
+          {sending ? 'Đang gửi…' : submitLabel}
           <Icon name="arrowRight" size={18} />
         </button>
       </div>

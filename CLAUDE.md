@@ -12,8 +12,11 @@ Trước khi đổi thứ gì đã có thì tra `docs/bo-nao/quyet-dinh.md`; xon
 - Khách đã chốt **Gói 1** (biên bản chốt 12/10/2026, file PDF trong `chot hop dong/`):
   WordPress giữ vai trò quản trị (bài viết, form, Yoast), còn giao diện mới này chạy phía trước.
 - Code ghi "biên bản mục NN" là trỏ tới mục đó trong biên bản chốt. Muốn đổi một quyết định có ghi mục thì hỏi owner trước.
-- **Chưa có backend.** Form liên hệ và đơn đặt hàng chỉ hiện màn hình cảm ơn, chưa gửi đi đâu.
-  Danh sách đại lý có thể lấy từ WordPress qua `VITE_DEALERS_URL` (xem `src/hooks/useDealers.ts`).
+- **Đơn hàng và form tin nhắn** (17/11/2026) gửi qua `src/lib/sendForm.ts` → hàm Cloudflare `trien-khai/xem-thu/functions/api/gui.js`
+  → Google Apps Script `trien-khai/google-apps-script/nhan-form.gs` (chạy bằng Gmail Ecopillo: ghi Google Trang tính + gửi email).
+  Hàm **chưa nối Apps Script** (thiếu `GOOGLE_SCRIPT_URL`, `GOOGLE_SCRIPT_KHOA`) thì không gửi đi đâu: bản xem thử ghi "chưa gửi đi",
+  bản chạy thật báo lỗi kèm hotline (không bao giờ hiện "đã nhận" khi chưa gửi được). `pnpm dev` không có hàm nên không gửi.
+  Không có máy chủ riêng nào khác. Danh sách đại lý có thể lấy từ WordPress qua `VITE_DEALERS_URL` (xem `src/hooks/useDealers.ts`).
 - Chưa đưa lên tên miền thật. Cách đưa lên và giữ SEO: `docs/de-xuat-seo-trien-khai.html` (đề xuất chuyển sang SSG, giữ link cũ, 301).
 - **Đường link giữ đúng như web cũ** (owner chốt 15/10/2026), chỉ đổi chữ chất liệu cũ trong link thành `lyocell` và 301 link cũ sang.
   Mọi đường link nằm ở `src/data/links.ts`; không viết link cứng trong component.
