@@ -12,7 +12,7 @@
  * khi Ecopillo báo mẫu hết thật thì thêm soldOut: ['180x200'] vào mẫu đó.
  */
 
-import { livePattern, markLiveDiffers, mergePrices } from './liveData'
+import { liveNewPatterns, livePattern, markLiveDiffers, mergePrices, type LiveNewPattern } from './liveData'
 
 export type SizeId = '160x200' | '180x200' | '200x220'
 
@@ -84,6 +84,10 @@ export interface Pattern {
   prices?: PriceTable
   /** Giá bộ ga chun chần (thay ga phủ chần), theo web cũ; không có thì mẫu này chưa đặt được ga chun chần */
   fittedPrices?: PriceTable
+  /** Mẫu Ecopillo thêm trong WooCommerce (liveData.ts): tên trên link, ảnh chính, ảnh phụ lấy từ Thư viện WordPress */
+  slug?: string
+  image?: ImageSource
+  gallery?: readonly ImageSource[]
 }
 
 /** Kiểu ga trong bộ: ga phủ chần (mặc định) hoặc ga chun chần (mục 28) */
@@ -416,9 +420,41 @@ const withLivePattern = (collection: Collection, pattern: Pattern): Pattern => {
   }
 }
 
+/** Mẫu mới Ecopillo thêm trong WooCommerce (giai đoạn 4). Thiếu giá cỡ nào thì lấy giá chung của bộ */
+const newPattern = (collection: Collection, p: LiveNewPattern): Pattern => {
+  const prices = { ...collection.prices, ...p.gia } as PriceTable
+  const chun = p.giaChun && SIZES.every((s) => p.giaChun?.[s.id] !== undefined) ? (p.giaChun as PriceTable) : undefined
+  const soldOut = p.het.filter((id): id is SizeId => SIZES.some((s) => s.id === id))
+  return {
+    code: p.ma,
+    colorName: p.ten,
+    swatch: '#d9d4cc',
+    isNew: true,
+    hasImage: true,
+    slug: p.duongDan,
+    image: { ...p.anh, alt: p.anh.alt || `${collection.name} ${p.ma} · ${p.ten}` },
+    gallery: p.anhPhu.map((img, i) => ({ ...img, alt: img.alt || `${collection.name} ${p.ma} · ${p.ten} · ảnh ${i + 2}` })),
+    prices,
+    ...(chun && collection.hasFittedOption ? { fittedPrices: chun } : {}),
+    ...(soldOut.length ? { soldOut } : {}),
+  }
+}
+
+const withNewPatterns = (collection: Collection, patterns: readonly Pattern[]): readonly Pattern[] => {
+  const extra = liveNewPatterns(collection.id)
+    .filter((p) => !patterns.some((q) => q.code === p.ma))
+    .map((p) => newPattern(collection, p))
+  if (!extra.length) return patterns
+  markLiveDiffers()
+  return [...patterns, ...extra]
+}
+
 export const COLLECTIONS: readonly Collection[] = BASE_COLLECTIONS.map((c) => ({
   ...c,
-  patterns: c.patterns.map((p) => withLivePattern(c, p)),
+  patterns: withNewPatterns(
+    c,
+    c.patterns.map((p) => withLivePattern(c, p)),
+  ),
 }))
 
 export const BEDDING_SETS = COLLECTIONS.filter((c) => c.kind !== 'chan-he')
@@ -624,6 +660,7 @@ export const PATTERN_GALLERY_COUNTS: Readonly<Record<string, number>> = {
 
 /** Ảnh phụ của một phối màu (không gồm ảnh chính). */
 export const patternGallery = (collection: Collection, pattern: Pattern | undefined): ImageSource[] => {
+  if (pattern?.gallery) return [...pattern.gallery]
   if (!pattern?.hasImage) return []
   const key = pattern.imageKey ?? pattern.code
   const n = PATTERN_GALLERY_COUNTS[key] ?? 0
@@ -636,9 +673,10 @@ export const patternGallery = (collection: Collection, pattern: Pattern | undefi
 }
 
 export const imageOfPattern = (collection: Collection, pattern: Pattern | undefined): ImageSource | undefined =>
-  pattern?.hasImage
+  pattern?.image ??
+  (pattern?.hasImage
     ? patternImage(pattern.imageKey ?? pattern.code, `${collection.name} ${pattern.code} · ${pattern.colorName}`)
-    : undefined
+    : undefined)
 
 export const coverOf = (collection: Collection): ImageSource | undefined =>
   imageOfPattern(

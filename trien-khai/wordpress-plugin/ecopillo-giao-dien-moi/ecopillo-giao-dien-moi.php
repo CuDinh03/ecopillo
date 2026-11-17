@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Ecopillo giao diện mới
  * Description: Thay giao diện ecopillo.com.vn bằng giao diện mới (trang dựng sẵn trong thư mục site/ của plugin). WordPress giữ nguyên làm nơi quản trị. Cài đặt → Giao diện mới. Đơn hàng, tin nhắn khách gửi: mục Đơn web.
- * Version: 1.4.0
+ * Version: 1.5.0
  * Requires PHP: 7.4
  * Author: Ecopillo
  * Text Domain: ecopillo-giao-dien-moi
@@ -18,6 +18,7 @@
  * - Chạy được trên PHP 7.4 (hosting hiện tại) và PHP 8.
  * - Nhận đơn hàng, tin nhắn của giao diện mới tại /api/gui: nhan-form.php (lưu vào mục "Đơn web", email báo).
  * - Giá, hết hàng Ecopillo sửa trong WooCommerce hiện trên web: gia-woo.php (Sản phẩm → Giá trên web).
+ * - Mẫu mới Ecopillo thêm trong WooCommerce (danh mục bộ sưu tập): mau-moi.php, trang mẫu mới trả trang khung.
  * - Liên hệ, đại lý, banner, sự kiện, báo chí, cảm nhận khách, giới thiệu, khách sạn, đối tác, quà tặng, hỏi đáp, chính sách: noi-dung.php (menu Nội dung web).
  */
 

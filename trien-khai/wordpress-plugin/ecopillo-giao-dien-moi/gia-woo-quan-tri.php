@@ -204,6 +204,22 @@ function eco_gia_page()
             </p>
         <?php endif; ?>
 
+        <h2>Mẫu mới thêm trong WooCommerce</h2>
+        <p>Thêm mẫu: Sản phẩm → Thêm mới; xếp vào danh mục bộ sưu tập (ví dụ "Bộ sưu tập Eco Rosa"); ô <strong>Mã sản phẩm</strong> ghi mã mẫu (ví dụ ER50); dòng đầu <strong>Mô tả ngắn</strong> ghi tên màu; đặt ảnh sản phẩm và ảnh thư viện sản phẩm; biến thể theo cỡ như các mẫu cũ (Free Size, 200*220; Bộ ga phủ / Bộ ga chun chần). Đăng là mẫu hiện trên web<?php echo $enabled ? '' : ' (sau khi bật lấy giá từ Woo)'; ?>.</p>
+        <?php
+        $new_rows = $enabled ? eco_mm_compute()['rows'] : array();
+        if (!$new_rows) :
+            ?><p style="color:#555"><?php echo $enabled ? 'Chưa có mẫu mới.' : 'Bật lấy giá từ Woo để dùng.'; ?></p><?php
+        else :
+            ?>
+            <table class="widefat striped" style="margin-bottom:24px"><thead><tr><th>Sản phẩm Woo</th><th>Bộ sưu tập</th><th>Mã</th><th>Trạng thái</th></tr></thead><tbody>
+            <?php foreach ($new_rows as $nr) : ?>
+                <tr><td><a href="<?php echo esc_url(get_edit_post_link($nr['id'])); ?>"><?php echo esc_html($nr['ten']); ?></a></td><td><?php echo esc_html($nr['bo']); ?></td><td><?php echo esc_html($nr['ma']); ?></td>
+                    <td style="<?php echo strpos($nr['trangThai'], 'Chưa') === 0 ? 'color:#b32d2e;font-weight:600' : ''; ?>"><?php echo esc_html($nr['trangThai']); ?></td></tr>
+            <?php endforeach; ?>
+            </tbody></table>
+        <?php endif; ?>
+
         <h2>Đối chiếu từng ô giá</h2>
         <p>Ô có biến thể Woo: sửa giá trong Sản phẩm (bấm tên sản phẩm). Ô <strong>"Chưa ghép được"</strong> (Woo chưa có sản phẩm hoặc cỡ đó): điền giá ở cột "Giá riêng" rồi bấm "Lưu giá riêng" cuối bảng. Để trống thì web giữ giá có sẵn.</p>
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">

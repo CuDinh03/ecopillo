@@ -1,4 +1,5 @@
 import type { Collection, Pattern } from './catalog'
+import { liveNewPatternBySlug } from './liveData'
 
 /**
  * Mọi đường link của web nằm ở đây.
@@ -207,7 +208,7 @@ export const collectionPathById = (id: string): string => COLLECTION_PATHS[id] ?
 export const collectionPath = (collection: Collection): string => collectionPathById(collection.id)
 
 export const patternPath = (collection: Collection, pattern: Pattern): string => {
-  const slug = PATTERN_SLUGS[`${collection.id}/${pattern.code}`]
+  const slug = pattern.slug ?? PATTERN_SLUGS[`${collection.id}/${pattern.code}`]
   return slug ? productPagePath(slug) : collectionPath(collection)
 }
 
@@ -225,8 +226,14 @@ const PRODUCT_PAGES: ReadonlyMap<string, ProductPageTarget> = new Map([
   ...Object.entries(PRODUCT_SLUGS).map(([slug, oldSlug]): [string, ProductPageTarget] => [oldSlug, { kind: 'product', slug }]),
 ])
 
-export const productPageTarget = (slug: string | undefined): ProductPageTarget | undefined =>
-  slug ? PRODUCT_PAGES.get(slug) : undefined
+/** Trang có trong code, rồi tới mẫu mới Ecopillo thêm trong WooCommerce (liveData.ts) */
+export const productPageTarget = (slug: string | undefined): ProductPageTarget | undefined => {
+  if (!slug) return undefined
+  const known = PRODUCT_PAGES.get(slug)
+  if (known) return known
+  const added = liveNewPatternBySlug(slug)
+  return added ? { kind: 'pattern', collectionId: added.bo, code: added.ma } : undefined
+}
 
 /** Trang danh mục của web cũ mở trang bộ sưu tập (đường link → mã bộ sưu tập) */
 export const COLLECTION_BY_PATH: ReadonlyMap<string, string> = new Map(

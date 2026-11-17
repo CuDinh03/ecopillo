@@ -1,5 +1,5 @@
 import { COLLECTIONS, SIZES, sizeById } from './catalog'
-import { HOST_REDIRECTS, patternPath, singleProductPath, withSlash } from './links'
+import { collectionPath, HOST_REDIRECTS, patternPath, singleProductPath, withSlash } from './links'
 import { PRODUCTS } from './products'
 
 /**
@@ -33,9 +33,26 @@ export interface FrameProduct {
   motGia: number | null
 }
 
+/**
+ * Bộ sưu tập, để plugin nhận mẫu mới Ecopillo thêm trong WooCommerce (giai đoạn 4): sản phẩm Woo thuộc `danhMucWoo`
+ * mà chưa có trong `mau` là mẫu mới của bộ này. `khung`: trang mẫu có sẵn dùng làm khung cho trang mẫu mới.
+ */
+export interface FrameCollection {
+  id: string
+  ten: string
+  kieu: string
+  coChun: boolean
+  danhMucWoo: string
+  khung: string
+  maDaCo: string[]
+}
+
 export interface PriceFrame {
   mau: FramePattern[]
   sanPham: FrameProduct[]
+  boSuuTap: FrameCollection[]
+  /** Tên sản phẩm Woo của mọi link cũ /san-pham/… đã 301 (sản phẩm gộp, đổi tên): không bao giờ coi là mẫu mới */
+  slugCu: string[]
 }
 
 const slugOf = (path: string): string => path.replace(/\/$/, '').split('/').pop() ?? ''
@@ -84,5 +101,14 @@ export function buildPriceFrame(): PriceFrame {
       motGia: !p.choices && !p.variants && p.min > 0 ? p.min : null,
     })
   }
-  return { mau, sanPham }
+  const boSuuTap: FrameCollection[] = COLLECTIONS.flatMap((c) => {
+    const shell = c.patterns.map((p) => patternPath(c, p)).find((path) => path.startsWith('/san-pham/'))
+    const category = slugOf(collectionPath(c))
+    if (!shell || !collectionPath(c).startsWith('/danh-muc-san-pham/')) return []
+    return [{ id: c.id, ten: c.name, kieu: c.kind, coChun: !!c.hasFittedOption, danhMucWoo: category, khung: shell, maDaCo: c.patterns.map((p) => p.code) }]
+  })
+  const slugCu = Object.keys(HOST_REDIRECTS)
+    .filter((from) => from.startsWith('/san-pham/'))
+    .map(slugOf)
+  return { mau, sanPham, boSuuTap, slugCu }
 }

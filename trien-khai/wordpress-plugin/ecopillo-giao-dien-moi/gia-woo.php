@@ -311,6 +311,12 @@ function eco_dl_write()
         file_put_contents($dir . '/.htaccess', $rules);
     }
     $prices = eco_gia_enabled() && function_exists('wc_get_product') ? eco_gia_compute()['live'] : null;
+    // Mẫu mới Ecopillo thêm trong Woo (mau-moi.php): chỉ khi đã bật lấy giá Woo
+    $new = $prices !== null ? eco_mm_compute() : array('live' => array(), 'pages' => array());
+    if ($prices !== null) {
+        $prices['mauMoi'] = $new['live'];
+    }
+    update_option(ECO_MM_OPT_TRANG, $new['pages'], false);
     $content = function_exists('eco_nd_live') ? eco_nd_live() : array();
     $js = '/* Giá và nội dung Ecopillo sửa trong WordPress, plugin ghi lúc ' . gmdate('c') . ". Không sửa tay. */\n"
         . 'window.__ECO_GIA__=' . wp_json_encode($prices) . ";\n"
@@ -370,4 +376,5 @@ function eco_gia_refresh_if_stale()
     }
 }
 
+require_once __DIR__ . '/mau-moi.php';
 require_once __DIR__ . '/gia-woo-quan-tri.php';
