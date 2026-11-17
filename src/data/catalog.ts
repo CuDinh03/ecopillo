@@ -12,6 +12,8 @@
  * khi Ecopillo báo mẫu hết thật thì thêm soldOut: ['180x200'] vào mẫu đó.
  */
 
+import { livePattern, markLiveDiffers, mergePrices } from './liveData'
+
 export type SizeId = '160x200' | '180x200' | '200x220'
 
 export interface SizeOption {
@@ -166,7 +168,8 @@ const real = (code: string, colorName: string, swatch: string, extra: Partial<Pa
   ...extra,
 })
 
-export const COLLECTIONS: readonly Collection[] = [
+/** Danh mục gốc trong code; nơi dùng đọc COLLECTIONS (đã ghép giá, hết hàng Ecopillo sửa trong WooCommerce) */
+const BASE_COLLECTIONS: readonly Collection[] = [
   {
     id: 'eco-flora',
     name: 'Eco Flora',
@@ -393,6 +396,30 @@ export const COLLECTIONS: readonly Collection[] = [
     ],
   },
 ]
+
+/** Ghép giá, giá ga chun chần, cỡ hết hàng do Ecopillo sửa trong WooCommerce (liveData.ts) lên một mẫu */
+const withLivePattern = (collection: Collection, pattern: Pattern): Pattern => {
+  const live = livePattern(collection.id, pattern.code)
+  if (!live) return pattern
+  const base = pattern.prices ?? collection.prices
+  const prices = mergePrices(base, live.gia)
+  const fittedPrices = pattern.fittedPrices ? mergePrices(pattern.fittedPrices, live.giaChun) : undefined
+  const soldOut = live.het?.filter((id): id is SizeId => SIZES.some((s) => s.id === id))
+  const soldOutChanged = soldOut !== undefined && soldOut.join() !== (pattern.soldOut ?? []).join()
+  if (soldOutChanged) markLiveDiffers()
+  if (prices === base && fittedPrices === pattern.fittedPrices && !soldOutChanged) return pattern
+  return {
+    ...pattern,
+    ...(prices !== base ? { prices } : {}),
+    ...(fittedPrices ? { fittedPrices } : {}),
+    ...(soldOutChanged ? { soldOut: soldOut.length ? soldOut : undefined } : {}),
+  }
+}
+
+export const COLLECTIONS: readonly Collection[] = BASE_COLLECTIONS.map((c) => ({
+  ...c,
+  patterns: c.patterns.map((p) => withLivePattern(c, p)),
+}))
 
 export const BEDDING_SETS = COLLECTIONS.filter((c) => c.kind !== 'chan-he')
 

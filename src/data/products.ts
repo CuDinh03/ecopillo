@@ -1,4 +1,5 @@
 import { formatRange, formatVND } from '../lib/format'
+import { liveProduct, mergePrices } from './liveData'
 import { slugify } from '../lib/slug'
 import { collectionPath, PATHS, singleProductPath } from './links'
 import {
@@ -829,6 +830,36 @@ const PRODUCT_PHOTOS = new Set([
 const withPhoto = (p: Product): Product =>
   p.image || !PRODUCT_PHOTOS.has(p.slug) ? p : { ...p, image: productImage(p.slug, p.name) }
 
+/**
+ * Ghép giá Ecopillo sửa trong WooCommerce (liveData.ts) lên sản phẩm lẻ: giá từng lựa chọn hoặc từng ô cỡ × độ dày,
+ * rồi tính lại giá thấp – cao. Bộ chăn ga (có collection) đã ghép giá ở catalog.ts.
+ */
+const withLivePrice = (p: Product): Product => {
+  const live = p.collection ? undefined : liveProduct(p.slug)
+  if (!live) return p
+  let next = p
+  if (p.choices && live.chon) {
+    const base = Object.fromEntries(p.choices.filter((c) => c.price !== undefined).map((c) => [c.id, c.price as number]))
+    const merged = mergePrices(base, live.chon)
+    if (merged !== base) next = { ...next, choices: p.choices.map((c) => (merged[c.id] !== undefined ? { ...c, price: merged[c.id] } : c)) }
+  }
+  if (p.variants && live.bienThe) {
+    const prices = mergePrices(p.variants.prices, live.bienThe)
+    if (prices !== p.variants.prices) next = { ...next, variants: { ...p.variants, prices } }
+  }
+  // Sản phẩm một giá (không lựa chọn, không bảng cỡ): khoá 'mac-dinh'
+  const single = live.chon?.['mac-dinh']
+  if (!p.choices && !p.variants && single !== undefined && (p.min !== single || p.max !== single)) {
+    mergePrices({ gia: p.min }, { gia: single })
+    return { ...p, min: single, max: single }
+  }
+  if (next === p) return p
+  const values = next.variants
+    ? Object.values(next.variants.prices)
+    : (next.choices ?? []).flatMap((c) => (c.price === undefined ? [] : [c.price]))
+  return values.length ? { ...next, min: Math.min(...values), max: Math.max(...values) } : next
+}
+
 export const PRODUCTS: readonly Product[] = [
   ...COLLECTIONS.map(collectionProduct),
   ...essentialProducts,
@@ -852,7 +883,9 @@ export const PRODUCTS: readonly Product[] = [
   DEM_TRON,
   BAO_VE_DEM,
   DIVAN,
-].map(withPhoto)
+]
+  .map(withPhoto)
+  .map(withLivePrice)
 
 export const productBySlug = (slug: string | undefined): Product | undefined => PRODUCTS.find((p) => p.slug === slug)
 

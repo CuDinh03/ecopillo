@@ -47,6 +47,27 @@ function trackingHtml(): Plugin {
   }
 }
 
+/** Đường file giá Ecopillo sửa trong WooCommerce, do plugin WordPress ghi (src/data/liveData.ts, gia-woo.php) */
+const LIVE_PRICES_SRC = '/wp-content/uploads/ecopillo-du-lieu/gia.js'
+
+/**
+ * Bản chạy thật: nạp file giá mới nhất trước gói JS chính (defer giữ thứ tự với script module).
+ * Bản xem thử và `pnpm dev` không có WordPress nên không chèn.
+ */
+function livePricesHtml(): Plugin {
+  return {
+    name: 'ecopillo-gia-woo',
+    apply: 'build',
+    transformIndexHtml: {
+      order: 'pre',
+      handler(html) {
+        if (!html.includes('</head>')) throw new Error('index.html thiếu </head>: không chèn được file giá')
+        return html.replace('</head>', `  <script defer src="${LIVE_PRICES_SRC}"></script>\n  </head>`)
+      },
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   // Đọc cả biến môi trường của lệnh build (GitHub Actions đặt VITE_BAN_XEM_THU, XEM_THU_URL), lệnh chạy từ gốc project
@@ -56,7 +77,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       tailwindcss(),
-      ...(isPreview ? [previewHtml(env.XEM_THU_URL || PREVIEW_URL_DEFAULT)] : [trackingHtml()]),
+      ...(isPreview ? [previewHtml(env.XEM_THU_URL || PREVIEW_URL_DEFAULT)] : [livePricesHtml(), trackingHtml()]),
     ],
     /**
      * Build cho máy chủ (dựng sẵn HTML, tools/dung-san-html.mjs). React Router để mặc định thì Node chọn bản CommonJS

@@ -3,6 +3,7 @@ import { createRoot, hydrateRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { PAGE_LOADERS } from './routes'
+import { liveDiffers } from './data/liveData'
 
 const root = document.getElementById('root')!
 const app = (
@@ -19,7 +20,9 @@ const app = (
 const page = root.dataset.trang as keyof typeof PAGE_LOADERS | undefined
 if (root.hasChildNodes()) {
   const ready = page && page in PAGE_LOADERS ? PAGE_LOADERS[page]() : Promise.resolve()
-  void ready.then(() => hydrateRoot(root, app))
+  // Ecopillo vừa sửa giá / hết hàng trong WooCommerce (liveData.ts): HTML dựng sẵn mang giá cũ, gắn vào sẽ lệch chữ.
+  // Vẽ lại một lần (gói trang đã về nên không chớp trắng); bố cục giữ nguyên, chỉ số giá đổi.
+  void ready.then(() => (liveDiffers() ? createRoot(root).render(app) : hydrateRoot(root, app)))
 } else {
   createRoot(root).render(app)
 }

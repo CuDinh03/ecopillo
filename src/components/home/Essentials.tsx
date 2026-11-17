@@ -37,7 +37,7 @@ interface EssentialTile {
 }
 
 /** Một khoảng giá thì ghi "từ" giá thấp nhất (chi tiết từng cỡ ở trang sản phẩm) */
-const priceText = (item: EssentialItem): string => (item.min === item.max ? formatVND(item.min) : `từ ${formatVND(item.min)}`)
+const priceText = (item: { min: number; max: number }): string => (item.min === item.max ? formatVND(item.min) : `từ ${formatVND(item.min)}`)
 
 /** Chăn hè là bộ sưu tập có phối màu, không phải sản phẩm lẻ: ảnh bìa và trang của bộ đó */
 const toTile = (item: EssentialItem): EssentialTile => {
@@ -47,8 +47,9 @@ const toTile = (item: EssentialItem): EssentialTile => {
   }
   const product = productForEssential(item.name)
   // Tên trong ESSENTIALS ngắn ("Micro Fiber"), tên ô dùng tên đầy đủ của trang sản phẩm ("Ruột gối Micro Fiber")
+  // Giá lấy theo trang sản phẩm khi có: Ecopillo sửa giá trong WooCommerce thì ô này đổi theo (liveData.ts)
   return product
-    ? { ...base, name: product.name, to: productPath(product), image: product.image, imageNote: product.imageNote }
+    ? { ...base, price: priceText(product), name: product.name, to: productPath(product), image: product.image, imageNote: product.imageNote }
     : { ...base, to: PATHS.products, imageNote: item.name }
 }
 
