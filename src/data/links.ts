@@ -349,9 +349,10 @@ export const OLD_SITE_REDIRECTS: Readonly<Record<string, string>> = {
   '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed19/': COLLECTION_PATHS['eco-doris'],
   '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed21/': COLLECTION_PATHS['eco-doris'],
   '/san-pham/bo-ga-phu-tencel-cao-cap-eco-sweet-es09/': COLLECTION_PATHS['eco-sweet'],
-  '/san-pham/bo-ga-chun-eco-flora-ef08/': COLLECTION_PATHS['eco-flora'],
+  // Web cũ đặt link sai mã (kiểm API WooCommerce 17/11/2026): "-ef08/" là mẫu EF12, "-ef126/" là EF16. Hai mẫu này web mới có trang riêng
+  '/san-pham/bo-ga-chun-eco-flora-ef08/': '/san-pham/bo-ga-chun-eco-flora-ef12/',
   '/san-pham/bo-ga-chun-eco-flora-ef08-2/': COLLECTION_PATHS['eco-flora'],
-  '/san-pham/bo-ga-chun-eco-flora-ef126/': COLLECTION_PATHS['eco-flora'],
+  '/san-pham/bo-ga-chun-eco-flora-ef126/': '/san-pham/bo-ga-chun-eco-flora-ef16/',
   // Sản phẩm lẻ web mới chưa có [XÁC NHẬN]
   '/san-pham/dem-foam-cao-cap-nano-comfort/': '/danh-muc-san-pham/san-pham/dem-foam/',
   '/san-pham/dem-lo-xo-cao-cap-eco-premium/': '/danh-muc-san-pham/san-pham/dem-lo-xo/',
