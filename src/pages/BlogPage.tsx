@@ -1,20 +1,35 @@
 import { PostCard } from '../components/blog/PostCard'
 import { PageHero } from '../components/ui/PageHero'
 import { Container } from '../components/ui/primitives'
-import { POST_CATEGORIES, POSTS, type PostCategory } from '../data/posts'
+import { useState } from 'react'
+import { Icon } from '../components/ui/Icon'
+import { buttonClass } from '../components/ui/primitives'
+import { ALL_POSTS } from '../data/allPosts'
+import { POST_CATEGORIES, type PostLabel } from '../data/posts'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 import { useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
 
-/** Trang Tin tức: danh sách bài viết, lọc theo chủ đề (?chu-de=…) */
+/** Mỗi lần hiện thêm bao nhiêu bài (61 bài: 3 bài trong code + 58 bài WordPress, 17/11/2026) */
+const PAGE_SIZE = 12
+
+/** Chủ đề có bài mới hiện nút lọc: "Tin tức", "Cẩm nang" (bài WordPress) rồi 3 chủ đề của bài trong code */
+const LABELS: readonly PostLabel[] = (['Tin tức', 'Cẩm nang', ...POST_CATEGORIES] as const).filter((label) =>
+  ALL_POSTS.some((p) => p.category === label),
+)
+
+/** Trang Tin tức: danh sách bài viết, lọc theo chủ đề (?chu-de=…), hiện dần 12 bài một */
 export function BlogPage() {
   usePageMeta('Tin tức, cẩm nang giấc ngủ', 'Kiến thức về vải Lyocell, cách chọn kích thước chăn ga, giặt và bảo quản để giấc ngủ luôn êm, mát.')
   const [params, setParams] = useHydratedSearchParams()
-  const active = POST_CATEGORIES.find((c) => c === params.get('chu-de')) ?? null
-  const posts = active ? POSTS.filter((p) => p.category === active) : POSTS
-  const [first, ...rest] = posts
+  const active = LABELS.find((c) => c === params.get('chu-de')) ?? null
+  const posts = active ? ALL_POSTS.filter((p) => p.category === active) : ALL_POSTS
+  // Đổi chủ đề thì về lại 12 bài đầu
+  const [shown, setShown] = useState({ key: active, count: PAGE_SIZE })
+  const count = shown.key === active ? shown.count : PAGE_SIZE
+  const [first, ...rest] = posts.slice(0, count)
 
-  const choose = (c: PostCategory | null) => setParams(c ? { 'chu-de': c } : {}, { replace: true })
+  const choose = (c: PostLabel | null) => setParams(c ? { 'chu-de': c } : {}, { replace: true })
 
   return (
     <div className="pb-24">
@@ -34,7 +49,7 @@ export function BlogPage() {
 
       <Container className="mt-10 sm:mt-14">
         <div role="group" aria-label="Chủ đề" className="flex flex-wrap gap-2">
-          {[null, ...POST_CATEGORIES].map((c) => (
+          {[null, ...LABELS].map((c) => (
             <button
               key={c ?? 'all'}
               type="button"
@@ -57,11 +72,26 @@ export function BlogPage() {
         {rest.length > 0 && (
           <ul className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {rest.map((p, i) => (
-              <li key={p.slug} data-reveal style={revealDelay(i)}>
+              <li key={p.slug} data-reveal style={revealDelay(i % PAGE_SIZE)}>
                 <PostCard post={p} />
               </li>
             ))}
           </ul>
+        )}
+        {posts.length > count && (
+          <div className="mt-10 flex flex-col items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setShown({ key: active, count: count + PAGE_SIZE })}
+              className={buttonClass('secondary', 'lg')}
+            >
+              Xem thêm bài viết
+              <Icon name="chevronDown" size={18} />
+            </button>
+            <p className="text-meta text-ink-soft">
+              Đang xem {count} / {posts.length} bài
+            </p>
+          </div>
         )}
       </Container>
     </div>

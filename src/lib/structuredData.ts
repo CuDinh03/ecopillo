@@ -13,7 +13,8 @@ type JsonLdObject = Record<string, unknown>
 const CONTEXT = 'https://schema.org'
 const LOGO_PATH = '/images/brand/logo-ecopillo.png'
 
-export const absoluteUrl = (path: string): string => `${SITE_ORIGIN}${path}`
+/** Đường dẫn trong web → link đầy đủ; link đã đầy đủ (ảnh bìa bài WordPress) giữ nguyên */
+export const absoluteUrl = (path: string): string => (/^https?:\/\//.test(path) ? path : `${SITE_ORIGIN}${path}`)
 const pageUrl = (path: string): string => absoluteUrl(withSlash(path))
 
 /** Ảnh chia sẻ (og:image) của một trang: đường dẫn trong public/ và chữ mô tả ảnh */
@@ -132,18 +133,23 @@ export interface ArticleLdInput {
   description: string
   path: string
   image: ImageSource
+  /** Ngày đăng, ngày sửa (YYYY-MM-DD): có ở bài lấy từ WordPress */
+  published?: string
+  modified?: string
 }
 
 /**
- * Bài viết. Chưa có ngày đăng: bài trong src/data/posts.ts là bài mẫu; ngày đăng thật lấy từ WordPress ở giai đoạn 3.
+ * Bài viết. Bài lấy từ WordPress có ngày đăng, ngày sửa; 3 bài trong src/data/posts.ts chưa có ngày.
  */
-export function articleLd({ title, description, path, image }: ArticleLdInput): JsonLdObject {
+export function articleLd({ title, description, path, image, published, modified }: ArticleLdInput): JsonLdObject {
   return {
     '@context': CONTEXT,
     '@type': 'Article',
     headline: title,
     description,
     image: absoluteUrl(image.src),
+    ...(published ? { datePublished: published } : {}),
+    ...(modified ? { dateModified: modified } : {}),
     inLanguage: 'vi',
     mainEntityOfPage: pageUrl(path),
     author: organizationRef(),

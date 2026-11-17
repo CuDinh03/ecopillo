@@ -92,7 +92,7 @@ pnpm lint       # đang có 4 cảnh báo cũ react-refresh, không phải lỗi
 | Thêm bộ sưu tập mới, thêm phối màu mới | Làm theo `docs/huong-dan-them-bo-suu-tap.md` |
 | Trang bộ sưu tập (bìa, chương, hàng chương, cùng gam màu) | `src/components/collection/` |
 | Bộ sưu tập trang chủ: 4 bộ lõi + "Thêm lựa chọn" 3 bộ, cùng kiểu ô to (thêm bộ mới phải thêm vào `CORE_SOURCES` hoặc `MORE_SOURCES`, không thì không hiện) | `src/data/collectionGroups.ts`, `src/components/home/Collections.tsx` |
-| Bài viết | `src/data/posts.ts` |
+| Bài viết | 3 bài viết trong code: `src/data/posts.ts`. 58 bài của web cũ (17/11/2026, giữ link): `src/data/bai-viet-wp/`, **không sửa tay**, lấy lại bằng `node tools/lay-bai-viet-wordpress.mjs` (làm sạch HTML, đổi chữ chất liệu cũ, đổi link, thay ảnh có tên chữ cũ). Gộp hai nguồn: `src/data/allPosts.ts`; thân bài WordPress: `src/components/blog/WordPressBody.tsx`, kiểu chữ `.bai-wp` trong `src/index.css` |
 | Đánh giá, nội dung mẫu trang chủ | `src/data/content.ts` |
 | Sự kiện Ecopillo đồng hành (cuối phần Về chúng tôi trang chủ) | `src/data/events.ts`, khối `src/components/home/EventsStrip.tsx`; nén ảnh: `tools/nen-anh-su-kien-2026-10-20.py` |
 | Chữ khối khách sạn (nhãn, giới thiệu, 4 lợi ích) dùng chung trang chủ và trang Khách sạn và dự án | `src/data/hotel.ts` |

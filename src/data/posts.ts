@@ -14,11 +14,24 @@ export type PostBlock =
   | { type: 'list'; items: readonly string[] }
   | { type: 'tip'; text: string }
 
+/** Bài lấy từ WordPress (src/data/allPosts.ts): ngày đăng, tiêu đề và mô tả Yoast giữ như web cũ (docs/giu-link-web-cu.md) */
+export interface WordPressInfo {
+  date: string
+  modified: string
+  /** Tiêu đề Yoast (bỏ đuôi tên web): thẻ <title> */
+  metaTitle: string
+  /** Mô tả Google (Yoast, không thì đoạn trích), tối đa 155 ký tự */
+  description: string
+}
+
 export interface Post {
   slug: string
   title: string
   excerpt: string
-  category: PostCategory
+  /** Bài viết trong code dùng 3 chủ đề dưới; bài WordPress ghi "Tin tức" hoặc "Cẩm nang" */
+  category: PostLabel
+  /** Có ở bài lấy từ WordPress: thân bài là HTML đã làm sạch, nạp riêng từng bài (components/blog/WordPressBody.tsx) */
+  wp?: WordPressInfo
   readMinutes: number
   cover: ImageSource
   /** Bộ sưu tập gợi ý ở cuối bài */
@@ -33,6 +46,7 @@ export interface Post {
 
 export const POST_CATEGORIES = ['Chất liệu', 'Hướng dẫn chọn', 'Chăm sóc, bảo quản'] as const
 export type PostCategory = (typeof POST_CATEGORIES)[number]
+export type PostLabel = PostCategory | 'Tin tức' | 'Cẩm nang'
 
 export const POSTS: readonly Post[] = [
   {

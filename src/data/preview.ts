@@ -13,7 +13,7 @@ export const PREVIEW_NOTICE = {
   points: [
     'Đơn hàng và tin nhắn gửi trên trang này chỉ để thử: Ecopillo không gọi lại hay giao hàng theo các đơn này.',
     'Câu chuyện phối màu có nhãn "Bản nháp" đang chờ Ecopillo duyệt.',
-    'Bài viết mới có 3 bài mẫu; bài thật sẽ lấy từ WordPress.',
+    'Bài viết lấy từ web cũ ngày 17/11/2026.',
   ],
   close: 'Đã hiểu, xem tiếp',
   /** Thay lời hứa "đã nhận, sẽ gọi lại" trên màn hình cảm ơn */

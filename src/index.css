@@ -331,6 +331,132 @@
 
 @layer components {
   /*
+   * Thân bài lấy từ WordPress (components/blog/WordPressBody.tsx): HTML đã làm sạch, chỉ còn thẻ thường.
+   * Cỡ chữ, khoảng cách theo bài viết trong code (Block trong ArticlePage.tsx) để hai loại bài trông như nhau.
+   */
+  .bai-wp > * + * {
+    margin-top: 1.25rem;
+  }
+  .bai-wp :is(h2, h3, h4) {
+    scroll-margin-top: 5.5rem; /* thanh đầu trang cao 4.5rem */
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: var(--color-deep-900);
+    text-align: left;
+    text-wrap: balance;
+  }
+  .bai-wp h2 {
+    margin-top: 3rem;
+    font-size: clamp(1.6rem, 1.3rem + 1vw, 2rem);
+  }
+  .bai-wp h3 {
+    margin-top: 2.25rem;
+    font-size: clamp(1.3rem, 1.15rem + 0.6vw, 1.55rem);
+  }
+  .bai-wp h4 {
+    margin-top: 1.75rem;
+    font-size: 1.15rem;
+  }
+  .bai-wp a {
+    color: var(--color-mist-600);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .bai-wp :is(ul, ol) {
+    padding-left: 1.4rem;
+    text-align: left;
+  }
+  .bai-wp ul {
+    list-style: disc;
+  }
+  .bai-wp ol {
+    list-style: decimal;
+  }
+  .bai-wp li + li,
+  .bai-wp li > :is(ul, ol) {
+    margin-top: 0.5rem;
+  }
+  .bai-wp li::marker {
+    color: var(--color-mist-600);
+  }
+  .bai-wp :is(img, figure) {
+    margin-inline: auto;
+  }
+  .bai-wp img {
+    height: auto;
+    max-width: 100%;
+    border-radius: 1.25rem;
+  }
+  .bai-wp figcaption {
+    margin-top: 0.5rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--color-ink-soft);
+  }
+  .bai-wp blockquote {
+    border-left: 3px solid var(--color-mist-600);
+    padding-left: 1.25rem;
+    font-style: italic;
+  }
+  .bai-wp hr {
+    border-color: var(--color-line);
+  }
+  /* Bảng rộng hơn khung: cuộn ngang trong khung, không làm cả trang tràn ngang */
+  .bai-wp .bang-cuon {
+    overflow-x: auto;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-soft);
+    background: var(--color-cream-50);
+  }
+  .bai-wp table {
+    width: 100%;
+    min-width: 32rem;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    text-align: left;
+  }
+  .bai-wp :is(th, td) {
+    padding: 0.6rem 0.85rem;
+    border-bottom: 1px solid var(--color-line);
+    vertical-align: top;
+  }
+  .bai-wp th {
+    background: var(--color-mist-100);
+    font-weight: 600;
+  }
+  /* Mục lục (từ plugin Easy Table of Contents của web cũ) */
+  .bai-wp .muc-luc {
+    margin-top: 2rem;
+    border-radius: 1.5rem;
+    background: var(--color-cream-50);
+    box-shadow: var(--shadow-soft);
+    padding: 1.25rem 1.5rem;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .bai-wp .muc-luc > p {
+    font-weight: 600;
+    color: var(--color-deep-900);
+  }
+  .bai-wp .muc-luc ul {
+    margin-top: 0.5rem;
+    list-style: none;
+    padding-left: 0;
+  }
+  .bai-wp .muc-luc ul ul {
+    padding-left: 1.1rem;
+  }
+  .bai-wp .muc-luc a {
+    text-decoration: none;
+  }
+  .bai-wp .muc-luc a:hover {
+    text-decoration: underline;
+  }
+
+  /*
    * Tiêu đề đậm 600 (góp ý 04/11/2026 "nét thanh quá", "sàn sàn"; owner chọn mẫu A, docs/de-xuat-font-tieu-de-04-11.html).
    * Chữ nghiêng (câu trích, số thứ tự, tên chương) giữ 400 cho nhẹ: chỉ nạp nghiêng 400, để 600 thì trình duyệt tự tô đậm giả
    */

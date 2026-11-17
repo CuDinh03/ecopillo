@@ -85,8 +85,12 @@ function applyPage(template, { url, body, meta, page, siteOrigin }) {
   if (meta?.type) html = replaceMeta(html, 'property="og:type"', meta.type)
   if (meta?.image) {
     // Ảnh đã chép từ public/ sang thư mục build: thiếu ảnh thì báo lỗi, không để Facebook, Zalo nhận link hỏng
-    if (!existsSync(join(DIST, meta.image.path))) throw new Error(`thiếu ảnh chia sẻ ${meta.image.path}`)
-    html = replaceMeta(html, 'property="og:image"', `${siteOrigin}${meta.image.path}`)
+    // Bài lấy từ WordPress: ảnh bìa nằm trên WordPress, link đầy đủ (https://…) giữ nguyên
+    const external = /^https:\/\//.test(meta.image.path)
+    if (!external && !existsSync(join(DIST, meta.image.path))) throw new Error(`thiếu ảnh chia sẻ ${meta.image.path}`)
+    html = replaceMeta(html, 'property="og:image"', external ? meta.image.path : `${siteOrigin}${meta.image.path}`)
+    // Kích thước 1200×630 trong index.html là của ảnh chia sẻ dựng sẵn; ảnh bìa WordPress khác cỡ nên bỏ hai thẻ này
+    if (external) html = html.replace(/\s*<meta property="og:image:(width|height)"[^>]*>/g, '')
     html = replaceMeta(html, 'property="og:image:alt"', meta.image.alt)
   }
 

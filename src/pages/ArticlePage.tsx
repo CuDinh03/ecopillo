@@ -1,12 +1,14 @@
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { PostCard } from '../components/blog/PostCard'
+import { WordPressBody } from '../components/blog/WordPressBody'
 import { JsonLd } from '../components/seo/JsonLd'
 import { Icon } from '../components/ui/Icon'
 import { Breadcrumb } from '../components/ui/PageHero'
 import { Placeholder } from '../components/ui/Placeholder'
 import { ContactButtons, Container } from '../components/ui/primitives'
 import { PATHS } from '../data/links'
-import { postBySlug, POSTS, type PostBlock } from '../data/posts'
+import { ALL_POSTS, anyPostBySlug, formatPostDate } from '../data/allPosts'
+import type { PostBlock } from '../data/posts'
 import { relatedForPost } from '../data/related'
 import { ExploreMore } from '../components/ui/ExploreMore'
 import { usePageMeta } from '../hooks/usePageMeta'
@@ -42,33 +44,54 @@ function Block({ block }: { block: PostBlock }) {
 
 /**
  * Trang một bài viết, nằm ở gốc web như WordPress cũ (ecopillo.com.vn/ten-bai/).
+ * Bài WordPress: tiêu đề và mô tả Yoast như web cũ, ảnh chia sẻ là ảnh bìa trên WordPress, thân bài nạp riêng.
  * Đường link không khớp bài nào thì hiện trang 404.
  */
 export function ArticlePage() {
   const { slug } = useParams()
-  const post = postBySlug(slug)
+  const post = anyPostBySlug(slug)
   const { pathname } = useLocation()
+  const share = post?.wp && post.cover.src.startsWith('https://') ? { path: post.cover.src, alt: post.cover.alt } : post && shareImageOf(post.cover)
   usePageMeta(
-    post?.title ?? 'Không tìm thấy trang',
-    post?.excerpt,
-    post ? { image: shareImageOf(post.cover), type: 'article' } : { notFound: true },
+    post ? (post.wp?.metaTitle ?? post.title) : 'Không tìm thấy trang',
+    post ? (post.wp?.description ?? post.excerpt) : undefined,
+    post ? { image: share, type: 'article' } : { notFound: true },
   )
   if (!post) return <NotFoundPage />
 
-  const others = POSTS.filter((p) => p.slug !== post.slug).slice(0, 2)
+  // Bài khác: cùng nhóm trước, mới nhất trước
+  const others = [
+    ...ALL_POSTS.filter((p) => p.slug !== post.slug && p.category === post.category),
+    ...ALL_POSTS.filter((p) => p.slug !== post.slug && p.category !== post.category),
+  ].slice(0, 2)
 
   return (
     <div className="pb-24">
       <Container className="pt-10 sm:pt-14">
         <div className="mx-auto max-w-3xl">
-          <JsonLd data={articleLd({ title: post.title, description: post.excerpt, path: pathname, image: post.cover })} />
+          <JsonLd
+            data={articleLd({
+              title: post.title,
+              description: post.wp?.description ?? post.excerpt,
+              path: pathname,
+              image: post.cover,
+              published: post.wp?.date,
+              modified: post.wp?.modified,
+            })}
+          />
           <Breadcrumb items={[{ label: 'Tin tức', to: PATHS.blog }, { label: post.category }]} current={post.title} />
-          <p className="mt-8 flex items-center gap-2 text-meta text-ink-soft">
+          <p className="mt-8 flex flex-wrap items-center gap-x-2 gap-y-1 text-meta text-ink-soft">
             <Link to={`${PATHS.blog}?chu-de=${encodeURIComponent(post.category)}`} className="font-medium tracking-[0.12em] text-mist-600 uppercase hover:underline">
               {post.category}
             </Link>
             <span aria-hidden>·</span>
             <span>{post.readMinutes} phút đọc</span>
+            {post.wp && (
+              <>
+                <span aria-hidden>·</span>
+                <time dateTime={post.wp.date}>{formatPostDate(post.wp.date)}</time>
+              </>
+            )}
           </p>
           <h1 className="font-display mt-4 text-[2.2rem] leading-[1.1] text-deep-900 sm:text-[3rem]">{post.title}</h1>
           <p className="mt-5 text-lead leading-relaxed text-ink-soft">{post.excerpt}</p>
@@ -81,9 +104,11 @@ export function ArticlePage() {
         </div>
 
         <div className="chu-deu mx-auto mt-4 max-w-3xl text-lead leading-[1.8] text-ink">
-          {post.body.map((block, i) => (
-            <Block key={i} block={block} />
-          ))}
+          {post.wp ? (
+            <WordPressBody slug={post.slug} />
+          ) : (
+            post.body.map((block, i) => <Block key={i} block={block} />)
+          )}
 
           {post.related && (
             <div className="mt-12 border-t border-line pt-8">

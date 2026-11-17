@@ -14,7 +14,8 @@ import {
   withSlash,
 } from './data/links'
 import { POLICY_ALIASES, POLICY_PAGES, policyPath } from './data/policyNav'
-import { POSTS, postPath } from './data/posts'
+import { ALL_POSTS } from './data/allPosts'
+import { postPath } from './data/posts'
 import { HOTEL_PRODUCTS } from './data/hotel'
 import { PRODUCTS, productBySlug } from './data/products'
 import { PageMetaContext, type PrerenderCollector } from './hooks/usePageMeta'
@@ -27,7 +28,7 @@ import { appRoutes } from './routes'
 export const NOT_FOUND_PATH = '/__khong-tim-thay__/trang/'
 
 /**
- * Mọi đường link cần dựng sẵn HTML (GĐ1: trang có trong code; bài viết WordPress ở GĐ3).
+ * Mọi đường link cần dựng sẵn HTML: trang có trong code và bài viết lấy từ WordPress.
  * Luôn có "/" cuối như WordPress.
  */
 export function listPrerenderPaths(): string[] {
@@ -50,7 +51,8 @@ export function listPrerenderPaths(): string[] {
   }
   for (const page of POLICY_PAGES) paths.add(withSlash(policyPath(page.slug)))
   for (const slug of Object.keys(POLICY_ALIASES)) paths.add(withSlash(policyPath(slug)))
-  for (const post of POSTS) paths.add(withSlash(postPath(post)))
+  // 3 bài trong code + bài lấy từ WordPress (src/data/bai-viet-wp/, GĐ3), giữ link như web cũ
+  for (const post of ALL_POSTS) paths.add(withSlash(postPath(post)))
   return [...paths].sort()
 }
 
