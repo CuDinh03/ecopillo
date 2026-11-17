@@ -15,14 +15,14 @@ cái Ecopillo được tự sửa, hay xong một bước chuyển web, thì s�
 - Khách đã chốt **Gói 1** (biên bản chốt 12/10/2026, file PDF trong `chot hop dong/`):
   WordPress giữ vai trò quản trị (bài viết, form, Yoast), còn giao diện mới này chạy phía trước.
 - Code ghi "biên bản mục NN" là trỏ tới mục đó trong biên bản chốt. Muốn đổi một quyết định có ghi mục thì hỏi owner trước.
-- **Đơn hàng và form tin nhắn** (17/11/2026) gửi qua `src/lib/sendForm.ts` → hàm Cloudflare `trien-khai/xem-thu/functions/api/gui.js`
-  → Google Apps Script `trien-khai/google-apps-script/nhan-form.gs` (chạy bằng Gmail Ecopillo: ghi Google Trang tính + gửi email).
-  Hàm **chưa nối Apps Script** (thiếu `GOOGLE_SCRIPT_URL`, `GOOGLE_SCRIPT_KHOA`) thì không gửi đi đâu: bản xem thử ghi "chưa gửi đi",
-  bản chạy thật báo lỗi kèm hotline (không bao giờ hiện "đã nhận" khi chưa gửi được). `pnpm dev` không có hàm nên không gửi.
+- **Đơn hàng và form tin nhắn** gửi qua `src/lib/sendForm.ts` → `/api/gui`. Web thật: plugin WordPress `nhan-form.php` (từ bản 1.1.0)
+  lưu vào mục "Đơn web" trong wp-admin (riêng tư) + email về hộp thư Ecopillo; không gửi sang Google hay dịch vụ nào khác (owner 18/11/2026).
+  Bản xem thử: hàm Cloudflare `trien-khai/xem-thu/functions/api/gui.js` → Apps Script `nhan-form.gs` (chưa nối thì ghi "chưa gửi đi").
+  Gửi không được thì báo lỗi kèm hotline (không bao giờ hiện "đã nhận" khi chưa lưu được). `pnpm dev` không có `/api/gui` nên không gửi.
   Không có máy chủ riêng nào khác. Danh sách đại lý có thể lấy từ WordPress qua `VITE_DEALERS_URL` (xem `src/hooks/useDealers.ts`).
 - **Đã chạy trên ecopillo.com.vn từ đêm 18/11/2026** bằng plugin WordPress "Ecopillo giao diện mới" (`trien-khai/wordpress-plugin/`), chế độ đổi ở wp-admin → Cài đặt → Giao diện mới (Tắt là về web cũ ngay).
   Đưa bản mới lên web thật: `pnpm build` → `node tools/dong-goi-plugin.mjs` → tải zip lên (thay bản cũ) → bấm Lưu chế độ (kế hoạch mục 3). Đẩy `main` chỉ cập nhật bản xem thử.
-  **Chưa nhận đơn, tin nhắn trên web thật** (owner để sau 18/11): `/api/gui` chưa có trên hosting nên khách thấy "Chưa gửi được" + hotline.
+  Web thật đang chạy plugin **1.0.0** (chưa nhận đơn: khách thấy "Chưa gửi được" + hotline). Bản **1.2.0** (nhận đơn + giá Woo) đã đóng gói, **chờ owner tải lên**: `docs/bo-nao/dang-cho.md`.
 - **Đường link giữ đúng như web cũ** (owner chốt 15/10/2026), chỉ đổi chữ chất liệu cũ trong link thành `lyocell` và 301 link cũ sang.
   Mọi đường link nằm ở `src/data/links.ts`; không viết link cứng trong component.
 
