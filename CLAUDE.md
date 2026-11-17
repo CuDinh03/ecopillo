@@ -32,18 +32,23 @@ Trước khi đổi thứ gì đã có thì tra `docs/bo-nao/quyet-dinh.md`; xon
   thì tra [`docs/giu-link-web-cu.md`](docs/giu-link-web-cu.md), và chạy `node tools/kiem-tra-link-cu.mjs` sau khi đổi.
   Thêm phối màu, bộ mới thì phải khai link trong `links.ts` (`PATTERN_SLUGS`, `COLLECTION_PATHS`). Bảng 301 cho máy chủ: `node tools/xuat-bang-chuyen-huong.mjs`.
 - Mọi chữ trên web và trong tài liệu: **tiếng Việt, xưng "Quý khách"**. Comment trong code cũng viết tiếng Việt.
-- Chỗ còn chờ Ecopillo gửi hoặc duyệt thì đánh dấu `[ĐIỀN …]`, `[XÁC NHẬN …]` hoặc `[ECOPILLO …]`.
-  Với JSX dùng `<FillIn>` (`src/components/ui/primitives.tsx`), với chữ dài dùng `RichText`.
-  Đừng tự bịa số liệu, giá, địa chỉ, chính sách.
+- **Trên web không hiện nhãn chờ** (owner 28/10/2026: "bỏ hết các nhãn chờ", 0 nhãn trên 98 trang). Chỗ còn chờ Ecopillo gửi hoặc duyệt:
+  có nguồn thật (web cũ, catalog 22.07, biên bản) thì dùng chữ thật; không có thì bỏ câu đó. **Đừng tự bịa** số liệu, giá, địa chỉ, chính sách.
+  Muốn ghi lại là đang chờ thì đánh dấu `[ĐIỀN …]`, `[XÁC NHẬN …]`, `[ECOPILLO …]` **trong comment code** và ghi vào `docs/bo-nao/dang-cho.md`.
+  `<FillIn>` và `RichText` vẫn còn và **tô nổi mọi chữ dạng `[…]`** trong dữ liệu, nên đừng để chữ `[…]` lọt vào `src/data/`.
+  Nhãn câu chuyện chờ duyệt đi theo cờ `STORIES_APPROVED` (đang bật, không hiện).
 - Màu: chỉ dùng bộ nhận diện trong `src/index.css` (`@theme`): chàm `#2D2E8D`, chàm sáng `#333DBA`,
-  xanh nhạt `#D3EFFF`/`#E9F8FF`, trắng, vàng `#FFC271` (chỉ cho quà tặng, ưu đãi; ngoại lệ duy nhất: khung "Hệ sinh thái sản phẩm" ở đầu trang chủ, owner duyệt 17/10/2026).
+  xanh nhạt `#D3EFFF`/`#E9F8FF`, trắng, vàng `#FFC271` (chỉ cho quà tặng, ưu đãi; ngoại lệ: dải trắng ngay dưới banner trang chủ có hai khung vàng, "Hệ sinh thái sản phẩm" (owner duyệt 17/10/2026)
+  và "Tốt · Thật · Thiện" (chị Phương 09/11/2026: "làm khung cam như bên hệ sinh thái cho cân"), `BangEcBar` trong `Hero.tsx`).
   Tên token cũ (`deep-*`, `mist-*`, `cream-*`, `ivory`) vẫn giữ và đã trỏ về các màu này.
 - **Nền cả web là xanh `#D3EFFF`, khối nổi màu trắng** (owner chọn 17/10/2026, mục 33, phương án 1): `bg-page` = #D3EFFF;
   `ivory`, `cream-50`, `cream-100`, `mist-50` đều là trắng. Thẻ, ô, hộp trắng tách khỏi nền bằng `shadow-[var(--shadow-soft)]`, không dùng viền `ring-cream-200` (trùng màu nền nên không thấy).
   Dải kéo hết bề ngang không đặt nền (để nền xanh liền). Đường kẻ dùng `border-line` (chàm 14%). Ô nhỏ nằm **bên trong** khối trắng dùng `bg-mist-100` (#E9F8FF).
-- Font: Be Vietnam Pro (chữ thường) + Noto Serif Display (tiêu đề, lớp `font-display`).
-  Ngoại lệ duy nhất: câu "Nâng niu giấc mơ xanh" đầu trang chủ dùng font viết tay của logo (lớp `font-slogan`, 1FTV VIP Betterlett, mục 2).
-  File `public/fonts/betterlett-slogan.woff` **chỉ có chữ của câu đó**: dùng font này cho chữ khác thì chữ thiếu sẽ hiện font khác; đổi câu thì cắt lại (lệnh ở đầu `src/index.css`).
+- Font: Be Vietnam Pro (chữ thường) + Noto Serif Display (tiêu đề, lớp `font-display`; chữ đứng đậm 600, chữ nghiêng 400, owner chọn mẫu A 04/11/2026).
+  Mỗi tiêu đề chỉ một kiểu chữ (02/11/2026). Đổi font hay độ đậm thì đo lại `size-adjust` ở đầu `src/index.css`.
+  Font viết tay của logo (lớp `font-slogan`, 1FTV VIP Betterlett, `public/fonts/betterlett-slogan.woff`) **từ 16/11/2026 không còn chỗ nào dùng**,
+  vì đầu trang chủ đã thành banner "Chốn yên". Khai báo `@font-face` vẫn để trong `src/index.css`. File font **chỉ có chữ của câu "Nâng niu giấc mơ xanh"**:
+  dùng lại cho chữ khác thì chữ thiếu sẽ hiện font khác; đổi câu thì cắt lại (lệnh ở đầu `src/index.css`).
 - **Skill thiết kế trong `.claude/skills/`** (Impeccable, Taste Skill, bộ của Emil Kowalski; nguồn ở `.claude/skills/NGUON-SKILL.md`, không lên git):
   chỉ dùng để rà và chau chuốt. Chúng khuyên đổi font, màu, bố cục thì **quy tắc trong file này và quyết định owner đã chốt thắng**.
 - **Không dùng `<select>` của trình duyệt** (danh sách xổ xuống màu xám của macOS, owner chê 15/10/2026): dùng `Select` trong `src/components/ui/Select.tsx`.
@@ -92,7 +97,7 @@ pnpm lint       # đang có 4 cảnh báo cũ react-refresh, không phải lỗi
 | Đường link, chuyển hướng link cũ | `src/data/links.ts` (bộ định tuyến `src/App.tsx` dựng từ đó); quy tắc và bảng 221 link web cũ: `docs/giu-link-web-cu.md` |
 | Danh mục nhỏ của web cũ (đệm lò xo, ruột chăn gối…) | `LISTINGS` trong `src/data/links.ts`, trang `src/pages/CategoryPage.tsx` |
 | Hiệu ứng hiện dần, cuộn trôi (Lenis), ảnh trôi | `public/hieu-ung/` + `HIEU-UNG-GHI-CHU.md` |
-| Phần đầu trang chủ (ảnh Bảng EC) | `src/components/home/Hero.tsx`, yêu cầu gốc ở `docs/hero-bang-ec-prompt.md` |
+| Phần đầu trang chủ (banner "Chốn yên" từ 16/11/2026, thay ảnh Bảng EC) | `src/components/home/Hero.tsx`; chữ, link, ảnh ở `src/data/heroBanner.ts`; mẫu owner chọn và lệnh xuất ảnh: `docs/de-xuat-banner-moi-16-11.html`, `docs/de-xuat-banner-moi-16-11/xuat-anh-web.py` |
 | Khối đệm trang chủ (C3: chọn theo cách nằm) | `src/data/mattressPicker.ts`, `src/components/home/MattressPicker.tsx` |
 | Kệ trang Sản phẩm mục "Tất cả" (ô nhóm + 4 kệ) | `src/data/productShelves.ts`, `src/components/products/GroupTiles.tsx`, `ProductShelves.tsx` |
 | Tiêu đề tab, mô tả SEO, canonical, ảnh chia sẻ, JSON-LD | `usePageMeta` ở từng trang; `src/lib/structuredData.ts` + `src/components/seo/JsonLd.tsx`; ảnh chia sẻ `public/images/chia-se/` (tạo lại: `python3 -I tools/tao-anh-chia-se-2026-10-28.py public/images`); ghi vào HTML: `tools/dung-san-html.mjs` |
