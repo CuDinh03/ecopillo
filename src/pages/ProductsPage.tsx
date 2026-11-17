@@ -405,17 +405,23 @@ const rangeOf = (item: GridItem): { min: number; max: number } =>
 const isInBand = (item: GridItem, b: PriceBand): boolean =>
   (item.kind === 'colorway' || hasPrice(item.product)) && inPriceBand(rangeOf(item), b)
 
-/** Thẻ của lưới theo loại, gam, bộ sưu tập (chưa xét mức giá). Gối, đệm, chăn lẻ không có gam, bộ nên bị loại khi lọc theo hai thứ đó */
+/**
+ * Thẻ của lưới theo loại, gam, bộ sưu tập (chưa xét mức giá). Gối, đệm, chăn lẻ không có gam, bộ nên bị loại khi lọc theo hai thứ đó.
+ * Chị Phương (Zalo 17/11/2026, owner chọn "mỗi bộ một thẻ"): lưới chung hiện mỗi bộ một thẻ cùng kiểu thẻ đệm, ruột gối
+ * ("k mình nó 1 kiểu", thẻ phối màu "hiện nhỏ quá"). Chỉ khi chọn một bộ sưu tập hoặc gam màu mới ra từng phối màu.
+ */
 const gridItems = (category: CategoryId | null, tone: Tone | undefined, collection: Collection | undefined): GridItem[] =>
   PRODUCTS.filter((p) => !category || p.category === category).flatMap((p): GridItem[] =>
-    p.collection
-      ? COLORWAYS.filter(
-          (c) =>
-            c.collection.id === p.collection?.id && (!tone || c.story.tone === tone.id) && (!collection || c.collection.id === collection.id),
-        ).map((colorway) => ({ kind: 'colorway', colorway }))
-      : tone || collection
-        ? []
-        : [{ kind: 'product', product: p }],
+    p.collection && !tone && !collection
+      ? [{ kind: 'product', product: p }]
+      : p.collection
+        ? COLORWAYS.filter(
+            (c) =>
+              c.collection.id === p.collection?.id && (!tone || c.story.tone === tone.id) && (!collection || c.collection.id === collection.id),
+          ).map((colorway) => ({ kind: 'colorway', colorway }))
+        : tone || collection
+          ? []
+          : [{ kind: 'product', product: p }],
   )
 
 const itemKey = (item: GridItem): string =>

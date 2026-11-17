@@ -15,7 +15,8 @@ interface ProductShelvesProps {
 /**
  * Bốn kệ theo nhóm ở mục "Tất cả" (phương án 1 + 2, owner chốt 02/11/2026): mỗi bộ, mỗi sản phẩm một thẻ, một trang.
  * Không ghi số mẫu, số phối màu (khách 05/11/2026: "đừng cho số lượng vào", web chưa có đủ mẫu đang bán).
- * Máy tính 4 thẻ một hàng (640–1023px: 3), kệ bộ chăn ga thêm thẻ "Xem theo phối màu" lấp ô cuối.
+ * Máy tính 3 thẻ một hàng như web cũ (owner 17/11/2026: "khách muốn nhìn nó to như này, mình đang để hơi bé"; trước là 4),
+ * kệ bộ chăn ga thêm thẻ "Xem theo phối màu" ở ô cuối.
  * Điện thoại: mỗi kệ một hàng thẻ nhỏ lướt ngang; thẻ "Xem theo phối màu" ẩn vì trùng nút ở đầu kệ.
  */
 export function ProductShelves({ onPick, reveal }: ProductShelvesProps) {
@@ -25,7 +26,7 @@ export function ProductShelves({ onPick, reveal }: ProductShelvesProps) {
       {SHELVES.map((shelf) => (
         <section key={shelf.category} id={shelf.id} aria-labelledby={`${shelf.id}-ten`} className="mt-9 scroll-mt-[9rem] sm:mt-12 sm:scroll-mt-[5.5rem]">
           <ShelfHeader shelf={shelf} onPick={onPick} />
-          <ul className="mt-3.5 grid gap-3 max-sm:-mx-5 max-sm:flex max-sm:scroll-px-5 max-sm:snap-x max-sm:snap-mandatory max-sm:overflow-x-auto max-sm:overscroll-x-contain max-sm:px-5 max-sm:pb-2 max-sm:[scrollbar-width:none] sm:mt-5 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+          <ul className="mt-3.5 grid gap-3 max-sm:-mx-5 max-sm:flex max-sm:scroll-px-5 max-sm:snap-x max-sm:snap-mandatory max-sm:overflow-x-auto max-sm:overscroll-x-contain max-sm:px-5 max-sm:pb-2 max-sm:[scrollbar-width:none] sm:mt-5 sm:grid-cols-3 sm:gap-4 lg:gap-5">
             {shelf.products.map((product, i) => (
               <li
                 key={product.slug}
@@ -90,11 +91,11 @@ function ShelfCard({ product }: { product: Product }) {
           tone="mist"
           note={product.imageNote}
           image={product.image}
-          sizes="(min-width: 1024px) 240px, (min-width: 640px) 33vw, 148px"
+          sizes="(min-width: 1024px) 320px, (min-width: 640px) 33vw, 340px"
         />
       </div>
-      <div className="flex flex-1 flex-col p-3 sm:p-4">
-        <h3 className="font-display text-[0.95rem] leading-snug text-deep-900 sm:text-[1.08rem]">
+      <div className="flex flex-1 flex-col p-3.5 sm:p-5">
+        <h3 className="font-display text-body leading-snug text-deep-900 sm:text-[1.25rem] sm:leading-tight">
           <Link to={productPath(product)} className="after:absolute after:inset-0 focus-visible:outline-none">
             {product.name}
           </Link>
@@ -106,7 +107,7 @@ function ShelfCard({ product }: { product: Product }) {
         ) : (
           <p className="mt-1 line-clamp-1 text-label text-ink-faint sm:line-clamp-2 sm:text-meta">{product.summary}</p>
         )}
-        <p className="tabular mt-auto pt-2.5 text-meta font-semibold text-deep-900 sm:pt-3.5 sm:text-small">{shortPriceLabel(product)}</p>
+        <p className="tabular mt-auto pt-2.5 text-small font-semibold text-deep-900 sm:pt-4 sm:text-body">{shortPriceLabel(product)}</p>
       </div>
     </article>
   )
