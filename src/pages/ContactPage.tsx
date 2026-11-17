@@ -92,9 +92,13 @@ const TOPIC_PARAM: Readonly<Record<string, Topic>> = {
   'don-hang': 'Hỏi về đơn hàng',
 }
 
+/**
+ * Chị Phương (Zalo 17/11/2026): "Số 678 là bán lẻ, 072 là mở đại lý". Owner chốt chỉ đổi nhãn hai ô này;
+ * các nút gọi khác trên web vẫn dùng hotline 072.
+ */
 const CHANNELS: readonly (ChannelProps & { key: string })[] = [
-  { key: 'phone', href: CONTACT.phoneTel, icon: <Icon name="phone" size={18} />, label: 'Điện thoại', value: CONTACT.phoneDisplay },
-  { key: 'zalo', href: CONTACT.zaloUrl, icon: <ZaloMark />, label: 'Zalo', value: CONTACT.hotlineDisplay, external: true },
+  { key: 'phone', href: CONTACT.phoneTel, icon: <Icon name="phone" size={18} />, label: 'Mua hàng', value: CONTACT.phoneDisplay },
+  { key: 'zalo', href: CONTACT.zaloUrl, icon: <ZaloMark />, label: 'Mở đại lý', value: CONTACT.hotlineDisplay, external: true },
   {
     key: 'messenger',
     href: CONTACT.messengerUrl,
