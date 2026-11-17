@@ -68,7 +68,7 @@ const CHO_BE = 'Cho bé'
 /** Câu chuyện chung của cả bộ, hiện ở phần bìa */
 export const COLLECTION_STORIES: Readonly<Record<string, string>> = {
   'eco-flora':
-    'Những khu vườn nhỏ sau mưa: lá dương xỉ, nhành hoa dại, vệt màu nước. Tám phối màu cho những ai muốn bắt đầu thật nhẹ nhàng.',
+    'Những khu vườn nhỏ sau mưa: lá dương xỉ, nhành hoa dại, vệt màu nước. Dành cho những ai muốn bắt đầu thật nhẹ nhàng.',
   'eco-rosa':
     'Mỗi căn phòng một tính cách, nên Eco Rosa có nhiều câu chuyện nhất: vườn hoa, nét kẻ gọn gàng và cả thế giới của các bé. In hoạt tính nên màu tươi lâu.',
   'eco-tera': 'Không họa tiết, chỉ có màu. Sáu sắc trơn như sáu khoảng lặng trong ngày, để căn phòng tự kể phần còn lại.',
@@ -76,7 +76,7 @@ export const COLLECTION_STORIES: Readonly<Record<string, string>> = {
   'eco-sweet': 'Hoa văn không in lên mà dệt thẳng vào vải, chỉ hiện khi ánh sáng lướt qua. Ba sắc màu, ba kiểu lặng lẽ.',
   'eco-liora': 'Vải dệt kim sa, sợi kim tuyến lấp lánh nhẹ dưới ánh đèn. Năm phối màu dành để tặng những người thân yêu.',
   'eco-doris':
-    'Dòng cao nhất của Ecopillo, nơi từng đường thêu được dành nhiều thời gian nhất. Sáu phối màu, sáu cách nói lời trân trọng.',
+    'Dòng cao nhất của Ecopillo, nơi từng đường thêu được dành nhiều thời gian nhất. Mỗi phối màu là một cách nói lời trân trọng.',
   'chan-he-lyocell': 'Một lớp chăn mỏng cho những đêm oi nồng. Sáu phối màu mang hơi mát của trời, lá và mây.',
 }
 

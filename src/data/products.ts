@@ -695,6 +695,23 @@ const ECO_FOAM: Product = {
   }),
 }
 
+/**
+ * Đệm Foam cao cấp Nano Comfort: web cũ đang bán (còn hàng, kiểm API WooCommerce 17/11/2026), không có trong catalog 22.07.
+ * Web cũ chỉ có tên, một ảnh và một giá, không ghi mô tả, kích thước, độ dày: giữ đúng link, ảnh, giá web cũ,
+ * kích thước để nhân viên tư vấn khi gọi (owner "dựng 10 trang" 18/11/2026). [ECOPILLO GỬI MÔ TẢ, KÍCH THƯỚC, ĐỘ DÀY ĐỆM NANO COMFORT]
+ */
+const NANO_COMFORT: Product = {
+  slug: 'dem-foam-cao-cap-nano-comfort',
+  name: 'Đệm Foam cao cấp Nano Comfort',
+  category: 'dem',
+  summary: 'Đệm foam cao cấp Nano Comfort của Ecopillo. Nhân viên tư vấn kích thước, độ dày hợp với giường của Quý khách khi gọi xác nhận.',
+  min: 6_742_000,
+  max: 6_742_000,
+  imageNote: 'Ảnh đệm Foam cao cấp Nano Comfort',
+  details: ['Kích thước và độ dày: nhân viên Ecopillo tư vấn khi gọi xác nhận đơn.'],
+  choices: [{ id: 'theo-tu-van', label: 'Theo tư vấn', price: 6_742_000 }],
+}
+
 const ECO_ROYAL: Product = {
   slug: 'dem-lo-xo-eco-royal',
   name: 'Đệm lò xo Eco Royal',
@@ -796,6 +813,7 @@ const PRODUCT_PHOTOS = new Set([
   'topper-micro-fiber',
   'dem-lo-xo-tui-doc-lap',
   'dem-eco-foam-da-tang',
+  'dem-foam-cao-cap-nano-comfort',
   'dem-lo-xo-eco-royal',
   'dem-cao-su-thien-nhien-eco-latex',
   'dem-bong-gam-thuan-khiet',
@@ -826,6 +844,7 @@ export const PRODUCTS: readonly Product[] = [
   NANO_CHAN_FOAM,
   LO_XO_TUI_DOC_LAP,
   ECO_FOAM,
+  NANO_COMFORT,
   ECO_ROYAL,
   ECO_LATEX,
   ECO_LUXE,

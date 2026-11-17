@@ -183,6 +183,8 @@ export const COLLECTIONS: readonly Collection[] = [
     cover: 'EF06',
     patterns: [
       real('EF06', 'Sọc xanh nước biển', '#b6cfde'),
+      // Mẫu web cũ đang bán, chưa có trong catalog 22.07 (thêm 18/11/2026, owner "dựng 10 trang"): ảnh, link theo web cũ, giá chung của bộ, tên màu đặt theo ảnh
+      real('EF08', 'Hoa tím nền xanh nhạt', '#d3d5e9'),
       real('EF09', 'Lá dương xỉ nền trắng', '#e6e7e3'),
       real('EF10', 'Cành lá nền xám', '#cdccd1'),
       real('EF11', 'Lá dương xỉ xám', '#cac8c4'),
@@ -309,6 +311,8 @@ export const COLLECTIONS: readonly Collection[] = [
     patterns: [
       real('ES06', 'Trắng ngà', '#eee9e5'),
       real('ES08', 'Xanh ngọc', '#b6d7e8'),
+      // Mẫu web cũ đang bán, chưa có trong catalog 22.07 (thêm 18/11/2026, owner "dựng 10 trang"): ảnh, link theo web cũ, giá chung của bộ, tên màu đặt theo ảnh
+      real('ES09', 'Hồng phấn dệt hoa văn chìm', '#fcd4d5'),
       real('ES10', 'Xám bạc', '#bdbcc2'),
     ],
   },
@@ -354,6 +358,14 @@ export const COLLECTIONS: readonly Collection[] = [
       real('ED20', 'Đỏ trầm thêu chỉ vàng', '#ba544c'),
       real('ED25', 'Kem thêu hoa', '#e5d7c7'),
       real('ED26', 'Hoa tuyết nền ghi', '#b1b8c3'),
+      // Mẫu web cũ đang bán, chưa có trong catalog 22.07 (thêm 18/11/2026, owner "dựng 10 trang"): ảnh, link theo web cũ, giá chung của bộ, tên màu đặt theo ảnh
+      real('ED06', 'Tím oải hương thêu bông tuyết', '#aba7be'),
+      real('ED11', 'Đỏ san hô', '#de4b44'),
+      real('ED12', 'Trắng sữa', '#f5f5f5'),
+      real('ED16', 'Xám bạc', '#b0b1b5'),
+      real('ED18', 'Kem ngà', '#d7cfc7'),
+      real('ED19', 'Đỏ son', '#c95a4e'),
+      real('ED21', 'Hồng tro', '#cdb9c2'),
     ],
   },
   {
@@ -552,8 +564,17 @@ export const PATTERN_GALLERY_COUNTS: Readonly<Record<string, number>> = {
   ER47: 4,
   ER48: 5,
   ER49: 5,
+  ED06: 6,
+  ED11: 3,
+  ED12: 4,
+  ED16: 2,
+  ED18: 2,
+  ED19: 2,
+  ED21: 2,
+  EF08: 8,
   ES06: 3,
   ES08: 6,
+  ES09: 7,
   ES10: 3,
   ET01: 7,
   ET02: 5,

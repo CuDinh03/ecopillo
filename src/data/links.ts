@@ -65,6 +65,7 @@ const COLLECTION_PATHS: Readonly<Record<string, string>> = {
 const PATTERN_SLUGS: Readonly<Record<string, string>> = {
   // Eco Flora
   'eco-flora/EF06': 'bo-ga-chun-eco-flora-ef06',
+  'eco-flora/EF08': 'bo-ga-chun-eco-flora-ef08-2', // web cũ đang bán, thêm 18/11/2026: giữ đúng link cũ (có đuôi -2)
   'eco-flora/EF09': 'bo-ga-chun-eco-flora-ef09',
   'eco-flora/EF10': 'bo-ga-chun-eco-flora-ef10',
   'eco-flora/EF11': 'bo-ga-chun-eco-flora-ef11',
@@ -123,6 +124,7 @@ const PATTERN_SLUGS: Readonly<Record<string, string>> = {
   // Eco Sweet
   'eco-sweet/ES06': 'bo-ga-phu-lyocell-cao-cap-eco-sweet-es06',
   'eco-sweet/ES08': 'bo-ga-phu-lyocell-cao-cap-eco-sweet-es08',
+  'eco-sweet/ES09': 'bo-ga-phu-lyocell-cao-cap-eco-sweet-es09', // web cũ đang bán, thêm 18/11/2026
   'eco-sweet/ES10': 'bo-ga-phu-lyocell-cao-cap-eco-sweet-es10',
   // Eco Liora
   'eco-liora/EL06': 'bo-chan-ga-eco-liora-el06',
@@ -137,6 +139,14 @@ const PATTERN_SLUGS: Readonly<Record<string, string>> = {
   'eco-doris/ED20': 'bo-ga-phu-cao-cap-eco-doris-ed20', // mới
   'eco-doris/ED25': 'bo-ga-phu-cao-cap-eco-doris-ed25',
   'eco-doris/ED26': 'bo-ga-phu-cao-cap-eco-doris-ed26',
+  // Mẫu web cũ đang bán, thêm 18/11/2026 (trước đó 301 về trang bộ)
+  'eco-doris/ED06': 'bo-ga-phu-lyocell-cao-cap-eco-doris-ed06',
+  'eco-doris/ED11': 'bo-ga-phu-lyocell-cao-cap-eco-doris-ed11',
+  'eco-doris/ED12': 'bo-ga-phu-lyocell-cao-cap-eco-doris-ed12',
+  'eco-doris/ED16': 'bo-ga-phu-lyocell-cao-cap-eco-doris-ed16',
+  'eco-doris/ED18': 'bo-ga-phu-lyocell-cao-cap-eco-doris-ed18',
+  'eco-doris/ED19': 'bo-ga-phu-lyocell-cao-cap-eco-doris-ed19',
+  'eco-doris/ED21': 'bo-ga-phu-lyocell-cao-cap-eco-doris-ed21',
   // Chăn hè Lyocell
   'chan-he-lyocell/ER09': 'chan-he-lyocell-er09',
   'chan-he-lyocell/ER12': 'chan-he-lyocell-er12',
@@ -162,6 +172,8 @@ const PRODUCT_SLUGS: Readonly<Record<string, string>> = {
   'dem-bong-nano-chan-foam': 'dem-bong-nano-chan-foam',
   'dem-lo-xo-tui-doc-lap': 'dem-lo-xo-tui-doc-lap-ecopillo',
   'dem-eco-foam-da-tang': 'dem-eco-foam-da-tang-ecopillo',
+  // Web cũ đang bán, thêm 18/11/2026: dùng lại đúng trang của web cũ thay cho 301 sang danh mục Đệm foam
+  'dem-foam-cao-cap-nano-comfort': 'dem-foam-cao-cap-nano-comfort',
   'dem-lo-xo-eco-royal': 'dem-lo-xo-cao-cap-eco-royal',
   'dem-cao-su-thien-nhien-eco-latex': 'dem-cao-su-thien-nhien-eco-latex',
   // Có giá từ 05/11/2026: dùng lại trang divan của web cũ thay cho 301 sang Khách sạn (docs/giu-link-web-cu.md mục C)
@@ -311,7 +323,7 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
     title: 'Đệm foam',
     description: 'Đệm Eco Foam đa tầng của Ecopillo. Giá theo kích thước và độ dày, nằm thử tại hệ thống phân phối.',
     category: 'dem',
-    products: ['dem-eco-foam-da-tang'],
+    products: ['dem-eco-foam-da-tang', 'dem-foam-cao-cap-nano-comfort'],
   },
 }
 
@@ -341,20 +353,10 @@ export const OLD_SITE_REDIRECTS: Readonly<Record<string, string>> = {
   '/san-pham/bo-chan-ga-eco-ceno-ec03/': '/danh-muc-san-pham/san-pham/bo-ga-phu/',
   '/san-pham/bo-chan-ga-eco-ceno-ec04/': '/danh-muc-san-pham/san-pham/bo-ga-phu/',
   '/san-pham/bo-chan-ga-eco-ceno-ec05/': '/danh-muc-san-pham/san-pham/bo-ga-phu/',
-  '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed06/': COLLECTION_PATHS['eco-doris'],
-  '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed11/': COLLECTION_PATHS['eco-doris'],
-  '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed12/': COLLECTION_PATHS['eco-doris'],
-  '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed16/': COLLECTION_PATHS['eco-doris'],
-  '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed18/': COLLECTION_PATHS['eco-doris'],
-  '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed19/': COLLECTION_PATHS['eco-doris'],
-  '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed21/': COLLECTION_PATHS['eco-doris'],
-  '/san-pham/bo-ga-phu-tencel-cao-cap-eco-sweet-es09/': COLLECTION_PATHS['eco-sweet'],
   // Web cũ đặt link sai mã (kiểm API WooCommerce 17/11/2026): "-ef08/" là mẫu EF12, "-ef126/" là EF16. Hai mẫu này web mới có trang riêng
   '/san-pham/bo-ga-chun-eco-flora-ef08/': '/san-pham/bo-ga-chun-eco-flora-ef12/',
-  '/san-pham/bo-ga-chun-eco-flora-ef08-2/': COLLECTION_PATHS['eco-flora'],
   '/san-pham/bo-ga-chun-eco-flora-ef126/': '/san-pham/bo-ga-chun-eco-flora-ef16/',
   // Sản phẩm lẻ web mới chưa có [XÁC NHẬN]
-  '/san-pham/dem-foam-cao-cap-nano-comfort/': '/danh-muc-san-pham/san-pham/dem-foam/',
   '/san-pham/dem-lo-xo-cao-cap-eco-premium/': '/danh-muc-san-pham/san-pham/dem-lo-xo/',
   '/san-pham/ruot-goi-dau-ecopillo/': '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/',
   // Khăn: bảng giá 2026 ghi "Giá liên hệ", không có trang riêng; trang Khách sạn có thẻ khăn trong khối Sản phẩm (09/11/2026)
@@ -435,6 +437,14 @@ const RENAMED_PATHS: Readonly<Record<string, string>> = {
   '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed08/': '/san-pham/bo-ga-phu-lyocell-cao-cap-eco-doris-ed08/',
   '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed09/': '/san-pham/bo-ga-phu-lyocell-cao-cap-eco-doris-ed09/',
   '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed10/': '/san-pham/bo-ga-phu-lyocell-cao-cap-eco-doris-ed10/',
+  '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed06/': '/san-pham/bo-ga-phu-lyocell-cao-cap-eco-doris-ed06/',
+  '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed11/': '/san-pham/bo-ga-phu-lyocell-cao-cap-eco-doris-ed11/',
+  '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed12/': '/san-pham/bo-ga-phu-lyocell-cao-cap-eco-doris-ed12/',
+  '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed16/': '/san-pham/bo-ga-phu-lyocell-cao-cap-eco-doris-ed16/',
+  '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed18/': '/san-pham/bo-ga-phu-lyocell-cao-cap-eco-doris-ed18/',
+  '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed19/': '/san-pham/bo-ga-phu-lyocell-cao-cap-eco-doris-ed19/',
+  '/san-pham/bo-ga-phu-tencel-cao-cap-eco-doris-ed21/': '/san-pham/bo-ga-phu-lyocell-cao-cap-eco-doris-ed21/',
+  '/san-pham/bo-ga-phu-tencel-cao-cap-eco-sweet-es09/': '/san-pham/bo-ga-phu-lyocell-cao-cap-eco-sweet-es09/',
   '/san-pham/chan-he-tencel-er09/': '/san-pham/chan-he-lyocell-er09/',
   '/san-pham/chan-he-tencel-er12/': '/san-pham/chan-he-lyocell-er12/',
   '/san-pham/chan-he-tencel-er16/': '/san-pham/chan-he-lyocell-er16/',
