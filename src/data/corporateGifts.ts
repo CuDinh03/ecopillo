@@ -1,4 +1,5 @@
 import type { ImageSource } from './catalog'
+import { liveObject, type EditableField, type EditableSet } from './liveContent'
 
 /**
  * Quà tặng doanh nghiệp, sự kiện (Ecopillo gửi 27/10/2026: "Phần này là quà tặng", 7 ảnh), ở trang Quà tặng và sự kiện.
@@ -19,7 +20,7 @@ const giftImage = (key: string, alt: string): ImageSource => ({
   alt,
 })
 
-export const CORPORATE_GIFTS = {
+const BASE_CORPORATE_GIFTS = {
   eyebrow: 'Quà tặng doanh nghiệp, sự kiện',
   title: 'Hộp quà chăn ga',
   titleAccent: 'cho doanh nghiệp',
@@ -30,7 +31,7 @@ export const CORPORATE_GIFTS = {
   /** Chỉ ghi điều thấy trong ảnh khách gửi hoặc đã có trong chính sách (giao hàng: src/data/policies.ts) */
   points: ['Hộp quà, túi quà in nhận diện Ecopillo', 'Kèm thư cảm ơn mang tên đơn vị nhận, như thư gửi VTV3', 'Giao hàng toàn quốc'],
   callLabel: 'Gọi đặt quà',
-} as const
+}
 
 /** Ảnh quảng cáo lớn (hiện trọn, không chú thích đè) và hai ảnh cạnh nó trong khối trắng */
 export const GIFT_POSTER: CorporateGiftImage = {
@@ -52,3 +53,25 @@ export const GIFT_MORE_IMAGES: readonly CorporateGiftImage[] = [
   },
   { image: giftImage('trao-qua-showroom-2', 'Đoàn khách nhận quà Ecopillo tại phòng trưng bày'), caption: 'Đoàn khách nhận quà Ecopillo' },
 ]
+
+/** Khối quà tặng doanh nghiệp: Ecopillo tự sửa trong WordPress (liveContent.ts) */
+export const CORPORATE_GIFTS_SET: EditableSet = {
+  khoa: 'qua-tang-doanh-nghiep',
+  nhom: 'Trang giới thiệu, khách sạn, quà tặng',
+  ten: 'Quà tặng doanh nghiệp',
+  moTa: 'Chữ khối quà tặng doanh nghiệp ở trang Quà tặng và sự kiện.',
+  kieu: 'mot',
+  goc: BASE_CORPORATE_GIFTS,
+  truong: [
+    { khoa: 'eyebrow', nhan: 'Nhãn nhỏ', kieu: 'chu', batBuoc: true },
+    { khoa: 'title', nhan: 'Tiêu đề', kieu: 'chu', batBuoc: true },
+    { khoa: 'titleAccent', nhan: 'Phần tiêu đề nghiêng', kieu: 'chu', batBuoc: true },
+    { khoa: 'lead', nhan: 'Đoạn giới thiệu', kieu: 'doan', batBuoc: true },
+    { khoa: 'price', nhan: 'Giá từ', kieu: 'chu', batBuoc: true, goiY: 'Ví dụ 99.000đ' },
+    { khoa: 'priceLabel', nhan: 'Nhãn giá', kieu: 'chu', batBuoc: true },
+    { khoa: 'points', nhan: 'Các ý', kieu: 'ds-dong', batBuoc: true },
+    { khoa: 'callLabel', nhan: 'Chữ trên nút gọi', kieu: 'chu', batBuoc: true },
+  ] satisfies EditableField[],
+}
+
+export const CORPORATE_GIFTS: typeof BASE_CORPORATE_GIFTS = liveObject(CORPORATE_GIFTS_SET.khoa, BASE_CORPORATE_GIFTS, CORPORATE_GIFTS_SET.truong)

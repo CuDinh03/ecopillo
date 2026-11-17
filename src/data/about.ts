@@ -1,4 +1,5 @@
 import { staticImage, type ImageSource } from './catalog'
+import { liveObject, type EditableField, type EditableSet } from './liveContent'
 
 /**
  * Chữ và ảnh của câu chuyện thương hiệu, dùng chung cho phần "Về chúng tôi" ở trang chủ (components/home/About.tsx)
@@ -10,14 +11,14 @@ import { staticImage, type ImageSource } from './catalog'
  * Thư "Chia sẻ từ người sáng lập" (yêu cầu sửa mục 11): chép nguyên văn trang khách gửi 16/10/2026, kể cả cách xưng "bạn"
  * (thư ký tên chị Phương, không đổi sang "Quý khách"). Đã đối chiếu với trang 2 catalog Ecopillo 22.07.2026: khớp từng chữ.
  */
-export const FOUNDER_LETTER: readonly string[] = [
+const BASE_FOUNDER_LETTER: readonly string[] = [
   'Tôi sinh ra giữa miền quê gió Lào cát trắng – nơi những giấc ngủ trọn vẹn đôi khi chỉ là ước mơ thầm lặng. Tuổi thơ tôi gắn liền với những chiếc giường cũ kỹ, những đêm trằn trọc vì cái nóng, cái lạnh, và những nỗi lo không gọi thành tên. Nhưng cũng từ nơi ấy, trong những thiếu thốn và mỏi mệt, tôi đã nuôi lớn một giấc mơ: Làm sao để mỗi người đều có một chốn yên lành để nghỉ ngơi, để trở về.',
   'Ecopillo ra đời từ những suy nghĩ rất đời thường như thế. Nhưng càng gắn bó, tôi càng thấu hiểu rằng: để mang đến một giấc ngủ trọn vẹn, không chỉ cần một chiếc chăn mềm đệm êm.',
   'Điều thực sự quan trọng là sự tử tế đặt trong từng nguyên liệu, sự tỉ mỉ gửi gắm qua từng đường kim, mũi chỉ – và một tinh thần trách nhiệm bền bỉ với môi trường mà tất cả chúng ta đang cùng chia sẻ. Và đó chính là tôn chỉ mà chúng tôi luôn theo đuổi: “Tốt – Thật – Thiện”. Mỗi sản phẩm Ecopillo đều mang theo sứ mệnh “Nâng niu giấc mơ xanh”, góp phần kiến tạo nên “Chốn Yên”, nơi bạn và những người thân yêu luôn mong được trở về, mỗi đêm.',
   'Tôi tin rằng, một giấc ngủ an lành là gốc rễ của một cuộc sống tròn đầy. Khi bạn lựa chọn Ecopillo, đó không chỉ là một món đồ trong phòng ngủ – mà là một cách sống: nhẹ nhàng hơn, bền vững hơn, và chan chứa yêu thương hơn với chính mình và những người quanh bạn. Cảm ơn bạn – vì đã để chúng tôi trở thành một phần trong tổ ấm của bạn.',
 ]
 
-export const FOUNDER_SIGNATURE = ['Phạm Thị Phương', 'Người sáng lập thương hiệu Ecopillo', 'Á hậu Doanh nhân Việt Nam 2025'] as const
+const BASE_FOUNDER_SIGNATURE = ['Phạm Thị Phương', 'Người sáng lập thương hiệu Ecopillo', 'Á hậu Doanh nhân Việt Nam 2025'] as const
 
 /**
  * Hai ảnh đi kèm thư ở trang 2 catalog 22.07.2026, cùng chương trình "Chăn ấm yêu thương" (Cẩm Xuyên, 3/2025).
@@ -36,19 +37,19 @@ export const FOUNDER_LETTER_IMAGES: readonly ImageSource[] = [
   },
 ]
 
-export const STORY_OPENING =
+const BASE_STORY_OPENING =
   'Một giấc ngủ không trọn đôi khi chẳng bắt đầu từ điều gì lớn lao: chiếc ga quá thô ráp, đứa trẻ trằn trọc vì chăn bí nóng, hay người lớn mang cả áp lực vào giấc ngủ sau một ngày dài.'
 
 export const FOUNDER_NAME = 'chị Phạm Thị Phương'
 
 /** Câu trích dùng ở trang chủ và trang Giới thiệu; không thêm câu trích nào khác gán cho chị Phương khi Ecopillo chưa gửi */
-export const FOUNDER_QUOTE = 'Mỗi sản phẩm làm ra đều bắt đầu từ sự tử tế.'
+const BASE_FOUNDER_QUOTE = 'Mỗi sản phẩm làm ra đều bắt đầu từ sự tử tế.'
 
-export const BRAND_PROMISE =
+const BASE_BRAND_PROMISE =
   'Từ đó, Ecopillo® ra đời với một cam kết: mỗi sản phẩm làm ra đều bắt đầu từ sự tử tế, và kết thúc bằng sự bình yên trong giấc ngủ của mọi gia đình.'
 
 /** Biên bản mục 29: ảnh chị Phạm Thị Phương trên VTV3 */
-export const FOUNDER_IMAGE: ImageSource = {
+const BASE_FOUNDER_IMAGE: ImageSource = {
   src: '/images/about/chi-phuong.webp',
   srcSet: '/images/about/chi-phuong-sm.webp 800w, /images/about/chi-phuong.webp 1309w',
   alt: 'Chị Phạm Thị Phương, người sáng lập Ecopillo, tại VTV3',
@@ -68,7 +69,7 @@ export const VALUES_SHORT = [
  * Triết lý kinh doanh: chép nguyên văn web cũ (khách yêu cầu 05/11/2026). Chữ to là `word`.
  * Câu mô tả viết hoa đầu câu (chị Phương 09/11/2026 "in hoa", owner duyệt cách a), chữ `word` đứng thẳng.
  */
-export const PHILOSOPHY = [
+const BASE_PHILOSOPHY = [
   {
     word: 'Tốt',
     text: 'Trong từng nguyên liệu được lựa chọn, từng chi tiết được chế tác, đảm bảo mang lại trải nghiệm trọn vẹn nhất cho bạn.',
@@ -81,12 +82,12 @@ export const PHILOSOPHY = [
 ] as const
 
 /** Sứ mệnh: chép nguyên văn web cũ, hai đoạn (owner yêu cầu 09/11/2026, thay câu tóm tắt cũ). Mỗi phần tử là một đoạn */
-export const MISSION: readonly string[] = [
+const BASE_MISSION: readonly string[] = [
   'Trong một thế giới đang đối mặt với những thách thức lớn lao và nhiều biến động, Ecopillo ra đời như một biểu tượng của sự đổi mới và trách nhiệm, mang đến những giải pháp chăn ga gối đệm không chỉ nâng niu giấc ngủ mà còn góp phần bảo vệ môi trường.',
   'Được khơi nguồn từ tình yêu với thiên nhiên và cam kết với hành tinh, chúng tôi đồng hành cùng bạn trên hành trình tìm kiếm sự thoải mái, tái tạo năng lượng, và xây dựng một tương lai bền vững hơn.',
 ]
 /** Tầm nhìn: chép nguyên văn web cũ (khách yêu cầu 05/11/2026), dài hơn Sứ mệnh nhiều nên chữ hiện nhỏ hơn (`isLongText`) */
-export const VISION =
+const BASE_VISION =
   'Ecopillo hướng đến trở thành thương hiệu chăn ga gối đệm hàng đầu, biểu tượng cho sự hài hòa giữa chất lượng vượt trội và trách nhiệm với môi trường. Với cam kết đổi mới không ngừng, Ecopillo sẽ là người bạn đồng hành đáng tin cậy của mỗi gia đình Việt, mang đến sự chăm sóc trọn vẹn cho giấc ngủ và góp phần xây dựng một cuộc sống an lành, bền vững cho thế hệ tương lai.'
 
 /** Câu dài (Tầm nhìn) không để chữ tiêu đề cỡ lớn: thẻ sẽ cao gấp mấy lần thẻ bên cạnh */
@@ -203,16 +204,16 @@ export const FOUNDER_HONOURS: readonly Certificate[] = [
   },
 ]
 
-export const BRAND_STATS = [
+const BASE_BRAND_STATS = [
   { value: '15+', label: 'năm trong nghề chăn ga gối đệm' },
   { value: '15.000+', label: 'gia đình, khách sạn tin dùng' },
   { value: '2', label: 'văn phòng tại Hà Nội và TP. HCM' },
 ] as const
 
 /** Chất liệu và tay nghề (dùng chung với BrandStory ở trang chủ) */
-export const LYOCELL_INTRO =
+const BASE_LYOCELL_INTRO =
   'Ecopillo chọn vải Lyocell cao cấp nhập khẩu, dệt từ sợi gỗ tự nhiên, làm chất liệu chủ đạo. Quy trình sản xuất khép kín, thân thiện môi trường và an toàn cho cả làn da nhạy cảm của trẻ nhỏ.'
-export const CRAFT_QUOTE = 'Không chạy theo số lượng, mà kiên định tạo ra từng sản phẩm có linh hồn.'
+const BASE_CRAFT_QUOTE = 'Không chạy theo số lượng, mà kiên định tạo ra từng sản phẩm có linh hồn.'
 /**
  * Quy trình phát triển sản phẩm 7 bước, chương IV trang Giới thiệu (chị Phương Zalo 12/11/2026).
  * Chữ chép đúng tài liệu chị Phương gửi. Chị chọn mẫu A + cách 1, bỏ dòng tóm tắt, hiện hết mô tả không cần bấm
@@ -299,3 +300,58 @@ export const LYOCELL_TRAITS: readonly { title: string; text: string }[] = [
   { title: 'Thoáng khí', text: 'Cấu trúc sợi cho không khí lưu thông, không hầm bí.' },
   { title: 'Lành tính', text: 'Dịu với da nhạy cảm, phù hợp cả trẻ nhỏ.' },
 ]
+
+/* ——— Trang Giới thiệu: Ecopillo tự sửa trong WordPress (liveContent.ts) ——— */
+
+const BASE_ABOUT = {
+  moDau: BASE_STORY_OPENING,
+  loiNguoiSangLap: BASE_FOUNDER_QUOTE,
+  camKet: BASE_BRAND_PROMISE,
+  anhNguoiSangLap: BASE_FOUNDER_IMAGE,
+  thu: BASE_FOUNDER_LETTER,
+  chuKy: [...BASE_FOUNDER_SIGNATURE],
+  trietLy: BASE_PHILOSOPHY.map((p) => ({ word: p.word, text: p.text })),
+  suMenh: BASE_MISSION,
+  tamNhin: BASE_VISION,
+  soLieu: BASE_BRAND_STATS.map((s) => ({ value: s.value, label: s.label })),
+  chatLieu: BASE_LYOCELL_INTRO,
+  loiTayNghe: BASE_CRAFT_QUOTE,
+}
+
+export const ABOUT_SET: EditableSet = {
+  khoa: 'gioi-thieu',
+  nhom: 'Trang giới thiệu, khách sạn, quà tặng',
+  ten: 'Giới thiệu',
+  moTa: 'Chữ và ảnh của trang Giới thiệu (một phần dùng chung ở trang chủ): câu chuyện, thư người sáng lập, triết lý, sứ mệnh, tầm nhìn, con số.',
+  kieu: 'mot',
+  goc: BASE_ABOUT,
+  truong: [
+    { khoa: 'moDau', nhan: 'Câu mở đầu câu chuyện', kieu: 'doan', batBuoc: true },
+    { khoa: 'loiNguoiSangLap', nhan: 'Lời người sáng lập (một câu)', kieu: 'chu', batBuoc: true },
+    { khoa: 'camKet', nhan: 'Cam kết thương hiệu', kieu: 'doan', batBuoc: true },
+    { khoa: 'anhNguoiSangLap', nhan: 'Ảnh người sáng lập', kieu: 'anh', batBuoc: true },
+    { khoa: 'thu', nhan: 'Thư người sáng lập', kieu: 'doan-nhieu', batBuoc: true },
+    { khoa: 'chuKy', nhan: 'Chữ ký dưới thư (3 dòng: tên, vai trò, danh hiệu)', kieu: 'ds-dong', batBuoc: true },
+    { khoa: 'trietLy', nhan: 'Triết lý kinh doanh', kieu: 'ds-cap', batBuoc: true, cap: ['word', 'text'], nhanCap: ['Chữ to', 'Câu mô tả'] },
+    { khoa: 'suMenh', nhan: 'Sứ mệnh', kieu: 'doan-nhieu', batBuoc: true },
+    { khoa: 'tamNhin', nhan: 'Tầm nhìn', kieu: 'doan', batBuoc: true },
+    { khoa: 'soLieu', nhan: 'Con số', kieu: 'ds-cap', batBuoc: true, cap: ['value', 'label'], nhanCap: ['Số', 'Mô tả'] },
+    { khoa: 'chatLieu', nhan: 'Đoạn giới thiệu chất liệu', kieu: 'doan', batBuoc: true },
+    { khoa: 'loiTayNghe', nhan: 'Câu về tay nghề', kieu: 'chu', batBuoc: true },
+  ] satisfies EditableField[],
+}
+
+const ABOUT = liveObject(ABOUT_SET.khoa, BASE_ABOUT, ABOUT_SET.truong)
+
+export const STORY_OPENING: string = ABOUT.moDau
+export const FOUNDER_QUOTE: string = ABOUT.loiNguoiSangLap
+export const BRAND_PROMISE: string = ABOUT.camKet
+export const FOUNDER_IMAGE: ImageSource = ABOUT.anhNguoiSangLap
+export const FOUNDER_LETTER: readonly string[] = ABOUT.thu
+export const FOUNDER_SIGNATURE: readonly string[] = ABOUT.chuKy
+export const PHILOSOPHY: readonly { word: string; text: string }[] = ABOUT.trietLy
+export const MISSION: readonly string[] = ABOUT.suMenh
+export const VISION: string = ABOUT.tamNhin
+export const BRAND_STATS: readonly { value: string; label: string }[] = ABOUT.soLieu
+export const LYOCELL_INTRO: string = ABOUT.chatLieu
+export const CRAFT_QUOTE: string = ABOUT.loiTayNghe

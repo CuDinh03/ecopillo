@@ -1,4 +1,5 @@
 import type { ImageSource } from './catalog'
+import { liveObject, type EditableField, type EditableSet } from './liveContent'
 
 /**
  * Chữ giới thiệu khối khách sạn, dùng chung cho trang chủ (Hospitality) và trang Khách sạn và dự án (HotelPage).
@@ -6,19 +7,19 @@ import type { ImageSource } from './catalog'
  */
 
 /** Mục 37: nhãn thêm "Dự án" */
-export const HOTEL_EYEBROW = 'Khách sạn · Resort · Nhà nghỉ · Dự án'
+const BASE_HOTEL_EYEBROW = 'Khách sạn · Resort · Nhà nghỉ · Dự án'
 
 /**
  * Mục 38: dòng in hoa của khách làm dòng phụ dưới tiêu đề "Giấc ngủ năm sao…".
  * [XÁC NHẬN] khách chưa trả lời có thay hẳn tiêu đề đó không (câu hỏi gửi khách số 28).
  */
-export const HOTEL_INTRO_HEADING = 'Ecopillo – Giải pháp chăn ga gối đệm toàn diện cho khách sạn & dự án'
+const BASE_HOTEL_INTRO_HEADING = 'Ecopillo – Giải pháp chăn ga gối đệm toàn diện cho khách sạn & dự án'
 
 /**
  * Mục 38: ba đoạn giới thiệu. Trang chủ chỉ hiện đoạn đầu. Trang Khách sạn và dự án hiện đủ:
  * đoạn đầu ở phần đầu trang, đoạn 2, 3 dưới câu trích nền chàm (để phần đầu trang không cao quá, ảnh không bị cắt lệch)
  */
-export const HOTEL_INTRO: readonly string[] = [
+const BASE_HOTEL_INTRO: readonly string[] = [
   'Ecopillo chuyên cung cấp chăn, ga, gối, đệm số lượng lớn cho khách sạn, resort, nhà nghỉ và các dự án lưu trú.',
   'Với chất liệu được tuyển chọn kỹ lưỡng, đường may chắc chắn với mật độ 4 mũi/cm cùng các dòng đệm đáp ứng đa dạng nhu cầu sử dụng, Ecopillo hướng đến những sản phẩm bền đẹp, phù hợp với cường độ sử dụng thường xuyên và nhu cầu vận hành thực tế.',
   'Chúng tôi mang đến giải pháp đồng bộ từ chăn ga gối đến đệm, giúp đối tác tối ưu chi phí đầu tư, kéo dài thời gian sử dụng sản phẩm và nâng cao trải nghiệm nghỉ ngơi của khách hàng.',
@@ -28,7 +29,7 @@ export const HOTEL_INTRO: readonly string[] = [
  * Ba ý cạnh lưới logo đối tác ở trang Khách sạn và dự án (owner chọn kiểu B 24/10/2026).
  * Rút từ 4 đoạn chữ trang 5 catalog Ecopillo 22.07.2026, giữ số liệu của catalog.
  */
-export const HOTEL_PARTNER_POINTS: readonly { value: string; text: string }[] = [
+const BASE_HOTEL_PARTNER_POINTS: readonly { value: string; text: string }[] = [
   { value: '3–5 sao', text: 'Đáp ứng tiêu chuẩn khắt khe của khách sạn, khu nghỉ dưỡng, nhà hàng và spa trên toàn quốc.' },
   { value: 'Hàng trăm phòng', text: 'Sản xuất chủ động, cung ứng đồng bộ cho dự án từ nhỏ đến lớn, đúng tiến độ, đúng số lượng.' },
   { value: 'Đồng nhất', text: 'Chất lượng như nhau theo yêu cầu riêng của từng đối tác, minh bạch trong sản xuất.' },
@@ -47,7 +48,7 @@ export const HOTEL_LINEN = {
 } as const
 
 /** Mục 39: bốn lợi ích, thay bốn dòng cũ khách đã gạch */
-export const HOTEL_BENEFITS: readonly string[] = [
+const BASE_HOTEL_BENEFITS: readonly string[] = [
   'Tư vấn đúng nhu cầu, phù hợp ngân sách',
   'Giải pháp trọn gói cho từng mô hình từ vận chuyển đến setup cho từng phòng',
   'Báo giá ưu đãi theo số lượng và từng hạng mục',
@@ -205,3 +206,37 @@ export const HOTEL_PRODUCTS: readonly HotelProductEntry[] = [
     image: HOTEL_PHOTOS.towels,
   },
 ]
+
+/* ——— Chữ khối khách sạn (trang chủ + trang Khách sạn và dự án): Ecopillo tự sửa trong WordPress (liveContent.ts) ——— */
+
+const BASE_HOTEL = {
+  nhan: BASE_HOTEL_EYEBROW,
+  tieuDe: BASE_HOTEL_INTRO_HEADING,
+  gioiThieu: BASE_HOTEL_INTRO,
+  diemNoiBat: BASE_HOTEL_PARTNER_POINTS.map((p) => ({ value: p.value, text: p.text })),
+  loiIch: BASE_HOTEL_BENEFITS,
+}
+
+export const HOTEL_SET: EditableSet = {
+  khoa: 'khach-san',
+  nhom: 'Trang giới thiệu, khách sạn, quà tặng',
+  ten: 'Khách sạn và dự án',
+  moTa: 'Chữ khối khách sạn ở trang chủ và trang Khách sạn và dự án: nhãn, tiêu đề, giới thiệu, điểm nổi bật, lợi ích.',
+  kieu: 'mot',
+  goc: BASE_HOTEL,
+  truong: [
+    { khoa: 'nhan', nhan: 'Nhãn nhỏ', kieu: 'chu', batBuoc: true },
+    { khoa: 'tieuDe', nhan: 'Tiêu đề', kieu: 'chu', batBuoc: true },
+    { khoa: 'gioiThieu', nhan: 'Đoạn giới thiệu', kieu: 'doan-nhieu', batBuoc: true },
+    { khoa: 'diemNoiBat', nhan: 'Điểm nổi bật', kieu: 'ds-cap', batBuoc: true, cap: ['value', 'text'], nhanCap: ['Chữ to', 'Mô tả'] },
+    { khoa: 'loiIch', nhan: 'Lợi ích khi hợp tác', kieu: 'ds-dong', batBuoc: true },
+  ] satisfies EditableField[],
+}
+
+const HOTEL = liveObject(HOTEL_SET.khoa, BASE_HOTEL, HOTEL_SET.truong)
+
+export const HOTEL_EYEBROW: string = HOTEL.nhan
+export const HOTEL_INTRO_HEADING: string = HOTEL.tieuDe
+export const HOTEL_INTRO: readonly string[] = HOTEL.gioiThieu
+export const HOTEL_PARTNER_POINTS: readonly { value: string; text: string }[] = HOTEL.diemNoiBat
+export const HOTEL_BENEFITS: readonly string[] = HOTEL.loiIch

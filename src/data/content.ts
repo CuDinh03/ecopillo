@@ -72,7 +72,7 @@ export interface Partner {
  * Mục 36 (owner cho phép 30/10/2026): thêm VTV3, Hiệp hội DNNVV Hà Nội, báo Dân trí, đặt cạnh May 10 ở đầu.
  * Logo lấy từ nguồn công khai (VTV3, Dân trí: Wikimedia Commons; Hiệp hội: hanoisme.vn), chưa phải file Ecopillo gửi.
  */
-export const HOTEL_PARTNERS: readonly Partner[] = [
+const BASE_HOTEL_PARTNERS: readonly Partner[] = [
   { name: 'May 10', logo: '/images/partners/may-10.webp' },
   { name: 'VTV3', logo: '/images/partners/vtv3.webp' },
   { name: 'Hiệp hội Doanh nghiệp nhỏ và vừa Hà Nội', logo: '/images/partners/hiep-hoi-dnnvv-ha-noi.webp' },
@@ -88,13 +88,30 @@ export const HOTEL_PARTNERS: readonly Partner[] = [
   { name: 'Panhou Retreat', logo: '/images/partners/panhou-retreat.webp' },
 ]
 
+/** Logo đối tác (trang chủ, trang Khách sạn): Ecopillo tự sửa trong WordPress (liveContent.ts) */
+export const PARTNERS_SET: EditableSet = {
+  khoa: 'doi-tac',
+  nhom: 'Trang giới thiệu, khách sạn, quà tặng',
+  ten: 'Logo đối tác',
+  moTa: 'Lưới logo "Đối tác" ở trang chủ và trang Khách sạn và dự án. Logo nền trong suốt (PNG/WebP), chỉ đưa khi đối tác đồng ý.',
+  kieu: 'nhieu',
+  goc: BASE_HOTEL_PARTNERS,
+  tieuDeDong: 'name',
+  truong: [
+    { khoa: 'name', nhan: 'Tên đối tác', kieu: 'chu', batBuoc: true },
+    { khoa: 'logo', nhan: 'Logo (link ảnh)', kieu: 'link', batBuoc: true, goiY: 'Tải logo vào Thư viện, dán link ảnh' },
+  ] satisfies EditableField[],
+}
+
+export const HOTEL_PARTNERS: readonly Partner[] = liveList(PARTNERS_SET.khoa, BASE_HOTEL_PARTNERS, PARTNERS_SET.truong, (): Partner => ({ name: '', logo: '' }))
+
 export interface Faq {
   q: string
   a: readonly string[]
 }
 
 // Biên bản chốt mục 35–38 và 43: Ecopillo sẽ duyệt lại câu trả lời trước khi chạy chính thức.
-export const FAQS: readonly Faq[] = [
+const BASE_FAQS: readonly Faq[] = [
   {
     q: 'Đơn hàng có được miễn phí giao không, bao lâu thì nhận?',
     a: [
@@ -147,6 +164,23 @@ export const FAQS: readonly Faq[] = [
     ],
   },
 ]
+
+/** Câu hỏi thường gặp: Ecopillo tự sửa trong WordPress (liveContent.ts) */
+export const FAQS_SET: EditableSet = {
+  khoa: 'hoi-dap',
+  nhom: 'Trang giới thiệu, khách sạn, quà tặng',
+  ten: 'Câu hỏi thường gặp',
+  moTa: 'Các câu hỏi và trả lời ở khối Hỏi đáp.',
+  kieu: 'nhieu',
+  goc: BASE_FAQS,
+  tieuDeDong: 'q',
+  truong: [
+    { khoa: 'q', nhan: 'Câu hỏi', kieu: 'chu', batBuoc: true },
+    { khoa: 'a', nhan: 'Trả lời', kieu: 'doan-nhieu', batBuoc: true },
+  ] satisfies EditableField[],
+}
+
+export const FAQS: readonly Faq[] = liveList(FAQS_SET.khoa, BASE_FAQS, FAQS_SET.truong, (): Faq => ({ q: '', a: [] }))
 
 /* ——— Nhận xét chi tiết từng sản phẩm (biên bản mục 42) ——— */
 

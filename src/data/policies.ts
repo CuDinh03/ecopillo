@@ -1,5 +1,6 @@
 import { CONTACT, OPENING_HOURS } from './brand'
 import type { PolicySlug } from './policyNav'
+import { liveList, type EditableField, type EditableSet } from './liveContent'
 
 /**
  * Các trang chính sách, ở đúng đường link của web cũ (src/data/policyNav.ts).
@@ -27,7 +28,7 @@ export interface Policy {
   sections: readonly PolicySection[]
 }
 
-export const POLICIES: readonly Policy[] = [
+const BASE_POLICIES: readonly Policy[] = [
   {
     slug: 'huong-dan-mua-hang',
     title: 'Hướng dẫn mua hàng online',
@@ -338,5 +339,59 @@ export const POLICIES: readonly Policy[] = [
     ],
   },
 ]
+
+/* ——— Trang chính sách: Ecopillo tự sửa trong WordPress (liveContent.ts) ——— */
+
+const NHOM_CHINH_SACH = 'Trang chính sách'
+
+/** Đầu mỗi trang chính sách (tên, mô tả Google, đoạn mở, 3 thẻ ý chính). Không thêm, bớt trang: link trang giữ theo web cũ */
+export const POLICY_HEAD_SET: EditableSet = {
+  khoa: 'chinh-sach-dau-trang',
+  nhom: NHOM_CHINH_SACH,
+  ten: 'Đầu các trang chính sách',
+  moTa: 'Tên trang, mô tả hiện trên Google, đoạn mở đầu, 3 thẻ ý chính của từng trang chính sách. Không thêm hay bớt trang ở đây.',
+  kieu: 'nhieu',
+  goc: BASE_POLICIES.map(({ slug, title, description, intro, highlights }) => ({ slug, title, description, intro, highlights })),
+  tieuDeDong: 'title',
+  khoaDong: 'slug',
+  truong: [
+    { khoa: 'title', nhan: 'Tên trang', kieu: 'chu', batBuoc: true },
+    { khoa: 'description', nhan: 'Mô tả hiện trên Google (70–155 ký tự)', kieu: 'doan', batBuoc: true },
+    { khoa: 'intro', nhan: 'Đoạn mở đầu', kieu: 'doan', batBuoc: true },
+    { khoa: 'highlights', nhan: '3 thẻ ý chính', kieu: 'ds-cap', batBuoc: true, cap: ['value', 'label'], nhanCap: ['Chữ to', 'Mô tả'] },
+  ] satisfies EditableField[],
+}
+
+const SECTION_FIELDS: readonly EditableField[] = [
+  { khoa: 'title', nhan: 'Tiêu đề phần', kieu: 'chu', batBuoc: true },
+  { khoa: 'body', nhan: 'Đoạn văn', kieu: 'doan-nhieu' },
+  { khoa: 'list', nhan: 'Gạch đầu dòng', kieu: 'ds-dong' },
+  { khoa: 'steps', nhan: 'Các bước có số', kieu: 'ds-cap', cap: ['title', 'text'], nhanCap: ['Tên bước', 'Nội dung'] },
+]
+
+/** Các phần nội dung của một trang chính sách: một mục sửa riêng cho mỗi trang */
+export const POLICY_SECTION_SETS: readonly EditableSet[] = BASE_POLICIES.map((p) => ({
+  khoa: `chinh-sach-${p.slug}`,
+  nhom: NHOM_CHINH_SACH,
+  ten: p.title,
+  moTa: `Các phần nội dung trang "${p.title}". Mỗi phần có thể có đoạn văn, gạch đầu dòng, các bước; ô nào để trống thì không hiện.`,
+  kieu: 'nhieu',
+  goc: p.sections,
+  tieuDeDong: 'title',
+  truong: SECTION_FIELDS,
+}))
+
+const LIVE_HEADS = liveList(POLICY_HEAD_SET.khoa, BASE_POLICIES, POLICY_HEAD_SET.truong, (i, row) => ({
+  ...(BASE_POLICIES.find((p) => p.slug === row.slug) ?? BASE_POLICIES[i] ?? BASE_POLICIES[0]),
+}))
+
+/** Mỗi trang chính sách giữ đúng link (slug) gốc; trang không có trong danh sách sửa thì giữ bản gốc */
+export const POLICIES: readonly Policy[] = BASE_POLICIES.map((base) => {
+  const head = LIVE_HEADS.find((p) => p.slug === base.slug) ?? base
+  return {
+    ...head,
+    sections: liveList(`chinh-sach-${base.slug}`, base.sections, SECTION_FIELDS, (): PolicySection => ({ title: '' })),
+  }
+})
 
 export const policyBySlug = (slug: string): Policy | undefined => POLICIES.find((p) => p.slug === slug)

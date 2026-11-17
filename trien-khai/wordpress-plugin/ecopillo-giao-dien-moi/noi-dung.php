@@ -104,6 +104,38 @@ function eco_nd_clean_field($field, $value)
                 }
             }
             return array_slice($out, 0, 8);
+        case 'doan-nhieu':
+        case 'ds-dong':
+            // Màn hình sửa gửi một ô chữ: nhiều đoạn cách nhau bằng dòng trống, hoặc mỗi dòng một ý
+            $parts = is_array($value) ? $value : preg_split($field['kieu'] === 'doan-nhieu' ? '/\R\s*\R/u' : '/\R/u', (string) $value);
+            $out = array();
+            foreach ((array) $parts as $part) {
+                $text = $field['kieu'] === 'doan-nhieu' ? trim(sanitize_textarea_field((string) $part)) : trim(sanitize_text_field((string) $part));
+                if ($text !== '') {
+                    $out[] = mb_substr(preg_replace('/\s*\R\s*/u', ' ', $text), 0, 4000, 'UTF-8');
+                }
+            }
+            return array_slice($out, 0, 60);
+        case 'ds-cap':
+            $keys = isset($field['cap']) ? array_values((array) $field['cap']) : array('a', 'b');
+            $lines = is_array($value) ? $value : preg_split('/\R/u', (string) $value);
+            $out = array();
+            foreach ((array) $lines as $line) {
+                if (is_array($line)) {
+                    $a = isset($line[$keys[0]]) ? (string) $line[$keys[0]] : '';
+                    $b = isset($line[$keys[1]]) ? (string) $line[$keys[1]] : '';
+                } else {
+                    $split = explode('|', (string) $line, 2);
+                    $a = $split[0];
+                    $b = isset($split[1]) ? $split[1] : '';
+                }
+                $a = trim(sanitize_text_field($a));
+                $b = trim(sanitize_text_field($b));
+                if ($a !== '' && $b !== '') {
+                    $out[] = array($keys[0] => mb_substr($a, 0, 4000, 'UTF-8'), $keys[1] => mb_substr($b, 0, 4000, 'UTF-8'));
+                }
+            }
+            return array_slice($out, 0, 60);
         case 'anh':
             if (!is_array($value) || !isset($value['src']) || !eco_nd_is_link(trim((string) $value['src']))) {
                 return null;
@@ -141,7 +173,7 @@ function eco_nd_clean_row($set, $input, &$errors)
                 return null;
             }
             // Ô không bắt buộc để trống: ghi rỗng để web bỏ ô đó
-            $row[$field['khoa']] = in_array($field['kieu'], array('ngay-nghi', 'ds-anh'), true) ? array() : '';
+            $row[$field['khoa']] = in_array($field['kieu'], array('ngay-nghi', 'ds-anh', 'doan-nhieu', 'ds-dong', 'ds-cap'), true) ? array() : '';
             continue;
         }
         $row[$field['khoa']] = $value;

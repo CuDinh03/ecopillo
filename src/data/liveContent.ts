@@ -31,6 +31,12 @@ export type FieldKind =
   | 'ngay-nghi'
   /** Danh sách ảnh (chỉ link ảnh) */
   | 'ds-anh'
+  /** Nhiều đoạn văn (mảng chữ); màn hình sửa: cách đoạn bằng một dòng trống */
+  | 'doan-nhieu'
+  /** Danh sách mỗi dòng một ý (mảng chữ) */
+  | 'ds-dong'
+  /** Danh sách cặp (mảng đối tượng hai khoá `cap`); màn hình sửa: mỗi dòng "ô 1 | ô 2" */
+  | 'ds-cap'
 
 export interface EditableField {
   khoa: string
@@ -40,6 +46,9 @@ export interface EditableField {
   /** Một dòng gợi ý dưới ô */
   goiY?: string
   luaChon?: readonly string[]
+  /** ds-cap: tên hai khoá của mỗi cặp và nhãn của chúng */
+  cap?: readonly [string, string]
+  nhanCap?: readonly [string, string]
 }
 
 /**
@@ -92,6 +101,22 @@ export function cleanField(field: EditableField, value: unknown): unknown {
       return Array.isArray(value) ? [...new Set(value.filter((d): d is number => Number.isInteger(d) && d >= 0 && d <= 6))].sort() : undefined
     case 'ds-anh':
       return Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string' && isLink(v)).slice(0, 8) : undefined
+    case 'doan-nhieu':
+    case 'ds-dong': {
+      if (!Array.isArray(value)) return undefined
+      const items = value.filter((v): v is string => typeof v === 'string').map((v) => v.trim().slice(0, MAX_TEXT)).filter(Boolean).slice(0, 60)
+      return items.length ? items : undefined
+    }
+    case 'ds-cap': {
+      const [a, b] = field.cap ?? ['a', 'b']
+      if (!Array.isArray(value)) return undefined
+      const pairs = value
+        .map((v) => (v && typeof v === 'object' ? (v as Record<string, unknown>) : {}))
+        .filter((v) => typeof v[a] === 'string' && typeof v[b] === 'string' && (v[a] as string).trim() && (v[b] as string).trim())
+        .map((v) => ({ [a]: (v[a] as string).trim().slice(0, MAX_TEXT), [b]: (v[b] as string).trim().slice(0, MAX_TEXT) }))
+        .slice(0, 60)
+      return pairs.length ? pairs : undefined
+    }
     case 'anh': {
       if (!value || typeof value !== 'object') return undefined
       const { src, srcSet, alt } = value as Record<string, unknown>
@@ -125,8 +150,8 @@ function mergeItem<T extends object>(base: T, input: unknown, fields: readonly E
     const value = cleanField(field, source[field.khoa])
     if (value === undefined) {
       if (field.batBuoc && (base as Record<string, unknown>)[field.khoa] === undefined) return undefined
-      // Ô không bắt buộc bị xoá trống: bỏ ô đó (ví dụ bỏ link bài, bỏ giờ mở cửa)
-      if (!field.batBuoc && source[field.khoa] === '') delete next[field.khoa]
+      // Ô không bắt buộc bị xoá trống: bỏ ô đó (ví dụ bỏ link bài, bỏ giờ mở cửa, bỏ gạch đầu dòng của một phần)
+      if (!field.batBuoc && isEmpty(source[field.khoa])) delete next[field.khoa]
       continue
     }
     next[field.khoa] = value

@@ -138,6 +138,24 @@ function eco_nd_input($field, $name, $value)
                 $html .= '<label style="margin-right:12px"><input type="checkbox" name="' . esc_attr($name) . '[]" value="' . $i . '"' . (in_array($i, (array) $value, true) ? ' checked' : '') . '> ' . esc_html($day) . '</label>';
             }
             return $html . $hint;
+        case 'doan-nhieu':
+        case 'ds-dong':
+            $sep = $field['kieu'] === 'doan-nhieu' ? "\n\n" : "\n";
+            $text = is_array($value) ? implode($sep, array_map('strval', $value)) : (string) $value;
+            $note = $field['kieu'] === 'doan-nhieu' ? 'Mỗi đoạn cách nhau một dòng trống.' : 'Mỗi dòng một ý.';
+            return $label . '<textarea id="' . esc_attr($id) . '" name="' . esc_attr($name) . '" rows="' . ($field['kieu'] === 'doan-nhieu' ? 8 : 5) . '" class="large-text">' . esc_textarea($text) . '</textarea>'
+                . '<p class="description">' . esc_html($note . (!empty($field['goiY']) ? ' ' . $field['goiY'] : '')) . '</p>';
+        case 'ds-cap':
+            $keys = isset($field['cap']) ? array_values((array) $field['cap']) : array('a', 'b');
+            $names = isset($field['nhanCap']) ? array_values((array) $field['nhanCap']) : $keys;
+            $lines = array();
+            foreach ((array) $value as $pair) {
+                if (is_array($pair)) {
+                    $lines[] = (isset($pair[$keys[0]]) ? $pair[$keys[0]] : '') . ' | ' . (isset($pair[$keys[1]]) ? $pair[$keys[1]] : '');
+                }
+            }
+            return $label . '<textarea id="' . esc_attr($id) . '" name="' . esc_attr($name) . '" rows="5" class="large-text">' . esc_textarea(implode("\n", $lines)) . '</textarea>'
+                . '<p class="description">' . esc_html('Mỗi dòng: ' . $names[0] . ' | ' . $names[1] . '.' . (!empty($field['goiY']) ? ' ' . $field['goiY'] : '')) . '</p>';
         case 'ds-anh':
             $list = is_array($value) ? implode("\n", $value) : '';
             return $label . '<textarea id="' . esc_attr($id) . '" name="' . esc_attr($name) . '" rows="3" class="large-text code eco-ds-anh">' . esc_textarea($list) . '</textarea>'

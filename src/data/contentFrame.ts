@@ -1,9 +1,13 @@
 import { CONTACT_SET, SHOWROOM_SET, SOCIAL_SET } from './brand'
-import { REVIEWS_SET } from './content'
+import { ABOUT_SET } from './about'
+import { FAQS_SET, PARTNERS_SET, REVIEWS_SET } from './content'
+import { CORPORATE_GIFTS_SET } from './corporateGifts'
 import { AGENT_SET } from './dealers'
 import { FEATURED_EVENT_SET, MAJOR_EVENTS_SET, OTHER_EVENTS_SET } from './events'
 import { BANNER_GROUPS_SET, BANNER_SET } from './heroBanner'
+import { HOTEL_SET } from './hotel'
 import type { EditableSet } from './liveContent'
+import { POLICY_HEAD_SET, POLICY_SECTION_SETS } from './policies'
 import { PRESS_SET } from './press'
 
 /**
@@ -23,6 +27,13 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   MAJOR_EVENTS_SET,
   PRESS_SET,
   REVIEWS_SET,
+  ABOUT_SET,
+  HOTEL_SET,
+  PARTNERS_SET,
+  CORPORATE_GIFTS_SET,
+  FAQS_SET,
+  POLICY_HEAD_SET,
+  ...POLICY_SECTION_SETS,
 ]
 
 export const buildContentFrame = (): { boDuLieu: readonly EditableSet[] } => ({ boDuLieu: CONTENT_SETS })
