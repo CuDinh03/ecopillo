@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Ảnh chia sẻ chung</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Noto+Serif+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  /* Ảnh hiện kèm link khi gửi qua Zalo, Facebook (og:image, 1200×630). Dựng bằng tools/tao-anh-chia-se-chung.mjs.
+     Ba phương án ?pa=a|b|c (chị Phương 18/11/2026: gửi link web cho người khác thì có ảnh giới thiệu đi kèm).
+     Màu chỉ trong bộ nhận diện (CLAUDE.md). Ảnh lấy từ public/images. */
+  :root { --deep: #2d2e8d; --deep-700: #333dba; --page: #d3efff; --mist: #e9f8ff; --sans: "Be Vietnam Pro", sans-serif; --display: "Noto Serif Display", serif; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body { font-family: var(--sans); color: var(--deep); background: var(--page); }
+  .khung { position: relative; width: 1200px; height: 630px; overflow: hidden; display: none; }
+  body[data-pa="a"] .a, body[data-pa="b"] .b, body[data-pa="c"] .c { display: block; }
+  .anh { position: absolute; background-size: cover; background-position: center; }
+  .logo { display: block; }
+  .chan { position: absolute; display: flex; gap: 22px; font-size: 22px; font-weight: 500; }
+  .chan span + span::before { content: "·"; margin-right: 22px; opacity: .6; }
+
+  /* A: banner "Chốn yên" của trang chủ (khách nhận ra ngay khi mở web) */
+  .a .anh { inset: 0; background-image: url(../../public/images/hero/chon-yen-desktop-2400.webp); background-size: auto 630px; background-position: right center; }
+  .a .mo { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(233 248 255 / .96) 0%, rgb(233 248 255 / .82) 38%, rgb(233 248 255 / 0) 60%); }
+  .a .logo { position: absolute; left: 64px; top: 56px; width: 250px; }
+  .a .tieu-de { position: absolute; left: 64px; top: 190px; width: 560px; }
+  .a .chan { left: 64px; bottom: 56px; color: var(--deep); }
+  .a .web { position: absolute; right: 40px; bottom: 36px; padding: 12px 24px; border-radius: 999px; background: var(--deep); color: #fff; font-size: 24px; font-weight: 600; }
+
+  /* B: khối chàm bên trái, bốn ảnh nhóm sản phẩm bên phải */
+  .b { background: var(--deep); color: #fff; }
+  .b .trai { position: absolute; left: 0; top: 0; bottom: 0; width: 520px; padding: 60px 56px; display: flex; flex-direction: column; }
+  .b .the-logo { align-self: flex-start; padding: 16px 22px; border-radius: 20px; background: #fff; }
+  .b .the-logo img { width: 210px; }
+  .b h1 { margin-top: 44px; font-family: var(--display); font-weight: 600; font-size: 54px; line-height: 1.12; }
+  .b h1 em { font-weight: 400; color: var(--page); }
+  .b .chan { left: 56px; bottom: 56px; flex-direction: column; gap: 8px; font-size: 22px; font-weight: 400; color: rgb(255 255 255 / .86); }
+  .b .chan span + span::before { content: none; }
+  .b .chan b { color: #fff; font-weight: 600; }
+  .b .luoi { position: absolute; left: 520px; right: 0; top: 0; bottom: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 6px; padding: 6px 6px 6px 0; }
+  .b .luoi div { position: relative; border-radius: 18px; background-size: cover; background-position: center; }
+  .b .luoi span { position: absolute; left: 14px; bottom: 14px; padding: 6px 14px; border-radius: 999px; background: rgb(255 255 255 / .94); color: var(--deep); font-size: 19px; font-weight: 600; }
+
+  /* C: một ảnh phòng ngủ lớn, chữ trên dải trắng phía dưới */
+  .c .anh { left: 0; right: 0; top: 0; height: 450px; background-image: url(../../public/images/patterns/ER48.webp); background-position: center 60%; }
+  .c .dai { position: absolute; left: 0; right: 0; bottom: 0; height: 180px; background: #fff; display: flex; align-items: center; padding: 0 56px; gap: 40px; }
+  .c .dai img { width: 230px; }
+  .c .dai .chu { flex: 1; border-left: 2px solid rgb(45 46 141 / .14); padding-left: 40px; }
+  .c .dai b { display: block; font-family: var(--display); font-weight: 600; font-size: 40px; line-height: 1.1; }
+  .c .dai small { display: block; margin-top: 10px; font-size: 21px; color: rgb(45 46 141 / .78); }
+  .c .nhan { position: absolute; left: 56px; top: 44px; padding: 10px 22px; border-radius: 999px; background: rgb(255 255 255 / .94); font-size: 22px; font-weight: 600; letter-spacing: .02em; }
+</style>
+</head>
+<body data-pa="a">
+  <div class="khung a">
+    <div class="anh"></div><div class="mo"></div>
+    <img class="logo" src="../../public/images/brand/logo-ecopillo-720.webp" alt="">
+    <img class="tieu-de" src="../../public/images/hero/chon-yen-tieu-de.webp" alt="">
+    <div class="chan"><span>Chăn ga gối đệm cao cấp</span><span>Thanh toán khi nhận</span></div>
+    <div class="web">ecopillo.com.vn</div>
+  </div>
+
+  <div class="khung b">
+    <div class="trai">
+      <div class="the-logo"><img src="../../public/images/brand/logo-ecopillo-720.webp" alt=""></div>
+      <h1>Chăn ga gối đệm <em>cao cấp</em></h1>
+      <div class="chan"><span>Đặt online, thanh toán khi nhận hàng</span><span><b>ecopillo.com.vn</b></span></div>
+    </div>
+    <div class="luoi">
+      <div style="background-image:url(../../public/images/products/dem-lo-xo-tui-cao-cap-eco-luxe-2.webp)"><span>Đệm</span></div>
+      <div style="background-image:url(../../public/images/patterns/ED25.webp)"><span>Bộ chăn ga</span></div>
+      <div style="background-image:url(../../public/images/products/ruot-goi-micro-plus.webp)"><span>Ruột gối</span></div>
+      <div style="background-image:url(../../public/images/products/chan-to-tam.webp)"><span>Chăn</span></div>
+    </div>
+  </div>
+
+  <div class="khung c">
+    <div class="anh"></div>
+    <div class="nhan">Chăn ga gối đệm cao cấp</div>
+    <div class="dai">
+      <img src="../../public/images/brand/logo-ecopillo-720.webp" alt="">
+      <div class="chu"><b>Nâng niu giấc mơ xanh</b><small>Đặt online, thanh toán khi nhận hàng · ecopillo.com.vn</small></div>
+    </div>
+  </div>
+<script>
+  const pa = new URLSearchParams(location.search).get('pa')
+  if (pa) document.body.dataset.pa = pa
+</script>
+</body>
+</html>

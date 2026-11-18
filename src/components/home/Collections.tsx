@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { collectionRange, coverOf } from '../../data/catalog'
-import { COLLECTION_SHOWCASE_TEXT, CORE_COLLECTIONS, MORE_COLLECTIONS, type ShowcaseItem } from '../../data/collectionGroups'
+import { COLLECTION_SHOWCASE_TEXT, CORE_COLLECTIONS, MORE_COLLECTIONS, SEE_ALL_IMAGE, type ShowcaseItem } from '../../data/collectionGroups'
+import type { ImageSource } from '../../data/catalog'
 import { collectionPath, PATHS } from '../../data/links'
 import { formatVND } from '../../lib/format'
 import { revealDelay } from '../../lib/reveal'
@@ -51,17 +52,35 @@ function CollectionTile({ item, index }: { item: ShowcaseItem; index: number }) 
 }
 
 /**
- * Ô cuối hàng "Thêm lựa chọn": nền chàm, sang trang Sản phẩm.
- * Ba bộ + ô này đủ một hàng 4 (máy tính) và 2×2 (điện thoại), không bị trống chỗ.
+ * Ô cuối hàng "Thêm lựa chọn": sang trang Sản phẩm. Ba bộ + ô này đủ một hàng 4 (máy tính) và 2×2 (điện thoại).
+ * Phương án B (owner chọn 18/11/2026): ảnh của mục đang chứa ô làm nền, phủ chàm cho chữ trắng đọc rõ.
+ * Rê chuột: ảnh phóng nhẹ, lớp chàm nhạt bớt, mũi tên nhích sang phải.
  */
-function SeeAllTile({ index }: { index: number }) {
+function SeeAllTile({ index, image }: { index: number; image: ImageSource }) {
   return (
     <li data-reveal style={revealDelay(index)} className="min-w-0">
       <Link
         to={PATHS.products}
-        className="group flex h-full min-h-40 flex-col justify-between rounded-[1.25rem] bg-deep-900 p-4 text-white shadow-[var(--shadow-soft)] transition duration-500 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] focus-visible:outline-2 focus-visible:outline-offset-2 sm:rounded-[1.75rem] sm:p-6"
+        className="group relative isolate flex h-full min-h-40 flex-col justify-between overflow-hidden rounded-[1.25rem] bg-deep-900 p-4 text-white shadow-[var(--shadow-soft)] transition duration-500 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] focus-visible:outline-2 focus-visible:outline-offset-2 sm:rounded-[1.75rem] sm:p-6"
       >
-        <span className="font-display text-[1.25rem] leading-tight sm:text-[1.75rem]">{COLLECTION_SHOWCASE_TEXT.seeAll}</span>
+        <span aria-hidden="true" className="absolute inset-0 -z-10 transition-transform duration-700 ease-[var(--ease-soft)] group-hover:scale-[1.04]">
+          <Placeholder
+            className="h-full w-full"
+            image={image}
+            note=""
+            position="center bottom"
+            sizes="(min-width: 1280px) 290px, (min-width: 1024px) 23vw, (min-width: 640px) 45vw, 46vw"
+          />
+        </span>
+        {/* Đậm ở trên (chữ) và dưới (mũi tên), nhạt ở giữa để thấy ảnh */}
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(45_46_141/0.92)_0%,rgb(45_46_141/0.55)_45%,rgb(45_46_141/0.88)_100%)] transition-opacity duration-500 group-hover:opacity-90"
+        />
+        <span className="font-display text-[1.25rem] leading-tight sm:text-[1.75rem]">
+          {COLLECTION_SHOWCASE_TEXT.seeAll}
+          <span className="mt-1.5 block font-sans text-label text-white/80 sm:text-small">{COLLECTION_SHOWCASE_TEXT.seeAllNote}</span>
+        </span>
         <span className="mt-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-deep-900 transition-transform duration-300 group-hover:translate-x-1 sm:h-12 sm:w-12">
           <Icon name="arrowRight" size={20} />
         </span>
@@ -88,7 +107,7 @@ export function Collections() {
           {MORE_COLLECTIONS.map((item, i) => (
             <CollectionTile key={item.collection.id} item={item} index={i} />
           ))}
-          <SeeAllTile index={MORE_COLLECTIONS.length} />
+          <SeeAllTile index={MORE_COLLECTIONS.length} image={SEE_ALL_IMAGE} />
         </ul>
       </Container>
     </section>

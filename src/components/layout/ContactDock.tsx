@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
 import { PATHS } from '../../data/links'
 import { Icon, ZaloMark } from '../ui/Icon'
@@ -7,7 +6,9 @@ import { Icon, ZaloMark } from '../ui/Icon'
 /**
  * Thanh liên hệ luôn hiện:
  * - Điện thoại: thanh dưới cùng (Gọi / Zalo / Messenger / Đặt hàng).
- * - Máy tính: 1 nút "Liên hệ" nổi góc phải, bấm mới mở Messenger / Zalo / Gọi (đầu trang gọn, 12/10).
+ * - Máy tính: Messenger / Zalo / số hotline hiện sẵn ở góc phải dưới, nút hotline có sóng lan (owner 18/11/2026:
+ *   "không để ẩn hiện khi bấm vào nữa mà để hiện rõ ra luôn kèm hiệu ứng nhấn mạnh", chọn phương án A trong
+ *   docs/de-xuat-xem-tat-ca-va-lien-he-18-11.html; thay nút "Liên hệ" bấm mới mở của 12/10). Điện thoại giữ nguyên.
  */
 export function ContactDock({ mobileBar = true }: { mobileBar?: boolean }) {
   return (
@@ -57,76 +58,51 @@ export function ContactDock({ mobileBar = true }: { mobileBar?: boolean }) {
   )
 }
 
-/** Máy tính: gom 3 nút nổi thành 1, để không che nội dung */
+/** Nút tròn trắng (dưới 1440px) hoặc viên thuốc có chữ (từ 1440px) */
+const SIDE_BUTTON =
+  'flex h-13 w-13 items-center justify-center rounded-full bg-ivory text-sm font-medium text-deep-900 shadow-[var(--shadow-lift)] transition hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 min-[1440px]:w-auto min-[1440px]:justify-start min-[1440px]:gap-2 min-[1440px]:py-2 min-[1440px]:pr-4 min-[1440px]:pl-3'
+
+/**
+ * Máy tính: ba nút luôn hiện. Dưới 1440px khung nội dung chạm mép phải, nút có chữ đè lên thẻ, đoạn văn (rà 23/10/2026):
+ * Messenger, Zalo thu thành nút tròn chỉ có biểu tượng (chữ vẫn có cho trình đọc màn hình); số hotline luôn hiện đủ.
+ */
 function DesktopDock() {
-  const [isOpen, setIsOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-  const location = useLocation()
-
-  useEffect(() => setIsOpen(false), [location])
-
-  useEffect(() => {
-    if (!isOpen) return
-    const onPointer = (e: PointerEvent) => {
-      if (!ref.current?.contains(e.target as Node)) setIsOpen(false)
-    }
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setIsOpen(false)
-    document.addEventListener('pointerdown', onPointer)
-    document.addEventListener('keydown', onKey)
-    return () => {
-      document.removeEventListener('pointerdown', onPointer)
-      document.removeEventListener('keydown', onKey)
-    }
-  }, [isOpen])
-
   return (
-    <div ref={ref} className="fixed right-6 bottom-6 z-40 hidden flex-col items-end gap-2.5 md:flex">
-      {isOpen && (
-        <div id="dock-menu" className="pop-in flex origin-bottom-right flex-col items-end gap-2.5">
-            <a
-              href={CONTACT.messengerUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Nhắn Messenger Ecopillo"
-              className="group flex h-13 items-center gap-2 rounded-full bg-ivory py-2 pr-4 pl-3 text-sm font-medium text-deep-900 shadow-[var(--shadow-lift)] transition hover:-translate-y-0.5"
-            >
-              <Icon name="messenger" size={20} />
-              Messenger
-            </a>
-            <a
-              href={CONTACT.zaloUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Nhắn Zalo Ecopillo"
-              className="group flex h-13 items-center gap-2 rounded-full bg-ivory py-2 pr-4 pl-3 text-sm font-medium text-deep-900 shadow-[var(--shadow-lift)] transition hover:-translate-y-0.5"
-            >
-              <ZaloMark />
-              Zalo
-            </a>
-            <a
-              href={CONTACT.hotlineTel}
-              aria-label={`Gọi hotline ${CONTACT.hotlineDisplay}`}
-              className="flex h-13 items-center gap-2 rounded-full bg-deep-800 py-2 pr-5 pl-4 text-sm font-medium text-ivory shadow-[var(--shadow-lift)] transition hover:-translate-y-0.5 hover:bg-deep-700"
-            >
-              <Icon name="phone" size={17} />
-              <span className="tabular">{CONTACT.hotlineDisplay}</span>
-            </a>
-        </div>
-      )}
-      <button
-        type="button"
-        aria-expanded={isOpen}
-        aria-controls="dock-menu"
-        onClick={() => setIsOpen((open) => !open)}
-        aria-label={isOpen ? 'Đóng liên hệ' : 'Liên hệ'}
-        className="flex h-14 min-w-14 items-center justify-center gap-2 rounded-full bg-deep-800 px-4 text-sm font-medium text-ivory shadow-[var(--shadow-lift)] transition hover:bg-deep-700 min-[1440px]:pr-5"
+    <nav aria-label="Liên hệ Ecopillo" className="fixed right-6 bottom-6 z-40 hidden flex-col items-end gap-2.5 md:flex">
+      <a
+        href={CONTACT.messengerUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Nhắn Messenger Ecopillo"
+        title="Nhắn Messenger"
+        className={SIDE_BUTTON}
       >
-        <Icon name={isOpen ? 'close' : 'messenger'} size={20} />
-        {/* Dưới 1440px khung nội dung chạm mép phải, nút có chữ đè lên thẻ, đoạn văn (rà 23/10/2026): chỉ để biểu tượng */}
+        <Icon name="messenger" size={20} />
         <span aria-hidden="true" className="max-[1439px]:hidden">
-          {isOpen ? 'Đóng' : 'Liên hệ'}
+          Messenger
         </span>
-      </button>
-    </div>
+      </a>
+      <a
+        href={CONTACT.zaloUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Nhắn Zalo Ecopillo"
+        title="Nhắn Zalo"
+        className={SIDE_BUTTON}
+      >
+        <ZaloMark />
+        <span aria-hidden="true" className="max-[1439px]:hidden">
+          Zalo
+        </span>
+      </a>
+      <a
+        href={CONTACT.hotlineTel}
+        aria-label={`Gọi hotline ${CONTACT.hotlineDisplay}`}
+        className="goi-song flex h-14 items-center gap-2 rounded-full bg-deep-800 py-2 pr-5 pl-4 text-sm font-medium text-ivory shadow-[var(--shadow-lift)] transition hover:-translate-y-0.5 hover:bg-deep-700 focus-visible:outline-2 focus-visible:outline-offset-2"
+      >
+        <Icon name="phone" size={18} className="goi-rung" />
+        <span className="tabular">{CONTACT.hotlineDisplay}</span>
+      </a>
+    </nav>
   )
 }

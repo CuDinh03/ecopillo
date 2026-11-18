@@ -1,4 +1,4 @@
-import { BEDDING_SETS, type Collection } from './catalog'
+import { BEDDING_SETS, patternImage, type Collection, type ImageSource } from './catalog'
 
 /**
  * Trang chủ, phần bộ sưu tập chăn ga (C4, owner chốt 09/11/2026, phương án 1 trong docs/de-xuat-gop-y-08-11.html).
@@ -45,7 +45,16 @@ export const COLLECTION_SHOWCASE_TEXT = {
   lead: 'Những dòng chăn ga bán chạy nhất Ecopillo',
   moreTitle: 'Thêm lựa chọn',
   seeAll: 'Xem tất cả sản phẩm',
+  seeAllNote: 'Đệm, chăn ga, gối, chăn',
 } as const
+
+/**
+ * Ảnh nền ô "Xem tất cả sản phẩm" (chị Phương 18/11/2026: "bổ sung một số hình"; owner chọn phương án B,
+ * docs/de-xuat-xem-tat-ca-va-lien-he-18-11.html, "phụ thuộc vào nó đang nằm ở mục nào thì thêm ảnh của sản phẩm đó").
+ * Ô nằm trong mục Bộ sưu tập chăn ga nên dùng ảnh phòng ngủ trải bộ chăn ga; chọn mẫu không phải ảnh bìa của ô nào bên cạnh.
+ * Ảnh chỉ để trang trí (chữ trên ô đã nói ô dẫn đi đâu) nên alt rỗng.
+ */
+export const SEE_ALL_IMAGE: ImageSource = { ...patternImage('EV04', ''), alt: '' }
 
 export interface ShowcaseItem {
   collection: Collection

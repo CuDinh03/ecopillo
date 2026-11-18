@@ -596,6 +596,30 @@
     animation: pop-in var(--dur-pop) var(--ease-out-strong) both;
   }
 
+  /* Nút hotline nổi trên máy tính (ContactDock, owner chọn phương án A 18/11/2026): hai vòng sóng lan ra như đang đổ chuông.
+     Chỉ transform + opacity; vòng nằm sau nút (::before, ::after), không bắt chuột */
+  .goi-song {
+    position: relative;
+  }
+  .goi-song::before,
+  .goi-song::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 2px solid var(--color-mist-600);
+    opacity: 0;
+    pointer-events: none;
+    animation: goi-song 2.6s var(--ease-out-strong) infinite;
+  }
+  .goi-song::after {
+    animation-delay: 1.3s;
+  }
+  /* Biểu tượng điện thoại rung nhẹ cùng nhịp sóng */
+  .goi-rung {
+    animation: goi-rung 2.6s ease-in-out infinite;
+  }
+
   /* Bảng trượt từ đáy (<dialog>): trượt cả chiều cao bảng lên, đóng nhanh hơn mở.
      transition + @starting-style nên ngắt giữa chừng được (bấm đóng khi đang mở). */
   .sheet {
@@ -680,6 +704,37 @@
   }
 }
 
+@keyframes goi-song {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.18, 1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes goi-rung {
+  0%,
+  70%,
+  100% {
+    transform: rotate(0);
+  }
+  74% {
+    transform: rotate(-14deg);
+  }
+  78% {
+    transform: rotate(12deg);
+  }
+  82% {
+    transform: rotate(-8deg);
+  }
+  86% {
+    transform: rotate(4deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -691,6 +746,12 @@
   .hero-in {
     animation-name: fade-in;
     animation-duration: 200ms;
+  }
+  /* Nút hotline: đứng yên, nút vẫn hiện đủ */
+  .goi-song::before,
+  .goi-song::after,
+  .goi-rung {
+    animation: none;
   }
   .sheet,
   .sheet[open] {
