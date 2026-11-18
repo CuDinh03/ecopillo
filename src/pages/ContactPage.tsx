@@ -254,7 +254,7 @@ export function ContactPage() {
               <h2 className="font-display text-[1.4rem] text-deep-900">Hỏi nhanh</h2>
               <ul className="mt-2 divide-y divide-line text-body-sm">
                 {[
-                  ['Giao hàng, thanh toán khi nhận', policyPath('chinh-sach-van-chuyen')],
+                  ['Giao hàng, kiểm hàng khi nhận', policyPath('chinh-sach-van-chuyen')],
                   ['Kiểm hàng, đổi hàng', policyPath('chinh-sach-doi-tra-hang-va-hoan-tien')],
                   ['Bảo hành sản phẩm', policyPath('chinh-sach-bao-hanh-san-pham')],
                   ['Chăn ga cho khách sạn, nhà nghỉ', PATHS.hotel],

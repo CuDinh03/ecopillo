@@ -83,7 +83,7 @@ function NoDealerNearby({ place }: { place?: string }) {
         {place ? `${place} chưa có đại lý Ecopillo` : 'Khu vực của Quý khách chưa có đại lý Ecopillo'}
       </p>
       <p className="mt-3 max-w-xl text-body-sm text-mist-200/90">
-        Ecopillo giao hàng toàn quốc, thanh toán khi nhận, miễn phí giao từ 500.000đ. Nhắn Zalo để được tư vấn mẫu qua video.
+        Ecopillo giao hàng toàn quốc, miễn phí giao từ 500.000đ. Nhắn Zalo để được tư vấn mẫu qua video.
       </p>
       <div className="mt-6 flex flex-wrap gap-3">
         <Link to={PATHS.order} className={buttonClass('light', 'md')}>

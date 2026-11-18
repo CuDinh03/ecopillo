@@ -42,7 +42,7 @@ export function OrderPage() {
   // Mô tả riêng 08/11/2026 (C2, chờ Ecopillo duyệt): trước đó trang này dùng chung mô tả trang chủ
   usePageMeta(
     'Đặt hàng online',
-    'Đặt chăn ga gối đệm Ecopillo online: chọn mẫu, chọn kích thước, nhập địa chỉ nhận. Thanh toán khi nhận hàng, miễn phí giao từ 500.000đ.',
+    'Đặt chăn ga gối đệm Ecopillo online: chọn mẫu, chọn kích thước, nhập địa chỉ nhận. Nhân viên gọi xác nhận, miễn phí giao từ 500.000đ.',
   )
   const [searchParams] = useHydratedSearchParams()
   const hydrated = useHydrated()

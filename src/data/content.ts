@@ -1,4 +1,5 @@
 import { OPENING_HOURS } from './brand'
+import { BANK_LINE } from './paymentPolicy'
 
 import { liveList, type EditableField, type EditableSet } from './liveContent'
 
@@ -122,8 +123,9 @@ const BASE_FAQS: readonly Faq[] = [
   {
     q: 'Tôi có được kiểm hàng khi nhận không?',
     a: [
-      'Có. Quý khách kiểm hàng cùng nhân viên giao, được trải thử lên giường để xem vừa kích thước (vui lòng không nằm lên).',
-      'Nếu giao sai mẫu hoặc sai kích thước, Quý khách có quyền từ chối nhận và không phải trả tiền.',
+      'Có. Quý khách kiểm hàng cùng nhân viên giao.',
+      'Trải nghiệm chăn ga tại nhà: Hà Nội, TP. HCM áp dụng mọi đơn hàng; tỉnh thành khác áp dụng đơn từ 20.000.000 đồng.',
+      'Nếu giao sai mẫu hoặc sai kích thước, Quý khách có quyền từ chối nhận.',
     ],
   },
   {
@@ -135,11 +137,11 @@ const BASE_FAQS: readonly Faq[] = [
     ],
   },
   {
-    q: 'Thanh toán thế nào? Có phải chuyển khoản trước không?',
+    q: 'Thanh toán thế nào? Có phải đặt cọc không?',
+    // Thông báo Ecopillo từ 07/08/2026, chị Phương 18/11/2026 (src/data/paymentPolicy.ts)
     a: [
-      'Không cần chuyển khoản trước. Đặt online, Quý khách thanh toán khi nhận hàng (COD) trên toàn quốc, không mất phí thu hộ.',
-      'Sau khi đặt, nhân viên Ecopillo gọi điện xác nhận đơn. Quý khách kiểm hàng xong rồi mới thanh toán cho người giao.',
-      'Mua trực tiếp tại hệ thống phân phối Ecopillo: thanh toán tiền mặt hoặc quẹt thẻ.',
+      `Ecopillo nhận thanh toán bằng chuyển khoản vào một tài khoản duy nhất: ${BANK_LINE}. Không nhận tiền mặt.`,
+      'Chăn ga tiêu chuẩn hoặc hoá đơn chăn ga dưới 10 triệu đồng không cần đặt cọc. Đệm, đơn trên 10 triệu, chăn ga nhỡ cỡ, may riêng hoặc cần chỉnh sửa theo yêu cầu cần đặt cọc; nhân viên báo khi gọi xác nhận đơn.',
     ],
   },
   {

@@ -14,7 +14,8 @@ const TRUST: readonly { icon: IconName; title: string; text: string }[] = [
   { icon: 'certified', title: 'ISO\u00a09001:2015\u00a0· QCVN\u00a001:2017/BCT', text: 'Quy trình sản xuất được chứng nhận' },
   { icon: 'stitch', title: 'Đường may 4 mũi/cm', text: 'Chắc, phẳng, bền qua nhiều lần giặt' },
   { icon: 'ruler', title: 'May theo kích thước', text: 'Vừa khít mọi chiếc giường' },
-  { icon: 'truck', title: 'Kiểm hàng khi nhận', text: 'Được trải thử lên giường trước khi trả tiền' },
+  // Thông báo Ecopillo từ 07/08/2026: trải nghiệm chăn ga tại nhà theo khu vực (paymentPolicy.ts)
+  { icon: 'truck', title: 'Trải nghiệm tại nhà', text: 'Chăn ga: Hà Nội, TP. HCM mọi đơn; tỉnh khác từ 20 triệu' },
 ]
 
 /**

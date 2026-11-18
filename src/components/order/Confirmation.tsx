@@ -7,6 +7,7 @@ import { Icon, type IconName } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { PreviewNotSent } from '../ui/PreviewNotSent'
 import { buttonClass, ContactButtons } from '../ui/primitives'
+import { BANK_LINE } from '../../data/paymentPolicy'
 
 interface ConfirmationProps {
   orderCode: string
@@ -36,7 +37,7 @@ export function Confirmation({ orderCode, delivered, summary, customer, onNewOrd
     },
     {
       icon: 'truck',
-      title: 'Giao hàng, kiểm rồi mới trả tiền',
+      title: 'Giao hàng, kiểm hàng khi nhận',
       text: `Dự kiến ${summary.deliveryTime?.toLowerCase() ?? 'theo khu vực'} sau khi xác nhận`,
     },
   ]
@@ -106,7 +107,7 @@ export function Confirmation({ orderCode, delivered, summary, customer, onNewOrd
               }
             />
           )}
-          <Item label="Thanh toán" value="Trả tiền khi nhận hàng (COD)" />
+          <Item label="Thanh toán" value={`Chuyển khoản: ${BANK_LINE}`} />
           <Item label="Người nhận" value={`${customer.name.trim()} · ${customer.phone}`} />
           <Item label="Giao đến" value={`${customer.address}, ${summary.province?.name ?? ''}`} />
           {customer.note.trim() && <Item label="Ghi chú" value={customer.note.trim()} />}
@@ -123,7 +124,7 @@ export function Confirmation({ orderCode, delivered, summary, customer, onNewOrd
             <dd className="tabular text-deep-900">{shippingFee === 0 ? 'Miễn phí' : formatVND(shippingFee)}</dd>
           </div>
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-t border-deep-900/15 pt-4">
-            <dt className="font-medium text-deep-900">Tổng thanh toán khi nhận</dt>
+            <dt className="font-medium text-deep-900">Tổng thanh toán</dt>
             <dd className="tabular font-display text-3xl text-deep-900 sm:text-4xl">
               {subtotal ? formatVND(total) : <span className="text-lg">{PRICE_ON_CALL}</span>}
             </dd>

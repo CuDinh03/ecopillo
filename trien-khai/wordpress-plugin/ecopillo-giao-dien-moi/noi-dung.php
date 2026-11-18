@@ -44,7 +44,14 @@ function eco_nd_saved($key)
 function eco_nd_current($set)
 {
     $saved = eco_nd_saved($set['khoa']);
-    return $saved ? $saved['giaTri'] : $set['goc'];
+    if (!$saved) {
+        return $set['goc'];
+    }
+    // Bộ "mot" có ô mới thêm sau lần lưu (ví dụ tài khoản ngân hàng ở Liên hệ, 1.7.3): điền sẵn giá trị gốc cho ô thiếu
+    if ($set['kieu'] === 'mot' && is_array($saved['giaTri']) && is_array($set['goc'])) {
+        return array_merge($set['goc'], $saved['giaTri']);
+    }
+    return $saved['giaTri'];
 }
 
 /* ---------------------------------------------------------------- Kiểm từng ô (giống cleanField trong liveContent.ts) */

@@ -1,6 +1,7 @@
 import { CONTACT, OPENING_HOURS } from './brand'
 import type { PolicySlug } from './policyNav'
 import { liveList, type EditableField, type EditableSet } from './liveContent'
+import { BANK_LINE, DEPOSIT_CASES, HOME_TRIAL, NO_DEPOSIT } from './paymentPolicy'
 
 /**
  * Các trang chính sách, ở đúng đường link của web cũ (src/data/policyNav.ts).
@@ -32,13 +33,14 @@ const BASE_POLICIES: readonly Policy[] = [
   {
     slug: 'huong-dan-mua-hang',
     title: 'Hướng dẫn mua hàng online',
-    description: 'Đặt chăn ga gối đệm Ecopillo trên web trong 3 bước, nhân viên gọi xác nhận, nhận hàng kiểm rồi mới trả tiền.',
+    description: 'Đặt chăn ga gối đệm Ecopillo trên web trong 3 bước, nhân viên gọi xác nhận, kiểm hàng khi nhận, thanh toán chuyển khoản.',
     intro:
       'Quý khách đặt hàng trên web, gọi hotline hoặc nhắn Zalo đều được. Đặt trên web chỉ mất khoảng một phút, Ecopillo gọi xác nhận trước khi giao.',
+    // Chị Phương 18/11/2026: chữ to đổi thành B1, B2, B3
     highlights: [
-      { value: '3 bước', label: 'Chọn mẫu, chọn kích thước, điền thông tin' },
-      { value: 'Gọi xác nhận', label: 'Nhân viên gọi lại trước khi giao' },
-      { value: 'Trả khi nhận', label: 'Kiểm hàng xong mới thanh toán' },
+      { value: 'B1', label: 'Chọn mẫu, chọn kích thước, điền thông tin' },
+      { value: 'B2', label: 'Nhân viên gọi lại xác nhận trước khi giao' },
+      { value: 'B3', label: 'Kiểm hàng khi nhận, thanh toán chuyển khoản' },
     ],
     sections: [
       {
@@ -46,9 +48,9 @@ const BASE_POLICIES: readonly Policy[] = [
         steps: [
           { title: 'Chọn sản phẩm', text: 'Vào mục Sản phẩm hoặc Bộ sưu tập, bấm vào mẫu Quý khách thích để xem ảnh, chất liệu và giá.' },
           { title: 'Chọn mẫu, kích thước, số lượng', text: 'Giá đổi ngay theo kích thước Quý khách chọn. Mẫu nào tạm hết hàng sẽ ghi rõ.' },
-          { title: 'Điền thông tin nhận hàng', text: 'Họ tên, số điện thoại, tỉnh thành và địa chỉ. Không cần tạo tài khoản, không cần chuyển khoản trước.' },
+          { title: 'Điền thông tin nhận hàng', text: 'Họ tên, số điện thoại, tỉnh thành và địa chỉ. Không cần tạo tài khoản.' },
           { title: 'Nhân viên gọi xác nhận', text: `Ecopillo gọi lại để xác nhận mẫu, kích thước và thời gian giao trong giờ làm việc (${OPENING_HOURS}).` },
-          { title: 'Nhận hàng, kiểm hàng, thanh toán', text: 'Quý khách kiểm hàng cùng người giao, được trải thử lên giường, đúng rồi mới trả tiền.' },
+          { title: 'Nhận hàng, kiểm hàng, thanh toán', text: `Quý khách kiểm hàng cùng người giao, thanh toán chuyển khoản vào tài khoản duy nhất của Ecopillo. ${NO_DEPOSIT} Đệm, đơn trên 10 triệu, hàng may riêng: nhân viên báo khoản đặt cọc khi gọi xác nhận.` },
         ],
       },
       {
@@ -67,11 +69,11 @@ const BASE_POLICIES: readonly Policy[] = [
     slug: 'chinh-sach-van-chuyen',
     title: 'Chính sách giao hàng',
     description: 'Miễn phí giao toàn quốc cho đơn từ 500.000đ. Nội thành Hà Nội, TP. HCM giao trong ngày; phía Bắc 2–3 ngày, phía Nam 3–5 ngày.',
-    intro: 'Ecopillo giao hàng toàn quốc, thu tiền khi nhận hàng. Quý khách được kiểm hàng và trải thử trước khi thanh toán.',
+    intro: 'Ecopillo giao hàng toàn quốc. Quý khách kiểm hàng khi nhận; chăn ga được trải nghiệm tại nhà ở Hà Nội, TP. HCM với mọi đơn, tỉnh thành khác với đơn từ 20 triệu đồng.',
     highlights: [
       { value: 'Miễn phí', label: 'Giao toàn quốc cho đơn từ 500.000đ' },
       { value: 'Trong ngày', label: 'Nội thành Hà Nội, TP. HCM; tỉnh khác 2–5 ngày' },
-      { value: 'Kiểm hàng', label: 'Được trải thử trước khi trả tiền' },
+      { value: 'Kiểm hàng', label: 'Kiểm hàng cùng nhân viên khi nhận' },
     ],
     sections: [
       {
@@ -79,7 +81,6 @@ const BASE_POLICIES: readonly Policy[] = [
         list: [
           'Đơn từ 500.000đ: miễn phí giao hàng trên toàn quốc.',
           'Đơn dưới 500.000đ: phí giao 50.000đ, báo rõ khi nhân viên gọi xác nhận.',
-          'Không thu thêm phí thu hộ khi thanh toán lúc nhận hàng.',
         ],
       },
       {
@@ -105,8 +106,9 @@ const BASE_POLICIES: readonly Policy[] = [
       {
         title: 'Khi nhận hàng',
         list: [
-          'Quý khách kiểm hàng cùng nhân viên giao, được trải thử lên giường để xem vừa kích thước (vui lòng không nằm lên).',
-          'Giao sai mẫu, sai kích thước: Quý khách có quyền từ chối nhận và không phải trả tiền.',
+          'Quý khách kiểm hàng cùng nhân viên giao.',
+          `${HOME_TRIAL} Trải lên giường để xem vừa kích thước, vui lòng không nằm lên.`,
+          'Giao sai mẫu, sai kích thước: Quý khách có quyền từ chối nhận.',
           'Kiện hàng móp, rách: chụp ảnh và báo ngay cho Ecopillo trước khi ký nhận.',
           'Hàng hư hỏng trên đường vận chuyển, dù Ecopillo tự giao hay qua đơn vị vận chuyển: Ecopillo chịu trách nhiệm đổi cho Quý khách, rồi tự làm việc với bên vận chuyển.',
         ],
@@ -116,46 +118,42 @@ const BASE_POLICIES: readonly Policy[] = [
   {
     slug: 'chinh-sach-thanh-toan',
     title: 'Chính sách thanh toán',
-    description: 'Đặt online thanh toán khi nhận hàng (COD) toàn quốc, không cần chuyển khoản trước, không mất phí thu hộ.',
-    intro: 'Đặt hàng online tại Ecopillo không cần chuyển khoản trước. Quý khách kiểm hàng xong rồi mới trả tiền cho người giao.',
+    // Thông báo Ecopillo áp dụng từ 07/08/2026 + chị Phương 18/11/2026: bỏ tiền mặt, một tài khoản duy nhất, bỏ mục Hoá đơn (paymentPolicy.ts)
+    description: 'Thanh toán chuyển khoản vào tài khoản duy nhất của Ecopillo. Chăn ga dưới 10 triệu không cần đặt cọc; đệm, đơn trên 10 triệu cần đặt cọc.',
+    intro: 'Từ 07/08/2026, Ecopillo nhận thanh toán bằng chuyển khoản vào một tài khoản duy nhất của công ty. Chăn ga tiêu chuẩn và đơn chăn ga dưới 10 triệu đồng không cần đặt cọc.',
     highlights: [
-      { value: 'COD', label: 'Thanh toán khi nhận hàng, toàn quốc' },
-      { value: '0đ', label: 'Không mất phí thu hộ' },
-      { value: 'Không', label: 'Không yêu cầu chuyển khoản trước' },
+      { value: 'Chuyển khoản', label: 'Một tài khoản duy nhất của Ecopillo, không nhận tiền mặt' },
+      { value: 'Không cọc', label: 'Chăn ga tiêu chuẩn, đơn chăn ga dưới 10 triệu' },
+      { value: 'Đặt cọc', label: 'Đệm, đơn trên 10 triệu, chăn ga nhỡ cỡ hoặc may riêng' },
     ],
     sections: [
       {
-        title: 'Đặt hàng online',
-        list: [
-          'Thanh toán bằng tiền mặt cho nhân viên giao hàng sau khi kiểm hàng (COD), áp dụng trên toàn quốc.',
-          'Ecopillo không yêu cầu chuyển khoản trước và không thu thông tin thẻ ngân hàng trên web.',
-          'Nhân viên Ecopillo luôn gọi xác nhận đơn trước khi giao. Nếu có ai nhắn tin yêu cầu chuyển khoản trước, Quý khách vui lòng gọi hotline để kiểm tra.',
+        title: 'Tài khoản nhận thanh toán',
+        body: [
+          `${BANK_LINE}.`,
+          'Ecopillo chỉ nhận thanh toán vào tài khoản này, không nhận tiền mặt. Nhân viên Ecopillo luôn gọi xác nhận đơn trước khi giao. Nếu có ai nhắn tin yêu cầu chuyển tiền vào tài khoản khác, Quý khách vui lòng gọi hotline để kiểm tra.',
         ],
       },
       {
-        title: 'Mua trực tiếp tại hệ thống phân phối',
-        list: [
-          'Thanh toán tiền mặt hoặc quẹt thẻ ngân hàng tại quầy.',
-          'Nhờ người khác nhận hàng giúp thì người nhận kiểm hàng và thanh toán thay.',
-        ],
+        title: 'Không cần đặt cọc',
+        body: ['Chăn ga tiêu chuẩn hoặc hoá đơn chăn ga dưới 10 triệu đồng: Quý khách kiểm hàng khi nhận rồi thanh toán.'],
+      },
+      {
+        title: 'Cần đặt cọc',
+        list: DEPOSIT_CASES,
+        body: ['Nhân viên Ecopillo báo khoản đặt cọc khi gọi xác nhận đơn.'],
       },
       {
         title: 'Khách sạn, dự án, đại lý',
         body: ['Đơn số lượng lớn thanh toán theo hợp đồng. Bộ phận kinh doanh gửi báo giá và điều khoản thanh toán riêng.'],
-      },
-      {
-        title: 'Hoá đơn',
-        body: [
-          'Hoá đơn VAT xuất theo thông tin Quý khách ghi khi đặt hàng và gửi vào email khi hàng xuất kho.',
-        ],
       },
     ],
   },
   {
     slug: 'chinh-sach-doi-tra-hang-va-hoan-tien',
     title: 'Chính sách kiểm hàng và đổi hàng',
-    description: 'Được kiểm hàng, trải thử khi nhận. Báo lỗi trong 24 giờ, gửi đổi trong 7 ngày. Ecopillo hỗ trợ đổi, không trả hàng hoàn tiền.',
-    intro: 'Ecopillo muốn Quý khách nhận đúng bộ mình chọn. Vì vậy Quý khách được kiểm hàng, trải thử trước khi trả tiền, và được đổi khi có lỗi.',
+    description: 'Kiểm hàng khi nhận, trải nghiệm chăn ga tại nhà. Báo lỗi trong 24 giờ, gửi đổi trong 7 ngày. Ecopillo hỗ trợ đổi, không trả hàng hoàn tiền.',
+    intro: 'Ecopillo muốn Quý khách nhận đúng bộ mình chọn. Vì vậy Quý khách được kiểm hàng khi nhận, trải nghiệm chăn ga tại nhà, và được đổi khi có lỗi.',
     highlights: [
       { value: '24 giờ', label: 'Báo lỗi sau khi nhận hàng' },
       { value: '7 ngày', label: 'Gửi hàng đổi' },
@@ -166,8 +164,8 @@ const BASE_POLICIES: readonly Policy[] = [
         title: 'Kiểm hàng khi nhận',
         list: [
           'Mở hộp, kiểm mẫu, màu, kích thước và số lượng cùng nhân viên giao.',
-          'Được trải thử lên giường để xem vừa kích thước (vui lòng không nằm lên, không giặt).',
-          'Sai mẫu, sai kích thước, thiếu hàng: Quý khách có quyền từ chối nhận và không phải trả tiền.',
+          `${HOME_TRIAL} Trải lên giường để xem vừa kích thước, vui lòng không nằm lên, không giặt.`,
+          'Sai mẫu, sai kích thước, thiếu hàng: Quý khách có quyền từ chối nhận.',
           'Không bóc hộp có tem niêm phong khi chưa nhận hàng. Nên quay video lúc mở hộp để đối chiếu khi cần.',
         ],
       },

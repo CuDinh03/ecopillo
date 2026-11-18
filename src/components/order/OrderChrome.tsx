@@ -15,8 +15,8 @@ export function OrderAssurances({ deliveryTime }: { deliveryTime?: string }) {
       <ul className="mt-5 space-y-2 px-2 text-meta text-ink-soft">
         {[
           'Nhân viên gọi xác nhận trước khi giao',
-          'Thanh toán khi nhận, miễn phí giao từ 500.000đ',
-          'Kiểm hàng, trải thử lên giường khi nhận',
+          'Chuyển khoản vào tài khoản Ecopillo, miễn phí giao từ 500.000đ',
+          'Kiểm hàng khi nhận, trải nghiệm chăn ga tại nhà',
           'Đổi hàng trong 7 ngày nếu còn nguyên tem mác',
         ].map((t) => (
           <li key={t} className="flex gap-2">

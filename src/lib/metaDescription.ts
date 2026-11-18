@@ -1,13 +1,14 @@
 /**
  * Mô tả trang cho Google (thẻ description, og:description) của trang sản phẩm và trang phối màu.
  * Owner chọn công thức C2 ngày 08/11/2026 (docs/de-xuat-seo-08-11.html):
- * "{câu đầu, tối đa 70 ký tự}. {tên}, giá {giá}. Thanh toán khi nhận hàng." Google cắt mô tả quanh 160 ký tự.
+ * "{câu đầu, tối đa 70 ký tự}. {tên}, giá {giá}. Nhân viên gọi xác nhận." Google cắt mô tả quanh 160 ký tự.
  * Dữ liệu cấu trúc (JSON-LD) vẫn dùng đoạn giới thiệu đầy đủ, không dùng hàm này.
  */
 
 const LEAD_MAX = 70
 const DESCRIPTION_MAX = 160
-const PAYMENT_NOTE = ' Thanh toán khi nhận hàng.'
+// Thông báo Ecopillo từ 07/08/2026: không còn "thanh toán khi nhận" cho mọi đơn (đệm, đơn lớn phải đặt cọc)
+const PAYMENT_NOTE = ' Nhân viên gọi xác nhận.'
 /** Cắt ở dấu phẩy, dấu hai chấm mà phần còn lại ngắn hơn mức này thì câu cụt quá, cắt ở khoảng trắng thay */
 const MIN_CLAUSE = 25
 /**

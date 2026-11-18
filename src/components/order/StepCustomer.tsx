@@ -6,6 +6,7 @@ import type { CustomerErrors, CustomerInfo, OrderSummaryData } from '../../lib/o
 import { PROVINCES } from '../../lib/shipping'
 import { Icon } from '../ui/Icon'
 import { Select } from '../ui/Select'
+import { BANK_LINE, DEPOSIT_SHORT, NO_DEPOSIT } from '../../data/paymentPolicy'
 
 interface StepCustomerProps {
   customer: CustomerInfo
@@ -125,7 +126,7 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
 
       <section aria-labelledby="pay-title">
         <h2 id="pay-title" className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">
-          Thanh toán khi nhận hàng
+          Thanh toán
         </h2>
         <div className="mt-6 flex gap-4 rounded-2xl bg-mist-50 p-5 ring-2 ring-deep-800">
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ivory text-deep-800 ring-1 ring-cream-200">
@@ -133,19 +134,20 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
           </span>
           <div className="flex-1">
             <p className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-              <span className="font-medium text-deep-900">Trả tiền khi nhận hàng (COD)</span>
+              <span className="font-medium text-deep-900">Chuyển khoản vào tài khoản Ecopillo</span>
               <span className="text-sm text-mist-600">
                 {shipFee === null ? 'Miễn phí giao từ 500.000đ' : shipFee === 0 ? 'Miễn phí giao hàng' : `Phí giao ${formatVND(shipFee)}`}
               </span>
             </p>
             <p className="mt-1 text-small leading-relaxed text-ink-soft">
-              Áp dụng toàn quốc, không thu phí thu hộ. Quý khách kiểm hàng, trải thử lên giường rồi mới thanh toán cho nhân
-              viên giao hàng.
+              {/* Thông báo Ecopillo từ 07/08/2026 (src/data/paymentPolicy.ts): không nhận tiền mặt, một tài khoản duy nhất */}
+              <span className="block font-medium text-deep-900">{BANK_LINE}</span>
+              {NO_DEPOSIT} {DEPOSIT_SHORT}: nhân viên báo khi gọi xác nhận đơn.
             </p>
           </div>
         </div>
         <p className="mt-4 text-xs leading-relaxed text-ink-soft">
-          Muốn trả tiền mặt hoặc quẹt thẻ tại cửa hàng? Ghé hệ thống phân phối và showroom Ecopillo trên toàn quốc. Khi bấm “Đặt
+          Muốn xem hàng tận mắt? Ghé hệ thống phân phối và showroom Ecopillo trên toàn quốc. Khi bấm “Đặt
           hàng”, Quý khách đồng ý để Ecopillo dùng thông tin trên để gọi xác nhận và giao hàng, theo{' '}
           <Link to={PATHS.privacy} className="-my-2 inline-block py-2 font-medium text-deep-900 underline underline-offset-2">
             chính sách bảo vệ thông tin

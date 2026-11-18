@@ -37,7 +37,7 @@ const OCCASIONS = [
 
 const SERVICES = [
   { icon: 'box', title: 'Hộp đóng gói chỉn chu', text: 'Mỗi bộ đều đóng hộp, sẵn sàng để tặng.' },
-  { icon: 'truck', title: 'Giao tận tay người nhận', text: 'Ghi địa chỉ người nhận khi đặt, thanh toán khi nhận hoặc nhờ nhân viên gọi xác nhận.' },
+  { icon: 'truck', title: 'Giao tận tay người nhận', text: 'Ghi địa chỉ người nhận khi đặt, nhân viên gọi xác nhận trước khi giao.' },
   { icon: 'ruler', title: 'Chưa rõ cỡ giường?', text: 'Gọi Ecopillo hỏi cách đo, hoặc đổi cỡ trong 7 ngày nếu chưa sử dụng.' },
 ] as const
 

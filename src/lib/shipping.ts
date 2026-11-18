@@ -1,8 +1,7 @@
 /**
- * Chính sách giao hàng và thanh toán của Ecopillo (biên bản chốt 12/10/2026, mục 35, 36, 50).
- * - Chỉ thu tiền khi nhận hàng (COD), áp dụng toàn quốc, không thu phí thu hộ.
+ * Chính sách giao hàng của Ecopillo (biên bản chốt 12/10/2026, mục 35, 36, 50).
+ * Thanh toán: từ 07/08/2026 chuyển khoản một tài khoản, có trường hợp đặt cọc (src/data/paymentPolicy.ts); bỏ COD tiền mặt.
  * - Miễn phí giao toàn quốc cho đơn từ 500.000đ; đơn nhỏ hơn phí giao 50.000đ.
- * - Không nhận chuyển khoản trước trên web.
  * - Thời gian: nội thành Hà Nội và nội thành TP. HCM giao trong ngày (chị Phương, Zalo 11/11/2026), phía Bắc 2–3 ngày, phía Nam 3–5 ngày.
  *   Ngoại thành hai thành phố không giao trong ngày: ngoại thành Hà Nội tính như phía Bắc, ngoại thành TP. HCM như phía Nam (Ecopillo xác nhận 11/11/2026).
  */

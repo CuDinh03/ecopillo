@@ -24,7 +24,7 @@ export const POLICY_ALIASES: Readonly<Record<string, { slug: PolicySlug; title: 
   'chinh-sach-kiem-tra-hang': {
     slug: 'chinh-sach-doi-tra-hang-va-hoan-tien',
     title: 'Chính sách kiểm tra hàng',
-    description: 'Quý khách được kiểm hàng, trải thử khi nhận. Có lỗi thì báo Ecopillo trong 24 giờ, gửi đổi trong 7 ngày.',
+    description: 'Quý khách được kiểm hàng khi nhận, trải nghiệm chăn ga tại nhà. Có lỗi thì báo Ecopillo trong 24 giờ, gửi đổi trong 7 ngày.',
   },
 }
 

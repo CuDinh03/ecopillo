@@ -31,6 +31,10 @@ const BASE_CONTACT = {
   /** Trang thông báo website với Bộ Công Thương (online.gov.vn), theo web cũ */
   moitUrl: 'https://online.gov.vn/nen-tang/94e80465-51e2-4e05-a37c-b1fc532d4bc3',
   gioMoCua: '8:30–22:00 hằng ngày',
+  // Chị Phương 18/11/2026: "Bên chị chỉ thanh toán duy nhất 1 tài khoản", "Giờ đang k cho dùng tiền mặt"
+  chuTaiKhoan: 'Công ty TNHH Ecopillo Eternal Việt Nam',
+  soTaiKhoan: '88662622',
+  nganHang: 'Techcombank',
 }
 
 /** Thông tin liên hệ Ecopillo tự sửa trong WordPress (liveContent.ts). Số "tel:" tự lấy từ số hiển thị */
@@ -54,6 +58,9 @@ export const CONTACT_SET: EditableSet = {
     { khoa: 'instagramUrl', nhan: 'Link Instagram', kieu: 'link', batBuoc: true },
     { khoa: 'youtubeUrl', nhan: 'Link kênh YouTube', kieu: 'link', batBuoc: true },
     { khoa: 'moitUrl', nhan: 'Link thông báo Bộ Công Thương', kieu: 'link', batBuoc: true },
+    { khoa: 'chuTaiKhoan', nhan: 'Tên tài khoản nhận thanh toán', kieu: 'chu', batBuoc: true, goiY: 'Tài khoản duy nhất nhận tiền; hiện ở Chính sách thanh toán, bước đặt hàng' },
+    { khoa: 'soTaiKhoan', nhan: 'Số tài khoản', kieu: 'chu', batBuoc: true },
+    { khoa: 'nganHang', nhan: 'Ngân hàng', kieu: 'chu', batBuoc: true },
   ] satisfies EditableField[],
 }
 

@@ -45,7 +45,7 @@ const CATEGORY_LINKS: Readonly<Record<CategoryId, RelatedLink>> = {
 
 const BUYING_GUIDE: readonly RelatedLink[] = [
   { label: 'Hướng dẫn mua hàng', to: policyPath('huong-dan-mua-hang') },
-  { label: 'Giao hàng, thanh toán khi nhận', to: policyPath('chinh-sach-van-chuyen') },
+  { label: 'Giao hàng, kiểm hàng khi nhận', to: policyPath('chinh-sach-van-chuyen') },
   { label: 'Kiểm hàng, đổi hàng', to: policyPath('chinh-sach-doi-tra-hang-va-hoan-tien') },
   { label: 'Bảo hành', to: policyPath('chinh-sach-bao-hanh-san-pham') },
   { label: 'Tìm đại lý gần Quý khách', to: `${PATHS.contact}#diem-ban` },

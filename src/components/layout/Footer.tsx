@@ -184,7 +184,7 @@ export function Footer() {
         <div className="mt-16 flex flex-col gap-6 border-t border-line pt-8 text-xs text-ink-faint md:flex-row md:items-center md:justify-between">
           <div className="space-y-1.5">
             <p>© {new Date().getFullYear()} {BRAND.company}. Đạt chứng nhận ISO 9001:2015 và TQC.</p>
-            <p>Chỉ đổi hàng, không trả hàng hoàn tiền · Kiểm hàng khi nhận · Thanh toán khi nhận hàng toàn quốc</p>
+            <p>Chỉ đổi hàng, không trả hàng hoàn tiền · Kiểm hàng khi nhận · Thanh toán chuyển khoản</p>
             <p>
               <Link to={PATHS.privacy} className="-my-2.5 inline-block py-2.5 underline underline-offset-2 hover:text-deep-900">
                 Chính sách bảo vệ thông tin cá nhân

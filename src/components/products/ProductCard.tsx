@@ -69,7 +69,7 @@ export function ProductCard({ product }: { product: Product }) {
                 <Icon name="gift" size={14} /> {gift.label}
               </span>
             ) : (
-              <span className="text-ink-faint">Đặt online, thanh toán khi nhận</span>
+              <span className="text-ink-faint">Đặt online, nhân viên gọi xác nhận</span>
             )}
             <span className="hidden items-center gap-1 font-medium text-deep-800 transition-transform group-hover:translate-x-0.5 sm:flex">
               Xem <Icon name="arrowRight" size={14} />

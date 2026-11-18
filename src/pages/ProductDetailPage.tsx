@@ -51,7 +51,7 @@ function MissingProduct() {
 }
 
 /**
- * Mô tả SEO của sản phẩm lẻ theo công thức C2 (08/11/2026): câu đầu phần giới thiệu, tên, giá, thanh toán khi nhận.
+ * Mô tả SEO của sản phẩm lẻ theo công thức C2 (08/11/2026): câu đầu phần giới thiệu, tên, giá, gọi xác nhận.
  * Trước 24/10/2026 trang này không đặt mô tả, 16 sản phẩm lẻ dùng chung mô tả của trang chủ (rà toàn web 24/10/2026)
  */
 const productDescription = (product: Product): string =>
@@ -217,7 +217,7 @@ function ProductDetail({ product }: { product: Product }) {
                 </a>
               </div>
               <p className="text-sm text-ink-soft">
-                Đặt online, nhân viên gọi xác nhận trước khi giao. Thanh toán khi nhận hàng.
+                Đặt online, nhân viên gọi xác nhận trước khi giao. Thanh toán chuyển khoản vào tài khoản Ecopillo.
               </p>
             </div>
 

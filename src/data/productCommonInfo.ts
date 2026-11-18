@@ -18,11 +18,12 @@ interface ProductCommonInfo {
 }
 
 const BASE_PRODUCT_COMMON: ProductCommonInfo = {
-  camKet: ['Thanh toán khi nhận hàng', 'Miễn phí giao từ 500.000đ', 'Kiểm hàng, trải thử khi nhận', 'Đổi hàng trong 7 ngày'],
+  // Thông báo Ecopillo từ 07/08/2026 (paymentPolicy.ts): chuyển khoản một tài khoản, có trường hợp đặt cọc, trải nghiệm tại nhà theo khu vực
+  camKet: ['Nhân viên gọi xác nhận đơn', 'Miễn phí giao từ 500.000đ', 'Kiểm hàng khi nhận', 'Đổi hàng trong 7 ngày'],
   giaoHang: [
-    'Thanh toán khi nhận hàng (COD) toàn quốc, không thu phí thu hộ. Nhân viên gọi xác nhận đơn trước khi giao.',
+    'Thanh toán chuyển khoản vào tài khoản duy nhất của Ecopillo. Chăn ga dưới 10 triệu không cần đặt cọc; đệm, đơn trên 10 triệu, hàng nhỡ cỡ hoặc may riêng cần đặt cọc. Nhân viên gọi xác nhận đơn trước khi giao.',
     'Miễn phí giao toàn quốc cho đơn từ 500.000đ. Nội thành Hà Nội, TP. HCM giao trong ngày; phía Bắc 2–3 ngày, phía Nam 3–5 ngày.',
-    'Kiểm hàng cùng nhân viên giao, được trải thử lên giường. Giao sai được từ chối nhận, không mất tiền.',
+    'Kiểm hàng cùng nhân viên giao. Trải nghiệm chăn ga tại nhà: Hà Nội, TP. HCM mọi đơn; tỉnh khác đơn từ 20 triệu. Giao sai được từ chối nhận.',
     'Chỉ đổi, không trả hàng hoàn tiền. Báo lỗi trong 24 giờ, gửi đổi trong 7 ngày, còn nguyên tem mác, chưa giặt.',
   ],
   baoHanhDem: '5–15 năm tuỳ dòng đệm',

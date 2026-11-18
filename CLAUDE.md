@@ -97,7 +97,7 @@ pnpm lint       # đang có 4 cảnh báo cũ react-refresh, không phải lỗi
 | Hotline, Zalo, email, mạng xã hội, địa chỉ + toạ độ văn phòng HN / chi nhánh HCM | `src/data/brand.ts` |
 | Sản phẩm, bộ sưu tập, mẫu, giá, kích thước | `src/data/catalog.ts` (gốc), `src/data/products.ts` (gom nhóm cho /san-pham) |
 | Đại lý, 34 tỉnh, khoảng cách, giờ mở cửa | `src/data/dealers.ts` |
-| Chính sách giao hàng, phí ship, COD | `src/lib/shipping.ts`, chữ chính sách ở `src/data/policies.ts`; thẻ giao hàng, bảo hành, 4 cam kết trên trang sản phẩm ở `src/data/productCommonInfo.ts` |
+| Chính sách giao hàng, phí ship; thanh toán, đặt cọc, trải nghiệm tại nhà (thông báo Ecopillo từ 07/08/2026, không còn COD tiền mặt): `src/data/paymentPolicy.ts`, tài khoản nhận tiền trong `brand.ts` | `src/lib/shipping.ts`, chữ chính sách ở `src/data/policies.ts`; thẻ giao hàng, bảo hành, 4 cam kết trên trang sản phẩm ở `src/data/productCommonInfo.ts` |
 | Câu chuyện phối màu, gam màu, tập (bản nháp chờ Ecopillo duyệt) | `src/data/stories.ts`; xuất bản gửi duyệt: `node tools/xuat-nhap-cau-chuyen.mjs` |
 | Thêm bộ sưu tập mới, thêm phối màu mới | Làm theo `docs/huong-dan-them-bo-suu-tap.md` |
 | Trang bộ sưu tập (bìa, chương, hàng chương, cùng gam màu) | `src/components/collection/` |

@@ -62,7 +62,7 @@ const bySort = <T,>(items: readonly T[], sort: SortId, priceOf: (item: T) => num
 }
 
 export function ProductsPage() {
-  usePageMeta('Sản phẩm', 'Bộ chăn ga, chăn, gối, đệm Ecopillo: vải Lyocell mềm mát, giá rõ theo từng kích thước, đặt online thanh toán khi nhận.')
+  usePageMeta('Sản phẩm', 'Bộ chăn ga, chăn, gối, đệm Ecopillo: vải Lyocell mềm mát, giá rõ theo từng kích thước, đặt online, nhân viên gọi xác nhận.')
   const [params, setParams] = useHydratedSearchParams()
   const rawCategory = params.get(CATEGORY_PARAM)
   const category = isCategory(rawCategory) ? rawCategory : rawCategory ? (LEGACY_CATEGORY[rawCategory] ?? null) : null

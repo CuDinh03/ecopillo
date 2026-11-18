@@ -258,7 +258,7 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
   '/danh-muc-san-pham/san-pham/bo-ga-phu/': {
     title: 'Bộ ga phủ',
     // Mô tả viết tay 08/11/2026 (C2, chờ Ecopillo duyệt): dưới 160 ký tự
-    description: 'Bộ ga phủ Ecopillo vải Lyocell: Eco Rosa, Tera, Vera, Sweet, Liora, Doris. Giá theo kích thước, đặt online, thanh toán khi nhận hàng.',
+    description: 'Bộ ga phủ Ecopillo vải Lyocell: Eco Rosa, Tera, Vera, Sweet, Liora, Doris. Giá theo kích thước, đặt online, nhân viên gọi xác nhận.',
     category: 'bo-chan-ga',
     collections: ['eco-rosa', 'eco-tera', 'eco-vera', 'eco-sweet', 'eco-liora', 'eco-doris'],
   },
@@ -267,13 +267,13 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
   // Sản phẩm trong trang Ecopillo tự chọn lại ở Nội dung web (listingProducts.ts)
   '/danh-muc-san-pham/san-pham/ruot-chan-goi/': {
     title: 'Ruột chăn',
-    description: 'Ruột chăn Ecopillo: Micro Fiber ấm, nhẹ, giặt máy được; Micro Plus giữ nhiệt, nhẹ, không đè người. Đặt online, thanh toán khi nhận.',
+    description: 'Ruột chăn Ecopillo: Micro Fiber ấm, nhẹ, giặt máy được; Micro Plus giữ nhiệt, nhẹ, không đè người. Đặt online, nhân viên gọi xác nhận.',
     products: ['chan-dong-micro-fiber', 'ruot-chan-micro-plus'],
   },
   // Chị Phương 18/11/2026: "ruột gối bao gồm tất cả ruột gối kể cả ruột gối ôm ruột gối tựa hay trẻ em". Link cũ giữ nguyên
   '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/': {
     title: 'Ruột gối',
-    description: 'Ruột gối Ecopillo: gối nằm từ bông PE, Micro Fiber đến lông vũ tự nhiên, gối ôm, gối tựa và vỏ gối. Đặt online, thanh toán khi nhận.',
+    description: 'Ruột gối Ecopillo: gối nằm từ bông PE, Micro Fiber đến lông vũ tự nhiên, gối ôm, gối tựa và vỏ gối. Đặt online, nhân viên gọi xác nhận.',
     category: 'goi',
     // Ghi rõ từng sản phẩm, đúng thứ tự hiện (ruột gối bông PE đứng đầu: chị Phương, Zalo 11/11/2026)
     products: [
@@ -294,7 +294,7 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
   // (chị Phương 11/11/2026: bấm vào "không hiện gì cả", vì trước đó mở cả trang Sản phẩm lọc Đệm, sản phẩm nằm dưới phần giới thiệu)
   '/danh-muc-san-pham/san-pham/chan-topper-phu-kien/': {
     title: 'Chăn, topper và phụ kiện khác',
-    description: 'Chăn hè Lyocell, chăn hè E-Cool, topper Micro Fiber, bảo vệ đệm chống thấm và divan Ecopillo. Đặt online, thanh toán khi nhận hàng.',
+    description: 'Chăn hè Lyocell, chăn hè E-Cool, topper Micro Fiber, bảo vệ đệm chống thấm và divan Ecopillo. Đặt online, nhân viên gọi xác nhận.',
     products: ['chan-he-lyocell', 'chan-he-e-cool', 'topper-micro-fiber', 'bao-ve-dem-chong-tham', 'divan-ecopillo'],
   },
   '/danh-muc-san-pham/dem-ecopillo/': {
