@@ -352,7 +352,15 @@ function Recognition() {
       <ul className="mt-8 grid grid-cols-3 gap-3 text-center">
         {BRAND_STATS.map((s) => (
           <li key={s.label} data-reveal>
-            <p className="font-display text-[1.9rem] leading-none whitespace-nowrap text-deep-900 sm:text-[2.4rem]">
+            {/* Giá trị là chữ ("Hàng trăm nghìn", owner 18/11/2026): cỡ nhỏ hơn, cho xuống dòng; số thì giữ một dòng.
+                Khung cao bằng dòng số, chữ bám đáy, để ba nhãn bên dưới thẳng hàng */}
+            <p
+              className={`flex min-h-[1.9rem] items-end justify-center font-display text-deep-900 sm:min-h-[2.4rem] ${
+                /^\d/.test(s.value)
+                  ? 'text-[1.9rem] leading-none whitespace-nowrap sm:text-[2.4rem]'
+                  : 'text-[0.95rem] leading-[1.1] text-balance sm:text-[1.35rem]'
+              }`}
+            >
               <CountUp value={s.value} />
             </p>
             <p className="mt-2 text-label leading-snug text-ink-soft sm:text-small">{s.label}</p>

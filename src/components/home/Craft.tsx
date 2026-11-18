@@ -2,13 +2,13 @@ import { Icon, type IconName } from '../ui/Icon'
 import { CRAFT_QUOTE, LYOCELL_INTRO, LYOCELL_TRAITS } from '../../data/about'
 import { staticImage } from '../../data/catalog'
 import { revealDelay } from '../../lib/reveal'
-import { CountUp } from '../ui/CountUp'
 import { Placeholder } from '../ui/Placeholder'
 import { Container, SectionHeading } from '../ui/primitives'
 
 const TRUST: readonly { icon: IconName; title: string; text: string }[] = [
   // Con số thương hiệu đặt ở đây; dòng "3 kháng vượt trội" ở đầu trang đã bỏ (chị Phương 17/11/2026: "ở dưới có rồi")
-  { icon: 'award', title: '15+ năm trong nghề', text: 'Hơn 15.000 khách hàng tin dùng' },
+  // Owner 18/11/2026: thay 15.000 bằng "hàng trăm nghìn" (mức số thống nhất cả web; tên chương trình "Tri ân 15.000 khách hàng" giữ nguyên)
+  { icon: 'award', title: '15+ năm trong nghề', text: 'Hàng trăm nghìn gia đình tin dùng' },
   // Chị Phương 18/11/2026: "TQC" thay bằng quy chuẩn QCVN 01:2017/BCT. Cách sau "·" là dấu cách thường để ô hẹp xuống dòng ở đó,
   // mỗi mã giữ liền một dòng (dấu cách không ngắt bên trong mã)
   { icon: 'certified', title: 'ISO\u00a09001:2015\u00a0· QCVN\u00a001:2017/BCT', text: 'Quy trình sản xuất được chứng nhận' },
@@ -71,8 +71,11 @@ export function BrandStory() {
               “{CRAFT_QUOTE}”
             </blockquote>
             <div className="mt-10 hidden items-center gap-5 rounded-2xl bg-mist-50 p-5 shadow-[var(--shadow-soft)] sm:flex">
-              <p className="font-display text-[2.5rem] leading-none text-deep-900">
-                <CountUp value="15.000+" />
+              {/* Owner 18/11/2026: "Hàng trăm nghìn" thay "15.000+" (chữ, không còn số đếm tăng dần) */}
+              <p className="shrink-0 font-display text-[2rem] leading-[1.05] text-deep-900">
+                Hàng trăm
+                <br />
+                nghìn
               </p>
               <p className="text-sm leading-snug text-ink-soft">
                 gia đình, khách sạn và resort đã chọn Ecopillo cho phòng ngủ của mình.

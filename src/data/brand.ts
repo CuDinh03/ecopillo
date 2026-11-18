@@ -7,7 +7,8 @@ export const BRAND = {
   slogan: 'Nâng niu giấc mơ xanh',
   philosophy: ['Tốt', 'Thật', 'Thiện'] as const,
   years: '15+',
-  customers: '15.000+',
+  // Owner 18/11/2026: thay 15.000 bằng "hàng trăm nghìn" (mức số thống nhất cả web; tên chương trình "Tri ân 15.000 khách hàng" giữ nguyên); chân trang: "…nâng niu giấc ngủ của hàng trăm nghìn gia đình Việt"
+  customers: 'hàng trăm nghìn',
 } as const
 
 /**

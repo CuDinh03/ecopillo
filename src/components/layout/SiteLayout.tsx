@@ -5,6 +5,7 @@ import { trackPageView } from '../../lib/tracking'
 import { BackToTop } from './BackToTop'
 import { ContactDock } from './ContactDock'
 import { Footer } from './Footer'
+import { AdminBar } from './AdminBar'
 import { Header } from './Header'
 import { PreviewNotice } from './PreviewNotice'
 
@@ -96,6 +97,8 @@ export function SiteLayout() {
       >
         Bỏ qua tới nội dung
       </a>
+      {/* Chỉ người đăng nhập WordPress có quyền mới thấy (thanh-quan-tri.php); khách không phát sinh yêu cầu nào */}
+      <AdminBar />
       <Header />
       <main id="noi-dung" className="flex-1">
         {/*

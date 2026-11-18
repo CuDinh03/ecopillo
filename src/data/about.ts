@@ -206,7 +206,8 @@ export const FOUNDER_HONOURS: readonly Certificate[] = [
 
 const BASE_BRAND_STATS = [
   { value: '15+', label: 'năm trong nghề chăn ga gối đệm' },
-  { value: '15.000+', label: 'gia đình, khách sạn tin dùng' },
+  // Owner 18/11/2026: thay 15.000 bằng "hàng trăm nghìn" (mức số thống nhất cả web; tên chương trình "Tri ân 15.000 khách hàng" giữ nguyên)
+  { value: 'Hàng trăm nghìn', label: 'gia đình, khách sạn tin dùng' },
   { value: '2', label: 'văn phòng tại Hà Nội và TP. HCM' },
 ] as const
 
