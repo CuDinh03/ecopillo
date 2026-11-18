@@ -431,18 +431,18 @@ const CHAN_HAN_CODES = ['EF18', 'EV05', 'EV06', 'EF10', 'ER09', 'ER42'] as const
 const chanHanImage = (code: string) => productImage(`chan-dong-kieu-han-${code.toLowerCase()}`, `Chăn đông kiểu Hàn mẫu ${code}`)
 
 /**
- * Chăn đông kiểu Hàn: chữ khách gửi Zalo 08/11/2026. Chưa có giá, cỡ [ECOPILLO GỬI GIÁ, KÍCH THƯỚC CHĂN ĐÔNG KIỂU HÀN]:
- * khách chọn mẫu, nhân viên báo giá khi gọi xác nhận. Khác chăn đông Micro Fiber (ruột chăn rời).
+ * Chăn đông kiểu Hàn: chữ khách gửi Zalo 08/11/2026. Giá 2.180.000đ mọi mẫu (chị Phương 18/11/2026: "Cái này có giá rồi
+ * 2.180.000"). Chưa có cỡ [ECOPILLO GỬI KÍCH THƯỚC CHĂN ĐÔNG KIỂU HÀN]. Khác chăn đông Micro Fiber (ruột chăn rời).
  */
+const CHAN_HAN_PRICE = 2_180_000
 const CHAN_DONG_KIEU_HAN: Product = {
   slug: 'chan-dong-kieu-han',
   name: 'Chăn đông kiểu Hàn cao cấp',
   category: 'chan',
   summary:
     'Dành cho những ai yêu thích sự ấm áp nhưng không muốn cảm giác nặng nề, bí bách khi ngủ: chỉ hơn 2 kg mà ấm áp bất ngờ.',
-  min: 0,
-  max: 0,
-  isPriceOnCall: true,
+  min: CHAN_HAN_PRICE,
+  max: CHAN_HAN_PRICE,
   image: chanHanImage(CHAN_HAN_CODES[0]),
   imageNote: 'Ảnh chăn đông kiểu Hàn',
   gallery: CHAN_HAN_CODES.slice(1).map(chanHanImage),
@@ -459,7 +459,7 @@ const CHAN_DONG_KIEU_HAN: Product = {
     { label: 'Mẫu', value: `${CHAN_HAN_CODES.length} mẫu` },
   ],
   choiceLabel: 'Mẫu',
-  choices: CHAN_HAN_CODES.map((code) => ({ id: code.toLowerCase(), label: code, image: chanHanImage(code) })),
+  choices: CHAN_HAN_CODES.map((code) => ({ id: code.toLowerCase(), label: code, image: chanHanImage(code), price: CHAN_HAN_PRICE })),
 }
 
 const ORDER_NOTE = 'Đặt ngay trên web, nhân viên gọi xác nhận trước khi giao. Giao cùng chính sách như bộ chăn ga.'

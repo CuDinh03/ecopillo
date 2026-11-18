@@ -22,7 +22,7 @@ cái Ecopillo được tự sửa, hay xong một bước chuyển web, thì s�
   Không có máy chủ riêng nào khác. Danh sách đại lý có thể lấy từ WordPress qua `VITE_DEALERS_URL` (xem `src/hooks/useDealers.ts`).
 - **Đã chạy trên ecopillo.com.vn từ đêm 18/11/2026** bằng plugin WordPress "Ecopillo giao diện mới" (`trien-khai/wordpress-plugin/`), chế độ đổi ở wp-admin → Cài đặt → Giao diện mới (Tắt là về web cũ ngay).
   Đưa bản mới lên web thật: `pnpm build` → `node tools/dong-goi-plugin.mjs` → tải zip lên (thay bản cũ) → bấm Lưu chế độ (kế hoạch mục 3). Đẩy `main` chỉ cập nhật bản xem thử.
-  Web thật đang chạy plugin **1.0.0** (chưa nhận đơn: khách thấy "Chưa gửi được" + hotline). Bản **1.5.0** (nhận đơn + giá Woo + mẫu mới từ Woo + Nội dung web 22 bộ) đã đóng gói, **chờ owner tải lên**: `docs/bo-nao/dang-cho.md`.
+  Web thật đang chạy plugin **1.0.0** (chưa nhận đơn: khách thấy "Chưa gửi được" + hotline). Bản **1.5.1** (nhận đơn + giá Woo + mẫu mới từ Woo + Nội dung web 22 bộ) đã đóng gói, **chờ owner tải lên**: `docs/bo-nao/dang-cho.md`.
 - **Đường link giữ đúng như web cũ** (owner chốt 15/10/2026), chỉ đổi chữ chất liệu cũ trong link thành `lyocell` và 301 link cũ sang.
   Mọi đường link nằm ở `src/data/links.ts`; không viết link cứng trong component.
 

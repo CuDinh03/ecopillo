@@ -162,19 +162,20 @@ export const PRODUCT_MENU: readonly MenuGroup[] = [
     to: GA_PHU_PATH,
     image: patternImage('ED25', 'Bộ chăn ga Ecopillo'),
     rows: [],
+    // "Bộ" đứng trước (chị Phương 18/11/2026): không có thì khách tưởng giá là của riêng một tấm ga
     sections: [
       {
-        title: 'Ga phủ',
+        title: 'Bộ ga phủ',
         rows: GA_PHU_ORDER.map(collectionRow),
       },
       {
-        title: 'Ga phủ và chun chần',
+        title: 'Bộ ga phủ và chun chần',
         // Rosa, Tera, Vera — chọn ga chun chần ở bước kích thước khi đặt
         note: 'Chọn ga chun chần khi đặt hàng',
         rows: GA_CHUN_CHAN_ORDER.map(fittedRow),
       },
       {
-        title: 'Ga chun',
+        title: 'Bộ ga chun',
         rows: [collectionRow('eco-flora')],
       },
     ],

@@ -102,8 +102,8 @@ function cleanNewPattern(input: unknown): LiveNewPattern | undefined {
     typeof v.ten !== 'string' ||
     !v.ten.trim() ||
     typeof v.duongDan !== 'string' ||
+    // Đường dẫn có chữ chất liệu cũ đã bị plugin loại (mau-moi.php); không ghi chữ đó vào mã web
     !/^[a-z0-9-]{3,200}$/.test(v.duongDan) ||
-    /tencel|60s/.test(v.duongDan) ||
     !image ||
     !prices
   ) {

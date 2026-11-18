@@ -183,8 +183,17 @@ interface MobileProductMenuProps {
 export function MobileProductMenu({ label, number, isActive, onNavigate }: MobileProductMenuProps) {
   // Đang ở trang sản phẩm thì mở sẵn
   const [isOpen, setIsOpen] = useState(isActive)
-  // Thẻ Đệm mở sẵn (khách: "phần đệm tìm mãi mới thấy")
-  const [openGroup, setOpenGroup] = useState<string | null>(PRODUCT_MENU[0]?.id ?? null)
+  // Thẻ Đệm mở sẵn (khách: "phần đệm tìm mãi mới thấy").
+  // Mỗi nhóm mở, đóng riêng: trước đây mở nhóm này thì nhóm trên tự đóng, danh sách co lại và dòng vừa bấm trôi
+  // lên khỏi màn hình (chị Phương 18/11/2026: "nó nhảy lên trên bắt m lướt xuống")
+  const [openGroups, setOpenGroups] = useState<ReadonlySet<string>>(() => new Set(PRODUCT_MENU[0] ? [PRODUCT_MENU[0].id] : []))
+  const toggleGroup = (id: string) =>
+    setOpenGroups((open) => {
+      const next = new Set(open)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
 
   return (
     <>
@@ -205,8 +214,8 @@ export function MobileProductMenu({ label, number, isActive, onNavigate }: Mobil
             <MobileGroup
               key={group.id}
               group={group}
-              isOpen={openGroup === group.id}
-              onToggle={() => setOpenGroup((id) => (id === group.id ? null : group.id))}
+              isOpen={openGroups.has(group.id)}
+              onToggle={() => toggleGroup(group.id)}
               onNavigate={onNavigate}
             />
           ))}
@@ -231,8 +240,35 @@ interface MobileGroupProps {
   onNavigate: () => void
 }
 
+/** Khoảng chừa ở mép khung menu khi tự cuộn cho thấy nhóm vừa mở */
+const REVEAL_GAP = 12
+
+/**
+ * Nhóm vừa mở mà phần dưới khuất đáy khung menu: cuộn khung lên vừa đủ thấy hết, nhưng không đẩy dòng tiêu đề nhóm
+ * ra khỏi khung (nhóm dài hơn khung thì tiêu đề nằm sát mép trên).
+ */
+function revealInMenu(card: HTMLElement) {
+  const box = card.closest<HTMLElement>('#mobile-menu')
+  if (!box) return
+  const cardRect = card.getBoundingClientRect()
+  const boxRect = box.getBoundingClientRect()
+  const hiddenBelow = cardRect.bottom - boxRect.bottom + REVEAL_GAP
+  const roomAbove = cardRect.top - boxRect.top - REVEAL_GAP
+  const delta = Math.min(hiddenBelow, roomAbove)
+  if (delta <= 0) return
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  box.scrollBy({ top: delta, behavior: reduce ? 'auto' : 'smooth' })
+}
+
 function MobileGroup({ group, isOpen, onToggle, onNavigate }: MobileGroupProps) {
   const listId = `mobile-product-${group.id}`
+  const cardRef = useRef<HTMLDivElement>(null)
+  const wasOpen = useRef(isOpen)
+  useEffect(() => {
+    // Chỉ cuộn khi khách vừa bấm mở, không cuộn với nhóm mở sẵn lúc hiện menu
+    if (isOpen && !wasOpen.current && cardRef.current) revealInMenu(cardRef.current)
+    wasOpen.current = isOpen
+  }, [isOpen])
   const flatRows = group.sections?.length ? group.sections.flatMap((s) => s.rows) : group.rows
   // Nhóm có trang riêng mà chưa dòng nào trỏ tới: thêm link xem cả nhóm
   const hasOwnPage = !flatRows.some((row) => row.to === group.to)
@@ -267,7 +303,7 @@ function MobileGroup({ group, isOpen, onToggle, onNavigate }: MobileGroupProps) 
   }
 
   return (
-    <div className="rounded-2xl bg-ivory shadow-[var(--shadow-soft)]">
+    <div ref={cardRef} className="rounded-2xl bg-ivory shadow-[var(--shadow-soft)]">
       <button type="button" aria-expanded={isOpen} aria-controls={listId} onClick={onToggle} className={headClass}>
         {head}
         <Icon name="plus" size={20} className={`text-mist-600 transition-transform duration-200 ${isOpen ? 'rotate-45' : ''}`} />

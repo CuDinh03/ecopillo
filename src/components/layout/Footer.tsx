@@ -89,9 +89,7 @@ export function Footer() {
                 </Link>
               </li>
             </ul>
-            <p className="mt-6 font-display text-2xl text-deep-700 italic">
-              {BRAND.philosophy.join(' · ')}
-            </p>
+            {/* Bỏ dòng "Tốt · Thật · Thiện" ở chân trang (chị Phương 18/11/2026: "Bỏ cái này cuối trang") */}
             <div className="mt-7">
               <SocialIcons tone="light" />
             </div>
