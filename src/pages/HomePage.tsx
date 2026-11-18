@@ -23,10 +23,11 @@ import { organizationLd } from '../lib/structuredData'
  * Xem docs/ke-hoach-ssg-va-wordpress.md mục 5.
  */
 export function HomePage() {
-  // Mô tả viết tay 08/11/2026 (C2, chờ Ecopillo duyệt), trùng chữ với index.html
+  // Mô tả chị Phương gửi 18/11/2026 (hiện dưới tiêu đề khi gửi link qua Zalo, Facebook, trên Google), trùng chữ với index.html.
+  // Sửa chính tả "trãi" → "trải", thêm dấu chấm cuối câu
   usePageMeta(
     null,
-    'Chăn ga gối đệm cao cấp Ecopillo, vải Lyocell nhập khẩu, chần thêu độc quyền. Đặt online, thanh toán khi nhận hàng, miễn phí giao từ 500.000đ.',
+    'Chăn ga gối đệm Ecopillo mang giấc ngủ chất lượng cùng trải nghiệm tuyệt vời đến hàng triệu gia đình Việt một cách nhanh chóng và dễ dàng nhất.',
   )
   const isMobile = useIsMobile()
   return (
