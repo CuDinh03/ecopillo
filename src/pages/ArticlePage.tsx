@@ -18,7 +18,7 @@ import { NotFoundPage } from './NotFoundPage'
 function Block({ block }: { block: PostBlock }) {
   switch (block.type) {
     case 'h2':
-      return <h2 className="text-left font-display mt-12 text-[1.7rem] leading-tight text-deep-900 sm:text-[2rem]">{block.text}</h2>
+      return <h2 className="text-left font-display mt-10 text-[1.4rem] leading-tight text-deep-900 sm:text-[1.6rem]">{block.text}</h2>
     case 'list':
       return (
         <ul className="mt-5 space-y-3 text-left">
@@ -32,7 +32,7 @@ function Block({ block }: { block: PostBlock }) {
       )
     case 'tip':
       return (
-        <aside className="mt-10 flex gap-4 rounded-[1.5rem] bg-mist-50 p-6 shadow-[var(--shadow-soft)]">
+        <aside className="mt-8 flex gap-4 rounded-[1.5rem] bg-mist-100 p-6">
           <Icon name="lightbulb" size={22} className="mt-0.5 shrink-0 text-mist-600" />
           <p className="text-deep-900">{block.text}</p>
         </aside>
@@ -104,12 +104,18 @@ export function ArticlePage() {
           </div>
         </div>
 
-        <div className="chu-deu mx-auto mt-4 max-w-3xl text-lead lg:max-w-4xl leading-[1.8] text-ink">
-          {post.wp ? (
-            <WordPressBody slug={post.slug} live={post.wp.live ? { title: post.title } : undefined} />
-          ) : (
-            post.body.map((block, i) => <Block key={i} block={block} />)
-          )}
+        <div className="chu-deu mx-auto mt-4 max-w-3xl lg:max-w-4xl">
+          {/*
+           * Thân bài trên khối trắng, chữ 16px chàm nhạt, chữ nhấn bằng màu (anh Quang 18/11/2026: "phần chữ nó nhẹ nhàng như cái
+           * nền trắng anh gửi"; owner chọn phương án B trong docs/de-xuat-chu-bai-viet-18-11.html). Kiểu chữ thân bài WordPress: .bai-wp
+           */}
+          <article className="rounded-[2rem] bg-ivory px-5 py-7 text-base leading-[1.75] text-ink-soft shadow-[var(--shadow-soft)] sm:px-10 sm:py-10 lg:px-14 lg:py-12 [&>:first-child]:mt-0">
+            {post.wp ? (
+              <WordPressBody slug={post.slug} live={post.wp.live ? { title: post.title } : undefined} />
+            ) : (
+              post.body.map((block, i) => <Block key={i} block={block} />)
+            )}
+          </article>
 
           {post.related && (
             <div className="mt-12 border-t border-line pt-8">

@@ -334,8 +334,19 @@
    * Thân bài lấy từ WordPress (components/blog/WordPressBody.tsx): HTML đã làm sạch, chỉ còn thẻ thường.
    * Cỡ chữ, khoảng cách theo bài viết trong code (Block trong ArticlePage.tsx) để hai loại bài trông như nhau.
    */
+  /*
+   * Phương án B (anh Quang 18/11/2026, docs/de-xuat-chu-bai-viet-18-11.html): thân bài trên khối trắng (ArticlePage.tsx),
+   * chữ 16px chàm nhạt, tiêu đề mục nhỏ có vạch trái, chữ nhấn bằng màu chàm sáng thay vì in đậm.
+   */
   .bai-wp > * + * {
-    margin-top: 1.25rem;
+    margin-top: 1.1rem;
+  }
+  .bai-wp > :first-child {
+    margin-top: 0;
+  }
+  .bai-wp :is(strong, b) {
+    font-weight: 500;
+    color: var(--color-mist-600);
   }
   .bai-wp :is(h2, h3, h4) {
     scroll-margin-top: 5.5rem; /* thanh đầu trang cao 4.5rem */
@@ -348,16 +359,28 @@
     text-wrap: balance;
   }
   .bai-wp h2 {
-    margin-top: 3rem;
-    font-size: clamp(1.6rem, 1.3rem + 1vw, 2rem);
+    margin-top: 2.5rem;
+    font-size: clamp(1.4rem, 1.25rem + 0.6vw, 1.6rem);
+  }
+  .bai-wp :is(h3, h4) {
+    font-family: var(--font-sans);
+    letter-spacing: 0;
+    line-height: 1.3;
   }
   .bai-wp h3 {
-    margin-top: 2.25rem;
-    font-size: clamp(1.3rem, 1.15rem + 0.6vw, 1.55rem);
+    margin-top: 2rem;
+    border-left: 3px solid var(--color-mist-600);
+    padding-left: 0.65rem;
+    font-size: 1.1rem;
   }
   .bai-wp h4 {
-    margin-top: 1.75rem;
-    font-size: 1.15rem;
+    margin-top: 1.5rem;
+    font-size: 1rem;
+  }
+  /* Tiêu đề không nhận màu chữ nhấn */
+  .bai-wp :is(h2, h3, h4) :is(strong, b) {
+    font-weight: inherit;
+    color: inherit;
   }
   .bai-wp a {
     color: var(--color-mist-600);
@@ -435,8 +458,8 @@
   .bai-wp .muc-luc {
     margin-top: 2rem;
     border-radius: 1.5rem;
-    background: var(--color-cream-50);
-    box-shadow: var(--shadow-soft);
+    /* Ô nằm trong khối trắng của thân bài: nền xanh nhạt (CLAUDE.md) */
+    background: var(--color-mist-100);
     padding: 1.25rem 1.5rem;
     font-size: 1rem;
     line-height: 1.6;
