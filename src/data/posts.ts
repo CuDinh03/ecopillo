@@ -1,5 +1,6 @@
 import { patternImage, type ImageSource } from './catalog'
 import { productsUrl } from './links'
+import type { PostLabel } from './postSections'
 
 /**
  * Bài viết (biên bản mục 49: 59 bài trên web cũ chuyển sang, GIỮ NGUYÊN đường link, chỉ đổi giao diện).
@@ -30,7 +31,7 @@ export interface Post {
   slug: string
   title: string
   excerpt: string
-  /** Bài viết trong code dùng 3 chủ đề dưới; bài WordPress ghi "Tin tức" hoặc "Cẩm nang" */
+  /** "Tin tức", "Cẩm nang" hoặc một chủ đề Cẩm nang (postSections.ts; allPosts.ts xếp lại theo bảng và ô "Mục trên web") */
   category: PostLabel
   /** Có ở bài lấy từ WordPress: thân bài là HTML đã làm sạch, nạp riêng từng bài (components/blog/WordPressBody.tsx) */
   wp?: WordPressInfo
@@ -46,9 +47,6 @@ export interface Post {
   body: readonly PostBlock[]
 }
 
-export const POST_CATEGORIES = ['Chất liệu', 'Hướng dẫn chọn', 'Chăm sóc, bảo quản'] as const
-export type PostCategory = (typeof POST_CATEGORIES)[number]
-export type PostLabel = PostCategory | 'Tin tức' | 'Cẩm nang'
 
 export const POSTS: readonly Post[] = [
   {
@@ -56,7 +54,7 @@ export const POSTS: readonly Post[] = [
     title: 'Vải Lyocell là gì? Vì sao nằm mát và mềm như lụa',
     excerpt:
       'Lyocell là sợi làm từ bột gỗ. Bài này giải thích sợi được làm ra thế nào, vì sao nằm mát, và cách phân biệt khi mua chăn ga.',
-    category: 'Chất liệu',
+    category: 'Chọn chăn ga gối đệm',
     topics: ['bo-chan-ga', 'chan'],
     readMinutes: 5,
     cover: patternImage('ER25', 'Bộ chăn ga Lyocell Eco Rosa ER25 trải trên giường'),
@@ -100,7 +98,7 @@ export const POSTS: readonly Post[] = [
     title: 'Cách chọn kích thước ga giường cho vừa khít đệm',
     excerpt:
       'Đo đúng ba số dài, rộng, dày của đệm là chọn được ga vừa khít. Hướng dẫn đo nhanh, cách chọn ga chun hay ga phủ, và bảng cỡ phổ biến.',
-    category: 'Hướng dẫn chọn',
+    category: 'Chọn chăn ga gối đệm',
     topics: ['bo-chan-ga', 'dem'],
     readMinutes: 4,
     cover: patternImage('ED10', 'Ga phủ trắng trải phẳng, vừa khít đệm'),
@@ -145,7 +143,7 @@ export const POSTS: readonly Post[] = [
     title: 'Giặt và bảo quản chăn ga Lyocell để luôn mềm mát',
     excerpt:
       'Vài thói quen nhỏ khi giặt, phơi, cất giữ giúp chăn ga Lyocell giữ độ bóng mịn và bền màu qua nhiều năm.',
-    category: 'Chăm sóc, bảo quản',
+    category: 'Chọn chăn ga gối đệm',
     topics: ['bo-chan-ga', 'chan', 'chinh-sach'],
     readMinutes: 3,
     cover: patternImage('EF06', 'Bộ ga chun Lyocell Eco Flora EF06 trải phẳng sau khi giặt'),

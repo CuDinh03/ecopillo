@@ -19,6 +19,18 @@ if (!defined('ABSPATH')) {
 define('ECO_BV_OPT_TRANG', 'ecopillo_bai_moi_trang');
 /** Danh mục "Tin tức" trên WordPress (id 30), như tools/lay-bai-viet-wordpress.mjs; bài khác ghi "Cẩm nang" */
 define('ECO_BV_TIN_TUC', 30);
+/** Ô "Mục trên web" khi soạn bài (owner 18/11/2026): mã → chữ, khớp SECTION_LABELS ở src/data/postSections.ts */
+define('ECO_BV_MUC_META', '_eco_muc_web');
+function eco_bv_muc_options()
+{
+    return array(
+        'tin-tuc' => 'Tin tức (tin về Ecopillo)',
+        'chon-chan-ga' => 'Cẩm nang · Chọn chăn ga gối đệm',
+        'giac-ngu' => 'Cẩm nang · Giấc ngủ và sức khoẻ',
+        'phong-ngu' => 'Cẩm nang · Phòng ngủ và phong thuỷ',
+        'cuoi-hoi-le-tet' => 'Cẩm nang · Cưới hỏi, lễ tết',
+    );
+}
 
 /** Thẻ, thuộc tính được giữ trong thân bài (khớp ALLOWED, ATTRS ở src/lib/cleanPostHtml.ts) */
 function eco_bv_allowed_html()
@@ -90,12 +102,14 @@ function eco_bv_compute()
         $yoast = eco_sp_text(get_post_meta($post->ID, '_yoast_wpseo_metadesc', true), 160);
         $words = count(preg_split('/\s+/u', trim(wp_strip_all_tags($body)), -1, PREG_SPLIT_NO_EMPTY));
         $cover = eco_sp_image(get_post_thumbnail_id($post));
+        $muc = (string) get_post_meta($post->ID, ECO_BV_MUC_META, true);
         $result['live'][] = array(
             'duongDan' => $slug,
             'tieuDe' => $title,
             'tomTat' => $excerpt,
             'moTa' => mb_strlen($yoast, 'UTF-8') >= 50 ? $yoast : mb_substr($excerpt, 0, 155, 'UTF-8'),
             'loai' => has_category(ECO_BV_TIN_TUC, $post) ? 'Tin tức' : 'Cẩm nang',
+            'muc' => isset(eco_bv_muc_options()[$muc]) ? $muc : '',
             'ngay' => get_the_date('Y-m-d', $post),
             'sua' => $modified,
             'phut' => max(1, (int) round($words / 220)),
@@ -161,4 +175,41 @@ function eco_bv_serve()
     }
     echo eco_mm_shell($html, $m[1], $page); // trang tĩnh của giao diện mới, các chữ chèn vào đã thoát
     exit;
+}
+
+/* ---------------------------------------------------------------- Ô "Mục trên web" khi soạn bài */
+
+add_action('add_meta_boxes_post', 'eco_bv_muc_box');
+function eco_bv_muc_box()
+{
+    add_meta_box('eco-muc-web', 'Mục trên web', 'eco_bv_muc_box_html', 'post', 'side', 'high');
+}
+
+function eco_bv_muc_box_html($post)
+{
+    wp_nonce_field('eco_bv_muc_luu', 'eco_bv_muc_nonce');
+    $current = (string) get_post_meta($post->ID, ECO_BV_MUC_META, true);
+    echo '<p style="margin-top:0">Bài hiện ở nhóm này trên trang Tin tức của web.</p>';
+    foreach (eco_bv_muc_options() as $value => $label) {
+        echo '<label style="display:block;margin:6px 0"><input type="radio" name="eco_muc_web" value="' . esc_attr($value) . '"' . checked($current, $value, false) . '> ' . esc_html($label) . '</label>';
+    }
+    echo '<label style="display:block;margin:6px 0;color:#646970"><input type="radio" name="eco_muc_web" value=""' . checked($current, '', false) . '> Để web tự xếp</label>';
+    echo '<p class="description">Tin tức: tin về chính Ecopillo (khai trương, giải thưởng, chương trình, sự kiện). Cẩm nang: bài kiến thức. "Để web tự xếp": bài cũ giữ nhóm đã duyệt, bài mới theo chuyên mục WordPress.</p>';
+}
+
+add_action('save_post_post', 'eco_bv_muc_save', 5);
+function eco_bv_muc_save($post_id)
+{
+    if (!isset($_POST['eco_bv_muc_nonce']) || !wp_verify_nonce(sanitize_key(wp_unslash($_POST['eco_bv_muc_nonce'])), 'eco_bv_muc_luu')) {
+        return;
+    }
+    if ((defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) || wp_is_post_revision($post_id) || !current_user_can('edit_post', $post_id)) {
+        return;
+    }
+    $value = isset($_POST['eco_muc_web']) ? sanitize_key(wp_unslash($_POST['eco_muc_web'])) : '';
+    if (isset(eco_bv_muc_options()[$value])) {
+        update_post_meta($post_id, ECO_BV_MUC_META, $value);
+    } else {
+        delete_post_meta($post_id, ECO_BV_MUC_META);
+    }
 }

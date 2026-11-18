@@ -1,6 +1,7 @@
 import wordpressIndex from './bai-viet-wp/danh-sach.json'
 import { LIVE_POSTS, type LivePost } from './livePosts'
 import { POSTS, type Post } from './posts'
+import { POST_SECTIONS, SECTION_LABELS, type PostLabel } from './postSections'
 
 /**
  * Tất cả bài viết: 3 bài viết trong code (src/data/posts.ts) và bài lấy từ WordPress của web cũ (GĐ3, giữ nguyên link).
@@ -25,11 +26,17 @@ interface WordPressEntry {
 
 const FALLBACK_COVER = { src: '/og-image.jpg', srcSet: '', alt: 'Ecopillo' }
 
+/** Nhóm của bài: ô "Mục trên web" Ecopillo chọn trong WordPress > bảng xếp sẵn (postSections.ts) > chuyên mục WordPress */
+const labelOf = (slug: string, fallback: PostLabel, chosen?: keyof typeof SECTION_LABELS): PostLabel => {
+  const section = chosen ?? POST_SECTIONS[slug]
+  return section ? SECTION_LABELS[section] : fallback
+}
+
 const WORDPRESS_POSTS: readonly Post[] = (wordpressIndex as readonly WordPressEntry[]).map((entry) => ({
   slug: entry.slug,
   title: entry.title,
   excerpt: entry.excerpt,
-  category: entry.category,
+  category: labelOf(entry.slug, entry.category),
   readMinutes: entry.readMinutes,
   cover: entry.cover ? { src: entry.cover.src, srcSet: entry.cover.srcSet, alt: entry.cover.alt } : { ...FALLBACK_COVER, alt: entry.title },
   body: [],
@@ -41,7 +48,7 @@ const livePost = (entry: LivePost): Post => ({
   slug: entry.slug,
   title: entry.title,
   excerpt: entry.excerpt,
-  category: entry.category,
+  category: labelOf(entry.slug, entry.category, entry.section),
   readMinutes: entry.readMinutes,
   cover: entry.cover ?? { ...FALLBACK_COVER, alt: entry.title },
   body: [],
@@ -59,7 +66,7 @@ const MERGED_WORDPRESS: readonly Post[] = [
 ]
 
 /** Bài trong code đứng đầu (bài chọn lọc), sau đó bài WordPress mới nhất trước */
-export const ALL_POSTS: readonly Post[] = [...POSTS, ...MERGED_WORDPRESS]
+export const ALL_POSTS: readonly Post[] = [...POSTS.map((p) => ({ ...p, category: labelOf(p.slug, p.category) })), ...MERGED_WORDPRESS]
 
 export const anyPostBySlug = (slug: string | undefined): Post | undefined => ALL_POSTS.find((p) => p.slug === slug)
 

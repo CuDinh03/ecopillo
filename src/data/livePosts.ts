@@ -8,12 +8,16 @@
  * main.tsx chỉ hỏi có bài nào không (để vẽ lại trang Tin tức, trang bài viết dựng sẵn).
  */
 
+import { isPostSection, type PostSection } from './postSections'
+
 export interface LivePost {
   slug: string
   title: string
   excerpt: string
   description: string
   category: 'Tin tức' | 'Cẩm nang'
+  /** Ô "Mục trên web" Ecopillo chọn khi soạn bài (postSections.ts); không chọn thì không có */
+  section?: PostSection
   date: string
   modified: string
   readMinutes: number
@@ -38,6 +42,7 @@ function clean(input: unknown): LivePost | undefined {
     excerpt: text(v.tomTat, 400),
     description: text(v.moTa, 160) || text(v.tomTat, 155),
     category: v.loai === 'Tin tức' ? 'Tin tức' : 'Cẩm nang',
+    ...(isPostSection(v.muc) ? { section: v.muc } : {}),
     date,
     modified: typeof v.sua === 'string' && DATE.test(v.sua) ? v.sua : date,
     readMinutes: typeof v.phut === 'number' && v.phut > 0 && v.phut < 120 ? Math.round(v.phut) : 3,

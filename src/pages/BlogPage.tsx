@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { Icon } from '../components/ui/Icon'
 import { buttonClass } from '../components/ui/primitives'
 import { ALL_POSTS } from '../data/allPosts'
-import { POST_CATEGORIES, type PostLabel } from '../data/posts'
+import { POST_TOPICS, postGroupOf, type PostLabel } from '../data/postSections'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 import { useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
@@ -13,9 +13,11 @@ import { useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
 /** Mỗi lần hiện thêm bao nhiêu bài (61 bài: 3 bài trong code + 58 bài WordPress, 17/11/2026) */
 const PAGE_SIZE = 12
 
-/** Chủ đề có bài mới hiện nút lọc: "Tin tức", "Cẩm nang" (bài WordPress) rồi 3 chủ đề của bài trong code */
-const LABELS: readonly PostLabel[] = (['Tin tức', 'Cẩm nang', ...POST_CATEGORIES] as const).filter((label) =>
-  ALL_POSTS.some((p) => p.category === label),
+/** Nút lọc (owner 18/11/2026): Tin tức, Cẩm nang (mọi bài Cẩm nang), rồi 4 chủ đề Cẩm nang; nút không có bài thì ẩn */
+const matches = (label: PostLabel, post: { category: PostLabel }): boolean =>
+  label === 'Cẩm nang' ? postGroupOf(post.category) === 'Cẩm nang' : post.category === label
+const LABELS: readonly PostLabel[] = (['Tin tức', 'Cẩm nang', ...POST_TOPICS] as const).filter((label) =>
+  ALL_POSTS.some((p) => matches(label, p)),
 )
 
 /** Trang Tin tức: danh sách bài viết, lọc theo chủ đề (?chu-de=…), hiện dần 12 bài một */
@@ -23,7 +25,7 @@ export function BlogPage() {
   usePageMeta('Tin tức, cẩm nang giấc ngủ', 'Kiến thức về vải Lyocell, cách chọn kích thước chăn ga, giặt và bảo quản để giấc ngủ luôn êm, mát.')
   const [params, setParams] = useHydratedSearchParams()
   const active = LABELS.find((c) => c === params.get('chu-de')) ?? null
-  const posts = active ? ALL_POSTS.filter((p) => p.category === active) : ALL_POSTS
+  const posts = active ? ALL_POSTS.filter((p) => matches(active, p)) : ALL_POSTS
   // Đổi chủ đề thì về lại 12 bài đầu
   const [shown, setShown] = useState({ key: active, count: PAGE_SIZE })
   const count = shown.key === active ? shown.count : PAGE_SIZE
