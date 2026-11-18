@@ -63,7 +63,7 @@ cái Ecopillo được tự sửa, hay xong một bước chuyển web, thì s�
 - Dữ liệu (chữ, giá, ảnh, liên hệ) nằm trong `src/data/`, không viết cứng trong component.
 - **Giao diện là khung, Ecopillo tự sửa dữ liệu trong WordPress** (owner 18/11/2026, đè Q1): `docs/ke-hoach-khach-tu-sua-du-lieu.md`. Đừng thêm dữ liệu cứng mới mà Ecopillo sẽ cần đổi.
   Giá, hết hàng, **mẫu mới trong bộ sưu tập có sẵn** (`mau-moi.php`), **sản phẩm lẻ mới** (`san-pham-moi.php`; danh mục Woo ↔ trang: `WOO_CATEGORY_LISTINGS` trong `links.ts`), trang khung cho link mới: sửa trong WooCommerce;
-  **bài viết mới / sửa** trong WordPress lên web ngay (`bai-viet-moi.php` → `window.__ECO_BAI__` + `bai/<tên>.json`, `src/data/livePosts.ts`, lọc lại ở `src/lib/cleanPostHtml.ts`); liên hệ, đại lý, banner, sự kiện, báo chí, cảm nhận khách, giới thiệu, khách sạn, đối tác, quà tặng, hỏi đáp, chính sách: menu Nội dung web (22 bộ). Plugin ghi `du-lieu.js`, web ghép đè
+  **bài viết mới / sửa** trong WordPress lên web ngay (`bai-viet-moi.php` → `window.__ECO_BAI__` + `bai/<tên>.json`, `src/data/livePosts.ts`, lọc lại ở `src/lib/cleanPostHtml.ts`); liên hệ, đại lý, banner, sự kiện, báo chí, cảm nhận khách, giới thiệu, khách sạn, đối tác, quà tặng, hỏi đáp, chính sách, khối giao hàng / bảo hành trên trang sản phẩm (`src/data/productCommonInfo.ts`): menu Nội dung web (23 bộ). Plugin ghi `du-lieu.js`, web ghép đè
   (`src/data/liveData.ts`, `src/data/liveContent.ts`); dữ liệu trong code chỉ là bản lúc dựng. Thêm bộ sửa được: khai `EditableSet` cạnh dữ liệu + thêm vào `src/data/contentFrame.ts`.
   **Dữ liệu Ecopillo không ra khỏi WordPress** (đơn, tin nhắn chỉ ở mục Đơn web + email Ecopillo): không thêm Google Sheet, GitHub hay dịch vụ ngoài nào nhận dữ liệu.
 - **Không dùng chữ "Tencel" và "60s"** ở bất cứ đâu: chữ trên web, alt ảnh, tên file ảnh, comment, tài liệu gửi khách.
@@ -97,7 +97,7 @@ pnpm lint       # đang có 4 cảnh báo cũ react-refresh, không phải lỗi
 | Hotline, Zalo, email, mạng xã hội, địa chỉ + toạ độ văn phòng HN / chi nhánh HCM | `src/data/brand.ts` |
 | Sản phẩm, bộ sưu tập, mẫu, giá, kích thước | `src/data/catalog.ts` (gốc), `src/data/products.ts` (gom nhóm cho /san-pham) |
 | Đại lý, 34 tỉnh, khoảng cách, giờ mở cửa | `src/data/dealers.ts` |
-| Chính sách giao hàng, phí ship, COD | `src/lib/shipping.ts`, chữ chính sách ở `src/data/policies.ts` |
+| Chính sách giao hàng, phí ship, COD | `src/lib/shipping.ts`, chữ chính sách ở `src/data/policies.ts`; thẻ giao hàng, bảo hành, 4 cam kết trên trang sản phẩm ở `src/data/productCommonInfo.ts` |
 | Câu chuyện phối màu, gam màu, tập (bản nháp chờ Ecopillo duyệt) | `src/data/stories.ts`; xuất bản gửi duyệt: `node tools/xuat-nhap-cau-chuyen.mjs` |
 | Thêm bộ sưu tập mới, thêm phối màu mới | Làm theo `docs/huong-dan-them-bo-suu-tap.md` |
 | Trang bộ sưu tập (bìa, chương, hàng chương, cùng gam màu) | `src/components/collection/` |

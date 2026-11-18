@@ -4,6 +4,7 @@ import { CONTACT } from '../../data/brand'
 import { patternRange, type Pattern, type SizeId } from '../../data/catalog'
 import { NEAR_ME_URL } from '../../data/dealers'
 import { PATHS, productsUrl } from '../../data/links'
+import { DELIVERY_POINTS, TRUST_POINTS, WARRANTY_BY_CATEGORY } from '../../data/productCommonInfo'
 import { categoryLabel, orderUrl, priceLabel, PRODUCTS, type Product } from '../../data/products'
 import { formatRange, formatVND } from '../../lib/format'
 import { breadcrumbLd } from '../../lib/structuredData'
@@ -11,26 +12,7 @@ import { JsonLd } from '../seo/JsonLd'
 import { Icon, ZaloMark } from '../ui/Icon'
 import { ProductCard } from './ProductCard'
 
-/* Các phần dùng chung cho trang chi tiết sản phẩm lẻ và trang bộ sưu tập (từng phối màu) */
-
-/**
- * Biên bản mục 38: bảo hành tuỳ sản phẩm (đệm 5–15 năm, chăn ga 90 …; đơn vị bị cắt, đọc là ngày).
- * Gối chưa có thời hạn (câu hỏi gửi khách số 44) nên không ghi dòng bảo hành.
- */
-const WARRANTY_BY_CATEGORY: Readonly<Record<string, string>> = {
-  'bo-chan-ga': '90 ngày',
-  chan: '90 ngày',
-  dem: '5–15 năm tuỳ dòng đệm',
-}
-
-const POLICIES = [
-  'Thanh toán khi nhận hàng (COD) toàn quốc, không thu phí thu hộ. Nhân viên gọi xác nhận đơn trước khi giao.',
-  'Miễn phí giao toàn quốc cho đơn từ 500.000đ. Nội thành Hà Nội, TP. HCM giao trong ngày; phía Bắc 2–3 ngày, phía Nam 3–5 ngày.',
-  'Kiểm hàng cùng nhân viên giao, được trải thử lên giường. Giao sai được từ chối nhận, không mất tiền.',
-  'Chỉ đổi, không trả hàng hoàn tiền. Báo lỗi trong 24 giờ, gửi đổi trong 7 ngày, còn nguyên tem mác, chưa giặt.',
-] as const
-
-const TRUST_POINTS = ['Thanh toán khi nhận hàng', 'Miễn phí giao từ 500.000đ', 'Kiểm hàng, trải thử khi nhận', 'Đổi hàng trong 7 ngày'] as const
+/* Các phần dùng chung cho trang chi tiết sản phẩm lẻ và trang bộ sưu tập (từng phối màu); chữ giao hàng, bảo hành ở src/data/productCommonInfo.ts */
 
 /**
  * Thanh hiện ba mục (Trang chủ / Sản phẩm / nhóm); dữ liệu cấu trúc thêm trang đang xem ở cuối.
@@ -124,7 +106,7 @@ export function ProductInfoCards({ product, className = 'mt-16' }: { product: Pr
       </InfoCard>
       <InfoCard title="Giao hàng, đổi trả & bảo hành">
         <ul className="space-y-2">
-          {POLICIES.map((p) => (
+          {DELIVERY_POINTS.map((p) => (
             <li key={p} className="flex gap-2">
               <Icon name="truck" size={15} className="mt-1 shrink-0 text-mist-600" /> {p}
             </li>
