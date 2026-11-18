@@ -213,21 +213,17 @@ const BASE_POLICIES: readonly Policy[] = [
     description: 'Bảo hành Ecopillo: đệm cao su thiên nhiên 15 năm, lò xo và Eco Foam 10 năm, Mix Latex 7 năm, divan và bông ép 5 năm, chăn ga 90 ngày.',
     intro:
       'Bảo hành là cam kết của Ecopillo với lỗi kỹ thuật, lỗi kết cấu hoặc lỗi do nhà sản xuất, trong phạm vi và thời hạn của từng nhóm sản phẩm. Ecopillo tiếp nhận minh bạch, kiểm tra theo tình trạng thực tế rồi đưa ra phương án phù hợp.',
+    // Chị Phương 18/11/2026: đủ 5 mức bảo hành lên các thẻ đầu trang, bỏ danh sách trùng trong mục "Thời hạn bảo hành"
     highlights: [
       { value: '15 năm', label: 'Đệm cao su thiên nhiên' },
-      { value: '10 năm', label: 'Đệm lò xo, Eco Foam đa tầng' },
+      { value: '10 năm', label: 'Đệm lò xo, đệm Eco Foam đa tầng' },
+      { value: '7 năm', label: 'Đệm bông ép Mix Latex' },
+      { value: '5 năm', label: 'Divan, đệm bông ép' },
       { value: '90 ngày', label: 'Chăn ga' },
     ],
     sections: [
       {
         title: 'Thời hạn bảo hành',
-        list: [
-          'Đệm cao su thiên nhiên: 15 năm.',
-          'Đệm lò xo, đệm Eco Foam đa tầng: 10 năm.',
-          'Đệm bông ép Mix Latex: 7 năm.',
-          'Divan, đệm bông ép: 5 năm.',
-          'Chăn ga: 90 ngày.',
-        ],
         body: [
           'Thời hạn tính từ ngày mua hoặc ngày giao hàng ghi trên chứng từ của Quý khách hoặc dữ liệu bán hàng của Ecopillo.',
           'Tuổi thọ thực tế của chăn ga, đệm còn phụ thuộc trọng lượng người nằm, tần suất dùng, cách vệ sinh, khung đỡ, cách di chuyển. Vì vậy thời hạn bảo hành không phải cam kết về tuổi thọ tối đa của sản phẩm.',
@@ -358,7 +354,7 @@ export const POLICY_HEAD_SET: EditableSet = {
     { khoa: 'title', nhan: 'Tên trang', kieu: 'chu', batBuoc: true },
     { khoa: 'description', nhan: 'Mô tả hiện trên Google (70–155 ký tự)', kieu: 'doan', batBuoc: true },
     { khoa: 'intro', nhan: 'Đoạn mở đầu', kieu: 'doan', batBuoc: true },
-    { khoa: 'highlights', nhan: '3 thẻ ý chính', kieu: 'ds-cap', batBuoc: true, cap: ['value', 'label'], nhanCap: ['Chữ to', 'Mô tả'] },
+    { khoa: 'highlights', nhan: 'Thẻ ý chính đầu trang', kieu: 'ds-cap', batBuoc: true, cap: ['value', 'label'], nhanCap: ['Chữ to', 'Mô tả'], goiY: 'Thường 3 thẻ; nhiều hơn thì xếp 3 thẻ một hàng (Bảo hành có 5 thẻ).' },
   ] satisfies EditableField[],
 }
 

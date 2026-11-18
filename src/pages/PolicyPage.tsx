@@ -17,7 +17,8 @@ export function PolicyPage() {
   if (!policy || !title) return <NotFoundPage />
   return (
     <PolicyLayout title={title} intro={policy.intro}>
-      <ul className="grid gap-3 sm:grid-cols-3">
+      {/* 3 thẻ: một hàng; nhiều hơn (Bảo hành 5 thẻ, chị Phương 18/11/2026): 2 cột máy tính bảng, 3 cột máy tính */}
+      <ul className={`grid gap-3 ${policy.highlights.length > 3 ? 'sm:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-3'}`}>
         {policy.highlights.map((h) => (
           <li key={h.label} className="rounded-[1.25rem] bg-mist-50 p-5 shadow-[var(--shadow-soft)]">
             <p className="font-display text-[1.6rem] leading-tight text-deep-900">
