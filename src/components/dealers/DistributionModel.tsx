@@ -1,4 +1,4 @@
-import { DISTRIBUTION_MAP, DISTRIBUTOR_COUNT, SALES_CHANNELS } from '../../data/dealers'
+import { DISTRIBUTION_MAP, DISTRIBUTION_MODEL_TEXT, DISTRIBUTOR_COUNT, SALES_CHANNELS } from '../../data/dealers'
 import { revealDelay } from '../../lib/reveal'
 
 /**
@@ -34,13 +34,11 @@ export function DistributionModel() {
       <div>
         <header data-reveal>
           {/* Nhãn in đậm, chàm đậm (chị Phương 09/11/2026: "in đậm cho c đoạn này") */}
-          <p className="eyebrow font-bold text-deep-900">Mô hình kinh doanh</p>
+          <p className="eyebrow font-bold text-deep-900">{DISTRIBUTION_MODEL_TEXT.eyebrow}</p>
           <h2 id="mo-hinh-tieu-de" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.6rem]">
-            Một hệ thống, ba kênh song song
+            {DISTRIBUTION_MODEL_TEXT.title}
           </h2>
-          <p className="chu-deu mt-4 max-w-xl text-body leading-relaxed text-ink-soft">
-            Sản phẩm, hình ảnh thương hiệu và chính sách bán hàng được đồng bộ, để khách mua ở đâu cũng nhận cùng một trải nghiệm.
-          </p>
+          <p className="chu-deu mt-4 max-w-xl text-body leading-relaxed text-ink-soft">{DISTRIBUTION_MODEL_TEXT.lead}</p>
         </header>
         <ol className="mt-6 grid gap-3">
           {SALES_CHANNELS.map((channel, i) => (
@@ -53,7 +51,8 @@ export function DistributionModel() {
               <span className="font-display text-[1.6rem] leading-none text-deep-700 italic">{String(i + 1).padStart(2, '0')}</span>
               <span>
                 <span className="block font-medium text-deep-900">{channel.title}</span>
-                <span className="mt-1 block text-small leading-relaxed text-ink-soft">{channel.text}</span>
+                <span className="mt-0.5 block font-display text-[1.05rem] leading-snug text-deep-700 italic">{channel.tagline}</span>
+                <span className="chu-deu mt-1.5 block text-small leading-relaxed text-ink-soft">{channel.text}</span>
               </span>
             </li>
           ))}

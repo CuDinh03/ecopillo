@@ -281,15 +281,28 @@ export const AGENT_BENEFITS: readonly string[] = [
  */
 export const DISTRIBUTOR_COUNT = 50
 
-export const SALES_CHANNELS: readonly { title: string; text: string }[] = [
+/** Khối "Mô hình kinh doanh" trang Tuyển đại lý: chữ chị Phương gửi Zalo 19/11/2026 ("Sửa lại hộ c"), giữ nguyên văn */
+export const DISTRIBUTION_MODEL_TEXT = {
+  eyebrow: 'Mô hình kinh doanh',
+  title: 'Ba trụ cột – Một hệ sinh thái',
+  lead: 'Ecopillo xây dựng mô hình kinh doanh đa kênh với ba trụ cột chiến lược: bán lẻ trực tiếp, cung ứng dự án và phát triển hệ thống phân phối. Kết nối đồng bộ từ sản phẩm, dịch vụ đến mạng lưới đối tác, đưa giải pháp giấc ngủ chất lượng đến gần hơn với mọi khách hàng.',
+} as const
+
+export const SALES_CHANNELS: readonly { title: string; tagline: string; text: string }[] = [
   {
-    title: 'Mua trực tiếp',
-    text: 'Showroom bán lẻ, Facebook và các sàn thương mại điện tử: tư vấn tận nơi, chính sách thống nhất trên cả hệ thống.',
+    title: 'Bán lẻ trực tiếp',
+    tagline: 'Kết nối khách hàng – Nâng tầm trải nghiệm',
+    text: 'Phát triển hệ thống bán lẻ đa nền tảng từ showroom, website, mạng xã hội đến các sàn thương mại điện tử. Mang đến trải nghiệm mua sắm thuận tiện, tư vấn tận tâm và dịch vụ nhanh chóng trên mọi điểm chạm.',
   },
-  { title: 'Dự án và lưu trú', text: 'Giải pháp chăn ga gối đệm đồng bộ, bền bỉ cho khách sạn, nhà nghỉ, homestay và resort.' },
   {
-    title: 'Đại lý, nhà phân phối',
-    text: `Hệ thống ${DISTRIBUTOR_COUNT} nhà phân phối và các đại lý, cửa hàng trên toàn quốc, đồng bộ sản phẩm, hình ảnh và chính sách bán hàng.`,
+    title: 'Cung ứng dự án',
+    tagline: 'Giải pháp toàn diện cho ngành lưu trú',
+    text: 'Đồng hành cùng khách sạn, resort, homestay và các dự án lưu trú với giải pháp chăn ga gối đệm đồng bộ. Đảm bảo chất lượng, tính thẩm mỹ, độ bền và năng lực cung ứng theo yêu cầu của từng dự án.',
+  },
+  {
+    title: 'Hệ thống phân phối',
+    tagline: 'Cộng sinh cùng phát triển',
+    text: 'Mở rộng mạng lưới đại lý và nhà phân phối trên toàn quốc. Xây dựng hệ thống hợp tác bền vững dựa trên lợi ích song phương, với nguồn hàng ổn định, chính sách kinh doanh cạnh tranh, hỗ trợ bán hàng và đồng hành phát triển thị trường.',
   },
 ]
 
