@@ -111,6 +111,9 @@ export const SOCIAL_LINKS: readonly SocialLink[] = liveList(SOCIAL_SET.khoa, BAS
 }))
 
 /** Phim thương hiệu trên kênh YouTube Ecopillo */
+/** Câu dẫn khối phim thương hiệu (trang chủ, trang Giới thiệu); chị Phương 19/11/2026: "Xem video để hiểu hơn về chúng tôi" */
+export const BRAND_VIDEO_LEAD = 'Xem video để hiểu hơn về chúng tôi.'
+
 export const BRAND_VIDEO = {
   id: 'MLo9LwZdmVQ',
   title: 'Chăn ga gối đệm Ecopillo – Nâng niu giấc mơ xanh',

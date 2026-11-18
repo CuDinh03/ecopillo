@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { BRAND_VIDEO, CONTACT } from '../../data/brand'
+import { BRAND_VIDEO, BRAND_VIDEO_LEAD, CONTACT } from '../../data/brand'
 import type { ImageSource } from '../../data/catalog'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
@@ -35,7 +35,7 @@ export function BrandVideo() {
           <SectionHeading
             id="video-title"
             title="Một giấc ngủ được nâng niu"
-            lead="Ba phút để cảm nhận chất vải Lyocell, đường chần thêu và không gian phòng ngủ Ecopillo."
+            lead={BRAND_VIDEO_LEAD}
           />
           <YoutubeChannelLink />
         </div>

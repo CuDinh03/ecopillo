@@ -37,6 +37,7 @@ import { FEATURED_EVENT } from '../data/events'
 import { PATHS } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
+import { BRAND_VIDEO_LEAD } from '../data/brand'
 
 /**
  * Trang Giới thiệu (/gioi-thieu, giữ đường link web cũ) dạng chương sách (mẫu 1, owner chọn 16/10/2026,
@@ -75,6 +76,18 @@ const VISIT_IMAGE: ImageSource = {
   srcSet: '/images/details/hero-ed25-sm.webp 640w, /images/details/hero-ed25.webp 1200w',
   alt: 'Phòng ngủ trải bộ Eco Doris ED25',
 }
+
+/** Phần giới thiệu đầu trang (chị Phương 19/11/2026, thay "Hơn 15 năm nâng niu giấc ngủ Việt") */
+const INTRO = {
+  title: 'Hành trình kiến tạo Chốn Yên',
+  subtitle: 'Từ tâm huyết với giấc ngủ Việt đến khát vọng nâng niu hàng triệu giấc mơ.',
+  paragraphs: [
+    'Ecopillo Eternal Việt Nam ra đời với niềm tin rằng một giấc ngủ chất lượng không chỉ bắt đầu từ chiếc giường êm ái, mà còn từ sự an tâm về chất liệu, sự chỉn chu trong từng sản phẩm và tình yêu dành cho mỗi gia đình.',
+    'Theo đuổi những giá trị bền vững trong ngành chăn ga gối đệm, Ecopillo không ngừng lựa chọn, cải tiến và phát triển các sản phẩm từ chất liệu thân thiện, mang đến sự nâng niu trong từng trải nghiệm nghỉ ngơi.',
+    'Bởi chúng tôi tin rằng, mỗi gia đình đều xứng đáng có một Chốn Yên – nơi yêu thương sum vầy, cơ thể được tái tạo năng lượng và những giấc mơ được nâng niu.',
+  ],
+  signOff: 'Ecopillo – Nâng niu giấc mơ xanh',
+} as const
 
 export function AboutPage() {
   usePageMeta(
@@ -195,7 +208,8 @@ export function AboutPage() {
 
         {/* Phim thương hiệu cùng kiểu khối như các chương (trước là một dải riêng giống trang chủ) */}
         <Chapter id="phim" icon="play" eyebrow="Phim thương hiệu" title="Một giấc ngủ được nâng niu">
-          <Prose>Ba phút để cảm nhận chất vải Lyocell, đường chần thêu và không gian phòng ngủ Ecopillo.</Prose>
+          {/* Chị Phương 19/11/2026 */}
+          <Prose>{BRAND_VIDEO_LEAD}</Prose>
           <BrandVideoPlayer className="mt-6 rounded-2xl" />
           <YoutubeChannelLink />
         </Chapter>
@@ -301,12 +315,19 @@ function Cover() {
         <p className="eyebrow mt-8 flex items-center gap-2">
           <Icon name="book" size={15} className="text-deep-700" /> Câu chuyện Ecopillo
         </p>
+        {/* Chữ chị Phương gửi Zalo 19/11/2026 ("Phần giới thiệu sửa lại giúp c"), giữ nguyên văn */}
         <h1 id="page-title" className="font-display mt-4 text-[2.6rem] leading-[1.02] text-balance text-deep-900 sm:text-[3.6rem] xl:text-[3.9rem]">
-          Hơn 15 năm <span className="block">nâng niu giấc ngủ Việt</span>
+          {INTRO.title}
         </h1>
-        <p className="mt-5 max-w-md text-body leading-relaxed text-ink-soft">
-          Ecopillo Eternal Việt Nam làm chăn ga gối đệm từ chất liệu thiên nhiên, với một mong muốn giản dị: mỗi gia đình có một chốn yên để ngủ ngon.
-        </p>
+        <p className="mt-4 max-w-lg font-display text-[1.3rem] leading-snug text-deep-800 italic sm:text-[1.45rem]">{INTRO.subtitle}</p>
+        <div className="mt-5 max-w-lg space-y-3 text-body leading-relaxed text-ink-soft">
+          {INTRO.paragraphs.map((text) => (
+            <p key={text} className="chu-deu">
+              {text}
+            </p>
+          ))}
+          <p className="font-medium text-deep-900">{INTRO.signOff}</p>
+        </div>
         <div className="mt-8 flex flex-wrap gap-3">
           <a href="#muc-luc" className={buttonClass('primary', 'lg')}>
             <Icon name="book" size={18} />
