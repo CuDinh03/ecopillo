@@ -9,7 +9,9 @@ import { Container, SectionHeading } from '../ui/primitives'
 const TRUST: readonly { icon: IconName; title: string; text: string }[] = [
   // Con số thương hiệu đặt ở đây; dòng "3 kháng vượt trội" ở đầu trang đã bỏ (chị Phương 17/11/2026: "ở dưới có rồi")
   { icon: 'award', title: '15+ năm trong nghề', text: 'Hơn 15.000 khách hàng tin dùng' },
-  { icon: 'certified', title: 'ISO 9001:2015\u00a0·\u00a0TQC', text: 'Quy trình sản xuất được chứng nhận' },
+  // Chị Phương 18/11/2026: "TQC" thay bằng quy chuẩn QCVN 01:2017/BCT. Cách sau "·" là dấu cách thường để ô hẹp xuống dòng ở đó,
+  // mỗi mã giữ liền một dòng (dấu cách không ngắt bên trong mã)
+  { icon: 'certified', title: 'ISO\u00a09001:2015\u00a0· QCVN\u00a001:2017/BCT', text: 'Quy trình sản xuất được chứng nhận' },
   { icon: 'stitch', title: 'Đường may 4 mũi/cm', text: 'Chắc, phẳng, bền qua nhiều lần giặt' },
   { icon: 'ruler', title: 'May theo kích thước', text: 'Vừa khít mọi chiếc giường' },
   { icon: 'truck', title: 'Kiểm hàng khi nhận', text: 'Được trải thử lên giường trước khi trả tiền' },
