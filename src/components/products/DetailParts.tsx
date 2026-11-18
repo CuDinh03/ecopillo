@@ -5,7 +5,7 @@ import { patternRange, type Pattern, type SizeId } from '../../data/catalog'
 import { NEAR_ME_URL } from '../../data/dealers'
 import { PATHS, productsUrl } from '../../data/links'
 import { DELIVERY_POINTS, TRUST_POINTS, WARRANTY_BY_CATEGORY } from '../../data/productCommonInfo'
-import { categoryLabel, orderUrl, priceLabel, PRODUCTS, type Product } from '../../data/products'
+import { categoryLabel, hasPrice, orderUrl, priceLabel, PRODUCTS, type Product } from '../../data/products'
 import { formatRange, formatVND } from '../../lib/format'
 import { breadcrumbLd } from '../../lib/structuredData'
 import { JsonLd } from '../seo/JsonLd'
@@ -177,7 +177,8 @@ export function MobileBuyBar({ product, pattern, size, unitPrice, singleUrl, isS
   // Chưa chọn cỡ: khoảng giá của đúng phối màu đang xem (không phải của cả bộ).
   // Khổ dưới 360px không đủ chỗ cho cả khoảng, nên chỉ hiện "từ …" như thẻ sản phẩm, không cắt số.
   const range = collection && pattern ? patternRange(collection, pattern) : { min: product.min, max: product.max }
-  const price = unitPrice ? formatVND(unitPrice) : collection ? formatRange(range.min, range.max) : priceLabel(product)
+  // Chưa chọn: khoảng thấp nhất – cao nhất (owner 18/11/2026), cả sản phẩm lẻ; chưa có giá thì chữ báo giá
+  const price = unitPrice ? formatVND(unitPrice) : collection || hasPrice(product) ? formatRange(range.min, range.max) : priceLabel(product)
   const shortPrice = unitPrice || range.min === range.max ? price : `từ ${formatVND(range.min)}`
   return (
     <div className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ivory/95 px-3 pt-2.5 backdrop-blur-md lg:hidden">

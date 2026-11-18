@@ -18,7 +18,7 @@ import { relatedForProduct } from '../data/related'
 import { ExploreMore } from '../components/ui/ExploreMore'
 import { categoryLabel, hasPrice, priceLabel, productBySlug, singleOrderUrl, variantPrice, type Product } from '../data/products'
 import { usePageMeta } from '../hooks/usePageMeta'
-import { formatVND } from '../lib/format'
+import { formatRange } from '../lib/format'
 import { productMetaDescription } from '../lib/metaDescription'
 import { productLd, shareImageOf } from '../lib/structuredData'
 import { NotFoundPage } from './NotFoundPage'
@@ -67,14 +67,37 @@ function ProductDetail({ product }: { product: Product }) {
   // Bấm ảnh chính: xem toàn màn hình (C3, dùng chung với trang bộ sưu tập)
   const lightbox = useLightbox()
   const variants = product.variants
-  const [variantSize, setVariantSize] = useState(variants?.sizes[1] ?? variants?.sizes[0] ?? '')
-  const [thickness, setThickness] = useState(variants?.thicknesses[0] ?? '')
-  const variantUnitPrice = variants ? variantPrice(variants, variantSize, thickness) : undefined
-  // Sản phẩm có khoảng giá: chọn kích thước rồi đặt online
-  const [choiceId, setChoiceId] = useState(product.choices?.[0]?.id ?? null)
+  // Owner 18/11/2026: "giá thì sẽ để giá min-max. khi chọn giá ở trong thuộc tính thì sẽ hiện giá ở trên".
+  // Chưa chọn gì: giá trên cùng là khoảng thấp nhất – cao nhất; chọn đủ thì hiện đúng giá. Một độ dày duy nhất thì chọn sẵn.
+  const [variantSize, setVariantSize] = useState<string | null>(null)
+  const [thickness, setThickness] = useState<string | null>(variants?.thicknesses.length === 1 ? variants.thicknesses[0] : null)
+  const [choiceId, setChoiceId] = useState<string | null>(null)
   const choice = product.choices?.find((c) => c.id === choiceId)
   const singleUrl = variants ? singleOrderUrl(product, variantSize, thickness) : singleOrderUrl(product, choiceId)
-  const singlePrice = variantUnitPrice ?? choice?.price
+  // Giá các tổ hợp còn hợp với lựa chọn hiện tại (chưa chọn ô nào thì là mọi giá)
+  const variantPrices = (size: string | null, t: string | null): number[] =>
+    variants
+      ? variants.sizes.flatMap((sz) =>
+          variants.thicknesses.flatMap((th) => {
+            const price = (size === null || sz === size) && (t === null || th === t) ? variantPrice(variants, sz, th) : undefined
+            return price === undefined ? [] : [price]
+          }),
+        )
+      : []
+  const shownPrices = variants
+    ? variantPrices(variantSize, thickness)
+    : choice?.price !== undefined
+      ? [choice.price]
+      : choice
+        ? []
+        : (product.choices ?? []).flatMap((c) => (c.price === undefined ? [] : [c.price]))
+  const isExact = variants ? variantSize !== null && thickness !== null : choice !== undefined
+  const singlePrice = isExact && shownPrices.length === 1 ? shownPrices[0] : undefined
+  const topPrice = shownPrices.length
+    ? formatRange(Math.min(...shownPrices), Math.max(...shownPrices))
+    : hasPrice(product)
+      ? formatRange(product.min, product.max)
+      : priceLabel(product)
   const image = photos[photoIndex] ?? product.image
   const info = PRODUCT_INFO[product.slug]
   // Thông số: ô trong productInfo.ts ghi đè ô cùng tên trong products.ts
@@ -123,7 +146,7 @@ function ProductDetail({ product }: { product: Product }) {
             <p
               className={`tabular mt-5 font-display leading-none text-deep-900 ${hasPrice(product) ? 'text-[2rem]' : 'text-[1.45rem]'}`}
             >
-              {singlePrice ? formatVND(singlePrice) : priceLabel(product)}
+              {topPrice}
             </p>
             <p className="mt-2 text-sm text-ink-soft">{product.summary}</p>
 
@@ -136,23 +159,26 @@ function ProductDetail({ product }: { product: Product }) {
                     options={variants.sizes}
                     value={variantSize}
                     onChange={setVariantSize}
-                    priceOf={(size) => variantPrice(variants, size, thickness)}
+                    priceOf={(size) => variantPrices(size, thickness)}
                   />
                   <VariantGroup
                     label="Độ dày"
                     options={variants.thicknesses}
                     value={thickness}
                     onChange={setThickness}
-                    priceOf={(t) => variantPrice(variants, variantSize, t)}
+                    priceOf={(t) => variantPrices(variantSize, t)}
                   />
                 </>
               )}
-              {product.choices && choiceId && (
+              {product.choices && (
                 <VariantGroup
                   label={product.choiceLabel ?? 'Kích thước'}
                   options={product.choices.map((c) => c.label)}
-                  value={choice?.label ?? ''}
-                  priceOf={(label) => product.choices?.find((c) => c.label === label)?.price}
+                  value={choice?.label ?? null}
+                  priceOf={(label) => {
+                    const price = product.choices?.find((c) => c.label === label)?.price
+                    return price === undefined ? [] : [price]
+                  }}
                   onChange={(label) => {
                     const next = product.choices?.find((c) => c.label === label)
                     setChoiceId(next?.id ?? null)
@@ -218,10 +244,11 @@ function ProductDetail({ product }: { product: Product }) {
 interface VariantGroupProps {
   label: string
   options: readonly string[]
-  value: string
+  /** null: chưa chọn */
+  value: string | null
   onChange: (value: string) => void
-  /** Giá của từng lựa chọn (hiện trong ô); undefined = chưa có giá, ghi "Báo giá khi gọi" */
-  priceOf: (option: string) => number | undefined
+  /** Các giá có thể của lựa chọn (một giá, hoặc khoảng khi ô bên kia chưa chọn); rỗng = chưa có giá, ghi "Báo giá khi gọi" */
+  priceOf: (option: string) => readonly number[]
 }
 
 /**
@@ -232,12 +259,17 @@ function VariantGroup({ label, options, value, onChange, priceOf }: VariantGroup
   return (
     <fieldset>
       <legend className="text-sm font-medium text-deep-900">
-        {label}: <span className="font-normal text-ink-soft">{value}</span>
+        {label}
+        {value && (
+          <>
+            : <span className="font-normal text-ink-soft">{value}</span>
+          </>
+        )}
       </legend>
       <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
         {options.map((option) => {
           const active = option === value
-          const price = priceOf(option)
+          const prices = priceOf(option)
           return (
             <button
               key={option}
@@ -249,7 +281,7 @@ function VariantGroup({ label, options, value, onChange, priceOf }: VariantGroup
               }`}
             >
               <span className="text-sm font-medium text-deep-900">{option}</span>
-              <span className="tabular mt-0.5 text-meta text-ink-soft">{price !== undefined ? formatVND(price) : 'Báo giá khi gọi'}</span>
+              <span className="tabular mt-0.5 text-meta text-ink-soft">{prices.length ? formatRange(Math.min(...prices), Math.max(...prices)) : 'Báo giá khi gọi'}</span>
             </button>
           )
         })}
