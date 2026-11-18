@@ -262,40 +262,32 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
     category: 'bo-chan-ga',
     collections: ['eco-rosa', 'eco-tera', 'eco-vera', 'eco-sweet', 'eco-liora', 'eco-doris'],
   },
+  // Chị Phương 18/11/2026: trang này chỉ còn ruột chăn ("phía dưới là ruột chăn thì gồm tất cả những gì liên quan đến ruột chăn";
+  // Chăn đông Micro Fiber "là ruột chăn micro fiber"). Gối, vỏ gối sang trang Ruột gối. Link cũ giữ nguyên.
+  // Sản phẩm trong trang Ecopillo tự chọn lại ở Nội dung web (listingProducts.ts)
   '/danh-muc-san-pham/san-pham/ruot-chan-goi/': {
-    title: 'Ruột chăn gối',
-    description: 'Ruột chăn, ruột gối, vỏ gối Ecopillo: Micro Fiber, Micro Plus, tơ tằm, cao su thiên nhiên, lông vũ, bông PE. Đặt online, thanh toán khi nhận.',
+    title: 'Ruột chăn',
+    description: 'Ruột chăn Ecopillo: Micro Fiber ấm, nhẹ, giặt máy được; Micro Plus giữ nhiệt, nhẹ, không đè người. Đặt online, thanh toán khi nhận.',
+    products: ['chan-dong-micro-fiber', 'ruot-chan-micro-plus'],
+  },
+  // Chị Phương 18/11/2026: "ruột gối bao gồm tất cả ruột gối kể cả ruột gối ôm ruột gối tựa hay trẻ em". Link cũ giữ nguyên
+  '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/': {
+    title: 'Ruột gối',
+    description: 'Ruột gối Ecopillo: gối nằm từ bông PE, Micro Fiber đến lông vũ tự nhiên, gối ôm, gối tựa và vỏ gối. Đặt online, thanh toán khi nhận.',
+    category: 'goi',
+    // Ghi rõ từng sản phẩm, đúng thứ tự hiện (ruột gối bông PE đứng đầu: chị Phương, Zalo 11/11/2026)
     products: [
-      'chan-dong-micro-fiber',
-      'chan-dong-kieu-han',
-      'ruot-chan-micro-plus',
-      'chan-to-tam',
-      'chan-long-vu-tu-nhien',
+      'ruot-goi-bong-pe',
       'ruot-goi-micro-fiber',
       'ruot-goi-micro-plus',
       'ruot-goi-to-tam',
       'ruot-goi-cao-su-thien-nhien',
       'ruot-goi-long-vu-tu-nhien',
-      'ruot-goi-bong-pe',
       'ruot-goi-om',
       'ruot-goi-tua',
       'vo-goi-nam',
       'vo-goi-tre-em',
       'vo-goi-om',
-    ],
-  },
-  '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/': {
-    title: 'Ruột gối nằm cao cấp',
-    description: 'Ruột gối nằm Ecopillo, từ bông PE, Micro Fiber đến lông vũ tự nhiên. Đặt online, thanh toán khi nhận.',
-    category: 'goi',
-    // Ghi rõ từng sản phẩm: nhóm 'goi' nay có cả gối ôm, gối tựa, vỏ gối (bảng giá 2026), không phải ruột gối nằm
-    products: [
-      'ruot-goi-bong-pe',
-      'ruot-goi-micro-fiber',
-      'ruot-goi-micro-plus',
-      'ruot-goi-to-tam',
-      'ruot-goi-cao-su-thien-nhien',
-      'ruot-goi-long-vu-tu-nhien',
     ],
   },
   // Web cũ không có danh mục này: link mới, không cần 301. "Xem tất cả" của nhóm "Chăn, topper và phụ kiện khác" trang chủ

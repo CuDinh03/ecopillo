@@ -63,7 +63,7 @@ cái Ecopillo được tự sửa, hay xong một bước chuyển web, thì s�
 - Dữ liệu (chữ, giá, ảnh, liên hệ) nằm trong `src/data/`, không viết cứng trong component.
 - **Giao diện là khung, Ecopillo tự sửa dữ liệu trong WordPress** (owner 18/11/2026, đè Q1): `docs/ke-hoach-khach-tu-sua-du-lieu.md`. Đừng thêm dữ liệu cứng mới mà Ecopillo sẽ cần đổi.
   Giá, hết hàng, **mẫu mới trong bộ sưu tập có sẵn** (`mau-moi.php`), **sản phẩm lẻ mới** (`san-pham-moi.php`; danh mục Woo ↔ trang: `WOO_CATEGORY_LISTINGS` trong `links.ts`), trang khung cho link mới: sửa trong WooCommerce;
-  **bài viết mới / sửa** trong WordPress lên web ngay (`bai-viet-moi.php` → `window.__ECO_BAI__` + `bai/<tên>.json`, `src/data/livePosts.ts`, lọc lại ở `src/lib/cleanPostHtml.ts`); liên hệ, đại lý, banner, sự kiện, báo chí, cảm nhận khách, giới thiệu, khách sạn, đối tác, quà tặng, hỏi đáp, chính sách, khối giao hàng / bảo hành trên trang sản phẩm (`src/data/productCommonInfo.ts`): menu Nội dung web (23 bộ). Plugin ghi `du-lieu.js`, web ghép đè
+  **bài viết mới / sửa** trong WordPress lên web ngay (`bai-viet-moi.php` → `window.__ECO_BAI__` + `bai/<tên>.json`, `src/data/livePosts.ts`, lọc lại ở `src/lib/cleanPostHtml.ts`); liên hệ, đại lý, banner, sự kiện, báo chí, cảm nhận khách, giới thiệu, khách sạn, đối tác, quà tặng, hỏi đáp, chính sách, khối giao hàng / bảo hành trên trang sản phẩm (`src/data/productCommonInfo.ts`): ô xổ Sản phẩm (dòng 3 nhóm Đệm, Đồ ruột, Chăn: `src/data/productMenu.ts`), sản phẩm trong trang danh mục (`src/data/listingProducts.ts`): menu Nội dung web (25 bộ). Plugin ghi `du-lieu.js`, web ghép đè
   (`src/data/liveData.ts`, `src/data/liveContent.ts`); dữ liệu trong code chỉ là bản lúc dựng. Thêm bộ sửa được: khai `EditableSet` cạnh dữ liệu + thêm vào `src/data/contentFrame.ts`.
   **Dữ liệu Ecopillo không ra khỏi WordPress** (đơn, tin nhắn chỉ ở mục Đơn web + email Ecopillo): không thêm Google Sheet, GitHub hay dịch vụ ngoài nào nhận dữ liệu.
 - **Không dùng chữ "Tencel" và "60s"** ở bất cứ đâu: chữ trên web, alt ảnh, tên file ảnh, comment, tài liệu gửi khách.
@@ -108,7 +108,8 @@ pnpm lint       # đang có 4 cảnh báo cũ react-refresh, không phải lỗi
 | Chữ khối khách sạn (nhãn, giới thiệu, 4 lợi ích) dùng chung trang chủ và trang Khách sạn và dự án | `src/data/hotel.ts` |
 | Menu, chân trang, thanh liên hệ, nút lên đầu trang | `src/components/layout/` |
 | Đường link, chuyển hướng link cũ | `src/data/links.ts` (bộ định tuyến `src/App.tsx` dựng từ đó); quy tắc và bảng 221 link web cũ: `docs/giu-link-web-cu.md` |
-| Danh mục nhỏ của web cũ (đệm lò xo, ruột chăn gối…) | `LISTINGS` trong `src/data/links.ts`, trang `src/pages/CategoryPage.tsx` |
+| Danh mục nhỏ của web cũ (đệm lò xo, ruột chăn, ruột gối…) | `LISTINGS` trong `src/data/links.ts` (tên, link, sản phẩm gốc), Ecopillo chọn lại sản phẩm ở Nội dung web (`src/data/listingProducts.ts`); trang `src/pages/CategoryPage.tsx` |
+| Ô xổ "Sản phẩm" trên thanh đầu trang | `src/data/productMenu.ts` (dòng Đệm, Đồ ruột, Chăn: `BASE_MENU_ROWS`, Ecopillo sửa ở Nội dung web), `src/components/layout/ProductMenu.tsx` |
 | Hiệu ứng hiện dần, cuộn trôi (Lenis), ảnh trôi | `public/hieu-ung/` + `HIEU-UNG-GHI-CHU.md` |
 | Phần đầu trang chủ (banner "Chốn yên" từ 16/11/2026, thay ảnh Bảng EC) | `src/components/home/Hero.tsx`; chữ, link, ảnh ở `src/data/heroBanner.ts`; mẫu owner chọn và lệnh xuất ảnh: `docs/de-xuat-banner-moi-16-11.html`, `docs/de-xuat-banner-moi-16-11/xuat-anh-web.py` |
 | Khối đệm trang chủ (C3: chọn theo cách nằm) | `src/data/mattressPicker.ts`, `src/components/home/MattressPicker.tsx` |

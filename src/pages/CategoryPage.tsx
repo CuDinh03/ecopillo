@@ -4,7 +4,8 @@ import { ProductCard } from '../components/products/ProductCard'
 import { Icon } from '../components/ui/Icon'
 import { PageHero } from '../components/ui/PageHero'
 import { buttonClass, Container } from '../components/ui/primitives'
-import { LISTINGS, PATHS, productsUrl, withSlash } from '../data/links'
+import { PATHS, productsUrl, withSlash } from '../data/links'
+import { listingOf } from '../data/listingProducts'
 import { PRODUCTS } from '../data/products'
 import { LISTING_GUIDES } from '../data/listingGuides'
 import { relatedForListing } from '../data/related'
@@ -23,7 +24,8 @@ const COLORWAY_PREVIEW = 8
  */
 export function CategoryPage() {
   const { pathname } = useLocation()
-  const listing = LISTINGS[withSlash(pathname)]
+  // Sản phẩm trong trang: bản Ecopillo chọn ở Nội dung web (listingProducts.ts), chưa chọn thì như links.ts
+  const listing = listingOf(withSlash(pathname))
   usePageMeta(listing?.title ?? null, listing?.description)
   if (!listing) return <NotFoundPage />
 
@@ -32,9 +34,11 @@ export function CategoryPage() {
     (p) =>
       // Sản phẩm Ecopillo đăng mới trong Woo ở danh mục ứng với trang này (links.ts WOO_CATEGORY_LISTINGS)
       p.listings?.includes(path) ||
-      ((!listing.category || p.category === listing.category) &&
-        (!listing.products || listing.products.includes(p.slug)) &&
-        (!listing.collections || (p.collection && listing.collections.includes(p.collection.id)))),
+      // Trang có ghi danh sách sản phẩm: đúng danh sách đó (Ecopillo có thể tích sản phẩm khác nhóm, ví dụ ruột chăn ở trang gối)
+      (listing.products
+        ? listing.products.includes(p.slug)
+        : (!listing.category || p.category === listing.category) &&
+          (!listing.collections || (p.collection && listing.collections.includes(p.collection.id)))),
   )
   // Danh mục có ghi danh sách sản phẩm thì xếp đúng thứ tự đã ghi (ruột gối bông PE đứng đầu: chị Phương, Zalo 11/11/2026);
   // sản phẩm không có trong danh sách (đăng mới trong Woo) xếp cuối

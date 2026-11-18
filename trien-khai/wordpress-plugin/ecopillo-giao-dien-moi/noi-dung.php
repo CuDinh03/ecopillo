@@ -83,6 +83,13 @@ function eco_nd_clean_field($field, $value)
         case 'chon':
             $options = isset($field['luaChon']) ? (array) $field['luaChon'] : array();
             return in_array($value, $options, true) ? $value : null;
+        case 'chon-nhieu':
+            // Giữ thứ tự luaChon, chỉ nhận giá trị có trong danh sách
+            $options = isset($field['luaChon']) ? array_values((array) $field['luaChon']) : array();
+            $picked = array_map('strval', (array) $value);
+            return array_values(array_filter($options, function ($option) use ($picked) {
+                return in_array($option, $picked, true);
+            }));
         case 'gio':
             return is_string($value) && preg_match('/^([01]\d|2[0-3]):[0-5]\d$/', $value) ? $value : null;
         case 'ngay-nghi':
@@ -173,7 +180,7 @@ function eco_nd_clean_row($set, $input, &$errors)
                 return null;
             }
             // Ô không bắt buộc để trống: ghi rỗng để web bỏ ô đó
-            $row[$field['khoa']] = in_array($field['kieu'], array('ngay-nghi', 'ds-anh', 'doan-nhieu', 'ds-dong', 'ds-cap'), true) ? array() : '';
+            $row[$field['khoa']] = in_array($field['kieu'], array('ngay-nghi', 'ds-anh', 'doan-nhieu', 'ds-dong', 'ds-cap', 'chon-nhieu'), true) ? array() : '';
             continue;
         }
         $row[$field['khoa']] = $value;

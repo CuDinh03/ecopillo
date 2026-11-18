@@ -25,6 +25,8 @@ export type FieldKind =
   | 'anh'
   /** Chọn một trong `luaChon` */
   | 'chon'
+  /** Tích nhiều ô trong `luaChon` (mảng giá trị, theo thứ tự `luaChon`) */
+  | 'chon-nhieu'
   /** Giờ "08:30" */
   | 'gio'
   /** Ngày nghỉ trong tuần: mảng số 0 (Chủ nhật) … 6 */
@@ -46,6 +48,8 @@ export interface EditableField {
   /** Một dòng gợi ý dưới ô */
   goiY?: string
   luaChon?: readonly string[]
+  /** Chữ hiện cho từng lựa chọn (cùng thứ tự `luaChon`); không có thì hiện chính giá trị */
+  nhanLuaChon?: readonly string[]
   /** ds-cap: tên hai khoá của mỗi cặp và nhãn của chúng */
   cap?: readonly [string, string]
   nhanCap?: readonly [string, string]
@@ -95,6 +99,12 @@ export function cleanField(field: EditableField, value: unknown): unknown {
       return typeof value === 'number' && Number.isFinite(value) ? value : undefined
     case 'chon':
       return typeof value === 'string' && field.luaChon?.includes(value) ? value : undefined
+    case 'chon-nhieu': {
+      if (!Array.isArray(value)) return undefined
+      const picked = new Set(value.filter((v): v is string => typeof v === 'string'))
+      const items = (field.luaChon ?? []).filter((option) => picked.has(option))
+      return items.length ? items : undefined
+    }
     case 'gio':
       return typeof value === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(value) ? value : undefined
     case 'ngay-nghi':

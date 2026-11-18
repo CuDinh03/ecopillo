@@ -9,7 +9,9 @@ import { HOTEL_SET } from './hotel'
 import type { EditableSet } from './liveContent'
 import { POLICY_HEAD_SET, POLICY_SECTION_SETS } from './policies'
 import { PRESS_SET } from './press'
+import { LISTING_PRODUCTS_SET } from './listingProducts'
 import { PRODUCT_COMMON_SET } from './productCommonInfo'
+import { PRODUCT_MENU_SET } from './productMenu'
 
 /**
  * Mọi bộ dữ liệu Ecopillo tự sửa trong WordPress (liveContent.ts), theo thứ tự hiện trên menu "Nội dung web".
@@ -36,6 +38,8 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   POLICY_HEAD_SET,
   ...POLICY_SECTION_SETS,
   PRODUCT_COMMON_SET,
+  PRODUCT_MENU_SET,
+  LISTING_PRODUCTS_SET,
 ]
 
 export const buildContentFrame = (): { boDuLieu: readonly EditableSet[] } => ({ boDuLieu: CONTENT_SETS })

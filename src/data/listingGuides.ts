@@ -58,13 +58,12 @@ export const LISTING_GUIDES: Readonly<Record<string, ListingGuide>> = {
       { title: 'Gọn khi giao', text: 'Đệm nguyên tấm, hút chân không cuộn tròn, mở ra là nở đủ dày.' },
     ],
   },
+  // Trang chỉ còn ruột chăn (chị Phương 18/11/2026); chữ lấy từ trang sản phẩm Micro Fiber, Micro Plus
   '/danh-muc-san-pham/san-pham/ruot-chan-goi/': {
-    title: 'Chọn ruột chăn, ruột gối',
+    title: 'Chọn ruột chăn',
     points: [
-      { title: 'Gối êm, mềm', text: 'Micro Fiber hoặc lông vũ tự nhiên: bồng, nhẹ, chuẩn khách sạn.' },
-      { title: 'Gối giữ phom', text: 'Micro Plus hoặc cao su thiên nhiên: đỡ cổ, không xẹp, hợp người hay mỏi vai gáy.' },
-      { title: 'Chăn đông', text: 'Micro Fiber (nhẹ, ấm, giặt máy được) hoặc lông vũ tự nhiên (ấm sâu, siêu nhẹ).' },
-      { title: 'Chăn nhẹ quanh năm', text: 'Chăn tơ tằm: rủ mềm, điều hoà nhiệt, hợp người dễ ra mồ hôi.' },
+      { title: 'Micro Fiber', text: 'Ấm, nhẹ, giặt máy được.' },
+      { title: 'Micro Plus', text: 'Ấm nhanh mà không cần chăn dày nặng; chần điểm tròn nên sợi không dồn, không vón cục.' },
     ],
   },
   '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/': {

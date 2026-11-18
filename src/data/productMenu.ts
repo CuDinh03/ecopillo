@@ -8,6 +8,8 @@ import {
 } from './catalog'
 import { HOTEL_PHOTOS } from './hotel'
 import { collectionPathById, LISTINGS, PATHS, singleProductPath } from './links'
+import { listingOf } from './listingProducts'
+import { liveList, type EditableField, type EditableSet } from './liveContent'
 import { hasPrice, PRICE_ON_CALL_LABEL, PRODUCTS, productBySlug, type Product } from './products'
 
 /**
@@ -61,17 +63,16 @@ const productOf = (slug: string): Product => {
 
 /** Sản phẩm của một trang danh mục web cũ (LISTINGS): theo danh sách riêng, hoặc cả nhóm */
 const listingProducts = (path: string): readonly Product[] => {
-  const listing = LISTINGS[path]
+  const listing = listingOf(path)
   if (!listing) throw new Error(`productMenu: thiếu danh mục ${path}`)
   // Sản phẩm Ecopillo đăng mới trong Woo ở danh mục này (giai đoạn 4b)
   const added = PRODUCTS.filter((p) => p.listings?.includes(path))
-  if (listing.products) return [...listing.products.map(productOf), ...added]
+  // Bỏ qua khoá không còn sản phẩm (dữ liệu sửa trong WordPress không được làm hỏng menu)
+  if (listing.products) return [...listing.products.flatMap((slug) => productBySlug(slug) ?? []), ...added.filter((p) => !listing.products?.includes(p.slug))]
   if (listing.collections) return listing.collections.map(productOf)
   return PRODUCTS.filter((p) => p.category === listing.category)
 }
 
-/** Chăn Ecopillo đăng mới trong Woo: thêm dòng cuối nhóm Chăn đông và chăn hè */
-const newChanRows = (): MenuRow[] => PRODUCTS.filter((p) => p.listings && p.category === 'chan').map((p) => productRow(p.slug))
 
 /** Giá của dòng tính trên sản phẩm đã có giá; cả dòng chưa có giá thì ghi chữ thay số */
 const rowOf = (label: string, to: string, products: readonly Product[]): MenuRow => {
@@ -82,9 +83,6 @@ const rowOf = (label: string, to: string, products: readonly Product[]): MenuRow
   // Có sản phẩm chưa có giá trong dòng thì cũng ghi "từ …"
   return { label, to, min, isFromPrice: max > min || priced.length < products.length }
 }
-
-const listingRow = (path: string, label = LISTINGS[path]?.title ?? ''): MenuRow =>
-  rowOf(label, path, listingProducts(path))
 
 const productRow = (slug: string, label?: string): MenuRow => {
   const p = productOf(slug)
@@ -144,22 +142,125 @@ const GA_PHU_ORDER: readonly string[] = [
 /** Bộ có tuỳ chọn ga chun chần (Rosa, Tera, Vera; mục 28) */
 const GA_CHUN_CHAN_ORDER: readonly string[] = ['eco-rosa', 'eco-tera', 'eco-vera']
 
+
+/* ---------------------------------------------------------------- Dòng Ecopillo tự sửa (Nội dung web) */
+
+/**
+ * Ba nhóm Ecopillo tự sửa dòng (owner 18/11/2026: "cho tự sửa", sau góp ý chị Phương chuyển ruột chăn khỏi nhóm Chăn).
+ * Bộ chăn ga (giá ga chun chần tính riêng) và Sản phẩm khách sạn vẫn trong code.
+ */
+const EDITABLE_GROUPS = [
+  { id: 'dem', title: 'Đệm Ecopillo' },
+  { id: 'do-ruot', title: 'Đồ ruột' },
+  { id: 'chan', title: 'Chăn đông và chăn hè' },
+] as const
+
+type EditableGroupId = (typeof EDITABLE_GROUPS)[number]['id']
+
+/** Một dòng như lưu trong WordPress: trang là "danh-muc:<link>" hoặc "san-pham:<khoá>" */
+interface MenuRowInput {
+  nhom: EditableGroupId
+  ten: string
+  trang: string
+}
+
+const listingTarget = (path: string): string => `danh-muc:${path}`
+const productTarget = (slug: string): string => `san-pham:${slug}`
+
+/** Trang mở khi bấm: mọi trang danh mục nhỏ, mọi sản phẩm lẻ (cả chăn hè Lyocell) */
+const TARGETS: readonly { value: string; label: string }[] = [
+  ...Object.entries(LISTINGS).map(([path, l]) => ({ value: listingTarget(path), label: `Trang danh mục: ${l.title}` })),
+  ...PRODUCTS.filter((p) => p.category !== 'bo-chan-ga').map((p) => ({ value: productTarget(p.slug), label: `Sản phẩm: ${p.name}` })),
+]
+
+const MENU_ROW_FIELDS: readonly EditableField[] = [
+  {
+    khoa: 'nhom',
+    nhan: 'Nhóm',
+    kieu: 'chon',
+    batBuoc: true,
+    luaChon: EDITABLE_GROUPS.map((g) => g.id),
+    nhanLuaChon: EDITABLE_GROUPS.map((g) => g.title),
+  },
+  { khoa: 'ten', nhan: 'Chữ hiện trên menu', kieu: 'chu', batBuoc: true },
+  {
+    khoa: 'trang',
+    nhan: 'Bấm vào thì mở',
+    kieu: 'chon',
+    batBuoc: true,
+    luaChon: TARGETS.map((t) => t.value),
+    nhanLuaChon: TARGETS.map((t) => t.label),
+    goiY: 'Giá "từ …" tự tính theo sản phẩm của trang đó. Sản phẩm trong trang danh mục chọn ở mục "Sản phẩm trong trang danh mục".',
+  },
+]
+
+const DEM_LISTING = (slug: string, ten: string): MenuRowInput => ({ nhom: 'dem', ten, trang: listingTarget(`/danh-muc-san-pham/san-pham/${slug}/`) })
+const ROW = (nhom: EditableGroupId, slug: string, ten: string): MenuRowInput => ({ nhom, ten, trang: productTarget(slug) })
+
+const BASE_MENU_ROWS: readonly MenuRowInput[] = [
+  DEM_LISTING('dem-lo-xo', 'Đệm lò xo'),
+  DEM_LISTING('dem-cao-su', 'Đệm cao su'),
+  DEM_LISTING('dem-bong-ep', 'Đệm bông ép'),
+  DEM_LISTING('dem-foam', 'Đệm foam'),
+  ROW('dem', 'topper-micro-fiber', 'Topper'),
+  ROW('dem', 'divan-ecopillo', 'Divan'),
+  ROW('dem', 'bao-ve-dem-chong-tham', 'Bảo vệ đệm'),
+  // Chị Phương 18/11/2026: trên là ruột gối (cả gối ôm, gối tựa, trẻ em), dưới là ruột chăn
+  { nhom: 'do-ruot', ten: 'Ruột gối', trang: listingTarget('/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/') },
+  { nhom: 'do-ruot', ten: 'Ruột chăn', trang: listingTarget(RUOT_PATH) },
+  // Chị Phương 18/11/2026: "mục này chỉ có những cái c đánh dấu" (Chăn đông Micro Fiber, Ruột chăn Micro Plus sang Ruột chăn)
+  ROW('chan', 'chan-dong-kieu-han', 'Chăn đông kiểu Hàn cao cấp'),
+  ROW('chan', 'chan-to-tam', 'Chăn tơ tằm'),
+  ROW('chan', 'chan-long-vu-tu-nhien', 'Chăn lông vũ tự nhiên'),
+  ROW('chan', 'chan-he-lyocell', 'Chăn hè Lyocell'),
+  // Chị Phương 11/11/2026: "thiếu chăn Ecool"
+  ROW('chan', 'chan-he-e-cool', 'Chăn hè E-Cool'),
+]
+
+export const PRODUCT_MENU_SET: EditableSet = {
+  khoa: 'menu-san-pham',
+  nhom: 'Sản phẩm',
+  ten: 'Ô xổ "Sản phẩm" trên thanh đầu trang',
+  moTa:
+    'Các dòng của ba nhóm Đệm Ecopillo, Đồ ruột, Chăn đông và chăn hè (cả trên điện thoại). Đổi chữ, đổi trang mở khi bấm, chuyển dòng sang nhóm khác, thêm, xoá, đổi thứ tự. ' +
+    'Chăn đăng mới trong WooCommerce tự thêm cuối nhóm Chăn. Nhóm Bộ chăn ga và Sản phẩm khách sạn không sửa ở đây.',
+  kieu: 'nhieu',
+  goc: BASE_MENU_ROWS,
+  truong: MENU_ROW_FIELDS,
+  tieuDeDong: 'ten',
+}
+
+// Dòng mẫu để trống mọi ô: dòng lưu thiếu hoặc sai ô bắt buộc (nhóm lạ, trang trống) thì bị bỏ, không rơi vào nhóm nào
+const EMPTY_ROW = { nhom: '', ten: '', trang: '' } as unknown as MenuRowInput
+const MENU_ROWS = liveList<MenuRowInput>(PRODUCT_MENU_SET.khoa, BASE_MENU_ROWS, MENU_ROW_FIELDS, () => EMPTY_ROW)
+
+/** Một dòng đã lưu → dòng menu; trang không còn (sản phẩm đã bỏ) thì bỏ dòng, không làm hỏng menu */
+const menuRowOf = (input: MenuRowInput): MenuRow | undefined => {
+  const [kind, key] = [input.trang.slice(0, input.trang.indexOf(':')), input.trang.slice(input.trang.indexOf(':') + 1)]
+  if (kind === 'danh-muc' && LISTINGS[key]) {
+    const products = listingProducts(key)
+    return products.length ? rowOf(input.ten, key, products) : undefined
+  }
+  if (kind === 'san-pham' && productBySlug(key)) return productRow(key, input.ten)
+  return undefined
+}
+
+/** Chăn Ecopillo đăng mới trong Woo, chưa có dòng nào trỏ tới: thêm cuối nhóm Chăn đông và chăn hè */
+const newChanRows = (rows: readonly MenuRowInput[]): MenuRow[] =>
+  PRODUCTS.filter((p) => p.listings && p.category === 'chan' && !rows.some((r) => r.trang === productTarget(p.slug))).map((p) => productRow(p.slug))
+
+const editableRows = (id: EditableGroupId): MenuRow[] => {
+  const rows = MENU_ROWS.filter((r) => r.nhom === id).flatMap((r) => menuRowOf(r) ?? [])
+  return id === 'chan' ? [...rows, ...newChanRows(MENU_ROWS)] : rows
+}
+
 export const PRODUCT_MENU: readonly MenuGroup[] = [
   group({
     id: 'dem',
     title: 'Đệm Ecopillo',
     to: DEM_PATH,
     image: productImage('dem-lo-xo-tui-cao-cap-eco-luxe-2', 'Đệm Ecopillo'),
-    rows: [
-      listingRow('/danh-muc-san-pham/san-pham/dem-lo-xo/'),
-      listingRow('/danh-muc-san-pham/san-pham/dem-cao-su/'),
-      listingRow('/danh-muc-san-pham/san-pham/dem-bong-ep/'),
-      listingRow('/danh-muc-san-pham/san-pham/dem-foam/'),
-      productRow('topper-micro-fiber', 'Topper'),
-      // [XÁC NHẬN Divan / Bảo vệ đệm giữ trong Đệm]
-      productRow('divan-ecopillo', 'Divan'),
-      productRow('bao-ve-dem-chong-tham', 'Bảo vệ đệm'),
-    ],
+    rows: editableRows('dem'),
   }),
   group({
     id: 'bo-chan-ga',
@@ -188,29 +289,17 @@ export const PRODUCT_MENU: readonly MenuGroup[] = [
   group({
     id: 'do-ruot',
     title: 'Đồ ruột',
-    to: RUOT_PATH,
+    // Không còn trang chung cho cả nhóm (Ruột chăn gối nay chỉ là ruột chăn): tiêu đề nhóm mở trang của dòng đầu
+    to: editableRows('do-ruot')[0]?.to ?? RUOT_PATH,
     image: productImage('ruot-goi-micro-plus', 'Đồ ruột Ecopillo'),
-    rows: [
-      listingRow('/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/', 'Ruột gối nằm'),
-      listingRow(RUOT_PATH, 'Ruột chăn gối'),
-    ],
+    rows: editableRows('do-ruot'),
   }),
   group({
     id: 'chan',
     title: 'Chăn đông và chăn hè',
     to: CHAN_HE_PATH,
     image: patternImage('ER09', 'Chăn đông và chăn hè'),
-    rows: [
-      productRow('chan-dong-micro-fiber'),
-      productRow('chan-dong-kieu-han'),
-      productRow('ruot-chan-micro-plus'),
-      productRow('chan-to-tam'),
-      productRow('chan-long-vu-tu-nhien'),
-      collectionRow('chan-he-lyocell'),
-      // Chị Phương 11/11/2026: "thiếu chăn Ecool"
-      productRow('chan-he-e-cool', 'Chăn hè E-Cool'),
-      ...newChanRows(),
-    ],
+    rows: editableRows('chan'),
   }),
   group({
     id: 'khach-san',
@@ -227,7 +316,7 @@ export const PRODUCT_MENU: readonly MenuGroup[] = [
       },
     ],
   }),
-]
+].filter((g) => g.rows.length > 0 || (g.sections?.length ?? 0) > 0)
 
 /** Dòng cuối ô xổ */
 export const PRODUCT_MENU_ALL = { label: 'Xem tất cả sản phẩm', to: PATHS.products } as const
