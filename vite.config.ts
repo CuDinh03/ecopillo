@@ -18,7 +18,8 @@ function previewHtml(previewUrl: string): Plugin {
       return html
         .replace('<meta charset="UTF-8" />', '<meta charset="UTF-8" />\n    <meta name="robots" content="noindex, nofollow" />')
         .replace('content="https://ecopillo.com.vn/"', `content="${url}/"`)
-        .replace('content="https://ecopillo.com.vn/og-image.jpg"', `content="${url}/og-image.jpg"`)
+        // Ảnh chia sẻ chung có ?v=… (đổi ảnh thì tăng để Zalo, Facebook lấy lại): đổi cả đường dẫn lẫn đuôi
+        .replace(/content="https:\/\/ecopillo\.com\.vn\/og-image\.jpg([^"]*)"/, `content="${url}/og-image.jpg$1"`)
     },
   }
 }
