@@ -130,8 +130,21 @@ function ProductDetail({ product }: { product: Product }) {
             <div className="mt-8 space-y-6">
               {variants && (
                 <>
-                  <VariantGroup label="Kích thước" options={variants.sizes} value={variantSize} onChange={setVariantSize} />
-                  <VariantGroup label="Độ dày" options={variants.thicknesses} value={thickness} onChange={setThickness} />
+                  {/* Giá trong từng ô: ô kích thước theo độ dày đang chọn, ô độ dày theo kích thước đang chọn */}
+                  <VariantGroup
+                    label="Kích thước"
+                    options={variants.sizes}
+                    value={variantSize}
+                    onChange={setVariantSize}
+                    priceOf={(size) => variantPrice(variants, size, thickness)}
+                  />
+                  <VariantGroup
+                    label="Độ dày"
+                    options={variants.thicknesses}
+                    value={thickness}
+                    onChange={setThickness}
+                    priceOf={(t) => variantPrice(variants, variantSize, t)}
+                  />
                 </>
               )}
               {product.choices && choiceId && (
@@ -139,6 +152,7 @@ function ProductDetail({ product }: { product: Product }) {
                   label={product.choiceLabel ?? 'Kích thước'}
                   options={product.choices.map((c) => c.label)}
                   value={choice?.label ?? ''}
+                  priceOf={(label) => product.choices?.find((c) => c.label === label)?.price}
                   onChange={(label) => {
                     const next = product.choices?.find((c) => c.label === label)
                     setChoiceId(next?.id ?? null)
@@ -206,28 +220,39 @@ interface VariantGroupProps {
   options: readonly string[]
   value: string
   onChange: (value: string) => void
+  /** Giá của từng lựa chọn (hiện trong ô); undefined = chưa có giá, ghi "Báo giá khi gọi" */
+  priceOf: (option: string) => number | undefined
 }
 
-function VariantGroup({ label, options, value, onChange }: VariantGroupProps) {
+/**
+ * Ô chọn kích thước, độ dày, mẫu: mỗi ô ghi giá của lựa chọn đó (owner 18/11/2026: "cho giá hiện ở ô kích thước của
+ * từng sản phẩm"), cùng kiểu ô kích thước trang bộ sưu tập (ChapterBuy) và bước đặt hàng.
+ */
+function VariantGroup({ label, options, value, onChange, priceOf }: VariantGroupProps) {
   return (
     <fieldset>
       <legend className="text-sm font-medium text-deep-900">
         {label}: <span className="font-normal text-ink-soft">{value}</span>
       </legend>
-      <div className="mt-3 flex flex-wrap gap-2">
-        {options.map((option) => (
-          <button
-            key={option}
-            type="button"
-            aria-pressed={option === value}
-            onClick={() => onChange(option)}
-            className={`h-10 rounded-full px-4 text-sm transition ${
-              option === value ? 'bg-deep-800 text-ivory' : 'bg-ivory text-deep-900 ring-1 ring-cream-200 hover:ring-mist-400'
-            }`}
-          >
-            {option}
-          </button>
-        ))}
+      <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+        {options.map((option) => {
+          const active = option === value
+          const price = priceOf(option)
+          return (
+            <button
+              key={option}
+              type="button"
+              aria-pressed={active}
+              onClick={() => onChange(option)}
+              className={`flex min-w-0 flex-col items-start rounded-2xl px-4 py-3 text-left transition ${
+                active ? 'bg-mist-50 ring-2 ring-deep-800' : 'bg-ivory ring-1 ring-cream-200 hover:ring-deep-700'
+              }`}
+            >
+              <span className="text-sm font-medium text-deep-900">{option}</span>
+              <span className="tabular mt-0.5 text-meta text-ink-soft">{price !== undefined ? formatVND(price) : 'Báo giá khi gọi'}</span>
+            </button>
+          )
+        })}
       </div>
     </fieldset>
   )
