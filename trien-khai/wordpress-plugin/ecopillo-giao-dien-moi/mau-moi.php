@@ -195,13 +195,16 @@ function eco_mm_shell($html, $slug, $page)
     status_header(200);
     nocache_headers();
     header('Content-Type: text/html; charset=UTF-8');
-    $url = home_url('/san-pham/' . $slug . '/');
+    // Trang bài viết mới (bai-viet-moi.php) ghi sẵn `url`; mẫu mới, sản phẩm mới nằm dưới /san-pham/
+    $url = home_url(isset($page['url']) ? (string) $page['url'] : '/san-pham/' . $slug . '/');
     $title = esc_html($page['tieuDe'] . ' · Ecopillo');
     $html = preg_replace('#<title>[^<]*</title>#', '<title>' . $title . '</title>', $html, 1);
     $html = preg_replace('#(<link rel="canonical" href=")[^"]*(")#', '${1}' . esc_url($url) . '${2}', $html);
     $html = preg_replace('#(<meta property="og:url" content=")[^"]*(")#', '${1}' . esc_url($url) . '${2}', $html);
     $html = preg_replace('#(<meta property="og:title" content=")[^"]*(")#', '${1}' . esc_attr($page['tieuDe'] . ' · Ecopillo') . '${2}', $html);
-    $html = preg_replace('#(<meta property="og:image" content=")[^"]*(")#', '${1}' . esc_url($page['anh']) . '${2}', $html);
+    if (!empty($page['anh'])) {
+        $html = preg_replace('#(<meta property="og:image" content=")[^"]*(")#', '${1}' . esc_url($page['anh']) . '${2}', $html);
+    }
     $html = preg_replace('#<script type="application/ld\+json">.*?</script>#s', '', $html);
     // Thân dựng sẵn nằm trong #root, ngay trước thẻ script hiệu ứng: bỏ để trình duyệt vẽ mẫu mới (main.tsx)
     $open = strpos($html, '<div id="root"');

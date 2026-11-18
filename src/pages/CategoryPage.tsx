@@ -27,15 +27,20 @@ export function CategoryPage() {
   usePageMeta(listing?.title ?? null, listing?.description)
   if (!listing) return <NotFoundPage />
 
+  const path = withSlash(pathname)
   const matched = PRODUCTS.filter(
     (p) =>
-      (!listing.category || p.category === listing.category) &&
-      (!listing.products || listing.products.includes(p.slug)) &&
-      (!listing.collections || (p.collection && listing.collections.includes(p.collection.id))),
+      // Sản phẩm Ecopillo đăng mới trong Woo ở danh mục ứng với trang này (links.ts WOO_CATEGORY_LISTINGS)
+      p.listings?.includes(path) ||
+      ((!listing.category || p.category === listing.category) &&
+        (!listing.products || listing.products.includes(p.slug)) &&
+        (!listing.collections || (p.collection && listing.collections.includes(p.collection.id)))),
   )
-  // Danh mục có ghi danh sách sản phẩm thì xếp đúng thứ tự đã ghi (ruột gối bông PE đứng đầu: chị Phương, Zalo 11/11/2026)
+  // Danh mục có ghi danh sách sản phẩm thì xếp đúng thứ tự đã ghi (ruột gối bông PE đứng đầu: chị Phương, Zalo 11/11/2026);
+  // sản phẩm không có trong danh sách (đăng mới trong Woo) xếp cuối
   const order = listing.products
-  const products = order ? [...matched].sort((a, b) => order.indexOf(a.slug) - order.indexOf(b.slug)) : matched
+  const rank = (slug: string) => (order?.includes(slug) ? order.indexOf(slug) : Number.MAX_SAFE_INTEGER)
+  const products = order ? [...matched].sort((a, b) => rank(a.slug) - rank(b.slug)) : matched
   const colorways = listing.collections ? COLORWAYS.filter((c) => listing.collections?.includes(c.collection.id)) : []
   const moreUrl = productsUrl(listing.category ? { 'danh-muc': listing.category } : {})
   const guide = LISTING_GUIDES[withSlash(pathname)]

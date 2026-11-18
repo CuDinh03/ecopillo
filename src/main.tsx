@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import { PAGE_LOADERS } from './routes'
 import { liveDiffers } from './data/liveData'
+import { LIVE_POSTS } from './data/livePosts'
 
 const root = document.getElementById('root')!
 const app = (
@@ -22,7 +23,9 @@ if (root.hasChildNodes()) {
   const ready = page && page in PAGE_LOADERS ? PAGE_LOADERS[page]() : Promise.resolve()
   // Ecopillo vừa sửa giá / hết hàng trong WooCommerce (liveData.ts): HTML dựng sẵn mang giá cũ, gắn vào sẽ lệch chữ.
   // Vẽ lại một lần (gói trang đã về nên không chớp trắng); bố cục giữ nguyên, chỉ số giá đổi.
-  void ready.then(() => (liveDiffers() ? createRoot(root).render(app) : hydrateRoot(root, app)))
+  // Bài viết Ecopillo đăng mới / sửa trong WordPress (livePosts.ts): trang Tin tức, trang bài viết dựng sẵn cũng lệch, vẽ lại
+  const postsDiffer = LIVE_POSTS.length > 0 && (page === 'BlogPage' || page === 'ArticlePage')
+  void ready.then(() => (liveDiffers() || postsDiffer ? createRoot(root).render(app) : hydrateRoot(root, app)))
 } else {
   createRoot(root).render(app)
 }

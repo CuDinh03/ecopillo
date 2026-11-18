@@ -1,5 +1,7 @@
 import { lazy, Suspense, type ComponentType, type MouseEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { livePostBodyUrl } from '../../data/livePosts'
+import { cleanPostHtml } from '../../lib/cleanPostHtml'
 import { scrollToElement } from '../../lib/scroll'
 
 /**
@@ -14,21 +16,47 @@ const BODIES = import.meta.glob<{ html: string }>('../../data/bai-viet-wp/bai/*.
 
 const cache = new Map<string, ComponentType>()
 
-function bodyOf(slug: string): ComponentType {
-  const cached = cache.get(slug)
+/** Không nạp được thân bài Ecopillo vừa đăng (mạng chập chờn, plugin chưa ghi xong) */
+function BodyError() {
+  return (
+    <p className="mt-8 text-ink-soft">
+      Chưa tải được nội dung bài. Quý khách tải lại trang giúp Ecopillo.
+    </p>
+  )
+}
+
+/** Thân bài Ecopillo đăng mới / sửa trong WordPress sau lần dựng: file plugin ghi, lọc lại trên trình duyệt (cleanPostHtml.ts) */
+async function loadLive(slug: string, title: string): Promise<{ default: ComponentType }> {
+  try {
+    const response = await fetch(livePostBodyUrl(slug), { cache: 'no-cache' })
+    const data: unknown = response.ok ? await response.json() : null
+    const raw = data && typeof data === 'object' ? (data as { html?: unknown }).html : undefined
+    if (typeof raw !== 'string') return { default: BodyError }
+    const html = cleanPostHtml(raw, slug, title)
+    return { default: () => <div className="bai-wp" dangerouslySetInnerHTML={{ __html: html }} /> }
+  } catch {
+    return { default: BodyError }
+  }
+}
+
+function bodyOf(slug: string, live: { title: string } | undefined): ComponentType {
+  const key = live ? `live:${slug}` : slug
+  const cached = cache.get(key)
   if (cached) return cached
   const load = BODIES[`../../data/bai-viet-wp/bai/${slug}.json`]
   const Body = lazy(async () => {
+    if (live) return loadLive(slug, live.title)
     const { html } = load ? await load() : { html: '' }
     return { default: () => <div className="bai-wp" dangerouslySetInnerHTML={{ __html: html }} /> }
   })
-  cache.set(slug, Body)
+  cache.set(key, Body)
   return Body
 }
 
-export function WordPressBody({ slug }: { slug: string }) {
+/** `live`: bài Ecopillo đăng mới / sửa trong WordPress sau lần dựng (livePosts.ts) */
+export function WordPressBody({ slug, live }: { slug: string; live?: { title: string } }) {
   const navigate = useNavigate()
-  const Body = bodyOf(slug)
+  const Body = bodyOf(slug, live)
 
   // Link trong thân bài là thẻ <a> thường: link trong web thì chuyển trang không tải lại, "#mục" thì cuộn mềm (Lenis)
   const onClick = (event: MouseEvent<HTMLDivElement>) => {

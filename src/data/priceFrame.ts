@@ -1,5 +1,6 @@
 import { COLLECTIONS, SIZES, sizeById } from './catalog'
-import { collectionPath, HOST_REDIRECTS, patternPath, singleProductPath, withSlash } from './links'
+import { collectionPath, HOST_REDIRECTS, LISTINGS, patternPath, singleProductPath, withSlash, WOO_CATEGORY_LISTINGS } from './links'
+import { ALL_POSTS } from './allPosts'
 import { PRODUCTS } from './products'
 
 /**
@@ -47,10 +48,28 @@ export interface FrameCollection {
   maDaCo: string[]
 }
 
+/**
+ * Danh mục Woo nhận sản phẩm lẻ mới (giai đoạn 4b, plugin san-pham-moi.php): `trang` là trang danh mục web mới,
+ * `khung` là trang một sản phẩm lẻ có sẵn dùng làm khung cho trang sản phẩm mới.
+ */
+export interface FrameCategory {
+  woo: string
+  trang: string
+  khung: string
+}
+
 export interface PriceFrame {
   mau: FramePattern[]
   sanPham: FrameProduct[]
   boSuuTap: FrameCollection[]
+  danhMuc: FrameCategory[]
+  /**
+   * Bài viết lúc dựng (plugin bai-viet-moi.php): `baiViet` tên bài WordPress → ngày sửa (bài sửa sau ngày này là bài đã sửa),
+   * `baiTrongCode` bài viết trong code (WordPress không ghi đè), `khungBai` trang một bài có sẵn làm khung cho bài mới.
+   */
+  baiViet: Record<string, string>
+  baiTrongCode: string[]
+  khungBai: string
   /** Tên sản phẩm Woo của mọi link cũ /san-pham/… đã 301 (sản phẩm gộp, đổi tên): không bao giờ coi là mẫu mới */
   slugCu: string[]
 }
@@ -110,5 +129,17 @@ export function buildPriceFrame(): PriceFrame {
   const slugCu = Object.keys(HOST_REDIRECTS)
     .filter((from) => from.startsWith('/san-pham/'))
     .map(slugOf)
-  return { mau, sanPham, boSuuTap, slugCu }
+  // Khung trang sản phẩm mới: sản phẩm lẻ đầu tiên có trang riêng trong danh mục đó (mọi trang sản phẩm lẻ cùng bố cục)
+  const fallback = singleProductPath(PRODUCTS.find((p) => !p.collection)?.slug ?? '')
+  const danhMuc: FrameCategory[] = Object.entries(WOO_CATEGORY_LISTINGS).map(([woo, trang]) => {
+    const listing = LISTINGS[trang]
+    const single = (slug: string) => PRODUCTS.some((p) => p.slug === slug && !p.collection)
+    const first = listing?.products?.find(single) ?? PRODUCTS.find((p) => !p.collection && p.category === listing?.category)?.slug
+    return { woo, trang, khung: first ? singleProductPath(first) : fallback }
+  })
+  const wordpress = ALL_POSTS.filter((p) => p.wp)
+  const baiViet = Object.fromEntries(wordpress.map((p) => [p.slug, p.wp?.modified ?? '']))
+  const baiTrongCode = ALL_POSTS.filter((p) => !p.wp).map((p) => p.slug)
+  const khungBai = wordpress[0] ? `/${wordpress[0].slug}/` : ''
+  return { mau, sanPham, boSuuTap, danhMuc, baiViet, baiTrongCode, khungBai, slugCu }
 }

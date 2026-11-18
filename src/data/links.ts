@@ -1,5 +1,5 @@
 import type { Collection, Pattern } from './catalog'
-import { liveNewPatternBySlug } from './liveData'
+import { liveNewPatternBySlug, liveNewProductBySlug } from './liveData'
 
 /**
  * Mọi đường link của web nằm ở đây.
@@ -232,7 +232,9 @@ export const productPageTarget = (slug: string | undefined): ProductPageTarget |
   const known = PRODUCT_PAGES.get(slug)
   if (known) return known
   const added = liveNewPatternBySlug(slug)
-  return added ? { kind: 'pattern', collectionId: added.bo, code: added.ma } : undefined
+  if (added) return { kind: 'pattern', collectionId: added.bo, code: added.ma }
+  // Sản phẩm lẻ mới trong Woo (giai đoạn 4b): khoá sản phẩm chính là tên trên link
+  return liveNewProductBySlug(slug) ? { kind: 'product', slug } : undefined
 }
 
 /** Trang danh mục của web cũ mở trang bộ sưu tập (đường link → mã bộ sưu tập) */
@@ -332,6 +334,23 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
     category: 'dem',
     products: ['dem-eco-foam-da-tang', 'dem-foam-cao-cap-nano-comfort'],
   },
+}
+
+/**
+ * Danh mục WooCommerce → trang danh mục của web mới (giai đoạn 4b, docs/ke-hoach-khach-tu-sua-du-lieu.md).
+ * Sản phẩm lẻ Ecopillo đăng mới trong Woo ở các danh mục này (anh Quang 18/11/2026: "khi anh thêm 1 sp mới nó không hiện ra")
+ * hiện ở trang danh mục tương ứng, trang Sản phẩm, menu, có trang riêng (plugin san-pham-moi.php).
+ * Bộ chăn ga không ở đây: mẫu mới thêm vào danh mục bộ sưu tập (mau-moi.php). Thêm danh mục Woo mới thì thêm dòng ở đây.
+ */
+export const WOO_CATEGORY_LISTINGS: Readonly<Record<string, string>> = {
+  'dem-lo-xo': '/danh-muc-san-pham/san-pham/dem-lo-xo/',
+  'dem-cao-su': '/danh-muc-san-pham/san-pham/dem-cao-su/',
+  'dem-bong-ep': '/danh-muc-san-pham/san-pham/dem-bong-ep/',
+  'dem-foam': '/danh-muc-san-pham/san-pham/dem-foam/',
+  'dem-ecopillo': '/danh-muc-san-pham/dem-ecopillo/',
+  'ruot-chan-goi': '/danh-muc-san-pham/san-pham/ruot-chan-goi/',
+  'ruot-goi-nam-cao-cap': '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/',
+  'chan-he': '/danh-muc-san-pham/san-pham/chan-topper-phu-kien/',
 }
 
 /**

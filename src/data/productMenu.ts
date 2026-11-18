@@ -63,10 +63,15 @@ const productOf = (slug: string): Product => {
 const listingProducts = (path: string): readonly Product[] => {
   const listing = LISTINGS[path]
   if (!listing) throw new Error(`productMenu: thiếu danh mục ${path}`)
-  if (listing.products) return listing.products.map(productOf)
+  // Sản phẩm Ecopillo đăng mới trong Woo ở danh mục này (giai đoạn 4b)
+  const added = PRODUCTS.filter((p) => p.listings?.includes(path))
+  if (listing.products) return [...listing.products.map(productOf), ...added]
   if (listing.collections) return listing.collections.map(productOf)
   return PRODUCTS.filter((p) => p.category === listing.category)
 }
+
+/** Chăn Ecopillo đăng mới trong Woo: thêm dòng cuối nhóm Chăn đông và chăn hè */
+const newChanRows = (): MenuRow[] => PRODUCTS.filter((p) => p.listings && p.category === 'chan').map((p) => productRow(p.slug))
 
 /** Giá của dòng tính trên sản phẩm đã có giá; cả dòng chưa có giá thì ghi chữ thay số */
 const rowOf = (label: string, to: string, products: readonly Product[]): MenuRow => {
@@ -204,6 +209,7 @@ export const PRODUCT_MENU: readonly MenuGroup[] = [
       collectionRow('chan-he-lyocell'),
       // Chị Phương 11/11/2026: "thiếu chăn Ecool"
       productRow('chan-he-e-cool', 'Chăn hè E-Cool'),
+      ...newChanRows(),
     ],
   }),
   group({

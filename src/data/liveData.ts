@@ -1,5 +1,5 @@
 /**
- * Giá và hết hàng mới nhất do Ecopillo tự sửa trong WooCommerce (owner 18/11/2026: "giao diện là khung, khách cần tự chỉnh dữ liệu").
+ * Giá, hết hàng, mẫu mới, sản phẩm lẻ mới do Ecopillo tự sửa trong WooCommerce (owner 18/11/2026: "giao diện là khung, khách cần tự chỉnh dữ liệu").
  * Kế hoạch: docs/ke-hoach-khach-tu-sua-du-lieu.md (cách A: dữ liệu nạp từ chính WordPress, không qua dịch vụ ngoài).
  *
  * Plugin WordPress (trien-khai/wordpress-plugin/ecopillo-giao-dien-moi/gia-woo.php) ghi file
@@ -55,10 +55,33 @@ export interface LiveNewPattern {
   het: readonly string[]
 }
 
+/**
+ * Sản phẩm lẻ mới Ecopillo đăng trong WooCommerce (giai đoạn 4b): thuộc danh mục Woo có trong WOO_CATEGORY_LISTINGS (links.ts)
+ * mà web chưa có. Plugin san-pham-moi.php đọc tên, ảnh, mô tả, thuộc tính, giá theo biến thể; chữ đã bỏ HTML, đã đổi chữ chất liệu cũ.
+ * Giá: một trong ba kiểu `motGia` (sản phẩm đơn), `chon` (biến thể một chiều), `bienThe` (kích thước × độ dày).
+ */
+export interface LiveNewProduct {
+  /** Tên trên link /san-pham/<duongDan>/, cũng là khoá sản phẩm */
+  duongDan: string
+  ten: string
+  /** Danh mục Woo (slug) có trong WOO_CATEGORY_LISTINGS */
+  danhMuc: readonly string[]
+  anh: LiveImage
+  anhPhu: readonly LiveImage[]
+  tomTat: string
+  chiTiet: readonly string[]
+  thongSo: readonly { nhan: string; giaTri: string }[]
+  motGia?: number
+  nhanChon?: string
+  chon?: readonly { id: string; nhan: string; gia: number }[]
+  bienThe?: { co: readonly string[]; doDay: readonly string[]; gia: Readonly<Record<string, number>> }
+}
+
 interface LiveData {
   mau: Readonly<Record<string, LivePattern>>
   sanPham: Readonly<Record<string, LiveProduct>>
   mauMoi: readonly LiveNewPattern[]
+  sanPhamMoi: readonly LiveNewProduct[]
 }
 
 const isPrice = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v > 0 && v < 1e10
@@ -122,12 +145,79 @@ function cleanNewPattern(input: unknown): LiveNewPattern | undefined {
   }
 }
 
+const cleanText = (v: unknown, max: number): string => (typeof v === 'string' ? v.trim().slice(0, max) : '')
+
+const cleanTexts = (v: unknown, max: number, count: number): string[] =>
+  Array.isArray(v) ? v.map((x) => cleanText(x, max)).filter(Boolean).slice(0, count) : []
+
+/** Giá một chiều: id dạng link, nhãn, giá hợp lệ */
+const cleanChoices = (v: unknown): { id: string; nhan: string; gia: number }[] => {
+  if (!Array.isArray(v)) return []
+  const seen = new Set<string>()
+  return v.flatMap((x) => {
+    const c = (x ?? {}) as Record<string, unknown>
+    const id = typeof c.id === 'string' && /^[a-z0-9-]{1,80}$/.test(c.id) ? c.id : ''
+    const nhan = cleanText(c.nhan, 80)
+    if (!id || !nhan || !isPrice(c.gia) || seen.has(id)) return []
+    seen.add(id)
+    return [{ id, nhan, gia: c.gia }]
+  }).slice(0, 40)
+}
+
+/** Bảng kích thước × độ dày: chỉ giữ ô có cả hai chiều trong danh sách */
+const cleanVariantTable = (v: unknown): LiveNewProduct['bienThe'] => {
+  if (!v || typeof v !== 'object') return undefined
+  const t = v as Record<string, unknown>
+  const co = cleanTexts(t.co, 60, 20)
+  const doDay = cleanTexts(t.doDay, 60, 20)
+  const prices = cleanPrices(t.gia)
+  if (!co.length || !doDay.length || !prices) return undefined
+  const gia = Object.fromEntries(Object.entries(prices).filter(([k]) => {
+    const [size, thick] = k.split('|')
+    return co.includes(size) && doDay.includes(thick)
+  }))
+  return Object.keys(gia).length ? { co, doDay, gia } : undefined
+}
+
+/** Sản phẩm lẻ mới hợp lệ: link đúng dạng, có tên, ảnh, danh mục và ít nhất một giá */
+function cleanNewProduct(input: unknown): LiveNewProduct | undefined {
+  if (!input || typeof input !== 'object') return undefined
+  const v = input as Record<string, unknown>
+  const image = cleanImage(v.anh)
+  const ten = cleanText(v.ten, 120)
+  const danhMuc = cleanTexts(v.danhMuc, 60, 10)
+  const motGia = isPrice(v.motGia) ? v.motGia : undefined
+  const chon = cleanChoices(v.chon)
+  const bienThe = cleanVariantTable(v.bienThe)
+  if (typeof v.duongDan !== 'string' || !/^[a-z0-9-]{3,200}$/.test(v.duongDan) || !ten || !image || !danhMuc.length) return undefined
+  if (motGia === undefined && !chon.length && !bienThe) return undefined
+  const specs = Array.isArray(v.thongSo)
+    ? v.thongSo.flatMap((x) => {
+        const s = (x ?? {}) as Record<string, unknown>
+        const nhan = cleanText(s.nhan, 60)
+        const giaTri = cleanText(s.giaTri, 200)
+        return nhan && giaTri ? [{ nhan, giaTri }] : []
+      }).slice(0, 12)
+    : []
+  return {
+    duongDan: v.duongDan,
+    ten,
+    danhMuc,
+    anh: image,
+    anhPhu: Array.isArray(v.anhPhu) ? v.anhPhu.map(cleanImage).filter((x): x is LiveImage => !!x).slice(0, 12) : [],
+    tomTat: cleanText(v.tomTat, 400),
+    chiTiet: cleanTexts(v.chiTiet, 600, 16),
+    thongSo: specs,
+    ...(bienThe ? { bienThe } : chon.length ? { chon, nhanChon: cleanText(v.nhanChon, 40) || 'Lựa chọn' } : { motGia }),
+  }
+}
+
 function read(): LiveData {
-  const empty: LiveData = { mau: {}, sanPham: {}, mauMoi: [] }
+  const empty: LiveData = { mau: {}, sanPham: {}, mauMoi: [], sanPhamMoi: [] }
   if (typeof window === 'undefined') return empty
   const raw = (window as { __ECO_GIA__?: unknown }).__ECO_GIA__
   if (!raw || typeof raw !== 'object') return empty
-  const { mau, sanPham, mauMoi } = raw as { mau?: unknown; sanPham?: unknown; mauMoi?: unknown }
+  const { mau, sanPham, mauMoi, sanPhamMoi } = raw as { mau?: unknown; sanPham?: unknown; mauMoi?: unknown; sanPhamMoi?: unknown }
   const patterns: Record<string, LivePattern> = {}
   for (const [key, value] of Object.entries(mau && typeof mau === 'object' ? mau : {})) {
     const v = (value ?? {}) as Record<string, unknown>
@@ -139,7 +229,8 @@ function read(): LiveData {
     products[key] = { chon: cleanPrices(v.chon), bienThe: cleanPrices(v.bienThe) }
   }
   const newPatterns = Array.isArray(mauMoi) ? mauMoi.slice(0, 200).map(cleanNewPattern).filter((x): x is LiveNewPattern => !!x) : []
-  return { mau: patterns, sanPham: products, mauMoi: newPatterns }
+  const newProducts = Array.isArray(sanPhamMoi) ? sanPhamMoi.slice(0, 200).map(cleanNewProduct).filter((x): x is LiveNewProduct => !!x) : []
+  return { mau: patterns, sanPham: products, mauMoi: newPatterns, sanPhamMoi: newProducts }
 }
 
 const LIVE = read()
@@ -153,6 +244,12 @@ export const liveNewPatterns = (collectionId: string): readonly LiveNewPattern[]
 
 /** Mẫu mới theo tên trên link (trang /san-pham/<tên>/) */
 export const liveNewPatternBySlug = (slug: string): LiveNewPattern | undefined => LIVE.mauMoi.find((p) => p.duongDan === slug)
+
+/** Sản phẩm lẻ mới Ecopillo đăng trong WooCommerce (products.ts ghép vào PRODUCTS) */
+export const liveNewProducts = (): readonly LiveNewProduct[] => LIVE.sanPhamMoi
+
+/** Sản phẩm lẻ mới theo tên trên link (trang /san-pham/<tên>/) */
+export const liveNewProductBySlug = (slug: string): LiveNewProduct | undefined => LIVE.sanPhamMoi.find((p) => p.duongDan === slug)
 
 /** Có ô giá / hết hàng nào khác bản dựng sẵn không (main.tsx dùng để chọn vẽ lại hay gắn vào HTML có sẵn) */
 let differs = false

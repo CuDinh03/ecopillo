@@ -22,6 +22,8 @@ export interface WordPressInfo {
   metaTitle: string
   /** Mô tả Google (Yoast, không thì đoạn trích), tối đa 155 ký tự */
   description: string
+  /** Bài Ecopillo đăng mới / sửa trong WordPress sau lần dựng (livePosts.ts): thân bài nạp từ file plugin ghi */
+  live?: boolean
 }
 
 export interface Post {

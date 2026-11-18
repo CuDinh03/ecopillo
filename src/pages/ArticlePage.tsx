@@ -68,7 +68,8 @@ export function ArticlePage() {
   return (
     <div className="pb-24">
       <Container className="pt-10 sm:pt-14">
-        <div className="mx-auto max-w-3xl">
+        {/* Máy tính rộng hơn (anh Quang 18/11/2026: "phần bài viết em cho hiển thị chiều ngang to hơn trên máy tính") */}
+        <div className="mx-auto max-w-3xl lg:max-w-4xl">
           <JsonLd
             data={articleLd({
               title: post.title,
@@ -103,9 +104,9 @@ export function ArticlePage() {
           </div>
         </div>
 
-        <div className="chu-deu mx-auto mt-4 max-w-3xl text-lead leading-[1.8] text-ink">
+        <div className="chu-deu mx-auto mt-4 max-w-3xl text-lead lg:max-w-4xl leading-[1.8] text-ink">
           {post.wp ? (
-            <WordPressBody slug={post.slug} />
+            <WordPressBody slug={post.slug} live={post.wp.live ? { title: post.title } : undefined} />
           ) : (
             post.body.map((block, i) => <Block key={i} block={block} />)
           )}

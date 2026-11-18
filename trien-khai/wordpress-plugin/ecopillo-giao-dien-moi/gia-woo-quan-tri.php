@@ -205,17 +205,33 @@ function eco_gia_page()
         <?php endif; ?>
 
         <h2>Mẫu mới thêm trong WooCommerce</h2>
-        <p>Thêm mẫu: Sản phẩm → Thêm mới; xếp vào danh mục bộ sưu tập (ví dụ "Bộ sưu tập Eco Rosa"); ô <strong>Mã sản phẩm</strong> ghi mã mẫu (ví dụ ER50); dòng đầu <strong>Mô tả ngắn</strong> ghi tên màu; đặt ảnh sản phẩm và ảnh thư viện sản phẩm; biến thể theo cỡ như các mẫu cũ (Free Size, 200*220; Bộ ga phủ / Bộ ga chun chần). Đăng là mẫu hiện trên web<?php echo $enabled ? '' : ' (sau khi bật lấy giá từ Woo)'; ?>.</p>
+        <p>Thêm mẫu: Sản phẩm → Thêm mới; xếp vào danh mục bộ sưu tập (ví dụ "Bộ sưu tập Eco Rosa"); ô <strong>Mã sản phẩm</strong> ghi mã mẫu (ví dụ ER50); dòng đầu <strong>Mô tả ngắn</strong> ghi tên màu; đặt ảnh sản phẩm và ảnh thư viện sản phẩm; biến thể theo cỡ như các mẫu cũ (Free Size, 200*220; Bộ ga phủ / Bộ ga chun chần). Đăng là mẫu hiện trên web.</p>
         <?php
-        $new_rows = $enabled ? eco_mm_compute()['rows'] : array();
+        $new_rows = eco_mm_compute()['rows'];
         if (!$new_rows) :
-            ?><p style="color:#555"><?php echo $enabled ? 'Chưa có mẫu mới.' : 'Bật lấy giá từ Woo để dùng.'; ?></p><?php
+            ?><p style="color:#555">Chưa có mẫu mới.</p><?php
         else :
             ?>
             <table class="widefat striped" style="margin-bottom:24px"><thead><tr><th>Sản phẩm Woo</th><th>Bộ sưu tập</th><th>Mã</th><th>Trạng thái</th></tr></thead><tbody>
             <?php foreach ($new_rows as $nr) : ?>
                 <tr><td><a href="<?php echo esc_url(get_edit_post_link($nr['id'])); ?>"><?php echo esc_html($nr['ten']); ?></a></td><td><?php echo esc_html($nr['bo']); ?></td><td><?php echo esc_html($nr['ma']); ?></td>
                     <td style="<?php echo strpos($nr['trangThai'], 'Chưa') === 0 ? 'color:#b32d2e;font-weight:600' : ''; ?>"><?php echo esc_html($nr['trangThai']); ?></td></tr>
+            <?php endforeach; ?>
+            </tbody></table>
+        <?php endif; ?>
+
+        <h2>Sản phẩm mới thêm trong WooCommerce</h2>
+        <p>Thêm sản phẩm (đệm, chăn, gối…): Sản phẩm → Thêm mới; tên; <strong>Mô tả ngắn</strong> là câu giới thiệu, <strong>Mô tả</strong> là các ý chi tiết (mỗi dòng một ý); ảnh sản phẩm và ảnh thư viện sản phẩm; giá (hoặc biến thể theo Kích thước, Độ dày); tích một danh mục: Đệm lò xo, Đệm cao su, Đệm bông ép, Đệm foam, Đệm Ecopillo, Ruột chăn gối, Ruột gối nằm cao cấp, Chăn hè. Đăng là sản phẩm hiện trên web: trang danh mục, trang Sản phẩm, menu, trang riêng.</p>
+        <?php
+        $item_rows = function_exists('eco_sp_compute') ? eco_sp_compute()['rows'] : array();
+        if (!$item_rows) :
+            ?><p style="color:#555">Chưa có sản phẩm mới.</p><?php
+        else :
+            ?>
+            <table class="widefat striped" style="margin-bottom:24px"><thead><tr><th>Sản phẩm Woo</th><th>Danh mục</th><th>Trạng thái</th></tr></thead><tbody>
+            <?php foreach ($item_rows as $ir) : ?>
+                <tr><td><a href="<?php echo esc_url(get_edit_post_link($ir['id'])); ?>"><?php echo esc_html($ir['ten']); ?></a></td><td><?php echo esc_html($ir['danhMuc']); ?></td>
+                    <td style="<?php echo strpos($ir['trangThai'], 'Chưa') === 0 ? 'color:#b32d2e;font-weight:600' : ''; ?>"><?php echo esc_html($ir['trangThai']); ?></td></tr>
             <?php endforeach; ?>
             </tbody></table>
         <?php endif; ?>

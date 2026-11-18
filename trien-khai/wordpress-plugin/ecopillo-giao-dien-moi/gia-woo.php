@@ -297,7 +297,8 @@ function eco_gia_dir()
 }
 
 /**
- * Ghi du-lieu.js: giá Woo (`window.__ECO_GIA__`, tắt thì null) và nội dung Ecopillo đã sửa (`window.__ECO_NOI_DUNG__`, noi-dung.php).
+ * Ghi du-lieu.js: giá Woo, mẫu mới, sản phẩm mới (`window.__ECO_GIA__`), nội dung Ecopillo đã sửa (`window.__ECO_NOI_DUNG__`, noi-dung.php),
+ * bài viết mới / đã sửa (`window.__ECO_BAI__`, bai-viet-moi.php).
  * Web nạp file này trước gói JS. Ghi qua file tạm rồi đổi tên để khách không đọc file dở.
  */
 function eco_dl_write()
@@ -310,17 +311,29 @@ function eco_dl_write()
     if (!is_file($dir . '/.htaccess')) {
         file_put_contents($dir . '/.htaccess', $rules);
     }
-    $prices = eco_gia_enabled() && function_exists('wc_get_product') ? eco_gia_compute()['live'] : null;
-    // Mẫu mới Ecopillo thêm trong Woo (mau-moi.php): chỉ khi đã bật lấy giá Woo
-    $new = $prices !== null ? eco_mm_compute() : array('live' => array(), 'pages' => array());
-    if ($prices !== null) {
-        $prices['mauMoi'] = $new['live'];
+    $woo = function_exists('wc_get_product');
+    $prices = eco_gia_enabled() && $woo ? eco_gia_compute()['live'] : null;
+    // Mẫu mới (mau-moi.php) và sản phẩm lẻ mới (san-pham-moi.php) Ecopillo đăng trong Woo: hiện ngay, không chờ bật lấy giá Woo
+    // (giá của chúng vốn chỉ có trong Woo). Chưa bật thì giá sản phẩm có sẵn vẫn để trống, web giữ giá trong code.
+    $patterns = $woo ? eco_mm_compute() : array('live' => array(), 'pages' => array());
+    $items = $woo && function_exists('eco_sp_compute') ? eco_sp_compute() : array('live' => array(), 'pages' => array());
+    if ($prices === null && ($patterns['live'] || $items['live'])) {
+        $prices = array('mau' => new stdClass(), 'sanPham' => new stdClass());
     }
-    update_option(ECO_MM_OPT_TRANG, $new['pages'], false);
+    if ($prices !== null) {
+        $prices['mauMoi'] = $patterns['live'];
+        $prices['sanPhamMoi'] = $items['live'];
+    }
+    update_option(ECO_MM_OPT_TRANG, array_merge($items['pages'], $patterns['pages']), false);
+    // Bài viết mới / đã sửa (bai-viet-moi.php): danh sách vào du-lieu.js, thân bài mỗi bài một file
+    $posts = function_exists('eco_bv_compute') ? eco_bv_compute() : array('live' => array(), 'bodies' => array(), 'pages' => array());
+    eco_bv_write_bodies($posts['bodies']);
+    update_option(ECO_BV_OPT_TRANG, $posts['pages'], false);
     $content = function_exists('eco_nd_live') ? eco_nd_live() : array();
     $js = '/* Giá và nội dung Ecopillo sửa trong WordPress, plugin ghi lúc ' . gmdate('c') . ". Không sửa tay. */\n"
         . 'window.__ECO_GIA__=' . wp_json_encode($prices) . ";\n"
-        . 'window.__ECO_NOI_DUNG__=' . wp_json_encode($content ? $content : null) . ";\n";
+        . 'window.__ECO_NOI_DUNG__=' . wp_json_encode($content ? $content : null) . ";\n"
+        . 'window.__ECO_BAI__=' . wp_json_encode($posts['live'] ? $posts['live'] : null) . ";\n";
     $tmp = $dir . '/du-lieu.js.tmp';
     if (file_put_contents($tmp, $js) === false || !rename($tmp, $dir . '/du-lieu.js')) {
         return false;
@@ -377,4 +390,6 @@ function eco_gia_refresh_if_stale()
 }
 
 require_once __DIR__ . '/mau-moi.php';
+require_once __DIR__ . '/san-pham-moi.php';
+require_once __DIR__ . '/bai-viet-moi.php';
 require_once __DIR__ . '/gia-woo-quan-tri.php';

@@ -1,7 +1,7 @@
 import { formatRange, formatVND } from '../lib/format'
-import { liveProduct, mergePrices } from './liveData'
+import { liveNewProducts, liveProduct, markLiveDiffers, mergePrices, type LiveNewProduct } from './liveData'
 import { slugify } from '../lib/slug'
-import { collectionPath, PATHS, singleProductPath } from './links'
+import { collectionPath, LISTINGS, PATHS, singleProductPath, WOO_CATEGORY_LISTINGS } from './links'
 import {
   COLLECTIONS,
   collectionRange,
@@ -92,6 +92,8 @@ export interface Product {
    * không vào mức giá nào khi lọc, xếp cuối khi sắp theo giá. Có giá thì bỏ cờ này và điền min, max.
    */
   isPriceOnCall?: boolean
+  /** Sản phẩm Ecopillo đăng mới trong WooCommerce (giai đoạn 4b): các trang danh mục (LISTINGS) hiện nó */
+  listings?: readonly string[]
 }
 
 /** Chữ thay cho giá khi Ecopillo chưa gửi giá (owner 28/10/2026: không để nhãn chờ trên web) */
@@ -860,7 +862,47 @@ const withLivePrice = (p: Product): Product => {
   return values.length ? { ...next, min: Math.min(...values), max: Math.max(...values) } : next
 }
 
-export const PRODUCTS: readonly Product[] = [
+/** Nhóm của sản phẩm mới: theo trang danh mục có nhóm; không có (ruột chăn gối, chăn hè) thì đoán theo tên */
+const newProductCategory = (name: string, listings: readonly string[]): CategoryId => {
+  for (const path of listings) {
+    const category = LISTINGS[path]?.category
+    if (category && category !== 'bo-chan-ga') return category
+  }
+  if (/gối/i.test(name)) return 'goi'
+  if (/đệm|topper|divan/i.test(name)) return 'dem'
+  return 'chan'
+}
+
+/** Sản phẩm lẻ Ecopillo đăng mới trong WooCommerce → Product (dữ liệu đã kiểm ở liveData.ts) */
+function newProductOf(v: LiveNewProduct): Product | undefined {
+  const listings = [...new Set(v.danhMuc.map((w) => WOO_CATEGORY_LISTINGS[w]).filter(Boolean))]
+  if (!listings.length) return undefined
+  const prices = v.bienThe ? Object.values(v.bienThe.gia) : v.chon ? v.chon.map((c) => c.gia) : v.motGia ? [v.motGia] : []
+  if (!prices.length) return undefined
+  const category = newProductCategory(v.ten, listings)
+  return {
+    slug: v.duongDan,
+    name: v.ten,
+    category,
+    summary: v.tomTat || v.chiTiet[0] || v.ten,
+    min: Math.min(...prices),
+    max: Math.max(...prices),
+    isFromPrice: category === 'dem' && prices.length > 1,
+    image: v.anh,
+    imageNote: v.ten,
+    gallery: v.anhPhu,
+    details: [...v.chiTiet, ORDER_NOTE],
+    specs: v.thongSo.map((x) => ({ label: x.nhan, value: x.giaTri })),
+    ...(v.bienThe
+      ? { variants: { sizes: v.bienThe.co, thicknesses: v.bienThe.doDay, prices: v.bienThe.gia } }
+      : v.chon
+        ? { choices: v.chon.map((c) => ({ id: c.id, label: c.nhan, price: c.gia })), choiceLabel: v.nhanChon }
+        : {}),
+    listings,
+  }
+}
+
+const BASE_PRODUCTS: readonly Product[] = [
   ...COLLECTIONS.map(collectionProduct),
   ...essentialProducts,
   CHAN_DONG_KIEU_HAN,
@@ -886,6 +928,17 @@ export const PRODUCTS: readonly Product[] = [
 ]
   .map(withPhoto)
   .map(withLivePrice)
+
+/** Sản phẩm mới không được trùng khoá sản phẩm có sẵn (khoá cũng là tên trên link) */
+const NEW_PRODUCTS: readonly Product[] = liveNewProducts()
+  .filter((v) => !BASE_PRODUCTS.some((p) => p.slug === v.duongDan))
+  .map(newProductOf)
+  .filter((p): p is Product => !!p)
+
+// Trang dựng sẵn không có sản phẩm mới: vẽ lại thay vì gắn vào HTML cũ (main.tsx)
+if (NEW_PRODUCTS.length) markLiveDiffers()
+
+export const PRODUCTS: readonly Product[] = [...BASE_PRODUCTS, ...NEW_PRODUCTS]
 
 export const productBySlug = (slug: string | undefined): Product | undefined => PRODUCTS.find((p) => p.slug === slug)
 
