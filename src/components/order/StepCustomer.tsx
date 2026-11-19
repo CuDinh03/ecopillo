@@ -140,7 +140,7 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
               </span>
             </p>
             <p className="mt-1 text-small leading-relaxed text-ink-soft">
-              {/* Thông báo Ecopillo từ 07/08/2026 (src/data/paymentPolicy.ts): không nhận tiền mặt, một tài khoản duy nhất */}
+              {/* Thông báo Ecopillo từ 07/08/2026 (src/data/paymentPolicy.ts): một tài khoản duy nhất */}
               <span className="block font-medium text-deep-900">{BANK_LINE}</span>
               {NO_DEPOSIT} {DEPOSIT_SHORT}: nhân viên báo khi gọi xác nhận đơn.
             </p>

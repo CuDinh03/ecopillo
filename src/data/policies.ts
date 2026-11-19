@@ -118,11 +118,12 @@ const BASE_POLICIES: readonly Policy[] = [
   {
     slug: 'chinh-sach-thanh-toan',
     title: 'Chính sách thanh toán',
-    // Thông báo Ecopillo áp dụng từ 07/08/2026 + chị Phương 18/11/2026: bỏ tiền mặt, một tài khoản duy nhất, bỏ mục Hoá đơn (paymentPolicy.ts)
+    // Thông báo Ecopillo áp dụng từ 07/08/2026 + chị Phương 18/11/2026: bỏ tiền mặt, một tài khoản duy nhất, bỏ mục Hoá đơn (paymentPolicy.ts).
+    // Owner 19/11/2026 (ảnh chụp trang trên điện thoại): xoá chữ "không nhận tiền mặt" ở thẻ đầu trang và đoạn tài khoản
     description: 'Thanh toán chuyển khoản vào tài khoản duy nhất của Ecopillo. Chăn ga dưới 10 triệu không cần đặt cọc; đệm, đơn trên 10 triệu cần đặt cọc.',
     intro: 'Từ 07/08/2026, Ecopillo nhận thanh toán bằng chuyển khoản vào một tài khoản duy nhất của công ty. Chăn ga tiêu chuẩn và đơn chăn ga dưới 10 triệu đồng không cần đặt cọc.',
     highlights: [
-      { value: 'Chuyển khoản', label: 'Một tài khoản duy nhất của Ecopillo, không nhận tiền mặt' },
+      { value: 'Chuyển khoản', label: 'Một tài khoản duy nhất của Ecopillo' },
       { value: 'Không cọc', label: 'Chăn ga tiêu chuẩn, đơn chăn ga dưới 10 triệu' },
       { value: 'Đặt cọc', label: 'Đệm, đơn trên 10 triệu, chăn ga nhỡ cỡ hoặc may riêng' },
     ],
@@ -131,7 +132,7 @@ const BASE_POLICIES: readonly Policy[] = [
         title: 'Tài khoản nhận thanh toán',
         body: [
           `${BANK_LINE}.`,
-          'Ecopillo chỉ nhận thanh toán vào tài khoản này, không nhận tiền mặt. Nhân viên Ecopillo luôn gọi xác nhận đơn trước khi giao. Nếu có ai nhắn tin yêu cầu chuyển tiền vào tài khoản khác, Quý khách vui lòng gọi hotline để kiểm tra.',
+          'Ecopillo chỉ nhận thanh toán vào tài khoản này. Nhân viên Ecopillo luôn gọi xác nhận đơn trước khi giao. Nếu có ai nhắn tin yêu cầu chuyển tiền vào tài khoản khác, Quý khách vui lòng gọi hotline để kiểm tra.',
         ],
       },
       {
