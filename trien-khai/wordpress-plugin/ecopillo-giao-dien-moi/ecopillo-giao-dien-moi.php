@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Ecopillo giao diện mới
  * Description: Thay giao diện ecopillo.com.vn bằng giao diện mới (trang dựng sẵn trong thư mục site/ của plugin). WordPress giữ nguyên làm nơi quản trị. Cài đặt → Giao diện mới. Đơn hàng, tin nhắn khách gửi: mục Đơn web.
- * Version: 1.7.3
+ * Version: 1.7.4
  * Requires PHP: 7.4
  * Author: Ecopillo
  * Text Domain: ecopillo-giao-dien-moi

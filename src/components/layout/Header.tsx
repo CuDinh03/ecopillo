@@ -8,6 +8,7 @@ import { Icon, ZaloMark } from '../ui/Icon'
 import { buttonClass, Container } from '../ui/primitives'
 import { SocialIcons } from '../home/SocialLinks'
 import { Logo } from './Logo'
+import { NavMoreMenu } from './NavMoreMenu'
 import { DesktopProductMenu, MobileProductMenu } from './ProductMenu'
 
 interface NavItem {
@@ -22,7 +23,7 @@ interface NavItem {
  * Phản hồi 05/11 mục 9 (phương án A, docs/de-xuat-menu-lien-he-05-11.html):
  * thanh chỉ còn "Liên hệ mua hàng" (= /lien-he/) và "Đăng ký đại lý"; bỏ "Hệ thống phân phối"
  * khỏi thanh (điểm bán gộp vào trang Liên hệ, 301 /he-thong-phan-phoi/ → /lien-he/#diem-ban).
- * Tin tức, Quà tặng, Hỏi đáp rời thanh máy tính nhưng vẫn ở menu điện thoại, chân trang.
+ * Tin tức, Quà tặng, Hỏi đáp rời thanh máy tính (05/11), owner đưa trở lại ngày 19/11/2026 (EXTRA_ITEMS bên dưới).
  * [XÁC NHẬN "Khách sạn & dự án" vẫn trên thanh] — giữ vì bán B2B, không phải liên hệ mua lẻ.
  */
 export const NAV_ITEMS: readonly NavItem[] = [
@@ -40,9 +41,16 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { href: PATHS.faq, label: 'Hỏi đáp' },
 ]
 
+const itemsOf = (hrefs: readonly string[]): NavItem[] => hrefs.flatMap((href) => NAV_ITEMS.filter((item) => item.href === href))
+
 /** Thanh menu máy tính, sau nút "Sản phẩm" */
-const BAR_HREFS: readonly string[] = [PATHS.about, PATHS.hotel, PATHS.contact, PATHS.recruit]
-const BAR_ITEMS = BAR_HREFS.flatMap((href) => NAV_ITEMS.filter((item) => item.href === href))
+const BAR_ITEMS = itemsOf([PATHS.about, PATHS.hotel, PATHS.contact, PATHS.recruit])
+
+/**
+ * Owner 19/11/2026 (ảnh cột "Khám phá" ở chân trang: "tích hợp phần này thêm ở thanh phía trên"): ba mục rời thanh từ 05/11
+ * trở lại thanh máy tính. Từ 1280px nằm thẳng trên thanh; 1024–1279px không đủ chỗ nên gom vào nút "Thêm" (NavMoreMenu.tsx).
+ */
+const EXTRA_ITEMS = itemsOf([PATHS.gifts, PATHS.blog, PATHS.faq])
 
 /**
  * Mục 10 (khách 16/10/2026: chữ menu "nhạt lắm k rõ"), owner chọn kiểu A 17/10: chữ đủ màu chàm, nét 500, không thêm nền.
@@ -50,7 +58,7 @@ const BAR_ITEMS = BAR_HREFS.flatMap((href) => NAV_ITEMS.filter((item) => item.hr
  * Mẫu: docs/de-xuat-menu-dam-hon.html
  */
 const NAV_LINK =
-  'relative inline-flex items-center rounded-full px-3 py-2 text-small font-medium whitespace-nowrap text-deep-900 transition-colors hover:bg-mist-100'
+  'relative inline-flex items-center rounded-full px-2.5 py-2 text-small font-medium whitespace-nowrap text-deep-900 transition-colors hover:bg-mist-100'
 
 /** Mục đang chọn: nền nhạt + gạch chân chàm */
 const NAV_ACTIVE =
@@ -139,7 +147,8 @@ export function Header() {
           : 'bg-transparent'
       }`}
     >
-      <Container className="flex h-[4.5rem] items-center justify-between gap-4">
+      {/* Khung rộng hơn Container (1240px) để thanh đủ tám mục (19/11/2026); ô xổ Sản phẩm vẫn theo Container */}
+      <div className="mx-auto flex h-[4.5rem] w-full max-w-[1520px] items-center justify-between gap-3 px-5 sm:px-8 lg:px-10">
         {/* Logo luôn hiện, cả ở trang chủ (banner 16/11/2026 không còn cụm chữ ECOPILLO lớn như A2 02/11) */}
         <Logo />
 
@@ -158,6 +167,14 @@ export function Header() {
                 </Link>
               </li>
             ))}
+            {EXTRA_ITEMS.map((item) => (
+              <li key={item.href} className="hidden xl:block">
+                <Link to={item.href} className={navClass(item.href === activeHref)} aria-current={item.href === activeHref ? 'page' : undefined}>
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+            <NavMoreMenu items={EXTRA_ITEMS} activeHref={activeHref} buttonClass={navClass(false)} />
           </ul>
         </nav>
 
@@ -165,10 +182,12 @@ export function Header() {
           {/*
             Mục 9 (khách yêu cầu 16/10/2026: "sđt để xanh như đặt hàng"): nút nền, cùng cỡ nút "Đặt hàng".
             Nền chàm sáng, "Đặt hàng" nền chàm đậm, để hai nút xanh cạnh nhau vẫn phân biệt được.
+            Từ 19/11/2026 (thanh thêm ba mục) nút chỉ hiện ở điện thoại ngang, máy tính bảng và màn từ 1440px: màn 1024–1439px
+            không đủ chỗ (đo 19/11); số hotline vẫn luôn hiện ở khung liên hệ góc phải (ContactDock.tsx, owner chọn A ngày 18/11).
           */}
           <a
             href={CONTACT.hotlineTel}
-            className="hidden h-10 items-center gap-2 rounded-full bg-brand-blue px-4 text-sm font-medium text-ivory shadow-[var(--shadow-soft)] transition duration-300 hover:bg-deep-800 hover:shadow-[var(--shadow-lift)] active:scale-[0.98] md:inline-flex lg:hidden xl:inline-flex"
+            className="hidden h-10 items-center gap-2 rounded-full bg-brand-blue px-4 text-sm font-medium text-ivory shadow-[var(--shadow-soft)] transition duration-300 hover:bg-deep-800 hover:shadow-[var(--shadow-lift)] active:scale-[0.98] md:max-lg:inline-flex min-[1440px]:inline-flex"
           >
             <Icon name="phone" size={17} />
             <span className="tabular whitespace-nowrap">{CONTACT.hotlineDisplay}</span>
@@ -191,7 +210,7 @@ export function Header() {
             <Icon name={isMenuOpen ? 'close' : 'menu'} size={22} />
           </button>
         </div>
-      </Container>
+      </div>
       {isMenuOpen &&
         // Đưa ra ngoài <header>: header có backdrop-blur nên phần tử fixed bên trong bị cắt theo header
         createPortal(
