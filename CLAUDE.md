@@ -107,6 +107,7 @@ pnpm lint       # đang có 4 cảnh báo cũ react-refresh, không phải lỗi
 | Sự kiện Ecopillo đồng hành (cuối phần Về chúng tôi trang chủ) | `src/data/events.ts`, khối `src/components/home/EventsStrip.tsx`; nén ảnh: `tools/nen-anh-su-kien-2026-10-20.py` |
 | Chữ khối khách sạn (nhãn, giới thiệu, 4 lợi ích) dùng chung trang chủ và trang Khách sạn và dự án | `src/data/hotel.ts` |
 | Menu, chân trang, thanh liên hệ, nút lên đầu trang | `src/components/layout/` |
+| Thanh tìm kiếm (kính lúp trên thanh đầu trang, ô tìm đầu menu điện thoại; phương án B 19/11/2026): tìm gì, từ khoá trang, gợi ý | `src/data/searchIndex.ts` (nạp khi mở); cách khớp, bỏ dấu, từ miền Nam: `src/lib/searchText.ts`; giao diện `src/components/layout/SiteSearch.tsx` |
 | Thanh quản trị cho người đăng nhập WordPress (khách không thấy, không phát sinh yêu cầu) | `src/components/layout/AdminBar.tsx` + plugin `thanh-quan-tri.php` (cookie `eco_qt`, admin-ajax `eco_thanh_qt`) |
 | Đường link, chuyển hướng link cũ | `src/data/links.ts` (bộ định tuyến `src/App.tsx` dựng từ đó); quy tắc và bảng 221 link web cũ: `docs/giu-link-web-cu.md` |
 | Danh mục nhỏ của web cũ (đệm lò xo, ruột chăn, ruột gối…) | `LISTINGS` trong `src/data/links.ts` (tên, link, sản phẩm gốc), Ecopillo chọn lại sản phẩm ở Nội dung web (`src/data/listingProducts.ts`); trang `src/pages/CategoryPage.tsx` |

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
@@ -10,6 +10,7 @@ import { SocialIcons } from '../home/SocialLinks'
 import { Logo } from './Logo'
 import { NavMoreMenu } from './NavMoreMenu'
 import { DesktopProductMenu, MobileProductMenu } from './ProductMenu'
+import { SiteSearch } from './SiteSearch'
 
 interface NavItem {
   href: string
@@ -44,13 +45,14 @@ export const NAV_ITEMS: readonly NavItem[] = [
 const itemsOf = (hrefs: readonly string[]): NavItem[] => hrefs.flatMap((href) => NAV_ITEMS.filter((item) => item.href === href))
 
 /** Thanh menu máy tính, sau nút "Sản phẩm" */
-const BAR_ITEMS = itemsOf([PATHS.about, PATHS.hotel, PATHS.contact, PATHS.recruit])
+const BAR_ITEMS = itemsOf([PATHS.about, PATHS.hotel, PATHS.contact])
 
 /**
  * Owner 19/11/2026 (ảnh cột "Khám phá" ở chân trang: "tích hợp phần này thêm ở thanh phía trên"): ba mục rời thanh từ 05/11
- * trở lại thanh máy tính. Từ 1280px nằm thẳng trên thanh; 1024–1279px không đủ chỗ nên gom vào nút "Thêm" (NavMoreMenu.tsx).
+ * trở lại thanh máy tính. Từ 1280px nằm thẳng trên thanh; 1024–1279px không đủ chỗ nên gom vào nút "Thêm" (NavMoreMenu.tsx),
+ * kèm "Đăng ký mở đại lý" từ khi thanh có nút kính lúp (cùng ngày, đo: thiếu 42px ở 1024px).
  */
-const EXTRA_ITEMS = itemsOf([PATHS.gifts, PATHS.blog, PATHS.faq])
+const EXTRA_ITEMS = itemsOf([PATHS.recruit, PATHS.gifts, PATHS.blog, PATHS.faq])
 
 /**
  * Mục 10 (khách 16/10/2026: chữ menu "nhạt lắm k rõ"), owner chọn kiểu A 17/10: chữ đủ màu chàm, nét 500, không thêm nền.
@@ -58,7 +60,7 @@ const EXTRA_ITEMS = itemsOf([PATHS.gifts, PATHS.blog, PATHS.faq])
  * Mẫu: docs/de-xuat-menu-dam-hon.html
  */
 const NAV_LINK =
-  'relative inline-flex items-center rounded-full px-2.5 py-2 text-small font-medium whitespace-nowrap text-deep-900 transition-colors hover:bg-mist-100'
+  'relative inline-flex items-center rounded-full px-2 py-2 text-small 2xl:px-2.5 font-medium whitespace-nowrap text-deep-900 transition-colors hover:bg-mist-100'
 
 /** Mục đang chọn: nền nhạt + gạch chân chàm */
 const NAV_ACTIVE =
@@ -86,6 +88,9 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isProductMenuOpen, setIsProductMenuOpen] = useState(false)
+  /** Mép dưới thanh đầu trang lúc mở ô tìm; null = ô tìm đóng */
+  const [searchTop, setSearchTop] = useState<number | null>(null)
+  const searchButtonRef = useRef<HTMLButtonElement>(null)
   const location = useLocation()
   const headerRef = useRef<HTMLElement>(null)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
@@ -101,7 +106,18 @@ export function Header() {
   useEffect(() => {
     setIsMenuOpen(false)
     setIsProductMenuOpen(false)
+    setSearchTop(null)
   }, [location])
+
+  const openSearch = () => {
+    setIsMenuOpen(false)
+    setIsProductMenuOpen(false)
+    setSearchTop(headerRef.current?.getBoundingClientRect().bottom ?? 72)
+  }
+  const closeSearch = useCallback(() => {
+    setSearchTop(null)
+    searchButtonRef.current?.focus({ preventScroll: true })
+  }, [])
 
   useEffect(() => {
     if (!isMenuOpen) return
@@ -148,12 +164,12 @@ export function Header() {
       }`}
     >
       {/* Khung rộng hơn Container (1240px) để thanh đủ tám mục (19/11/2026); ô xổ Sản phẩm vẫn theo Container */}
-      <div className="mx-auto flex h-[4.5rem] w-full max-w-[1520px] items-center justify-between gap-3 px-5 sm:px-8 lg:px-10">
+      <div className="mx-auto flex h-[4.5rem] w-full max-w-[1520px] items-center justify-between gap-2 px-5 sm:gap-3 lg:gap-2 2xl:gap-3 sm:px-8 lg:px-10">
         {/* Logo luôn hiện, cả ở trang chủ (banner 16/11/2026 không còn cụm chữ ECOPILLO lớn như A2 02/11) */}
         <Logo />
 
         <nav aria-label="Điều hướng chính" className="hidden lg:block">
-          <ul className="flex items-center gap-0.5">
+          <ul className="flex items-center gap-0.5 xl:gap-0 2xl:gap-0.5">
             <DesktopProductMenu
               label={NAV_ITEMS[0].label}
               isOpen={isProductMenuOpen}
@@ -182,12 +198,12 @@ export function Header() {
           {/*
             Mục 9 (khách yêu cầu 16/10/2026: "sđt để xanh như đặt hàng"): nút nền, cùng cỡ nút "Đặt hàng".
             Nền chàm sáng, "Đặt hàng" nền chàm đậm, để hai nút xanh cạnh nhau vẫn phân biệt được.
-            Từ 19/11/2026 (thanh thêm ba mục) nút chỉ hiện ở điện thoại ngang, máy tính bảng và màn từ 1440px: màn 1024–1439px
+            Từ 19/11/2026 (thanh thêm ba mục) nút chỉ hiện ở điện thoại ngang, máy tính bảng và màn từ 1480px: màn 1024–1479px
             không đủ chỗ (đo 19/11); số hotline vẫn luôn hiện ở khung liên hệ góc phải (ContactDock.tsx, owner chọn A ngày 18/11).
           */}
           <a
             href={CONTACT.hotlineTel}
-            className="hidden h-10 items-center gap-2 rounded-full bg-brand-blue px-4 text-sm font-medium text-ivory shadow-[var(--shadow-soft)] transition duration-300 hover:bg-deep-800 hover:shadow-[var(--shadow-lift)] active:scale-[0.98] md:max-lg:inline-flex min-[1440px]:inline-flex"
+            className="hidden h-10 items-center gap-2 rounded-full bg-brand-blue px-4 text-sm font-medium text-ivory shadow-[var(--shadow-soft)] transition duration-300 hover:bg-deep-800 hover:shadow-[var(--shadow-lift)] active:scale-[0.98] md:max-lg:inline-flex min-[1480px]:inline-flex"
           >
             <Icon name="phone" size={17} />
             <span className="tabular whitespace-nowrap">{CONTACT.hotlineDisplay}</span>
@@ -198,6 +214,18 @@ export function Header() {
               Đặt hàng
             </NavLink>
           </span>
+          {/* Thanh tìm kiếm, phương án B (19/11/2026): luôn hiện; điện thoại cạnh nút menu, máy tính đứng đầu nhóm nút bên phải */}
+          <button
+            ref={searchButtonRef}
+            type="button"
+            aria-label="Mở ô tìm"
+            aria-haspopup="dialog"
+            aria-expanded={searchTop !== null}
+            onClick={openSearch}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full text-deep-900 transition-colors hover:bg-mist-100 lg:order-first lg:h-10 lg:w-10 lg:bg-ivory lg:shadow-[var(--shadow-soft)] lg:hover:bg-mist-100"
+          >
+            <Icon name="search" size={20} />
+          </button>
           <button
             ref={menuButtonRef}
             type="button"
@@ -222,6 +250,15 @@ export function Header() {
             className="fade-in fixed inset-x-0 top-[4.5rem] bottom-0 z-50 overflow-y-auto overscroll-contain bg-page lg:hidden"
           >
             <Container className="flex min-h-full flex-col py-6">
+              {/* Ô tìm đầu menu như mẫu Ecopillo gửi (demluxury.com.vn): bấm vào mở lớp tìm */}
+              <button
+                type="button"
+                onClick={openSearch}
+                className="mb-2 flex h-12 w-full items-center gap-2.5 rounded-full bg-ivory px-4 text-left text-base text-ink-faint shadow-[var(--shadow-soft)]"
+              >
+                <Icon name="search" size={19} className="text-deep-900" />
+                Quý khách muốn tìm sản phẩm gì?
+              </button>
               <nav aria-label="Menu di động">
                 <ul className="divide-y divide-ivory">
                   {NAV_ITEMS.map((item, index) => {
@@ -272,6 +309,7 @@ export function Header() {
           </div>,
           document.body,
         )}
+      {searchTop !== null && <SiteSearch top={searchTop} onClose={closeSearch} />}
     </header>
   )
 }

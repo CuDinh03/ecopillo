@@ -17,8 +17,8 @@ interface NavMoreMenuProps {
 const PANEL_ID = 'nav-more-menu'
 
 /**
- * Máy tính nhỏ (1024–1279px): thanh không đủ chỗ cho cả tám mục (đo 19/11/2026), nên Quà tặng và sự kiện, Tin tức, Hỏi đáp
- * gom vào nút "Thêm". Từ 1280px ba mục này nằm thẳng trên thanh và nút này ẩn (Header.tsx).
+ * Máy tính nhỏ (1024–1279px): thanh không đủ chỗ cho cả tám mục và nút kính lúp (đo 19/11/2026), nên Đăng ký mở đại lý,
+ * Quà tặng và sự kiện, Tin tức, Hỏi đáp gom vào nút "Thêm". Từ 1280px các mục này nằm thẳng trên thanh và nút này ẩn (Header.tsx).
  */
 export function NavMoreMenu({ items, activeHref, buttonClass }: NavMoreMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
