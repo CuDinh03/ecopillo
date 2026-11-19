@@ -137,7 +137,10 @@ const BASE_POLICIES: readonly Policy[] = [
       },
       {
         title: 'Không cần đặt cọc',
-        body: ['Chăn ga tiêu chuẩn hoặc hoá đơn chăn ga dưới 10 triệu đồng: Quý khách kiểm hàng khi nhận rồi thanh toán.'],
+        // Chữ chị Phương gửi Zalo 19/11/2026 18:22 ("phải gồm cả 2 ý là hàng tiêu chuẩn và hoá đơn dưới 10tr đối với đơn chăn ga")
+        body: [
+          'Với các đơn hàng chăn ga tiêu chuẩn dưới 10 triệu đồng, Quý khách không cần đặt cọc trước. Quý khách được kiểm tra sản phẩm khi nhận hàng và chỉ thanh toán khi đã hài lòng.',
+        ],
       },
       {
         title: 'Cần đặt cọc',
