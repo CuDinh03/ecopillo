@@ -6,10 +6,13 @@ import { liveList, liveObject, type EditableField, type EditableSet } from './li
  * Owner chọn phương án A1 ngày 16/11/2026 (mẫu: docs/de-xuat-banner-moi-16-11.html): đúng như banner,
  * dòng chữ là ảnh cắt từ file thiết kế, 4 biểu tượng bấm sang danh mục, giữ 2 nút.
  * Ảnh xuất bằng docs/de-xuat-banner-moi-16-11/xuat-anh-web.py (đổi banner thì chạy lại, giữ tên file).
+ * 20/11/2026: chị Phương gửi images/Banner website2.psd (owner: "thay banner mới"): cảnh, biểu tượng giữ nguyên, dòng chữ mới
+ * '"Chốn Yên" bắt đầu từ Giấc ngủ ngon' kèm dải lụa và tim; xuất bằng docs/de-xuat-banner-moi-20-11/xuat-tieu-de.py
+ * (tên file thêm "-2" để trình duyệt, LiteSpeed không giữ ảnh cũ).
  */
 
 /** Câu chữ của dòng tiêu đề trong ảnh (đọc cho Google và trình đọc màn hình) */
-const BASE_HEADLINE = 'Chốn yên bắt đầu từ giấc ngủ ngon'
+const BASE_HEADLINE = '“Chốn Yên” bắt đầu từ giấc ngủ ngon'
 
 /** Phần đầu tiêu đề cấp 1, chỉ dành cho Google và trình đọc màn hình (ảnh không có tên hãng) */
 export const HERO_HEADLINE_PREFIX = 'Chăn ga gối đệm cao cấp Ecopillo: '
@@ -42,8 +45,8 @@ const BASE_HERO_IMAGES = {
     '/images/hero/chon-yen-mobile-900.webp 900w, /images/hero/chon-yen-mobile-1170.webp 1170w, /images/hero/chon-yen-mobile-1800.webp 1800w',
   desktopSrcSet:
     '/images/hero/chon-yen-desktop-1600.webp 1600w, /images/hero/chon-yen-desktop-2400.webp 2400w, /images/hero/chon-yen-desktop-3200.webp 3200w',
-  headlineSrc: '/images/hero/chon-yen-tieu-de-1000.webp',
-  headlineSrcSet: '/images/hero/chon-yen-tieu-de-1000.webp 1000w, /images/hero/chon-yen-tieu-de.webp 1488w',
+  headlineSrc: '/images/hero/chon-yen-tieu-de-2-1000.webp',
+  headlineSrcSet: '/images/hero/chon-yen-tieu-de-2-1000.webp 1000w, /images/hero/chon-yen-tieu-de-2.webp 1620w',
 }
 
 /* ——— Ecopillo tự sửa trong WordPress (liveContent.ts). Đổi ảnh: thẻ preload trong index.html vẫn tải ảnh cũ tới lần dựng sau ——— */

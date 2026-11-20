@@ -66,17 +66,17 @@ function HeroPicture({ className }: { className: string }) {
 const delay = (ms: number) => ({ '--hero-delay': `${ms}ms` }) as CSSProperties
 
 /**
- * Dòng tiêu đề "Chốn yên bắt đầu từ GIẤC NGỦ NGON" + tim: ảnh cắt từ file thiết kế (font của banner máy không có).
- * Tiêu đề cấp 1 đọc thành "Chăn ga gối đệm cao cấp Ecopillo: Chốn yên bắt đầu từ giấc ngủ ngon" (phần đầu ẩn, chỉ Google
+ * Dòng tiêu đề '"Chốn Yên" bắt đầu từ Giấc ngủ ngon' + dải lụa, tim (banner 20/11/2026): ảnh cắt từ file thiết kế (font của banner máy không có).
+ * Tiêu đề cấp 1 đọc thành "Chăn ga gối đệm cao cấp Ecopillo: “Chốn Yên” bắt đầu từ giấc ngủ ngon" (phần đầu ẩn, chỉ Google
  * và trình đọc màn hình thấy), để trang chủ vẫn có tên hãng trong H1.
  * Trang chỉ có một thẻ <h1> (bản điện thoại, vì Google xếp hạng theo bản điện thoại);
  * bản máy tính là tiêu đề cấp 1 bằng role.
  */
 /**
  * Hai bản (điện thoại, máy tính) cùng một chuỗi sizes để trình duyệt chọn cùng một file, không tải hai lần.
- * Điện thoại: rộng tối đa 20rem; máy tính: 36% bề ngang khung.
+ * Điện thoại: rộng tối đa 22rem; máy tính: 39% bề ngang khung (dòng chữ 20/11 rộng 810 / 2069 px của banner).
  */
-const HEADLINE_SIZES = '(min-width: 768px) clamp(272px, 36vw, 736px), min(calc(100vw - 40px), 320px)'
+const HEADLINE_SIZES = '(min-width: 768px) clamp(296px, 39vw, 800px), min(calc(100vw - 40px), 352px)'
 
 function Headline({ isMain, className }: { isMain: boolean; className: string }) {
   const content = (
@@ -87,7 +87,7 @@ function Headline({ isMain, className }: { isMain: boolean; className: string })
         srcSet={HERO_IMAGES.headlineSrcSet}
         sizes={HEADLINE_SIZES}
         width={1000}
-        height={255}
+        height={281}
         alt={HERO_HEADLINE}
         decoding="async"
         className={`block h-auto ${className}`}
@@ -236,7 +236,7 @@ function MobileTop() {
     <div className="relative flex min-h-[clamp(600px,166.67vw,860px)] flex-col md:hidden">
       <HeroPicture className="absolute inset-0 h-full w-full object-cover object-bottom" />
       <div className="relative flex flex-col items-center px-5 pt-[5.25rem]">
-        <Headline isMain className="w-[min(100%,20rem)]" />
+        <Headline isMain className="w-[min(100%,22rem)]" />
         <CategoryRow size={MOBILE_ROW} />
         <div style={delay(160)} className="hero-in mt-5 grid w-full grid-cols-2 gap-2.5">
           <a href="#bo-suu-tap" className={buttonClass('primary', 'md', 'px-3')}>
@@ -270,7 +270,7 @@ export function Hero() {
         {/* Chừa chỗ cho thanh đầu trang trong suốt phía trên */}
         <div className="absolute inset-0 z-10 flex items-center pt-[4.5rem] pl-8 lg:pl-10 xl:pl-[9.4%]">
           <div>
-            <Headline isMain={false} className="w-[clamp(17rem,36cqi,46rem)]" />
+            <Headline isMain={false} className="-ml-[2.7cqi] w-[clamp(18.5rem,39.15cqi,50rem)]" />
             <CategoryRow size={DESKTOP_ROW} />
             <div style={delay(160)} className="hero-in mt-[clamp(1.25rem,2.4cqi,2.5rem)] flex gap-3">
               <a href="#bo-suu-tap" className={buttonClass('primary', 'md', 'xl:h-14 xl:px-7 xl:text-base')}>
