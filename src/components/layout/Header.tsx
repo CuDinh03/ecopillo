@@ -292,7 +292,7 @@ export function Header() {
                 </Link>
                 <div className="grid grid-cols-2 gap-3">
                   <a href={CONTACT.hotlineTel} className={buttonClass('secondary', 'md')}>
-                    <Icon name="phone" size={17} /> Gọi ngay
+                    <Icon name="phone" size={17} className="text-call" /> Gọi ngay
                   </a>
                   <a href={CONTACT.zaloUrl} target="_blank" rel="noopener noreferrer" className={buttonClass('secondary', 'md')}>
                     <ZaloMark /> Nhắn Zalo
@@ -302,7 +302,7 @@ export function Header() {
                   Hotline / Zalo <span className="tabular font-medium text-deep-900">{CONTACT.hotlineDisplay}</span>
                 </p>
                 <div className="flex justify-center pt-2">
-                  <SocialIcons tone="dark" />
+                  <SocialIcons />
                 </div>
               </div>
             </Container>

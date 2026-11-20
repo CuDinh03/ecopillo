@@ -186,7 +186,7 @@ export function MobileBuyBar({ product, pattern, size, unitPrice, singleUrl, isS
         <a
           href={CONTACT.hotlineTel}
           aria-label={`Gọi hotline ${CONTACT.hotlineDisplay}`}
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-mist-100 text-deep-900"
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-call text-ivory"
         >
           <Icon name="phone" size={19} />
         </a>
@@ -195,9 +195,9 @@ export function MobileBuyBar({ product, pattern, size, unitPrice, singleUrl, isS
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Nhắn Zalo Ecopillo"
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-mist-100"
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-zalo"
         >
-          <ZaloMark />
+          <ZaloMark tone="light" />
         </a>
         {isSoldOut ? (
           <span className="flex h-12 min-w-0 flex-1 items-center justify-center rounded-2xl bg-mist-100 text-body-sm font-medium text-ink-faint ring-1 ring-cream-200">

@@ -51,7 +51,7 @@ export function MobileOrderBar({ amount, amountLabel, nextLabel, hint, canContin
         <a
           href={CONTACT.hotlineTel}
           aria-label={`Gọi hotline ${CONTACT.hotlineDisplay}`}
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-mist-100 text-deep-900 active:bg-mist-200"
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-call text-ivory active:bg-call-dark"
         >
           <Icon name="phone" size={19} />
         </a>
@@ -60,9 +60,9 @@ export function MobileOrderBar({ amount, amountLabel, nextLabel, hint, canContin
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Nhắn Zalo Ecopillo"
-          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-mist-100 active:bg-mist-200"
+          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-zalo active:brightness-90"
         >
-          <ZaloMark />
+          <ZaloMark tone="light" />
         </a>
         <button
           type="button"

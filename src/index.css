@@ -179,6 +179,20 @@
   /* Đỏ khẩu hiệu theo logo; chữ nhỏ cần 4,5:1 nên đậm hơn đỏ logo (#ed1c24 chỉ 4,38:1, audit 16/10/2026) */
   --color-tagline: #d9141c;
 
+  /*
+   * Màu hãng cho nút liên hệ và mạng xã hội (anh Quang, Zalo 19/11/2026: "nút gọi xanh lá", "Youtube màu đỏ";
+   * owner chọn phương án A "nền màu hãng" 20/11/2026, mẫu: docs/de-xuat-mau-nut-lien-he-19-11/so-sanh.png).
+   * Ngoại lệ của bộ màu nhận diện: CHỈ dùng cho nút gọi, Zalo, Messenger và vòng mạng xã hội.
+   * Xanh lá, xanh Zalo, xanh Messenger đều đạt 4,5:1 với chữ trắng. Instagram dùng lớp bg-instagram (dải màu).
+   */
+  --color-call: #15803d;
+  --color-call-dark: #166534;
+  --color-zalo: #0068ff;
+  --color-messenger: #0866ff;
+  --color-facebook: #0866ff;
+  --color-youtube: #ff0000;
+  --color-tiktok: #000000;
+
   /* Nền khung xem ảnh toàn màn hình (Lightbox): chàm rất đậm, để soi màu vải không bị nền sáng làm lệch.
      CHỈ dùng cho khung đó; theo mẫu C3 owner chốt 09/11/2026 (docs/de-xuat-gop-y-08-11.html) */
   --color-night: #0f1030;
@@ -537,6 +551,11 @@
   }
 }
 
+/* Nền vòng Instagram (màu hãng, xem --color-call… trong @theme) */
+@utility bg-instagram {
+  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+}
+
 @layer utilities {
   /*
    * Chữ căn đều hai bên cho đoạn văn dài (Ecopillo, Zalo 16/11/2026: "Tất cả phần text em căn 2 bên", như web cũ).
@@ -607,7 +626,8 @@
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    border: 2px solid var(--color-mist-600);
+    /* Sóng cùng màu nút gọi (xanh lá, màu hãng 20/11/2026) */
+    border: 2px solid var(--color-call);
     opacity: 0;
     pointer-events: none;
     animation: goi-song 2.6s var(--ease-out-strong) infinite;

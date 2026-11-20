@@ -48,6 +48,8 @@ cái Ecopillo được tự sửa, hay xong một bước chuyển web, thì s�
 - Màu: chỉ dùng bộ nhận diện trong `src/index.css` (`@theme`): chàm `#2D2E8D`, chàm sáng `#333DBA`,
   xanh nhạt `#D3EFFF`/`#E9F8FF`, trắng, vàng `#FFC271` (chỉ cho quà tặng, ưu đãi; ngoại lệ: dải trắng ngay dưới banner trang chủ có hai khung vàng, "Hệ sinh thái sản phẩm" (owner duyệt 17/10/2026)
   và "Tốt · Thật · Thiện" (chị Phương 09/11/2026: "làm khung cam như bên hệ sinh thái cho cân"), `BangEcBar` trong `Hero.tsx`).
+  **Ngoại lệ màu hãng** (owner chọn A 20/11/2026, theo anh Quang): nút gọi xanh lá, Zalo, Messenger, vòng mạng xã hội nền màu hãng
+  (`bg-call`, `bg-zalo`, `bg-messenger`, `bg-facebook`, `bg-youtube`, `bg-tiktok`, `bg-instagram`); chỉ dùng cho nút liên hệ và mạng xã hội, "Đặt hàng" vẫn chàm.
   Tên token cũ (`deep-*`, `mist-*`, `cream-*`, `ivory`) vẫn giữ và đã trỏ về các màu này.
 - **Nền cả web là xanh `#D3EFFF`, khối nổi màu trắng** (owner chọn 17/10/2026, mục 33, phương án 1): `bg-page` = #D3EFFF;
   `ivory`, `cream-50`, `cream-100`, `mist-50` đều là trắng. Thẻ, ô, hộp trắng tách khỏi nền bằng `shadow-[var(--shadow-soft)]`, không dùng viền `ring-cream-200` (trùng màu nền nên không thấy).

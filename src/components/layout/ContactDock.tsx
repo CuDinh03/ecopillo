@@ -4,7 +4,9 @@ import { PATHS } from '../../data/links'
 import { Icon, ZaloMark } from '../ui/Icon'
 
 /**
- * Thanh liên hệ luôn hiện:
+ * Thanh liên hệ luôn hiện. Nút gọi xanh lá, Zalo, Messenger nền màu hãng (anh Quang, Zalo 19/11/2026; owner chọn
+ * phương án A 20/11/2026, docs/de-xuat-mau-nut-lien-he-19-11/so-sanh.png); "Đặt hàng" vẫn chàm, là nút chính.
+ *
  * - Điện thoại: thanh dưới cùng (Gọi / Zalo / Messenger / Đặt hàng).
  * - Máy tính: Messenger / Zalo / số hotline hiện sẵn ở góc phải dưới, nút hotline có sóng lan (owner 18/11/2026:
  *   "không để ẩn hiện khi bấm vào nữa mà để hiện rõ ra luôn kèm hiệu ứng nhấn mạnh", chọn phương án A trong
@@ -18,7 +20,7 @@ export function ContactDock({ mobileBar = true }: { mobileBar?: boolean }) {
           <div className="grid grid-cols-[1fr_1fr_1fr_1.4fr] gap-2">
             <a
               href={CONTACT.hotlineTel}
-              className="flex h-12 flex-col items-center justify-center rounded-2xl bg-mist-100 text-deep-900 active:bg-mist-200"
+              className="flex h-12 flex-col items-center justify-center rounded-2xl bg-call text-ivory active:bg-call-dark"
             >
               <Icon name="phone" size={18} />
               <span className="mt-0.5 text-label font-medium">Gọi ngay</span>
@@ -27,16 +29,16 @@ export function ContactDock({ mobileBar = true }: { mobileBar?: boolean }) {
               href={CONTACT.zaloUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-12 flex-col items-center justify-center rounded-2xl bg-mist-100 text-deep-900 active:bg-mist-200"
+              className="flex h-12 flex-col items-center justify-center rounded-2xl bg-zalo text-ivory active:brightness-90"
             >
-              <ZaloMark />
+              <ZaloMark tone="light" />
               <span className="mt-0.5 text-label font-medium">Nhắn Zalo</span>
             </a>
             <a
               href={CONTACT.messengerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-12 flex-col items-center justify-center rounded-2xl bg-mist-100 text-deep-900 active:bg-mist-200"
+              className="flex h-12 flex-col items-center justify-center rounded-2xl bg-messenger text-ivory active:brightness-90"
             >
               <Icon name="messenger" size={18} />
               <span className="mt-0.5 text-label font-medium">Messenger</span>
@@ -58,9 +60,9 @@ export function ContactDock({ mobileBar = true }: { mobileBar?: boolean }) {
   )
 }
 
-/** Nút tròn trắng (dưới 1440px) hoặc viên thuốc có chữ (từ 1440px) */
+/** Nút tròn (dưới 1440px) hoặc viên thuốc có chữ (từ 1440px), nền màu hãng (owner chọn 20/11/2026) */
 const SIDE_BUTTON =
-  'flex h-13 w-13 items-center justify-center rounded-full bg-ivory text-sm font-medium text-deep-900 shadow-[var(--shadow-lift)] transition hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 min-[1440px]:w-auto min-[1440px]:justify-start min-[1440px]:gap-2 min-[1440px]:py-2 min-[1440px]:pr-4 min-[1440px]:pl-3'
+  'flex h-13 w-13 items-center justify-center rounded-full text-sm font-medium text-ivory shadow-[var(--shadow-lift)] transition hover:-translate-y-0.5 hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 min-[1440px]:w-auto min-[1440px]:justify-start min-[1440px]:gap-2 min-[1440px]:py-2 min-[1440px]:pr-4 min-[1440px]:pl-3'
 
 /**
  * Máy tính: ba nút luôn hiện. Dưới 1440px khung nội dung chạm mép phải, nút có chữ đè lên thẻ, đoạn văn (rà 23/10/2026):
@@ -75,7 +77,7 @@ function DesktopDock() {
         rel="noopener noreferrer"
         aria-label="Nhắn Messenger Ecopillo"
         title="Nhắn Messenger"
-        className={SIDE_BUTTON}
+        className={`${SIDE_BUTTON} bg-messenger`}
       >
         <Icon name="messenger" size={20} />
         <span aria-hidden="true" className="max-[1439px]:hidden">
@@ -88,9 +90,9 @@ function DesktopDock() {
         rel="noopener noreferrer"
         aria-label="Nhắn Zalo Ecopillo"
         title="Nhắn Zalo"
-        className={SIDE_BUTTON}
+        className={`${SIDE_BUTTON} bg-zalo`}
       >
-        <ZaloMark />
+        <ZaloMark tone="light" />
         <span aria-hidden="true" className="max-[1439px]:hidden">
           Zalo
         </span>
@@ -98,7 +100,7 @@ function DesktopDock() {
       <a
         href={CONTACT.hotlineTel}
         aria-label={`Gọi hotline ${CONTACT.hotlineDisplay}`}
-        className="goi-song flex h-14 items-center gap-2 rounded-full bg-deep-800 py-2 pr-5 pl-4 text-sm font-medium text-ivory shadow-[var(--shadow-lift)] transition hover:-translate-y-0.5 hover:bg-deep-700 focus-visible:outline-2 focus-visible:outline-offset-2"
+        className="goi-song flex h-14 items-center gap-2 rounded-full bg-call py-2 pr-5 pl-4 text-sm font-medium text-ivory shadow-[var(--shadow-lift)] transition hover:-translate-y-0.5 hover:bg-call-dark focus-visible:outline-2 focus-visible:outline-offset-2"
       >
         <Icon name="phone" size={18} className="goi-rung" />
         <span className="tabular">{CONTACT.hotlineDisplay}</span>

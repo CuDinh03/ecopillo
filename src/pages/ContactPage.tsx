@@ -25,6 +25,8 @@ interface ChannelProps {
   label: string
   value: string
   external?: boolean
+  /** Nền và màu ô biểu tượng: gọi, Zalo, Messenger theo màu hãng (owner chọn 20/11/2026) */
+  chip?: string
 }
 
 /** Email ngắt dòng trước "@" (đổi email 09/11/2026): "ecopillo.com.vn / @gmail.com", không bẻ giữa chữ */
@@ -40,12 +42,12 @@ function breakEmail(value: string): ReactNode {
   )
 }
 
-/** Ô hotline chàm trên cùng: thứ đầu tiên Quý khách thấy */
+/** Ô hotline xanh lá (màu nút gọi, owner chọn 20/11/2026) trên cùng: thứ đầu tiên Quý khách thấy */
 function HotlineCard() {
   return (
     <a
       href={CONTACT.hotlineTel}
-      className="group flex items-center gap-4 rounded-2xl bg-deep-800 p-4 text-ivory shadow-[var(--shadow-lift)] transition duration-300 hover:-translate-y-0.5 hover:bg-deep-700 sm:p-5"
+      className="group flex items-center gap-4 rounded-2xl bg-call p-4 text-ivory shadow-[var(--shadow-lift)] transition duration-300 hover:-translate-y-0.5 hover:bg-call-dark sm:p-5"
     >
       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ivory/15 sm:h-12 sm:w-12">
         <Icon name="phone" size={22} />
@@ -64,7 +66,7 @@ function HotlineCard() {
  * Ô kênh liên hệ thấp (C2 phương án 2, owner chốt 09/11/2026): biểu tượng cạnh nhãn, giá trị bên dưới.
  * Điện thoại 2×2, từ 640px bốn ô một hàng dưới ô hotline.
  */
-function Channel({ href, icon, label, value, external }: ChannelProps) {
+function Channel({ href, icon, label, value, external, chip = 'bg-mist-100 text-deep-800' }: ChannelProps) {
   const isEmail = value.includes('@')
   return (
     <a
@@ -74,7 +76,7 @@ function Channel({ href, icon, label, value, external }: ChannelProps) {
     >
       {/* Biểu tượng nhỏ, chữ giãn vừa: "Điện thoại" nằm một dòng ở cả 320px và ô máy tính */}
       <span className="flex items-center gap-1.5 min-[360px]:gap-2">
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-mist-100 text-deep-800">{icon}</span>
+        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${chip}`}>{icon}</span>
         <span className="text-label font-medium tracking-[0.06em] whitespace-nowrap text-mist-600 uppercase">{label}</span>
       </span>
       {/* Số điện thoại xuống dòng chứ không cắt khi khách bật chữ to (rà 23/10/2026: "không bao giờ cắt số") */}
@@ -98,8 +100,8 @@ const TOPIC_PARAM: Readonly<Record<string, Topic>> = {
  * các nút gọi khác trên web vẫn dùng hotline 072.
  */
 const CHANNELS: readonly (ChannelProps & { key: string })[] = [
-  { key: 'phone', href: CONTACT.phoneTel, icon: <Icon name="phone" size={18} />, label: 'Mua hàng', value: CONTACT.phoneDisplay },
-  { key: 'zalo', href: CONTACT.zaloUrl, icon: <ZaloMark />, label: 'Mở đại lý', value: CONTACT.hotlineDisplay, external: true },
+  { key: 'phone', href: CONTACT.phoneTel, icon: <Icon name="phone" size={18} />, label: 'Mua hàng', value: CONTACT.phoneDisplay, chip: 'bg-call text-ivory' },
+  { key: 'zalo', href: CONTACT.zaloUrl, icon: <ZaloMark />, label: 'Mở đại lý', value: CONTACT.hotlineDisplay, external: true, chip: 'bg-zalo' },
   {
     key: 'messenger',
     href: CONTACT.messengerUrl,
@@ -107,6 +109,7 @@ const CHANNELS: readonly (ChannelProps & { key: string })[] = [
     label: 'Messenger',
     value: 'Ecopillo.com.vn',
     external: true,
+    chip: 'bg-messenger text-ivory',
   },
   { key: 'email', href: `mailto:${CONTACT.email}`, icon: <Icon name="mail" size={18} />, label: 'Email', value: CONTACT.email },
 ]
@@ -270,7 +273,7 @@ export function ContactPage() {
               </ul>
               <div className="mt-6 border-t border-line pt-5">
                 <p className="mb-3 text-sm text-ink-soft">Theo dõi Ecopillo</p>
-                <SocialIcons tone="light" />
+                <SocialIcons />
               </div>
             </div>
           </aside>

@@ -149,9 +149,12 @@ function BrandIcon({ name, size, className }: { name: BrandName; size: number; c
   )
 }
 
-/** Biểu tượng Zalo dạng chữ, tránh dùng logo thương hiệu */
+/**
+ * Biểu tượng Zalo dạng chữ, tránh dùng logo thương hiệu. Ô màu xanh Zalo (màu hãng, owner chọn 20/11/2026);
+ * `light` = ô trắng chữ xanh Zalo, đặt trên nền đậm hoặc nền xanh Zalo.
+ */
 export function ZaloMark({ tone = 'dark' }: { tone?: 'dark' | 'light' }) {
-  const colors = tone === 'dark' ? 'bg-deep-800 text-ivory' : 'bg-ivory text-deep-800'
+  const colors = tone === 'dark' ? 'bg-zalo text-ivory' : 'bg-ivory text-zalo'
   return (
     <span
       aria-hidden="true"
