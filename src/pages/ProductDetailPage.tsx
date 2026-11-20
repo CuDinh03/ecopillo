@@ -102,7 +102,9 @@ function ProductDetail({ product }: { product: Product }) {
   const image = photos[photoIndex] ?? product.image
   const info = PRODUCT_INFO[product.slug]
   // Thông số: ô trong productInfo.ts ghi đè ô cùng tên trong products.ts
-  const specs = [...(info?.specs ?? []), ...(product.specs ?? []).filter((s) => !info?.specs?.some((i) => i.label === s.label))]
+  const specs = product.specsFromWoo
+    ? (product.specs ?? [])
+    : [...(info?.specs ?? []), ...(product.specs ?? []).filter((s) => !info?.specs?.some((i) => i.label === s.label))]
 
   return (
     <div className="pb-36 lg:pb-24">

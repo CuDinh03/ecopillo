@@ -58,9 +58,17 @@ export interface FrameCategory {
   khung: string
 }
 
+/** Sản phẩm lẻ có sẵn (cả sản phẩm chưa có giá) để plugin lấy tên, ảnh, mô tả Ecopillo đã soát trong Woo (noi-dung-woo.php, đợt B) */
+export interface FrameContentProduct {
+  khoa: string
+  ten: string
+  woo: string[]
+}
+
 export interface PriceFrame {
   mau: FramePattern[]
   sanPham: FrameProduct[]
+  noiDung: FrameContentProduct[]
   boSuuTap: FrameCollection[]
   danhMuc: FrameCategory[]
   /**
@@ -141,5 +149,10 @@ export function buildPriceFrame(): PriceFrame {
   const baiViet = Object.fromEntries(wordpress.map((p) => [p.slug, p.wp?.modified ?? '']))
   const baiTrongCode = ALL_POSTS.filter((p) => !p.wp).map((p) => p.slug)
   const khungBai = wordpress[0] ? `/${wordpress[0].slug}/` : ''
-  return { mau, sanPham, boSuuTap, danhMuc, baiViet, baiTrongCode, khungBai, slugCu }
+  const noiDung: FrameContentProduct[] = PRODUCTS.filter((p) => !p.collection).map((p) => ({
+    khoa: p.slug,
+    ten: p.name,
+    woo: wooSlugsFor(singleProductPath(p.slug)),
+  }))
+  return { mau, sanPham, noiDung, boSuuTap, danhMuc, baiViet, baiTrongCode, khungBai, slugCu }
 }

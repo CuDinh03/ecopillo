@@ -1,5 +1,5 @@
 import { formatRange, formatVND } from '../lib/format'
-import { liveNewProducts, liveProduct, markLiveDiffers, mergePrices, type LiveNewProduct } from './liveData'
+import { liveNewProducts, liveProduct, liveProductContent, markLiveDiffers, mergePrices, type LiveNewProduct } from './liveData'
 import { slugify } from '../lib/slug'
 import { collectionPath, LISTINGS, PATHS, singleProductPath, WOO_CATEGORY_LISTINGS } from './links'
 import {
@@ -76,6 +76,8 @@ export interface Product {
   gallery?: readonly ImageSource[]
   /** Thông số ngắn, ví dụ độ dày, bảo hành */
   specs?: readonly { label: string; value: string }[]
+  /** Thông số lấy từ thuộc tính Woo Ecopillo đã soát (đợt B): thay hẳn thông số trong productInfo.ts */
+  specsFromWoo?: boolean
   /** Giá theo tổ hợp kích thước × độ dày (đệm) */
   variants?: ProductVariants
   /** Sản phẩm lẻ không có bảng giá kích thước × độ dày: các lựa chọn để đặt online */
@@ -857,6 +859,25 @@ const withLivePrice = (p: Product): Product => {
   return values.length ? { ...next, min: Math.min(...values), max: Math.max(...values) } : next
 }
 
+/**
+ * Tên, ảnh, mô tả, thông số Ecopillo đã soát trong WooCommerce (đợt B, plugin noi-dung-woo.php): chỉ sản phẩm lẻ có sẵn
+ * mà Ecopillo đã tích "Giao diện mới dùng tên, ảnh, mô tả"; ô Woo trống thì giữ nội dung trong code.
+ */
+const withLiveContent = (p: Product): Product => {
+  const live = p.collection ? undefined : liveProductContent(p.slug)
+  if (!live) return p
+  markLiveDiffers()
+  return {
+    ...p,
+    ...(live.ten ? { name: live.ten } : {}),
+    ...(live.anh ? { image: { ...live.anh, alt: live.anh.alt || live.ten || p.name } } : {}),
+    ...(live.anhPhu ? { gallery: live.anhPhu.map((img, i) => ({ ...img, alt: img.alt || `${live.ten ?? p.name} · ảnh ${i + 2}` })) } : {}),
+    ...(live.tomTat ? { summary: live.tomTat } : {}),
+    ...(live.chiTiet ? { details: live.chiTiet } : {}),
+    ...(live.thongSo ? { specs: live.thongSo.map((s) => ({ label: s.nhan, value: s.giaTri })), specsFromWoo: true } : {}),
+  }
+}
+
 /** Nhóm của sản phẩm mới: theo trang danh mục có nhóm; không có (ruột chăn gối, chăn hè) thì đoán theo tên */
 const newProductCategory = (name: string, listings: readonly string[]): CategoryId => {
   for (const path of listings) {
@@ -923,6 +944,7 @@ const BASE_PRODUCTS: readonly Product[] = [
 ]
   .map(withPhoto)
   .map(withLivePrice)
+  .map(withLiveContent)
 
 /** Sản phẩm mới không được trùng khoá sản phẩm có sẵn (khoá cũng là tên trên link) */
 const NEW_PRODUCTS: readonly Product[] = liveNewProducts()

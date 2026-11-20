@@ -12,7 +12,7 @@
  * khi Ecopillo báo mẫu hết thật thì thêm soldOut: ['180x200'] vào mẫu đó.
  */
 
-import { liveNewPatterns, livePattern, markLiveDiffers, mergePrices, type LiveNewPattern } from './liveData'
+import { liveNewPatterns, livePattern, livePatternContent, markLiveDiffers, mergePrices, type LiveNewPattern } from './liveData'
 
 export type SizeId = '160x200' | '180x200' | '200x220'
 
@@ -401,6 +401,24 @@ const BASE_COLLECTIONS: readonly Collection[] = [
   },
 ]
 
+/**
+ * Ảnh, ảnh phụ, tên màu Ecopillo đã soát trong WooCommerce (đợt B, noi-dung-woo.php) cho mẫu có sẵn. Ô Woo trống thì giữ ảnh,
+ * tên màu, ảnh phụ trong code (cùng một quy tắc với sản phẩm lẻ).
+ */
+const withPatternContent = (collection: Collection, pattern: Pattern): Pattern => {
+  const live = livePatternContent(collection.id, pattern.code)
+  if (!live) return pattern
+  markLiveDiffers()
+  const colorName = live.tenMau ?? pattern.colorName
+  const alt = `${collection.name} ${pattern.code} · ${colorName}`
+  return {
+    ...pattern,
+    colorName,
+    ...(live.anh ? { hasImage: true, image: { ...live.anh, alt: live.anh.alt || alt } } : {}),
+    ...(live.anhPhu ? { hasImage: true, gallery: live.anhPhu.map((img, i) => ({ ...img, alt: img.alt || `${alt} · ảnh ${i + 2}` })) } : {}),
+  }
+}
+
 /** Ghép giá, giá ga chun chần, cỡ hết hàng do Ecopillo sửa trong WooCommerce (liveData.ts) lên một mẫu */
 const withLivePattern = (collection: Collection, pattern: Pattern): Pattern => {
   const live = livePattern(collection.id, pattern.code)
@@ -453,7 +471,7 @@ export const COLLECTIONS: readonly Collection[] = BASE_COLLECTIONS.map((c) => ({
   ...c,
   patterns: withNewPatterns(
     c,
-    c.patterns.map((p) => withLivePattern(c, p)),
+    c.patterns.map((p) => withLivePattern(c, withPatternContent(c, p))),
   ),
 }))
 

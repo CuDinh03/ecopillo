@@ -77,11 +77,33 @@ export interface LiveNewProduct {
   bienThe?: { co: readonly string[]; doDay: readonly string[]; gia: Readonly<Record<string, number>> }
 }
 
+/**
+ * Tên, ảnh, mô tả sản phẩm có sẵn lấy từ WooCommerce khi Ecopillo đã soát và tích ô "Giao diện mới dùng tên, ảnh, mô tả"
+ * (đợt B, plugin noi-dung-woo.php). Chỉ có ô Woo không trống; ô thiếu thì giữ nội dung trong code.
+ */
+export interface LiveProductContent {
+  ten?: string
+  anh?: LiveImage
+  anhPhu?: readonly LiveImage[]
+  tomTat?: string
+  chiTiet?: readonly string[]
+  thongSo?: readonly { nhan: string; giaTri: string }[]
+}
+
+/** Ảnh, ảnh phụ, tên màu của một mẫu chăn ga có sẵn (khoá `${collectionId}/${code}`) */
+export interface LivePatternContent {
+  anh?: LiveImage
+  anhPhu?: readonly LiveImage[]
+  tenMau?: string
+}
+
 interface LiveData {
   mau: Readonly<Record<string, LivePattern>>
   sanPham: Readonly<Record<string, LiveProduct>>
   mauMoi: readonly LiveNewPattern[]
   sanPhamMoi: readonly LiveNewProduct[]
+  noiDungSanPham: Readonly<Record<string, LiveProductContent>>
+  noiDungMau: Readonly<Record<string, LivePatternContent>>
 }
 
 const isPrice = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v > 0 && v < 1e10
@@ -212,12 +234,67 @@ function cleanNewProduct(input: unknown): LiveNewProduct | undefined {
   }
 }
 
+const cleanImages = (v: unknown): LiveImage[] => (Array.isArray(v) ? v.map(cleanImage).filter((x): x is LiveImage => !!x).slice(0, 12) : [])
+
+const cleanSpecs = (v: unknown): { nhan: string; giaTri: string }[] =>
+  Array.isArray(v)
+    ? v
+        .flatMap((x) => {
+          const s = (x ?? {}) as Record<string, unknown>
+          const nhan = cleanText(s.nhan, 60)
+          const giaTri = cleanText(s.giaTri, 200)
+          return nhan && giaTri ? [{ nhan, giaTri }] : []
+        })
+        .slice(0, 12)
+    : []
+
+/** Chỉ giữ ô có giá trị đúng kiểu; đối tượng rỗng = không có gì để ghép */
+function cleanProductContent(input: unknown): LiveProductContent {
+  const v = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>
+  const ten = cleanText(v.ten, 120)
+  const anh = cleanImage(v.anh)
+  const anhPhu = cleanImages(v.anhPhu)
+  const tomTat = cleanText(v.tomTat, 400)
+  const chiTiet = cleanTexts(v.chiTiet, 600, 16)
+  const thongSo = cleanSpecs(v.thongSo)
+  return {
+    ...(ten ? { ten } : {}),
+    ...(anh ? { anh } : {}),
+    ...(anhPhu.length ? { anhPhu } : {}),
+    ...(tomTat ? { tomTat } : {}),
+    ...(chiTiet.length ? { chiTiet } : {}),
+    ...(thongSo.length ? { thongSo } : {}),
+  }
+}
+
+function cleanPatternContent(input: unknown): LivePatternContent {
+  const v = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>
+  const anh = cleanImage(v.anh)
+  const anhPhu = cleanImages(v.anhPhu)
+  const tenMau = cleanText(v.tenMau, 60)
+  return { ...(anh ? { anh } : {}), ...(anhPhu.length ? { anhPhu } : {}), ...(tenMau ? { tenMau } : {}) }
+}
+
+const cleanContentMap = <T extends object>(input: unknown, clean: (v: unknown) => T): Record<string, T> =>
+  Object.fromEntries(
+    Object.entries(input && typeof input === 'object' ? input : {})
+      .slice(0, 400)
+      .map(([key, value]) => [key, clean(value)] as const)
+      .filter(([, value]) => Object.keys(value).length > 0),
+  )
+
 function read(): LiveData {
-  const empty: LiveData = { mau: {}, sanPham: {}, mauMoi: [], sanPhamMoi: [] }
+  const empty: LiveData = { mau: {}, sanPham: {}, mauMoi: [], sanPhamMoi: [], noiDungSanPham: {}, noiDungMau: {} }
   if (typeof window === 'undefined') return empty
   const raw = (window as { __ECO_GIA__?: unknown }).__ECO_GIA__
   if (!raw || typeof raw !== 'object') return empty
-  const { mau, sanPham, mauMoi, sanPhamMoi } = raw as { mau?: unknown; sanPham?: unknown; mauMoi?: unknown; sanPhamMoi?: unknown }
+  const { mau, sanPham, mauMoi, sanPhamMoi, noiDungWoo } = raw as {
+    mau?: unknown
+    sanPham?: unknown
+    mauMoi?: unknown
+    sanPhamMoi?: unknown
+    noiDungWoo?: { sanPham?: unknown; mau?: unknown }
+  }
   const patterns: Record<string, LivePattern> = {}
   for (const [key, value] of Object.entries(mau && typeof mau === 'object' ? mau : {})) {
     const v = (value ?? {}) as Record<string, unknown>
@@ -230,7 +307,14 @@ function read(): LiveData {
   }
   const newPatterns = Array.isArray(mauMoi) ? mauMoi.slice(0, 200).map(cleanNewPattern).filter((x): x is LiveNewPattern => !!x) : []
   const newProducts = Array.isArray(sanPhamMoi) ? sanPhamMoi.slice(0, 200).map(cleanNewProduct).filter((x): x is LiveNewProduct => !!x) : []
-  return { mau: patterns, sanPham: products, mauMoi: newPatterns, sanPhamMoi: newProducts }
+  return {
+    mau: patterns,
+    sanPham: products,
+    mauMoi: newPatterns,
+    sanPhamMoi: newProducts,
+    noiDungSanPham: cleanContentMap(noiDungWoo?.sanPham, cleanProductContent),
+    noiDungMau: cleanContentMap(noiDungWoo?.mau, cleanPatternContent),
+  }
 }
 
 const LIVE = read()
@@ -238,6 +322,13 @@ const LIVE = read()
 export const livePattern = (collectionId: string, code: string): LivePattern | undefined => LIVE.mau[`${collectionId}/${code}`]
 
 export const liveProduct = (slug: string): LiveProduct | undefined => LIVE.sanPham[slug]
+
+/** Tên, ảnh, mô tả Ecopillo đã soát trong Woo cho một sản phẩm lẻ có sẵn (đợt B) */
+export const liveProductContent = (slug: string): LiveProductContent | undefined => LIVE.noiDungSanPham[slug]
+
+/** Ảnh, ảnh phụ, tên màu Ecopillo đã soát trong Woo cho một mẫu có sẵn (đợt B) */
+export const livePatternContent = (collectionId: string, code: string): LivePatternContent | undefined =>
+  LIVE.noiDungMau[`${collectionId}/${code}`]
 
 /** Mẫu mới Ecopillo thêm trong WooCommerce cho một bộ sưu tập */
 export const liveNewPatterns = (collectionId: string): readonly LiveNewPattern[] => LIVE.mauMoi.filter((p) => p.bo === collectionId)

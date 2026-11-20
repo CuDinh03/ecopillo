@@ -317,12 +317,16 @@ function eco_dl_write()
     // (giá của chúng vốn chỉ có trong Woo). Chưa bật thì giá sản phẩm có sẵn vẫn để trống, web giữ giá trong code.
     $patterns = $woo ? eco_mm_compute() : array('live' => array(), 'pages' => array());
     $items = $woo && function_exists('eco_sp_compute') ? eco_sp_compute() : array('live' => array(), 'pages' => array());
-    if ($prices === null && ($patterns['live'] || $items['live'])) {
+    // Tên, ảnh, mô tả sản phẩm có sẵn Ecopillo đã soát và tích trong Woo (noi-dung-woo.php): cũng không chờ bật giá
+    $content_woo = $woo && function_exists('eco_nw_compute') ? eco_nw_compute()['live'] : array('sanPham' => array(), 'mau' => array());
+    $has_content_woo = (array) $content_woo['sanPham'] || (array) $content_woo['mau'];
+    if ($prices === null && ($patterns['live'] || $items['live'] || $has_content_woo)) {
         $prices = array('mau' => new stdClass(), 'sanPham' => new stdClass());
     }
     if ($prices !== null) {
         $prices['mauMoi'] = $patterns['live'];
         $prices['sanPhamMoi'] = $items['live'];
+        $prices['noiDungWoo'] = $content_woo;
     }
     update_option(ECO_MM_OPT_TRANG, array_merge($items['pages'], $patterns['pages']), false);
     // Bài viết mới / đã sửa (bai-viet-moi.php): danh sách vào du-lieu.js, thân bài mỗi bài một file
@@ -391,5 +395,6 @@ function eco_gia_refresh_if_stale()
 
 require_once __DIR__ . '/mau-moi.php';
 require_once __DIR__ . '/san-pham-moi.php';
+require_once __DIR__ . '/noi-dung-woo.php';
 require_once __DIR__ . '/bai-viet-moi.php';
 require_once __DIR__ . '/gia-woo-quan-tri.php';
