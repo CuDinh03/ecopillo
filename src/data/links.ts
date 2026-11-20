@@ -1,6 +1,6 @@
 import type { Collection, Pattern } from './catalog'
 import { liveList, type EditableField, type EditableSet } from './liveContent'
-import { liveNewPatternBySlug, liveNewProductBySlug } from './liveData'
+import { liveNewCollections, liveNewPatternBySlug, liveNewProductBySlug } from './liveData'
 
 /**
  * Mọi đường link của web nằm ở đây.
@@ -204,7 +204,22 @@ const PRODUCT_SLUGS: Readonly<Record<string, string>> = {
 
 const productPagePath = (slug: string): string => `/san-pham/${slug}/`
 
-export const collectionPathById = (id: string): string => COLLECTION_PATHS[id] ?? PATHS.products
+/**
+ * Bộ sưu tập Ecopillo tạo trong WooCommerce (đợt C): link là link danh mục Woo. Bỏ bộ trùng mã hoặc trùng link với trang có sẵn
+ * (catalog.ts cũng chỉ dựng bộ có link ở đây).
+ */
+const KNOWN_PATHS = new Set<string>([...Object.values(COLLECTION_PATHS), ...Object.values(PATHS)])
+const LIVE_COLLECTION_PATHS: Readonly<Record<string, string>> = Object.fromEntries(
+  liveNewCollections()
+    .filter((c) => !COLLECTION_PATHS[c.id] && !KNOWN_PATHS.has(c.duongDan))
+    .map((c) => [c.id, c.duongDan]),
+)
+
+const LIVE_GA_PHU_IDS: readonly string[] = liveNewCollections()
+  .filter((c) => c.kieu === 'ga-phu' && LIVE_COLLECTION_PATHS[c.id])
+  .map((c) => c.id)
+
+export const collectionPathById = (id: string): string => COLLECTION_PATHS[id] ?? LIVE_COLLECTION_PATHS[id] ?? PATHS.products
 
 export const collectionPath = (collection: Collection): string => collectionPathById(collection.id)
 
@@ -234,14 +249,22 @@ export const productPageTarget = (slug: string | undefined): ProductPageTarget |
   if (known) return known
   const added = liveNewPatternBySlug(slug)
   if (added) return { kind: 'pattern', collectionId: added.bo, code: added.ma }
+  // Mẫu của bộ Ecopillo tạo trong Woo (đợt C)
+  for (const collection of liveNewCollections()) {
+    const own = LIVE_COLLECTION_PATHS[collection.id] ? collection.mau.find((m) => m.duongDan === slug) : undefined
+    if (own) return { kind: 'pattern', collectionId: collection.id, code: own.ma }
+  }
   // Sản phẩm lẻ mới trong Woo (giai đoạn 4b): khoá sản phẩm chính là tên trên link
   return liveNewProductBySlug(slug) ? { kind: 'product', slug } : undefined
 }
 
 /** Trang danh mục của web cũ mở trang bộ sưu tập (đường link → mã bộ sưu tập) */
 export const COLLECTION_BY_PATH: ReadonlyMap<string, string> = new Map(
-  Object.entries(COLLECTION_PATHS).map(([id, path]) => [path, id]),
+  Object.entries({ ...LIVE_COLLECTION_PATHS, ...COLLECTION_PATHS }).map(([id, path]) => [path, id]),
 )
+
+/** Mã bộ của một link trang bộ (cả bộ Ecopillo tạo trong Woo) */
+export const collectionIdByPath = (path: string): string | undefined => COLLECTION_BY_PATH.get(path)
 
 /**
  * Trang danh mục của web cũ mở danh sách sản phẩm đã lọc sẵn. Tiêu đề lấy theo tên danh mục trên web cũ.
@@ -351,7 +374,10 @@ const LIVE_LISTING_ROWS = liveList(LISTING_HEAD_SET.khoa, LISTING_ROWS, LISTING_
 export const LISTINGS: Readonly<Record<string, ListingPreset>> = Object.fromEntries(
   Object.entries(BASE_LISTINGS).map(([path, listing]) => {
     const row = LIVE_LISTING_ROWS.find((r) => r.path === path)
-    return [path, row ? { ...listing, title: row.title, description: row.description } : listing]
+    const withText = row ? { ...listing, title: row.title, description: row.description } : listing
+    // Bộ ga phủ Ecopillo tạo trong Woo (đợt C) vào trang danh mục Bộ ga phủ
+    const addGaPhu = path === '/danh-muc-san-pham/san-pham/bo-ga-phu/' && withText.collections
+    return [path, addGaPhu ? { ...withText, collections: [...(withText.collections ?? []), ...LIVE_GA_PHU_IDS] } : withText]
   }),
 )
 

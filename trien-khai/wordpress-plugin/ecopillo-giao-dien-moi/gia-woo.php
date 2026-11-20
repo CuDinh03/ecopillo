@@ -320,15 +320,20 @@ function eco_dl_write()
     // Tên, ảnh, mô tả sản phẩm có sẵn Ecopillo đã soát và tích trong Woo (noi-dung-woo.php): cũng không chờ bật giá
     $content_woo = $woo && function_exists('eco_nw_compute') ? eco_nw_compute()['live'] : array('sanPham' => array(), 'mau' => array());
     $has_content_woo = (array) $content_woo['sanPham'] || (array) $content_woo['mau'];
-    if ($prices === null && ($patterns['live'] || $items['live'] || $has_content_woo)) {
+    // Bộ sưu tập mới, chữ bộ có sẵn Ecopillo tạo / tích ở trang danh mục Woo (bo-suu-tap-moi.php)
+    $collections = $woo && function_exists('eco_bst_compute') ? eco_bst_compute() : array('live' => array(), 'chu' => array(), 'pagesBo' => array(), 'pagesMau' => array());
+    if ($prices === null && ($patterns['live'] || $items['live'] || $has_content_woo || $collections['live'] || $collections['chu'])) {
         $prices = array('mau' => new stdClass(), 'sanPham' => new stdClass());
     }
     if ($prices !== null) {
         $prices['mauMoi'] = $patterns['live'];
         $prices['sanPhamMoi'] = $items['live'];
         $prices['noiDungWoo'] = $content_woo;
+        $prices['boSuuTapMoi'] = $collections['live'];
+        $prices['boSuuTapChu'] = $collections['chu'] ? $collections['chu'] : new stdClass();
     }
-    update_option(ECO_MM_OPT_TRANG, array_merge($items['pages'], $patterns['pages']), false);
+    update_option(ECO_MM_OPT_TRANG, array_merge($items['pages'], $patterns['pages'], $collections['pagesMau']), false);
+    update_option(ECO_BST_OPT_TRANG, $collections['pagesBo'], false);
     // Bài viết mới / đã sửa (bai-viet-moi.php): danh sách vào du-lieu.js, thân bài mỗi bài một file
     $posts = function_exists('eco_bv_compute') ? eco_bv_compute() : array('live' => array(), 'bodies' => array(), 'pages' => array());
     eco_bv_write_bodies($posts['bodies']);
@@ -396,5 +401,6 @@ function eco_gia_refresh_if_stale()
 require_once __DIR__ . '/mau-moi.php';
 require_once __DIR__ . '/san-pham-moi.php';
 require_once __DIR__ . '/noi-dung-woo.php';
+require_once __DIR__ . '/bo-suu-tap-moi.php';
 require_once __DIR__ . '/bai-viet-moi.php';
 require_once __DIR__ . '/gia-woo-quan-tri.php';

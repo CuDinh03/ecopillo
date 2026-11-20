@@ -7,7 +7,8 @@
  * Ecopillo soát xong một sản phẩm thì tích ô "Giao diện mới dùng tên, ảnh, mô tả của sản phẩm này" trong trang sửa sản phẩm.
  * Từ đó plugin ghi phần đó vào du-lieu.js (`window.__ECO_GIA__.noiDungWoo`, src/data/liveData.ts):
  * - sản phẩm lẻ (đệm, gối, chăn…): tên, ảnh, ảnh thư viện, mô tả ngắn, mô tả (các ý), thuộc tính hiện ra (thông số);
- * - mẫu của bộ chăn ga: ảnh, ảnh thư viện, tên màu (dòng đầu Mô tả ngắn, như mẫu mới ở mau-moi.php).
+ * - mẫu của bộ chăn ga: ảnh, ảnh thư viện, tên màu (dòng đầu Mô tả ngắn, như mẫu mới ở mau-moi.php), câu chuyện (ô Mô tả,
+ *   dòng đầu là tên câu chuyện; thuộc tính "Gam màu"; đợt C, bo-suu-tap-moi.php).
  * Ô nào trong Woo để trống thì web giữ nội dung có sẵn của ô đó. Không phụ thuộc việc bật lấy giá từ Woo.
  * Sản phẩm web ↔ sản phẩm Woo ghép theo link như khung giá (khung-gia.json: `noiDung`, `mau`).
  */
@@ -34,7 +35,7 @@ function eco_nw_box($post)
     <p><label><input type="checkbox" name="eco_nw_dung" value="1" <?php checked($checked); ?>>
         <strong>Giao diện mới dùng tên, ảnh, mô tả của sản phẩm này</strong></label></p>
     <p style="color:#555;margin:0">Tích khi đã soát xong: tên, ảnh sản phẩm, ảnh thư viện, mô tả ngắn, mô tả, thuộc tính.
-        Bộ chăn ga: chỉ ảnh, ảnh thư viện và tên màu (dòng đầu Mô tả ngắn). Ô nào để trống thì web giữ nội dung đang có.
+        Bộ chăn ga: ảnh, ảnh thư viện, tên màu (dòng đầu Mô tả ngắn), câu chuyện (Mô tả: dòng đầu là tên câu chuyện; thuộc tính Gam màu). Ô nào để trống thì web giữ nội dung đang có.
         Không tích: web giữ nội dung của giao diện mới. Sản phẩm mới đăng (chưa có trên web) thì không cần tích.</p>
     <?php
 }
@@ -106,6 +107,7 @@ function eco_nw_pattern_entry($product)
         'anh' => eco_nw_image($product->get_image_id()),
         'anhPhu' => eco_nw_gallery($product),
         'tenMau' => mb_strlen($short, 'UTF-8') <= 60 ? $short : '',
+        'cauChuyen' => function_exists('eco_bst_story') ? eco_bst_story($product) : null,
     );
     return array_filter($entry, function ($v) {
         return $v !== '' && $v !== null && $v !== array();

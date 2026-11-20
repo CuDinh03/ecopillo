@@ -2,6 +2,7 @@ import { COLLECTIONS, SIZES, sizeById } from './catalog'
 import { collectionPath, HOST_REDIRECTS, LISTINGS, patternPath, singleProductPath, withSlash, WOO_CATEGORY_LISTINGS } from './links'
 import { ALL_POSTS } from './allPosts'
 import { PRODUCTS } from './products'
+import { TONES } from './stories'
 
 /**
  * "Khung giá": danh sách mọi ô giá trên web (mẫu × cỡ, sản phẩm × lựa chọn) kèm sản phẩm WooCommerce tương ứng.
@@ -39,6 +40,8 @@ export interface FrameProduct {
  * mà chưa có trong `mau` là mẫu mới của bộ này. `khung`: trang mẫu có sẵn dùng làm khung cho trang mẫu mới.
  */
 export interface FrameCollection {
+  /** Đường link trang bộ */
+  trang: string
   id: string
   ten: string
   kieu: string
@@ -65,10 +68,20 @@ export interface FrameContentProduct {
   woo: string[]
 }
 
+/**
+ * Bộ sưu tập mới Ecopillo tạo trong Woo (đợt C, plugin bo-suu-tap-moi.php): `khungBo` trang bộ có sẵn cùng kiểu và `khungMau`
+ * trang một mẫu của bộ đó, dùng làm trang khung; `gam` các gam màu (thuộc tính "Gam màu" của mẫu ghi tên gam).
+ */
+export interface FrameNewCollections {
+  kieu: Record<'ga-phu' | 'ga-chun', { khungBo: string; khungMau: string; nhan: string }>
+  gam: { id: string; ten: string }[]
+}
+
 export interface PriceFrame {
   mau: FramePattern[]
   sanPham: FrameProduct[]
   noiDung: FrameContentProduct[]
+  boMoi: FrameNewCollections
   boSuuTap: FrameCollection[]
   danhMuc: FrameCategory[]
   /**
@@ -132,7 +145,7 @@ export function buildPriceFrame(): PriceFrame {
     const shell = c.patterns.map((p) => patternPath(c, p)).find((path) => path.startsWith('/san-pham/'))
     const category = slugOf(collectionPath(c))
     if (!shell || !collectionPath(c).startsWith('/danh-muc-san-pham/')) return []
-    return [{ id: c.id, ten: c.name, kieu: c.kind, coChun: !!c.hasFittedOption, danhMucWoo: category, khung: shell, maDaCo: c.patterns.map((p) => p.code) }]
+    return [{ trang: collectionPath(c), id: c.id, ten: c.name, kieu: c.kind, coChun: !!c.hasFittedOption, danhMucWoo: category, khung: shell, maDaCo: c.patterns.map((p) => p.code) }]
   })
   const slugCu = Object.keys(HOST_REDIRECTS)
     .filter((from) => from.startsWith('/san-pham/'))
@@ -154,5 +167,13 @@ export function buildPriceFrame(): PriceFrame {
     ten: p.name,
     woo: wooSlugsFor(singleProductPath(p.slug)),
   }))
-  return { mau, sanPham, noiDung, boSuuTap, danhMuc, baiViet, baiTrongCode, khungBai, slugCu }
+  const shellOf = (kind: 'ga-phu' | 'ga-chun', label: string) => {
+    const col = boSuuTap.find((c) => c.kieu === kind) ?? boSuuTap[0]
+    return { khungBo: col?.trang ?? '', khungMau: col?.khung ?? '', nhan: label }
+  }
+  const boMoi: FrameNewCollections = {
+    kieu: { 'ga-phu': shellOf('ga-phu', 'Bộ ga phủ'), 'ga-chun': shellOf('ga-chun', 'Bộ ga chun') },
+    gam: TONES.map((t) => ({ id: t.id, ten: t.label })),
+  }
+  return { mau, sanPham, noiDung, boMoi, boSuuTap, danhMuc, baiViet, baiTrongCode, khungBai, slugCu }
 }

@@ -6,7 +6,8 @@ import { chu, definePageText } from './pageText/define'
  * Khách 08/11: "chị chủ yếu bán ga ER EV ET ED sản phẩm lõi của cty" → bốn bộ lõi ô to 2×2 lên trước,
  * ba bộ còn lại ở "Thêm lựa chọn" bên dưới (chị Phương 09/11/2026: cùng cỡ ô với bốn bộ lõi, bỏ dòng gọn). Nhãn loại vải (mục 8 phản hồi 05/11, Excel STT 94) thành chữ nhỏ dưới tên bộ.
  * Thứ tự khách đã duyệt giữ nguyên trong từng phần: Doris → Vera → Tera → Rosa, rồi Sweet → Liora → Flora.
- * Thêm bộ sưu tập mới: thêm vào một trong hai danh sách dưới đây, không thì bộ đó không hiện ở trang chủ.
+ * Bộ thêm trong code: thêm vào một trong hai danh sách dưới đây, không thì bộ đó không hiện ở trang chủ.
+ * Bộ Ecopillo tạo trong WooCommerce (đợt C) tự hiện ở cuối "Thêm lựa chọn".
  *
  * [XÁC NHẬN nhóm của Rosa, Flora] — giả định cùng "In hoạ tiết" (khách chỉ ghi Vera là "In cao cấp").
  * [XÁC NHẬN giữ tên "Dệt jacquard"] — STT 45 khách nói người mua không biết "jacqua".
@@ -84,4 +85,8 @@ const resolve = (sources: readonly ShowcaseSource[]): readonly ShowcaseItem[] =>
   })
 
 export const CORE_COLLECTIONS = resolve(CORE_SOURCES)
-export const MORE_COLLECTIONS = resolve(MORE_SOURCES)
+/** Bộ Ecopillo tạo trong WooCommerce (đợt C) tự vào cuối "Thêm lựa chọn"; dòng chữ nhỏ dưới tên là kiểu bộ */
+export const MORE_COLLECTIONS = [
+  ...resolve(MORE_SOURCES),
+  ...BEDDING_SETS.filter((c) => c.livePath).map((collection) => ({ collection, fabric: collection.kindLabel })),
+]

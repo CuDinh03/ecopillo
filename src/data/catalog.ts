@@ -12,7 +12,19 @@
  * khi Ecopillo báo mẫu hết thật thì thêm soldOut: ['180x200'] vào mẫu đó.
  */
 
-import { liveNewPatterns, livePattern, livePatternContent, markLiveDiffers, mergePrices, type LiveNewPattern } from './liveData'
+import { collectionIdByPath } from './links'
+import {
+  liveCollectionText,
+  liveNewCollections,
+  liveNewPatterns,
+  livePattern,
+  livePatternContent,
+  markLiveDiffers,
+  mergePrices,
+  type LiveNewCollection,
+  type LiveNewPattern,
+  type LiveStory,
+} from './liveData'
 
 export type SizeId = '160x200' | '180x200' | '200x220'
 
@@ -88,6 +100,8 @@ export interface Pattern {
   slug?: string
   image?: ImageSource
   gallery?: readonly ImageSource[]
+  /** Câu chuyện Ecopillo nhập trong Woo (đợt C, liveData.ts): thay câu chuyện trong stories.ts */
+  liveStory?: { title: string; text: string; tone?: string }
 }
 
 /** Kiểu ga trong bộ: ga phủ chần (mặc định) hoặc ga chun chần (mục 28) */
@@ -117,6 +131,10 @@ export interface Collection {
   imageNote: string
   /** Mã mẫu dùng làm ảnh đại diện bộ sưu tập (phải có hasImage) */
   cover?: string
+  /** Câu chuyện chung của bộ Ecopillo nhập trong Woo (đợt C): thay COLLECTION_STORIES trong stories.ts */
+  story?: string
+  /** Bộ Ecopillo tạo trong Woo (đợt C): đường link trang bộ là link danh mục Woo */
+  livePath?: string
 }
 
 const SET_PHU_CONTENTS = [
@@ -416,8 +434,11 @@ const withPatternContent = (collection: Collection, pattern: Pattern): Pattern =
     colorName,
     ...(live.anh ? { hasImage: true, image: { ...live.anh, alt: live.anh.alt || alt } } : {}),
     ...(live.anhPhu ? { hasImage: true, gallery: live.anhPhu.map((img, i) => ({ ...img, alt: img.alt || `${alt} · ảnh ${i + 2}` })) } : {}),
+    ...(live.cauChuyen ? { liveStory: storyOf(live.cauChuyen) } : {}),
   }
 }
+
+const storyOf = (story: LiveStory): NonNullable<Pattern['liveStory']> => ({ title: story.ten, text: story.doan, tone: story.gam })
 
 /** Ghép giá, giá ga chun chần, cỡ hết hàng do Ecopillo sửa trong WooCommerce (liveData.ts) lên một mẫu */
 const withLivePattern = (collection: Collection, pattern: Pattern): Pattern => {
@@ -455,6 +476,7 @@ const newPattern = (collection: Collection, p: LiveNewPattern): Pattern => {
     prices,
     ...(chun && collection.hasFittedOption ? { fittedPrices: chun } : {}),
     ...(soldOut.length ? { soldOut } : {}),
+    ...(p.cauChuyen ? { liveStory: storyOf(p.cauChuyen) } : {}),
   }
 }
 
@@ -467,13 +489,62 @@ const withNewPatterns = (collection: Collection, patterns: readonly Pattern[]): 
   return [...patterns, ...extra]
 }
 
-export const COLLECTIONS: readonly Collection[] = BASE_COLLECTIONS.map((c) => ({
-  ...c,
-  patterns: withNewPatterns(
-    c,
-    c.patterns.map((p) => withLivePattern(c, withPatternContent(c, p))),
-  ),
-}))
+/** Khẩu hiệu, mô tả, câu chuyện bộ có sẵn Ecopillo đã soát ở trang sửa danh mục Woo (đợt C); ô trống giữ chữ trong code */
+const withCollectionText = (c: Collection): Collection => {
+  const live = liveCollectionText(c.id)
+  if (!live) return c
+  markLiveDiffers()
+  return {
+    ...c,
+    ...(live.khauHieu ? { tagline: live.khauHieu } : {}),
+    ...(live.moTa ? { description: live.moTa, metaDescription: undefined } : {}),
+    ...(live.cauChuyen ? { story: live.cauChuyen } : {}),
+  }
+}
+
+const KIND_OF_NEW: Readonly<Record<LiveNewCollection['kieu'], Pick<Collection, 'kind' | 'kindLabel' | 'contents'>>> = {
+  'ga-phu': { kind: 'ga-phu', kindLabel: 'Bộ ga phủ', contents: SET_PHU_CONTENTS },
+  'ga-chun': { kind: 'ga-chun', kindLabel: 'Bộ ga chun', contents: SET_CHUN_CONTENTS },
+}
+
+/**
+ * Bộ sưu tập Ecopillo tạo trong WooCommerce (đợt C): giá chung của bộ là giá thấp nhất từng cỡ trong các mẫu,
+ * ảnh bìa là mẫu đầu, trong bộ gồm theo kiểu bộ. Mã trùng bộ có sẵn thì bỏ.
+ */
+const newCollection = (live: LiveNewCollection): Collection => {
+  const prices = Object.fromEntries(SIZES.map((s) => [s.id, Math.min(...live.mau.map((m) => m.gia[s.id] ?? Infinity))])) as PriceTable
+  const shell: Collection = {
+    id: live.id,
+    name: live.ten,
+    ...KIND_OF_NEW[live.kieu],
+    tagline: live.khauHieu,
+    description: live.moTa || live.khauHieu,
+    prices,
+    gift: 'none',
+    imageNote: '',
+    patterns: [],
+    cover: live.mau[0].ma,
+    ...(live.cauChuyen ? { story: live.cauChuyen } : {}),
+    livePath: live.duongDan,
+  }
+  return { ...shell, patterns: live.mau.map((m) => newPattern(shell, m)) }
+}
+
+const NEW_COLLECTIONS: readonly Collection[] = liveNewCollections()
+  .filter((c) => !BASE_COLLECTIONS.some((b) => b.id === c.id) && collectionIdByPath(c.duongDan) === c.id)
+  .map(newCollection)
+if (NEW_COLLECTIONS.length) markLiveDiffers()
+
+export const COLLECTIONS: readonly Collection[] = [
+  ...BASE_COLLECTIONS.map(withCollectionText).map((c) => ({
+    ...c,
+    patterns: withNewPatterns(
+      c,
+      c.patterns.map((p) => withLivePattern(c, withPatternContent(c, p))),
+    ),
+  })),
+  ...NEW_COLLECTIONS,
+]
 
 export const BEDDING_SETS = COLLECTIONS.filter((c) => c.kind !== 'chan-he')
 

@@ -39,6 +39,16 @@ export interface LiveImage {
  * Mẫu mới Ecopillo thêm trong WooCommerce (giai đoạn 4): sản phẩm Woo thuộc danh mục một bộ sưu tập mà web chưa có.
  * Plugin đọc mã (ô Mã sản phẩm), tên màu (dòng đầu Mô tả ngắn), ảnh, giá theo cỡ, hết hàng; trang của mẫu do plugin trả khung.
  */
+/**
+ * Câu chuyện phối màu Ecopillo nhập trong Woo (đợt C): ô Mô tả của sản phẩm mẫu, dòng đầu là tên câu chuyện, các dòng sau là
+ * đoạn kể; thuộc tính "Gam màu" chọn một gam (mã trong stories.ts TONES). Không có gam thì mẫu không vào bộ lọc gam.
+ */
+export interface LiveStory {
+  ten: string
+  doan: string
+  gam?: string
+}
+
 export interface LiveNewPattern {
   /** Mã bộ sưu tập trên web (eco-rosa…) */
   bo: string
@@ -53,6 +63,31 @@ export interface LiveNewPattern {
   gia: Readonly<Record<string, number>>
   giaChun?: Readonly<Record<string, number>>
   het: readonly string[]
+  cauChuyen?: LiveStory
+}
+
+/**
+ * Bộ sưu tập mới Ecopillo tạo trong Woo (đợt C, plugin bo-suu-tap-moi.php): một danh mục sản phẩm có tích
+ * "Hiện thành bộ sưu tập trên giao diện mới"; các sản phẩm trong danh mục là các mẫu (cùng quy tắc với mẫu mới).
+ */
+export interface LiveNewCollection {
+  /** Mã bộ trên web (tên danh mục Woo bỏ "bo-suu-tap-") */
+  id: string
+  ten: string
+  kieu: 'ga-phu' | 'ga-chun'
+  khauHieu: string
+  moTa: string
+  cauChuyen: string
+  /** Đường link trang bộ (đường link danh mục Woo) */
+  duongDan: string
+  mau: readonly LiveNewPattern[]
+}
+
+/** Chữ bộ sưu tập có sẵn Ecopillo đã soát và tích ở trang sửa danh mục Woo (đợt C): ô trống giữ chữ trong code */
+export interface LiveCollectionText {
+  khauHieu?: string
+  moTa?: string
+  cauChuyen?: string
 }
 
 /**
@@ -95,6 +130,7 @@ export interface LivePatternContent {
   anh?: LiveImage
   anhPhu?: readonly LiveImage[]
   tenMau?: string
+  cauChuyen?: LiveStory
 }
 
 interface LiveData {
@@ -104,6 +140,8 @@ interface LiveData {
   sanPhamMoi: readonly LiveNewProduct[]
   noiDungSanPham: Readonly<Record<string, LiveProductContent>>
   noiDungMau: Readonly<Record<string, LivePatternContent>>
+  boSuuTapMoi: readonly LiveNewCollection[]
+  boSuuTapChu: Readonly<Record<string, LiveCollectionText>>
 }
 
 const isPrice = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v > 0 && v < 1e10
@@ -132,6 +170,15 @@ const cleanImage = (input: unknown): LiveImage | undefined => {
     srcSet: typeof srcSet === 'string' && !/[<>"]/.test(srcSet) ? srcSet : '',
     alt: typeof alt === 'string' ? alt.slice(0, 300) : '',
   }
+}
+
+const cleanStory = (input: unknown): LiveStory | undefined => {
+  if (!input || typeof input !== 'object') return undefined
+  const v = input as Record<string, unknown>
+  const ten = typeof v.ten === 'string' ? v.ten.trim().slice(0, 80) : ''
+  const doan = typeof v.doan === 'string' ? v.doan.trim().slice(0, 1200) : ''
+  const gam = typeof v.gam === 'string' && /^[a-z]{2,10}$/.test(v.gam) ? v.gam : undefined
+  return ten && doan ? { ten, doan, ...(gam ? { gam } : {}) } : undefined
 }
 
 /** Mẫu mới hợp lệ: mã, link đúng dạng, link không có chữ chất liệu cũ, đủ ảnh và giá */
@@ -164,7 +211,36 @@ function cleanNewPattern(input: unknown): LiveNewPattern | undefined {
     gia: prices,
     giaChun: cleanPrices(v.giaChun),
     het: cleanList(v.het) ?? [],
+    ...(cleanStory(v.cauChuyen) ? { cauChuyen: cleanStory(v.cauChuyen) } : {}),
   }
+}
+
+/** Bộ mới hợp lệ: mã, link đúng dạng, tên, kiểu, ít nhất một mẫu hợp lệ */
+function cleanNewCollection(input: unknown): LiveNewCollection | undefined {
+  if (!input || typeof input !== 'object') return undefined
+  const v = input as Record<string, unknown>
+  const text = (x: unknown, max: number) => (typeof x === 'string' ? x.trim().slice(0, max) : '')
+  const id = text(v.id, 60)
+  const ten = text(v.ten, 80)
+  const duongDan = text(v.duongDan, 200)
+  const kieu = v.kieu === 'ga-phu' || v.kieu === 'ga-chun' ? v.kieu : undefined
+  if (!/^[a-z0-9-]{3,60}$/.test(id) || !ten || !kieu || !/^\/[a-z0-9/-]{3,200}\/$/.test(duongDan)) return undefined
+  const mau = Array.isArray(v.mau)
+    ? v.mau.slice(0, 120).map((m) => cleanNewPattern({ ...(m as object), bo: id })).filter((x): x is LiveNewPattern => !!x)
+        // Mẫu của bộ mới phải đủ giá ba cỡ (giá chung của bộ tính từ đó)
+        .filter((m) => ['160x200', '180x200', '200x220'].every((size) => m.gia[size] !== undefined))
+    : []
+  if (!mau.length) return undefined
+  return { id, ten, kieu, khauHieu: text(v.khauHieu, 200), moTa: text(v.moTa, 600), cauChuyen: text(v.cauChuyen, 1200), duongDan, mau }
+}
+
+const cleanCollectionText = (input: unknown): LiveCollectionText => {
+  const v = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>
+  const text = (x: unknown, max: number) => (typeof x === 'string' ? x.trim().slice(0, max) : '')
+  const khauHieu = text(v.khauHieu, 200)
+  const moTa = text(v.moTa, 600)
+  const cauChuyen = text(v.cauChuyen, 1200)
+  return { ...(khauHieu ? { khauHieu } : {}), ...(moTa ? { moTa } : {}), ...(cauChuyen ? { cauChuyen } : {}) }
 }
 
 const cleanText = (v: unknown, max: number): string => (typeof v === 'string' ? v.trim().slice(0, max) : '')
@@ -272,7 +348,8 @@ function cleanPatternContent(input: unknown): LivePatternContent {
   const anh = cleanImage(v.anh)
   const anhPhu = cleanImages(v.anhPhu)
   const tenMau = cleanText(v.tenMau, 60)
-  return { ...(anh ? { anh } : {}), ...(anhPhu.length ? { anhPhu } : {}), ...(tenMau ? { tenMau } : {}) }
+  const cauChuyen = cleanStory(v.cauChuyen)
+  return { ...(anh ? { anh } : {}), ...(anhPhu.length ? { anhPhu } : {}), ...(tenMau ? { tenMau } : {}), ...(cauChuyen ? { cauChuyen } : {}) }
 }
 
 const cleanContentMap = <T extends object>(input: unknown, clean: (v: unknown) => T): Record<string, T> =>
@@ -284,16 +361,18 @@ const cleanContentMap = <T extends object>(input: unknown, clean: (v: unknown) =
   )
 
 function read(): LiveData {
-  const empty: LiveData = { mau: {}, sanPham: {}, mauMoi: [], sanPhamMoi: [], noiDungSanPham: {}, noiDungMau: {} }
+  const empty: LiveData = { mau: {}, sanPham: {}, mauMoi: [], sanPhamMoi: [], noiDungSanPham: {}, noiDungMau: {}, boSuuTapMoi: [], boSuuTapChu: {} }
   if (typeof window === 'undefined') return empty
   const raw = (window as { __ECO_GIA__?: unknown }).__ECO_GIA__
   if (!raw || typeof raw !== 'object') return empty
-  const { mau, sanPham, mauMoi, sanPhamMoi, noiDungWoo } = raw as {
+  const { mau, sanPham, mauMoi, sanPhamMoi, noiDungWoo, boSuuTapMoi, boSuuTapChu } = raw as {
     mau?: unknown
     sanPham?: unknown
     mauMoi?: unknown
     sanPhamMoi?: unknown
     noiDungWoo?: { sanPham?: unknown; mau?: unknown }
+    boSuuTapMoi?: unknown
+    boSuuTapChu?: unknown
   }
   const patterns: Record<string, LivePattern> = {}
   for (const [key, value] of Object.entries(mau && typeof mau === 'object' ? mau : {})) {
@@ -314,6 +393,10 @@ function read(): LiveData {
     sanPhamMoi: newProducts,
     noiDungSanPham: cleanContentMap(noiDungWoo?.sanPham, cleanProductContent),
     noiDungMau: cleanContentMap(noiDungWoo?.mau, cleanPatternContent),
+    boSuuTapMoi: Array.isArray(boSuuTapMoi)
+      ? boSuuTapMoi.slice(0, 30).map(cleanNewCollection).filter((x): x is LiveNewCollection => !!x)
+      : [],
+    boSuuTapChu: cleanContentMap(boSuuTapChu, cleanCollectionText),
   }
 }
 
@@ -325,6 +408,12 @@ export const liveProduct = (slug: string): LiveProduct | undefined => LIVE.sanPh
 
 /** Tên, ảnh, mô tả Ecopillo đã soát trong Woo cho một sản phẩm lẻ có sẵn (đợt B) */
 export const liveProductContent = (slug: string): LiveProductContent | undefined => LIVE.noiDungSanPham[slug]
+
+/** Bộ sưu tập mới Ecopillo tạo trong Woo (đợt C) */
+export const liveNewCollections = (): readonly LiveNewCollection[] => LIVE.boSuuTapMoi
+
+/** Khẩu hiệu, mô tả, câu chuyện Ecopillo đã soát cho một bộ có sẵn (đợt C) */
+export const liveCollectionText = (id: string): LiveCollectionText | undefined => LIVE.boSuuTapChu[id]
 
 /** Ảnh, ảnh phụ, tên màu Ecopillo đã soát trong Woo cho một mẫu có sẵn (đợt B) */
 export const livePatternContent = (collectionId: string, code: string): LivePatternContent | undefined =>

@@ -237,6 +237,7 @@ function eco_gia_page()
         <?php endif; ?>
 
         <?php if (function_exists('eco_nw_admin_section')) { eco_nw_admin_section(); } ?>
+        <?php if (function_exists('eco_bst_admin_section')) { eco_bst_admin_section(); } ?>
 
         <h2>Đối chiếu từng ô giá</h2>
         <p>Ô có biến thể Woo: sửa giá trong Sản phẩm (bấm tên sản phẩm). Ô <strong>"Chưa ghép được"</strong> (Woo chưa có sản phẩm hoặc cỡ đó): điền giá ở cột "Giá riêng" rồi bấm "Lưu giá riêng" cuối bảng. Để trống thì web giữ giá có sẵn.</p>

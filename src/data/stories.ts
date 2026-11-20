@@ -40,7 +40,8 @@ export const toneById = (id: string | null | undefined): Tone | undefined => TON
 export interface PatternStory {
   title: string
   text: string
-  tone: ToneId
+  /** Không có: câu chuyện Ecopillo nhập trong Woo chưa chọn gam, mẫu không vào bộ lọc gam */
+  tone?: ToneId
   /** "Tập" trong bộ sưu tập nhiều phối màu (Eco Rosa) */
   volume?: string
   /** true = chữ lấy từ catalog Ecopillo, không cần nhãn chờ duyệt */
@@ -176,8 +177,15 @@ const STORIES: Readonly<Record<string, PatternStory>> = {
   'chan-he-lyocell/ER38': s('Sen trắng', 'Hoa trắng nở trên nền xanh mây. Thanh mát như hồ sen sáng sớm.', 'xanh'),
 }
 
-export const storyOf = (collection: Collection, pattern: Pattern): PatternStory | undefined =>
-  STORIES[`${collection.id}/${pattern.code}`]
+/** Câu chuyện Ecopillo nhập trong Woo (đợt C) trước, rồi câu chuyện trong file này */
+export const storyOf = (collection: Collection, pattern: Pattern): PatternStory | undefined => {
+  const live = pattern.liveStory
+  if (live) return { title: live.title, text: live.text, tone: toneById(live.tone)?.id, fromCatalog: true }
+  return STORIES[`${collection.id}/${pattern.code}`]
+}
+
+/** Câu chuyện chung của bộ: Ecopillo nhập ở trang sửa danh mục Woo (đợt C), không có thì trong file này */
+export const collectionStoryOf = (collection: Collection): string | undefined => collection.story ?? COLLECTION_STORIES[collection.id]
 
 /** Tên chương: tên câu chuyện, chưa có thì dùng tên màu */
 export const chapterTitle = (collection: Collection, pattern: Pattern): string =>

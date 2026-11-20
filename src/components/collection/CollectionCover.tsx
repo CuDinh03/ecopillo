@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { imageOfPattern, type Collection } from '../../data/catalog'
 import { collectionPath } from '../../data/links'
-import { COLLECTION_STORIES, STORIES_APPROVED } from '../../data/stories'
+import { collectionStoryOf, STORIES_APPROVED } from '../../data/stories'
 import { Icon } from '../ui/Icon'
 import { FillIn } from '../ui/primitives'
 
@@ -30,7 +30,7 @@ interface CollectionCoverProps {
  * Dải ảnh dùng bản ảnh nhỏ, cũng là ảnh của hàng chương bên dưới, nên không tải thêm gì đáng kể.
  */
 export function CollectionCover({ collection, isCompactOnMobile = false }: CollectionCoverProps) {
-  const story = COLLECTION_STORIES[collection.id]
+  const story = collectionStoryOf(collection)
   const slices = pickSlices(collection)
   // Trang bộ: tên bộ là H1. Trang phối màu: H1 nằm ở câu chuyện chương
   const Name = isCompactOnMobile ? 'p' : 'h1'

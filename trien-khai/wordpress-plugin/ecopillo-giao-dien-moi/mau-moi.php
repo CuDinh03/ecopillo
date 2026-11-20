@@ -152,6 +152,11 @@ function eco_mm_compute()
             if (count($chun) === count($sizes)) {
                 $item['giaChun'] = $chun;
             }
+            // Câu chuyện phối màu: ô Mô tả, dòng đầu là tên (bo-suu-tap-moi.php)
+            $story = function_exists('eco_bst_story') ? eco_bst_story($product) : null;
+            if ($story) {
+                $item['cauChuyen'] = $story;
+            }
             $live[] = $item;
             $pages[$slug] = array('khung' => $col['khung'], 'tieuDe' => $col['ten'] . ' ' . $code . ' · ' . $item['ten'], 'anh' => $image['src']);
         }
