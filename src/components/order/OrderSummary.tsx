@@ -54,7 +54,8 @@ export function OrderSummary({ summary, showShipping }: OrderSummaryProps) {
               value={shippingLabel(showShipping, Boolean(subtotal || priceOnCall), shippingFee)}
               muted={!showShipping}
             />
-            <Row label="Thanh toán" value="Khi nhận hàng" />
+            {/* Thông báo Ecopillo từ 07/08/2026: chuyển khoản, không tiền mặt (paymentPolicy.ts); "Khi nhận hàng" trơ trọi đọc như COD */}
+            <Row label="Thanh toán" value="Chuyển khoản khi nhận hàng" />
           </dl>
 
           <div className="mt-5 flex items-baseline justify-between border-t border-deep-900/15 pt-5">
