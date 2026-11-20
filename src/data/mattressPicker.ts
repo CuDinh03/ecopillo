@@ -124,7 +124,7 @@ export const MATTRESS_ALL_PATH = DEM_PATH
 export const { set: MATTRESS_TEXT_SET, text: MATTRESS_TEXT } = definePageText(
   'dem-trang-chu',
   'Trang chủ: khối Bộ sưu tập đệm',
-  'Tiêu đề, đoạn dẫn, câu mẫu nổi bật, chữ các nút nhóm đệm của khối đệm trang chủ. Chữ từng cách nằm sửa ở bộ "Đầu trang danh mục".',
+  'Tiêu đề, đoạn dẫn, câu mẫu nổi bật, chữ các nút nhóm đệm của khối đệm trang chủ. Chữ 4 dòng cách nằm sửa ở mục Phần "Chọn thế nào" của danh mục (phần của Đệm Ecopillo).',
   {
     tieuDe: chu('Tiêu đề', 'Bộ sưu tập đệm'),
     danDat: doan(
