@@ -120,11 +120,11 @@ const BASE_POLICIES: readonly Policy[] = [
     title: 'Chính sách thanh toán',
     // Thông báo Ecopillo áp dụng từ 07/08/2026 + chị Phương 18/11/2026: bỏ tiền mặt, một tài khoản duy nhất, bỏ mục Hoá đơn (paymentPolicy.ts).
     // Owner 19/11/2026 (ảnh chụp trang trên điện thoại): xoá chữ "không nhận tiền mặt" ở thẻ đầu trang và đoạn tài khoản
-    description: 'Thanh toán chuyển khoản vào tài khoản duy nhất của Ecopillo. Chăn ga dưới 10 triệu không cần đặt cọc; đệm, đơn trên 10 triệu cần đặt cọc.',
-    intro: 'Từ 07/08/2026, Ecopillo nhận thanh toán bằng chuyển khoản vào một tài khoản duy nhất của công ty. Chăn ga tiêu chuẩn và đơn chăn ga dưới 10 triệu đồng không cần đặt cọc.',
+    description: 'Thanh toán chuyển khoản vào tài khoản duy nhất của Ecopillo. Đơn chăn ga tiêu chuẩn dưới 10 triệu không cần đặt cọc; đệm, đơn trên 10 triệu cần đặt cọc.',
+    intro: 'Từ 07/08/2026, Ecopillo nhận thanh toán bằng chuyển khoản vào một tài khoản duy nhất của công ty. Đơn chăn ga tiêu chuẩn dưới 10 triệu đồng không cần đặt cọc.',
     highlights: [
       { value: 'Chuyển khoản', label: 'Một tài khoản duy nhất của Ecopillo' },
-      { value: 'Không cọc', label: 'Chăn ga tiêu chuẩn, đơn chăn ga dưới 10 triệu' },
+      { value: 'Không cọc', label: 'Đơn chăn ga tiêu chuẩn dưới 10 triệu' },
       { value: 'Đặt cọc', label: 'Đệm, đơn trên 10 triệu, chăn ga nhỡ cỡ hoặc may riêng' },
     ],
     sections: [

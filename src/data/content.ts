@@ -141,7 +141,7 @@ const BASE_FAQS: readonly Faq[] = [
     // Thông báo Ecopillo từ 07/08/2026, chị Phương 18/11/2026 (src/data/paymentPolicy.ts)
     a: [
       `Ecopillo nhận thanh toán bằng chuyển khoản vào một tài khoản duy nhất: ${BANK_LINE}.`,
-      'Chăn ga tiêu chuẩn hoặc hoá đơn chăn ga dưới 10 triệu đồng không cần đặt cọc. Đệm, đơn trên 10 triệu, chăn ga nhỡ cỡ, may riêng hoặc cần chỉnh sửa theo yêu cầu cần đặt cọc; nhân viên báo khi gọi xác nhận đơn.',
+      'Đơn chăn ga tiêu chuẩn dưới 10 triệu đồng không cần đặt cọc. Đệm, đơn trên 10 triệu, chăn ga nhỡ cỡ, may riêng hoặc cần chỉnh sửa theo yêu cầu cần đặt cọc; nhân viên báo khi gọi xác nhận đơn.',
     ],
   },
   {

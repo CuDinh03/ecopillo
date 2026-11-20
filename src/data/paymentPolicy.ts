@@ -10,7 +10,8 @@ import { CONTACT } from './brand'
 
 export const BANK_LINE = `${CONTACT.chuTaiKhoan} · Số tài khoản ${CONTACT.soTaiKhoan} · ${CONTACT.nganHang}`
 
-export const NO_DEPOSIT = 'Không cần đặt cọc: chăn ga tiêu chuẩn hoặc hoá đơn chăn ga dưới 10 triệu đồng.'
+// Chị Phương (Zalo 19/11/2026): không cọc phải đủ cả hai ý, chăn ga tiêu chuẩn VÀ đơn dưới 10 triệu (không phải "hoặc")
+export const NO_DEPOSIT = 'Không cần đặt cọc: đơn chăn ga tiêu chuẩn dưới 10 triệu đồng.'
 
 export const DEPOSIT_CASES: readonly string[] = [
   'Chăn ga kích thước nhỡ cỡ.',
