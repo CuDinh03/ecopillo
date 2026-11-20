@@ -87,6 +87,12 @@ function eco_nd_save()
             wp_safe_redirect(eco_nd_page_url($key, array('ket-qua' => 'thieu', 'o' => rawurlencode(implode(', ', $errors)))));
             exit;
         }
+        // Bộ màu: chữ khó đọc thì không lưu (theme.ts kiemTuongPhan)
+        $contrast = eco_nd_contrast_errors($set, $value);
+        if ($contrast) {
+            wp_safe_redirect(eco_nd_page_url($key, array('ket-qua' => 'tuong-phan', 'o' => rawurlencode(implode('; ', $contrast)))));
+            exit;
+        }
     } else {
         $value = array();
         $dropped = 0;
@@ -184,6 +190,9 @@ function eco_nd_input($field, $name, $value)
                 . '<input type="hidden" class="eco-anh-srcset" name="' . esc_attr($name) . '[srcSet]" value="' . esc_attr(isset($img['srcSet']) ? $img['srcSet'] : '') . '">'
                 . '<button type="button" class="button eco-chon-anh">Chọn ảnh</button><br>'
                 . '<label>Mô tả ảnh (cho người không nhìn thấy, cho Google) <input type="text" class="regular-text" name="' . esc_attr($name) . '[alt]" value="' . esc_attr(isset($img['alt']) ? $img['alt'] : '') . '"></label></div></div>' . $hint;
+        case 'mau':
+            $color = is_string($value) && preg_match('/^#[0-9a-f]{6}$/i', $value) ? strtolower($value) : '#000000';
+            return $label . '<input id="' . esc_attr($id) . '" type="color" name="' . esc_attr($name) . '" value="' . esc_attr($color) . '" style="width:64px;height:36px;padding:2px;vertical-align:middle"> <code>' . esc_html($color) . '</code>' . $hint;
         default:
             $type = $field['kieu'] === 'link' ? 'url' : 'text';
             $extra = $field['kieu'] === 'so' ? ' inputmode="decimal"' : ($field['kieu'] === 'gio' ? ' placeholder="08:30" pattern="([01][0-9]|2[0-3]):[0-5][0-9]"' : '');
@@ -230,11 +239,12 @@ function eco_nd_page()
         'goc' => array('success', 'Đã trả về nội dung có sẵn của web.'),
         'rong' => array('error', 'Chưa lưu: danh sách không còn dòng nào đủ ô bắt buộc.'),
         'thieu' => array('error', 'Chưa lưu: còn ô bắt buộc để trống hoặc sai'),
+        'tuong-phan' => array('error', 'Chưa lưu: màu làm chữ khó đọc'),
     );
     echo '<div class="wrap"><h1>' . esc_html($set['ten']) . '</h1><p>' . esc_html($set['moTa']) . '</p>';
     if (isset($notices[$result])) {
         $text = $notices[$result][1];
-        if ($result === 'thieu' && isset($_GET['o'])) {
+        if (($result === 'thieu' || $result === 'tuong-phan') && isset($_GET['o'])) {
             $text .= ': ' . sanitize_text_field(rawurldecode(wp_unslash($_GET['o'])));
         }
         if ($result === 'ok' && isset($_GET['bo-dong'])) {

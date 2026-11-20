@@ -9,7 +9,7 @@ import { liveObject, type EditableField, type EditableSet, type FieldKind } from
  * Chữ gốc là chữ đang có trên web: HTML dựng sẵn (Google đọc) giữ chữ gốc tới lần dựng sau, khách luôn thấy chữ mới.
  */
 
-type TextKind = Extract<FieldKind, 'chu' | 'doan' | 'doan-nhieu' | 'ds-dong' | 'ds-cap' | 'anh' | 'link'>
+type TextKind = Extract<FieldKind, 'chu' | 'doan' | 'doan-nhieu' | 'ds-dong' | 'ds-cap' | 'anh' | 'link' | 'ds-anh'>
 
 export interface TextField<T> {
   nhan: string
@@ -47,6 +47,9 @@ export interface PageImage {
   srcSet: string
   alt: string
 }
+/** Danh sách ảnh (mỗi dòng một link ảnh, nút "Thêm ảnh từ Thư viện"; tối đa 8) */
+export const dsAnh = (nhan: string, goc: readonly string[], goiY?: string): TextField<readonly string[]> => ({ nhan, kieu: 'ds-anh', goc, goiY })
+
 /** Ảnh chọn từ Thư viện WordPress */
 export const anh = (nhan: string, goc: PageImage, goiY?: string): TextField<PageImage> => ({ nhan, kieu: 'anh', goc, goiY })
 

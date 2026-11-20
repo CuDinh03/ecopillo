@@ -32,6 +32,9 @@ import { PRIVACY_SECTIONS_SET, PRIVACY_TEXT_SET } from './pageText/privacy'
 import { PRODUCTS_PAGE_TEXT_SET } from './pageText/products'
 import { RECRUIT_TEXT_SET } from './pageText/recruit'
 import { THANK_YOU_SET } from './thankYou'
+import { THEME_SET } from './theme'
+import { LAYOUT_SETS } from './pageLayout'
+import { REDIRECT_SET } from './liveRedirects'
 
 /**
  * Mọi bộ dữ liệu Ecopillo tự sửa trong WordPress (liveContent.ts), theo thứ tự hiện trên menu "Nội dung web".
@@ -82,6 +85,10 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   FAQ_PAGE_TEXT_SET,
   FOOTER_TEXT_SET,
   COMMON_TEXT_SET,
+  // Màu web (owner 20/11/2026 "ecopillo cần tự làm hết được")
+  THEME_SET,
+  ...LAYOUT_SETS,
+  REDIRECT_SET,
 ]
 
 export const buildContentFrame = (): { boDuLieu: readonly EditableSet[] } => ({ boDuLieu: CONTENT_SETS })

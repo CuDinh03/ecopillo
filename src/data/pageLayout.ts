@@ -1,0 +1,120 @@
+import { liveList, rowKey, type EditableField, type EditableSet } from './liveContent'
+
+/**
+ * Bố cục từng trang Ecopillo tự đổi (owner 20/11/2026: "ecopillo cần tự làm hết được", chọn "bật/tắt, đổi thứ tự khối").
+ * Nội dung web → Giao diện → "Bố cục …": mỗi dòng là một khối có sẵn của trang; Lên / Xuống để đổi thứ tự, "Ẩn" để tắt.
+ * Kiểu dáng từng khối giữ nguyên (khung), nên đổi thứ tự không làm vỡ trang. Khối mới thêm trong code mà bản đã lưu chưa có
+ * thì tự hiện ở cuối. Phần đầu trang (banner, tiêu đề trang) luôn đứng đầu, không nằm trong danh sách.
+ * HTML dựng sẵn theo thứ tự gốc; khách xem luôn thấy thứ tự mới (main.tsx vẽ lại khi khác).
+ */
+
+export interface LayoutBlock {
+  ma: string
+  ten: string
+}
+
+const FIELDS: readonly EditableField[] = [
+  { khoa: 'ten', nhan: 'Khối', kieu: 'chu', batBuoc: true, goiY: 'Tên để nhận ra khối; sửa tên này không đổi gì trên web' },
+  { khoa: 'hien', nhan: 'Trên web', kieu: 'chon', batBuoc: true, luaChon: ['co', 'khong'], nhanLuaChon: ['Hiện', 'Ẩn'] },
+]
+
+interface LayoutRow {
+  ma: string
+  ten: string
+  hien: string
+}
+
+/** Khai bố cục một trang: trả bộ để sửa và thứ tự các khối đang hiện (mã khối) */
+export function defineLayout(khoa: string, ten: string, blocks: readonly LayoutBlock[]): { set: EditableSet; order: readonly string[] } {
+  const goc: readonly LayoutRow[] = blocks.map((b) => ({ ma: b.ma, ten: b.ten, hien: 'co' }))
+  const set: EditableSet = {
+    khoa: `bo-cuc-${khoa}`,
+    nhom: 'Giao diện',
+    ten: `Bố cục ${ten}`,
+    moTa: `Thứ tự các khối của ${ten}: bấm Lên / Xuống để đổi chỗ, chọn "Ẩn" để tắt một khối. Đừng xoá dòng (xoá cũng là ẩn). "Trả về nội dung gốc" để về bố cục đã duyệt.`,
+    kieu: 'nhieu',
+    goc,
+    tieuDeDong: 'ten',
+    khoaDong: 'ma',
+    truong: FIELDS,
+  }
+  // Dòng lạ (mã không có trong trang) ghép vào mẫu rỗng rồi bỏ
+  const rows = liveList(set.khoa, goc, FIELDS, (_i, row) => goc.find((g) => rowKey(g.ma) === rowKey(row.ma)) ?? { ma: '', ten: '', hien: 'khong' })
+  const seen = new Set<string>()
+  const order: string[] = []
+  for (const row of rows) {
+    if (!row.ma || seen.has(row.ma)) continue
+    seen.add(row.ma)
+    if (row.hien !== 'khong') order.push(row.ma)
+  }
+  // Khối có trong code mà bản đã lưu chưa có: hiện ở cuối
+  for (const b of blocks) if (!seen.has(b.ma)) order.push(b.ma)
+  return { set, order }
+}
+
+/* ---------------------------------------------------------------- Các trang */
+
+export const { set: HOME_DESKTOP_LAYOUT_SET, order: HOME_DESKTOP_ORDER } = defineLayout('trang-chu-may-tinh', 'trang chủ (máy tính)', [
+  { ma: 'cam-ket', ten: 'Dải 5 cam kết' },
+  { ma: 'chat-lieu', ten: 'Chất liệu (Từ thiên nhiên đến giấc ngủ)' },
+  { ma: 'dem', ten: 'Bộ sưu tập đệm' },
+  { ma: 'bo-suu-tap', ten: 'Bộ sưu tập chăn ga' },
+  { ma: 'ruot', ten: 'Ruột chăn, ruột gối và phụ kiện' },
+  { ma: 'thu-cam-on', ten: 'Thư cảm ơn (ưu đãi 5%)' },
+  { ma: 've-chung-toi', ten: 'Về chúng tôi (cả sự kiện đồng hành)' },
+  { ma: 'phim', ten: 'Phim thương hiệu' },
+  { ma: 'khach-san', ten: 'Khách sạn và đối tác' },
+  { ma: 'nhan-xet', ten: 'Nhận xét của khách' },
+  { ma: 'phan-phoi', ten: 'Hệ thống phân phối' },
+  { ma: 'hoi-dap', ten: 'Câu hỏi thường gặp' },
+])
+
+export const { set: HOME_MOBILE_LAYOUT_SET, order: HOME_MOBILE_ORDER } = defineLayout('trang-chu-dien-thoai', 'trang chủ (điện thoại)', [
+  { ma: 'cam-ket', ten: 'Dải 5 cam kết' },
+  { ma: 'chat-lieu', ten: 'Chất liệu (Từ thiên nhiên đến giấc ngủ)' },
+  { ma: 'dem', ten: 'Bộ sưu tập đệm' },
+  { ma: 'bo-suu-tap', ten: 'Bộ sưu tập chăn ga' },
+  { ma: 'ruot', ten: 'Ruột chăn, ruột gối và phụ kiện' },
+  { ma: 'thu-cam-on', ten: 'Thư cảm ơn (ưu đãi 5%)' },
+  { ma: 'nhan-xet', ten: 'Nhận xét của khách' },
+  { ma: 've-ecopillo', ten: 'Về Ecopillo (thẻ Câu chuyện, Phim, Khách sạn)' },
+  { ma: 'phan-phoi', ten: 'Hệ thống phân phối' },
+  { ma: 'hoi-dap', ten: 'Câu hỏi thường gặp' },
+])
+
+export const { set: HOTEL_LAYOUT_SET, order: HOTEL_ORDER } = defineLayout('khach-san', 'trang Khách sạn và dự án', [
+  { ma: 'doi-tac', ten: 'Đối tác, chứng nhận' },
+  { ma: 'hang-trang', ten: 'Hàng trắng khách sạn' },
+  { ma: 'san-pham', ten: 'Sản phẩm cho khách sạn' },
+  { ma: 'ly-do', ten: 'Câu trích nền chàm (Bền cho vận hành…)' },
+  { ma: 'cach-lam', ten: 'Cách làm việc (5 bước)' },
+  { ma: 'bao-gia', ten: 'Form nhận báo giá' },
+])
+
+export const { set: GIFTS_LAYOUT_SET, order: GIFTS_ORDER } = defineLayout('qua-tang', 'trang Quà tặng và sự kiện', [
+  { ma: 'qua-doanh-nghiep', ten: 'Quà tặng doanh nghiệp' },
+  { ma: 'thu-cam-on', ten: 'Thư cảm ơn (ưu đãi 5%)' },
+  { ma: 'su-kien', ten: 'Sự kiện Ecopillo đồng hành' },
+  { ma: 'chon-theo-dip', ten: 'Chọn theo từng dịp' },
+  { ma: 'dich-vu', ten: 'Ecopillo lo phần còn lại' },
+])
+
+export const { set: RECRUIT_LAYOUT_SET, order: RECRUIT_ORDER } = defineLayout('tuyen-dai-ly', 'trang Tuyển đại lý', [
+  { ma: 'mo-hinh', ten: 'Mô hình kinh doanh (bản đồ, ba trụ cột)' },
+  { ma: 'dang-ky', ten: 'Đăng ký làm đại lý (quyền lợi, form)' },
+])
+
+export const { set: CONTACT_LAYOUT_SET, order: CONTACT_ORDER } = defineLayout('lien-he', 'trang Liên hệ mua hàng', [
+  { ma: 'van-phong', ten: 'Văn phòng, chi nhánh' },
+  { ma: 'diem-ban', ten: 'Điểm bán, tìm đại lý gần nhất' },
+  { ma: 'tin-nhan', ten: 'Form gửi tin nhắn' },
+])
+
+export const LAYOUT_SETS: readonly EditableSet[] = [
+  HOME_DESKTOP_LAYOUT_SET,
+  HOME_MOBILE_LAYOUT_SET,
+  HOTEL_LAYOUT_SET,
+  GIFTS_LAYOUT_SET,
+  RECRUIT_LAYOUT_SET,
+  CONTACT_LAYOUT_SET,
+]

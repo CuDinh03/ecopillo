@@ -18,6 +18,25 @@ if (!defined('ABSPATH')) {
 }
 
 define('ECO_NW_META', '_eco_giao_dien_dung_woo');
+define('ECO_NW_META_HIEU_KY', '_eco_hieu_ky');
+
+/** Mục sản phẩm lẻ trong khung giá (khung-gia.json `noiDung`) ứng với sản phẩm Woo này (theo link), không có thì null */
+function eco_nw_frame_item($product)
+{
+    $slug = $product->get_slug();
+    foreach (isset(eco_gia_frame()['noiDung']) ? (array) eco_gia_frame()['noiDung'] : array() as $item) {
+        if (in_array($slug, (array) $item['woo'], true)) {
+            return $item;
+        }
+    }
+    return null;
+}
+
+/** Chữ so sánh: bỏ khoảng trắng thừa, dòng trống */
+function eco_nw_norm($text)
+{
+    return trim(preg_replace('/[ \t]+/', ' ', preg_replace('/\R\s*\R/u', "\n", str_replace("\r", '', (string) $text))));
+}
 
 /* ---------------------------------------------------------------- Ô tích trong trang sửa sản phẩm */
 
@@ -38,6 +57,20 @@ function eco_nw_box($post)
         Bộ chăn ga: ảnh, ảnh thư viện, tên màu (dòng đầu Mô tả ngắn), câu chuyện (Mô tả: dòng đầu là tên câu chuyện; thuộc tính Gam màu). Ô nào để trống thì web giữ nội dung đang có.
         Không tích: web giữ nội dung của giao diện mới. Sản phẩm mới đăng (chưa có trên web) thì không cần tích.</p>
     <?php
+    $product = wc_get_product($post->ID);
+    $item = $product ? eco_nw_frame_item($product) : null;
+    if (!$item) {
+        return;
+    }
+    $saved = (string) get_post_meta($post->ID, ECO_NW_META_HIEU_KY, true);
+    $text = $saved !== '' ? $saved : (string) $item['hieuKy'];
+    ?>
+    <hr>
+    <p><label for="eco_nw_hieu_ky"><strong>Hiểu kỹ trước khi chọn</strong></label></p>
+    <textarea name="eco_nw_hieu_ky" id="eco_nw_hieu_ky" rows="12" style="width:100%;font-size:12px"><?php echo esc_textarea($text); ?></textarea>
+    <p style="color:#555;margin:0">Phần dài cuối trang sản phẩm. Dòng bắt đầu bằng <code>## </code> là tên phần, dòng bắt đầu bằng <code>- </code> là một ý gạch đầu dòng,
+        dòng khác là đoạn văn. Đang điền sẵn chữ trên web; sửa rồi bấm Cập nhật là web đổi (không cần tích ô trên). Xoá trắng ô là bỏ hẳn phần này.</p>
+    <?php
 }
 
 add_action('save_post_product', 'eco_nw_save', 10, 2);
@@ -51,6 +84,21 @@ function eco_nw_save($post_id, $post)
     }
     $on = isset($_POST['eco_nw_dung']) && $_POST['eco_nw_dung'] === '1';
     $was = get_post_meta($post_id, ECO_NW_META, true) === '1';
+    // "Hiểu kỹ trước khi chọn": giữ nguyên chữ gốc thì không lưu (web dùng bản trong giao diện); xoá trắng là bỏ phần này
+    if (isset($_POST['eco_nw_hieu_ky'])) {
+        $product = wc_get_product($post_id);
+        $item = $product ? eco_nw_frame_item($product) : null;
+        $text = mb_substr(sanitize_textarea_field(wp_unslash($_POST['eco_nw_hieu_ky'])), 0, 12000, 'UTF-8');
+        $before = (string) get_post_meta($post_id, ECO_NW_META_HIEU_KY, true);
+        if ($item && eco_nw_norm($text) === eco_nw_norm($item['hieuKy'])) {
+            delete_post_meta($post_id, ECO_NW_META_HIEU_KY);
+        } else {
+            update_post_meta($post_id, ECO_NW_META_HIEU_KY, trim($text) === '' ? '-' : $text);
+        }
+        if ($before !== (string) get_post_meta($post_id, ECO_NW_META_HIEU_KY, true)) {
+            eco_gia_mark_dirty();
+        }
+    }
     if ($on) {
         update_post_meta($post_id, ECO_NW_META, '1');
     } else {
@@ -135,6 +183,11 @@ function eco_nw_compute()
             $product = eco_gia_find_product(isset($item['woo']) ? $item['woo'] : array());
             $on = $product && get_post_meta($product->get_id(), ECO_NW_META, true) === '1';
             $entry = $on ? call_user_func($reader, $product) : array();
+            // "Hiểu kỹ trước khi chọn" của sản phẩm lẻ: dùng khi Ecopillo đã sửa, không cần tích ("-" là đã xoá trắng)
+            $hk = $product && $key === 'sanPham' ? (string) get_post_meta($product->get_id(), ECO_NW_META_HIEU_KY, true) : '';
+            if ($hk !== '') {
+                $entry['hieuKy'] = $hk === '-' ? '-' : mb_substr($hk, 0, 12000, 'UTF-8');
+            }
             if ($entry) {
                 $result['live'][$key][(string) $item['khoa']] = $entry;
             }

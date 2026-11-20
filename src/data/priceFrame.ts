@@ -3,6 +3,8 @@ import { collectionPath, HOST_REDIRECTS, LISTINGS, patternPath, singleProductPat
 import { ALL_POSTS } from './allPosts'
 import { PRODUCTS } from './products'
 import { TONES } from './stories'
+import { PRODUCT_INFO } from './productInfo'
+import { infoToText } from './productInfoText'
 
 /**
  * "Khung giá": danh sách mọi ô giá trên web (mẫu × cỡ, sản phẩm × lựa chọn) kèm sản phẩm WooCommerce tương ứng.
@@ -66,6 +68,8 @@ export interface FrameContentProduct {
   khoa: string
   ten: string
   woo: string[]
+  /** Phần "Hiểu kỹ trước khi chọn" đang có (productInfoText.ts), điền sẵn vào ô trong trang sửa sản phẩm Woo */
+  hieuKy: string
 }
 
 /**
@@ -73,7 +77,7 @@ export interface FrameContentProduct {
  * trang một mẫu của bộ đó, dùng làm trang khung; `gam` các gam màu (thuộc tính "Gam màu" của mẫu ghi tên gam).
  */
 export interface FrameNewCollections {
-  kieu: Record<'ga-phu' | 'ga-chun', { khungBo: string; khungMau: string; nhan: string }>
+  kieu: Record<'ga-phu' | 'ga-chun' | 'chan-ga' | 'chan-he', { khungBo: string; khungMau: string; nhan: string }>
   gam: { id: string; ten: string }[]
 }
 
@@ -166,13 +170,19 @@ export function buildPriceFrame(): PriceFrame {
     khoa: p.slug,
     ten: p.name,
     woo: wooSlugsFor(singleProductPath(p.slug)),
+    hieuKy: infoToText(PRODUCT_INFO[p.slug]?.sections ?? []),
   }))
-  const shellOf = (kind: 'ga-phu' | 'ga-chun', label: string) => {
+  const shellOf = (kind: 'ga-phu' | 'ga-chun' | 'chan-ga' | 'chan-he', label: string) => {
     const col = boSuuTap.find((c) => c.kieu === kind) ?? boSuuTap[0]
     return { khungBo: col?.trang ?? '', khungMau: col?.khung ?? '', nhan: label }
   }
   const boMoi: FrameNewCollections = {
-    kieu: { 'ga-phu': shellOf('ga-phu', 'Bộ ga phủ'), 'ga-chun': shellOf('ga-chun', 'Bộ ga chun') },
+    kieu: {
+      'ga-phu': shellOf('ga-phu', 'Bộ ga phủ'),
+      'ga-chun': shellOf('ga-chun', 'Bộ ga chun'),
+      'chan-ga': shellOf('chan-ga', 'Bộ chăn ga gối'),
+      'chan-he': shellOf('chan-he', 'Chăn hè'),
+    },
     gam: TONES.map((t) => ({ id: t.id, ten: t.label })),
   }
   return { mau, sanPham, noiDung, boMoi, boSuuTap, danhMuc, baiViet, baiTrongCode, khungBai, slugCu }

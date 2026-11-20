@@ -1,6 +1,7 @@
 import { Suspense, useEffect, useRef } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { hasOwnBuyBar, PATHS } from '../../data/links'
+import { liveRedirectFor } from '../../data/liveRedirects'
 import { trackPageView } from '../../lib/tracking'
 import { BackToTop } from './BackToTop'
 import { ContactDock } from './ContactDock'
@@ -81,7 +82,8 @@ export function SiteLayout() {
   useScrollOnNavigate()
   usePageViewTracking()
   // Hiện dần khi cuộn: do public/hieu-ung/ecopillo-hieu-ung.js lo cho cả trang (thay useScrollReveal)
-  const { pathname, hash } = useLocation()
+  const { pathname, hash, search } = useLocation()
+  const liveRedirect = liveRedirectFor(pathname)
   // Trang đặt hàng và chi tiết sản phẩm có thanh dưới riêng (giá + gọi/Zalo)
   const showDock = !pathname.startsWith(PATHS.order.slice(0, -1)) && !hasOwnBuyBar(pathname)
   // Neo #diem-ban trên Liên hệ mua hàng: điện thoại bỏ thanh liên hệ dưới đáy vì mỗi thẻ đại lý
@@ -107,7 +109,8 @@ export function SiteLayout() {
           mép màn hình. Thấp hơn (trước là 70vh) thì chân trang ló lên rồi bị đẩy xuống khi trang hiện ra: CLS 0,17–0,2.
         */}
         <Suspense fallback={<div className="min-h-lvh" aria-busy="true" />}>
-          <Outlet />
+          {/* Chuyển hướng Ecopillo tự thêm (liveRedirects.ts) áp cho cả link đang là một trang có sẵn */}
+          {liveRedirect ? <Navigate to={`${liveRedirect}${search}`} replace /> : <Outlet />}
         </Suspense>
       </main>
       <Footer />

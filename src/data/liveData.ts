@@ -74,7 +74,9 @@ export interface LiveNewCollection {
   /** Mã bộ trên web (tên danh mục Woo bỏ "bo-suu-tap-") */
   id: string
   ten: string
-  kieu: 'ga-phu' | 'ga-chun'
+  kieu: 'ga-phu' | 'ga-chun' | 'chan-ga' | 'chan-he'
+  /** "Trong bộ gồm" Ecopillo ghi ở danh mục (mỗi dòng một món); trống thì theo kiểu bộ */
+  trongBo: readonly string[]
   khauHieu: string
   moTa: string
   cauChuyen: string
@@ -85,6 +87,7 @@ export interface LiveNewCollection {
 
 /** Chữ bộ sưu tập có sẵn Ecopillo đã soát và tích ở trang sửa danh mục Woo (đợt C): ô trống giữ chữ trong code */
 export interface LiveCollectionText {
+  trongBo?: readonly string[]
   khauHieu?: string
   moTa?: string
   cauChuyen?: string
@@ -123,6 +126,8 @@ export interface LiveProductContent {
   tomTat?: string
   chiTiet?: readonly string[]
   thongSo?: readonly { nhan: string; giaTri: string }[]
+  /** Phần "Hiểu kỹ trước khi chọn" Ecopillo sửa trong Woo (đợt D), dạng chữ của productInfoText.ts */
+  hieuKy?: string
 }
 
 /** Ảnh, ảnh phụ, tên màu của một mẫu chăn ga có sẵn (khoá `${collectionId}/${code}`) */
@@ -223,7 +228,7 @@ function cleanNewCollection(input: unknown): LiveNewCollection | undefined {
   const id = text(v.id, 60)
   const ten = text(v.ten, 80)
   const duongDan = text(v.duongDan, 200)
-  const kieu = v.kieu === 'ga-phu' || v.kieu === 'ga-chun' ? v.kieu : undefined
+  const kieu = v.kieu === 'ga-phu' || v.kieu === 'ga-chun' || v.kieu === 'chan-ga' || v.kieu === 'chan-he' ? v.kieu : undefined
   if (!/^[a-z0-9-]{3,60}$/.test(id) || !ten || !kieu || !/^\/[a-z0-9/-]{3,200}\/$/.test(duongDan)) return undefined
   const mau = Array.isArray(v.mau)
     ? v.mau.slice(0, 120).map((m) => cleanNewPattern({ ...(m as object), bo: id })).filter((x): x is LiveNewPattern => !!x)
@@ -231,7 +236,7 @@ function cleanNewCollection(input: unknown): LiveNewCollection | undefined {
         .filter((m) => ['160x200', '180x200', '200x220'].every((size) => m.gia[size] !== undefined))
     : []
   if (!mau.length) return undefined
-  return { id, ten, kieu, khauHieu: text(v.khauHieu, 200), moTa: text(v.moTa, 600), cauChuyen: text(v.cauChuyen, 1200), duongDan, mau }
+  return { id, ten, kieu, trongBo: cleanTexts(v.trongBo, 200, 12), khauHieu: text(v.khauHieu, 200), moTa: text(v.moTa, 600), cauChuyen: text(v.cauChuyen, 1200), duongDan, mau }
 }
 
 const cleanCollectionText = (input: unknown): LiveCollectionText => {
@@ -240,7 +245,13 @@ const cleanCollectionText = (input: unknown): LiveCollectionText => {
   const khauHieu = text(v.khauHieu, 200)
   const moTa = text(v.moTa, 600)
   const cauChuyen = text(v.cauChuyen, 1200)
-  return { ...(khauHieu ? { khauHieu } : {}), ...(moTa ? { moTa } : {}), ...(cauChuyen ? { cauChuyen } : {}) }
+  const trongBo = cleanTexts(v.trongBo, 200, 12)
+  return {
+    ...(khauHieu ? { khauHieu } : {}),
+    ...(moTa ? { moTa } : {}),
+    ...(cauChuyen ? { cauChuyen } : {}),
+    ...(trongBo.length ? { trongBo } : {}),
+  }
 }
 
 const cleanText = (v: unknown, max: number): string => (typeof v === 'string' ? v.trim().slice(0, max) : '')
@@ -333,7 +344,9 @@ function cleanProductContent(input: unknown): LiveProductContent {
   const tomTat = cleanText(v.tomTat, 400)
   const chiTiet = cleanTexts(v.chiTiet, 600, 16)
   const thongSo = cleanSpecs(v.thongSo)
+  const hieuKy = cleanText(v.hieuKy, 12000)
   return {
+    ...(hieuKy ? { hieuKy } : {}),
     ...(ten ? { ten } : {}),
     ...(anh ? { anh } : {}),
     ...(anhPhu.length ? { anhPhu } : {}),

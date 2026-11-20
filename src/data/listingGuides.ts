@@ -1,4 +1,4 @@
-import { liveList, type EditableField, type EditableSet } from './liveContent'
+import { liveList, rowKey, type EditableField, type EditableSet } from './liveContent'
 /**
  * Phần "Chọn thế nào" ở cuối trang danh mục nhỏ (đệm lò xo, ruột chăn gối…). Khoá là đường link trong LISTINGS (links.ts).
  *
@@ -106,11 +106,11 @@ export const LISTING_GUIDES_SET: EditableSet = {
   khoaDong: 'path',
   truong: GUIDE_FIELDS,
 }
-const LIVE_GUIDES = liveList(LISTING_GUIDES_SET.khoa, GUIDE_ROWS, GUIDE_FIELDS, (i, row) => GUIDE_ROWS.find((r) => r.path === row.path) ?? GUIDE_ROWS[i] ?? GUIDE_ROWS[0])
+const LIVE_GUIDES = liveList(LISTING_GUIDES_SET.khoa, GUIDE_ROWS, GUIDE_FIELDS, (i, row) => GUIDE_ROWS.find((r) => rowKey(r.path) === rowKey(row.path)) ?? GUIDE_ROWS[i] ?? GUIDE_ROWS[0])
 
 export const LISTING_GUIDES: Readonly<Record<string, ListingGuide>> = Object.fromEntries(
   Object.entries(BASE_LISTING_GUIDES).map(([path, guide]) => {
-    const row = LIVE_GUIDES.find((r) => r.path === path)
+    const row = LIVE_GUIDES.find((r) => rowKey(r.path) === rowKey(path))
     return [path, row ? { title: row.title, points: row.points } : guide]
   }),
 )

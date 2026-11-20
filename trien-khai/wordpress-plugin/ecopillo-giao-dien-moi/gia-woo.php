@@ -347,6 +347,13 @@ function eco_dl_write()
     if (file_put_contents($tmp, $js) === false || !rename($tmp, $dir . '/du-lieu.js')) {
         return false;
     }
+    // Màu web (noi-dung.php, src/data/theme.ts): luôn ghi file để trang không gọi phải file không có
+    if (function_exists('eco_nd_theme_css')) {
+        $css_tmp = $dir . '/mau.css.tmp';
+        if (file_put_contents($css_tmp, eco_nd_theme_css()) !== false) {
+            rename($css_tmp, $dir . '/mau.css');
+        }
+    }
     update_option(ECO_GIA_OPT_GHI_LUC, current_time('mysql'), false);
     return true;
 }
@@ -386,7 +393,7 @@ add_action('admin_init', 'eco_gia_refresh_if_stale');
 function eco_gia_refresh_if_stale()
 {
     $file = eco_gia_dir() . '/du-lieu.js';
-    $stale = !is_file($file);
+    $stale = !is_file($file) || !is_file(eco_gia_dir() . '/mau.css');
     foreach (array('khung-gia.json', 'noi-dung-goc.json') as $frame) {
         $path = __DIR__ . '/du-lieu/' . $frame;
         if (!$stale && is_file($path) && filemtime($path) > filemtime($file)) {

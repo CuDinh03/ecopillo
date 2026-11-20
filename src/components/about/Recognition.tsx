@@ -41,7 +41,7 @@ function useCertificateViewer() {
       </div>
       {shown && (
         <img
-          src={`${shown.image}.webp`}
+          src={shown.imageUrl ?? `${shown.image}.webp`}
           alt={`Bản chụp giấy ${shown.name}`}
           decoding="async"
           className="mx-auto mt-4 max-h-[calc(100svh-12rem)] w-auto rounded-lg bg-white object-contain shadow-[var(--shadow-soft)]"
@@ -70,7 +70,7 @@ function CertificateCard({ certificate, onOpen, compact = false, index }: Certif
       >
         <span className="block aspect-[3/4] overflow-hidden rounded-xl bg-mist-100 p-2 sm:p-3">
           <img
-            src={`${certificate.image}-sm.webp`}
+            src={certificate.imageUrl ?? `${certificate.image}-sm.webp`}
             alt=""
             loading="lazy"
             decoding="async"
@@ -129,7 +129,7 @@ export function CertificateBadges({ showImages = true }: { showImages?: boolean 
               className="flex h-full w-full flex-col items-center gap-2 rounded-xl bg-ivory p-2.5 text-center shadow-[var(--shadow-soft)] transition hover:shadow-[var(--shadow-lift)] sm:flex-row sm:gap-3 sm:p-3 sm:text-left"
             >
               <img
-                src={showImages ? `${c.image}-sm.webp` : undefined}
+                src={showImages ? (c.imageUrl ?? `${c.image}-sm.webp`) : undefined}
                 alt=""
                 loading="lazy"
                 decoding="async"

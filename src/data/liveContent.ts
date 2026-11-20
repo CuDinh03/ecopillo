@@ -39,6 +39,8 @@ export type FieldKind =
   | 'ds-dong'
   /** Danh sách cặp (mảng đối tượng hai khoá `cap`); màn hình sửa: mỗi dòng "ô 1 | ô 2" */
   | 'ds-cap'
+  /** Màu "#rrggbb" (màn hình sửa: ô chọn màu) */
+  | 'mau'
 
 export interface EditableField {
   khoa: string
@@ -72,6 +74,12 @@ export interface EditableSet {
   tieuDeDong?: string
   /** Danh sách: ô mã ẩn giữ nguyên qua các lần sửa (ảnh, lựa chọn đã lưu bám theo mã) */
   khoaDong?: string
+  /**
+   * Bộ màu (theme.ts): ô màu → biến CSS. Plugin ghi các biến vào mau.css; `alpha` là độ trong (đường kẻ, chữ phụ pha từ màu chàm)
+   */
+  bienCss?: Readonly<Record<string, readonly { bien: string; alpha?: number }[]>>
+  /** Bộ màu: cặp chữ / nền phải đủ tương phản (WCAG), không đủ thì plugin không lưu. `chu`, `nen` là mã ô hoặc "#ffffff" */
+  kiemTuongPhan?: readonly { chu: string; nen: string; toiThieu: number; nhan: string }[]
 }
 
 export interface EditableImage {
@@ -81,6 +89,19 @@ export interface EditableImage {
 }
 
 const MAX_TEXT = 4000
+
+/**
+ * Mã dòng (khoaDong) sau khi plugin lưu: noi-dung.php làm sạch bằng sanitize_title, nên "/danh-muc-san-pham/x/" thành
+ * "danh-muc-san-pham-x". So mã dòng luôn qua hàm này ở cả hai phía.
+ */
+export const rowKey = (value: unknown): string =>
+  typeof value === 'string'
+    ? value
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '')
+    : ''
 
 const isLink = (v: string): boolean => /^(https:\/\/|http:\/\/|\/(?!\/)|tel:|mailto:)/.test(v) && !/[\s<>"]/.test(v)
 
@@ -127,6 +148,8 @@ export function cleanField(field: EditableField, value: unknown): unknown {
         .slice(0, 60)
       return pairs.length ? pairs : undefined
     }
+    case 'mau':
+      return typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value.trim()) ? value.trim().toLowerCase() : undefined
     case 'anh': {
       if (!value || typeof value !== 'object') return undefined
       const { src, srcSet, alt } = value as Record<string, unknown>

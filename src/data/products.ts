@@ -15,6 +15,8 @@ import {
   type SizeId,
 } from './catalog'
 import { PRODUCTS_PAGE_TEXT } from './pageText/products'
+import type { InfoSection } from './productInfo'
+import { textToInfo } from './productInfoText'
 
 /**
  * Danh sách sản phẩm cho trang /san-pham, ghép từ danh mục trong catalog.ts.
@@ -78,6 +80,8 @@ export interface Product {
   specs?: readonly { label: string; value: string }[]
   /** Thông số lấy từ thuộc tính Woo Ecopillo đã soát (đợt B): thay hẳn thông số trong productInfo.ts */
   specsFromWoo?: boolean
+  /** Phần "Hiểu kỹ trước khi chọn" Ecopillo sửa trong Woo (đợt D): thay phần trong productInfo.ts */
+  infoSections?: readonly InfoSection[]
   /** Giá theo tổ hợp kích thước × độ dày (đệm) */
   variants?: ProductVariants
   /** Sản phẩm lẻ không có bảng giá kích thước × độ dày: các lựa chọn để đặt online */
@@ -875,6 +879,8 @@ const withLiveContent = (p: Product): Product => {
     ...(live.tomTat ? { summary: live.tomTat } : {}),
     ...(live.chiTiet ? { details: live.chiTiet } : {}),
     ...(live.thongSo ? { specs: live.thongSo.map((s) => ({ label: s.nhan, value: s.giaTri })), specsFromWoo: true } : {}),
+    // "-": Ecopillo xoá trắng ô, bỏ hẳn phần "Hiểu kỹ trước khi chọn"
+    ...(live.hieuKy === '-' ? { infoSections: [] } : live.hieuKy && textToInfo(live.hieuKy).length ? { infoSections: textToInfo(live.hieuKy) } : {}),
   }
 }
 

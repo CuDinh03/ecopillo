@@ -13,6 +13,8 @@ import { HOTEL_BENEFITS, HOTEL_EYEBROW, HOTEL_INTRO, HOTEL_INTRO_HEADING, HOTEL_
 import { useNearViewport } from '../hooks/useNearViewport'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
+import { Blocks } from '../components/ui/Blocks'
+import { HOTEL_ORDER } from '../data/pageLayout'
 
 /**
  * Trang Khách sạn và dự án (biên bản mục 30, 48): chăn ga gối cho khách sạn, resort, nhà nghỉ, dự án.
@@ -46,12 +48,18 @@ export function HotelPage() {
     // Không chừa khoảng dưới: phần báo giá tràn hết bề ngang, nối thẳng xuống chân trang
     <div>
       <HotelHero />
-      <Partners />
-      <WhiteGoods onQuote={prefillQuote} />
-      <HotelProducts onQuote={quoteProduct} />
-      <Reasons />
-      <Steps />
-      <Quote defaultMessage={quotePrefill.message} prefillKey={quotePrefill.key} />
+      {/* Thứ tự khối: Ecopillo đổi ở Nội dung web → Bố cục trang Khách sạn và dự án (src/data/pageLayout.ts) */}
+      <Blocks
+        order={HOTEL_ORDER}
+        blocks={{
+          'doi-tac': <Partners />,
+          'hang-trang': <WhiteGoods onQuote={prefillQuote} />,
+          'san-pham': <HotelProducts onQuote={quoteProduct} />,
+          'ly-do': <Reasons />,
+          'cach-lam': <Steps />,
+          'bao-gia': <Quote defaultMessage={quotePrefill.message} prefillKey={quotePrefill.key} />,
+        }}
+      />
     </div>
   )
 }

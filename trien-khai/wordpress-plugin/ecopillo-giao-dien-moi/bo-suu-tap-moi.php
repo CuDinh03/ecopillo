@@ -24,6 +24,7 @@ define('ECO_BST_META_BAT', '_eco_bst_bat');
 define('ECO_BST_META_KIEU', '_eco_bst_kieu');
 define('ECO_BST_META_KHAU_HIEU', '_eco_bst_khau_hieu');
 define('ECO_BST_META_CAU_CHUYEN', '_eco_bst_cau_chuyen');
+define('ECO_BST_META_TRONG_BO', '_eco_bst_trong_bo');
 define('ECO_BST_OPT_TRANG', 'ecopillo_bo_moi_trang');
 
 /** Danh mục Woo của bộ có sẵn → mã bộ trên web (khung-gia.json `boSuuTap`) */
@@ -67,7 +68,7 @@ function eco_bst_fields_edit($term)
                 : 'Hiện thành bộ sưu tập trên giao diện mới'; ?></label>
             <p class="description"><?php echo $col
                 ? 'Tích khi đã soát xong. Ô nào để trống thì web giữ chữ đang có. Ô "Mô tả" phía trên là câu giới thiệu bộ.'
-                : 'Mỗi sản phẩm trong danh mục này là một mẫu: mã mẫu ở ô Mã sản phẩm, tên màu ở dòng đầu Mô tả ngắn, ảnh, biến thể ba cỡ (1m6, 1m8, 2m2). Ô "Mô tả" phía trên là câu giới thiệu bộ. Đường dẫn (slug) không dấu, ví dụ bo-suu-tap-eco-lumi.'; ?></p></td>
+                : 'Mỗi sản phẩm trong danh mục này là một mẫu: mã mẫu ở ô Mã sản phẩm, tên màu ở dòng đầu Mô tả ngắn, ảnh, biến thể ba cỡ (1m6, 1m8, 2m2; chăn hè một giá thì để sản phẩm đơn). Ô "Mô tả" phía trên là câu giới thiệu bộ. Đường dẫn (slug) không dấu, ví dụ bo-suu-tap-eco-lumi.'; ?></p></td>
     </tr>
     <?php if (!$col) : ?>
     <tr class="form-field">
@@ -83,6 +84,11 @@ function eco_bst_fields_edit($term)
         <th scope="row"><label for="eco_bst_khau_hieu">Khẩu hiệu</label></th>
         <td><input type="text" name="eco_bst_khau_hieu" id="eco_bst_khau_hieu" maxlength="200" value="<?php echo esc_attr((string) get_term_meta($term->term_id, ECO_BST_META_KHAU_HIEU, true)); ?>">
             <p class="description">Một câu ngắn dưới tên bộ, ví dụ "Thanh khiết và sinh động".</p></td>
+    </tr>
+    <tr class="form-field">
+        <th scope="row"><label for="eco_bst_trong_bo">Trong bộ gồm</label></th>
+        <td><textarea name="eco_bst_trong_bo" id="eco_bst_trong_bo" rows="5" maxlength="1500"><?php echo esc_textarea((string) get_term_meta($term->term_id, ECO_BST_META_TRONG_BO, true)); ?></textarea>
+            <p class="description">Mỗi dòng một món, ví dụ "Vỏ chăn 4 mùa 200×220, có khoá kéo". Để trống: theo kiểu bộ (bộ mới) hoặc giữ như đang có (bộ có sẵn).</p></td>
     </tr>
     <tr class="form-field">
         <th scope="row"><label for="eco_bst_cau_chuyen">Câu chuyện của bộ</label></th>
@@ -112,7 +118,7 @@ function eco_bst_save($term_id)
     if ($kind !== '' && isset(eco_bst_kinds()[$kind])) {
         update_term_meta($term_id, ECO_BST_META_KIEU, $kind);
     }
-    foreach (array('eco_bst_khau_hieu' => array(ECO_BST_META_KHAU_HIEU, 200), 'eco_bst_cau_chuyen' => array(ECO_BST_META_CAU_CHUYEN, 1200)) as $field => $meta) {
+    foreach (array('eco_bst_khau_hieu' => array(ECO_BST_META_KHAU_HIEU, 200), 'eco_bst_cau_chuyen' => array(ECO_BST_META_CAU_CHUYEN, 1200), 'eco_bst_trong_bo' => array(ECO_BST_META_TRONG_BO, 1500)) as $field => $meta) {
         if (isset($_POST[$field])) {
             $value = sanitize_textarea_field(wp_unslash($_POST[$field]));
             update_term_meta($term_id, $meta[0], mb_substr($value, 0, $meta[1], 'UTF-8'));
@@ -245,6 +251,17 @@ function eco_bst_compute()
             'moTa' => eco_sp_text($term->description, 600),
             'cauChuyen' => eco_sp_text(get_term_meta($term->term_id, ECO_BST_META_CAU_CHUYEN, true), 1200),
         ), 'strlen');
+        // "Trong bộ gồm": mỗi dòng một món (đợt D)
+        $items = array();
+        foreach (preg_split('/\R/u', (string) get_term_meta($term->term_id, ECO_BST_META_TRONG_BO, true)) as $line) {
+            $line = eco_sp_text($line, 200);
+            if ($line !== '') {
+                $items[] = $line;
+            }
+        }
+        if ($items) {
+            $text['trongBo'] = array_slice($items, 0, 12);
+        }
         if (isset($existing[$term->slug])) {
             $col = $existing[$term->slug];
             if ($text) {
@@ -298,7 +315,7 @@ function eco_bst_compute()
         if ($problems) {
             continue;
         }
-        $result['live'][] = array_merge(array('khauHieu' => '', 'moTa' => '', 'cauChuyen' => ''), $text, array(
+        $result['live'][] = array_merge(array('khauHieu' => '', 'moTa' => '', 'cauChuyen' => '', 'trongBo' => array()), $text, array(
             'id' => $id, 'ten' => $name, 'kieu' => $kind, 'duongDan' => $path, 'mau' => $patterns,
         ));
         $result['pagesBo'][$path] = array('khung' => $kinds[$kind]['khungBo'], 'tieuDe' => $name, 'anh' => $patterns[0]['anh']['src'], 'url' => $path);

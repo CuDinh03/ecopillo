@@ -13,6 +13,8 @@ import { scrollToElement } from '../lib/scroll'
 import { useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
 import { CONTACT_PAGE_TEXT } from '../data/pageText/contact'
 import { Lines } from '../components/ui/Highlight'
+import { Blocks } from '../components/ui/Blocks'
+import { CONTACT_ORDER } from '../data/pageLayout'
 
 /**
  * Trang Liên hệ mua hàng (mục 9 phản hồi 05/11, phương án A).
@@ -242,57 +244,65 @@ export function ContactPage() {
         </Container>
       </section>
 
-      {/* Văn phòng / chi nhánh */}
-      <Container className="pb-6 sm:pb-10">
-        <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
-          <div className="lg:col-span-7">
-            <OfficeMap />
-          </div>
-          <aside className="flex flex-col gap-6 lg:col-span-5">
-            <div className="rounded-[2rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] sm:p-8">
-              <h2 className="font-display text-[1.4rem] text-deep-900">{CONTACT_PAGE_TEXT.hoiNhanhTieuDe}</h2>
-              <ul className="mt-2 divide-y divide-line text-body-sm">
-                {[
-                  policyPath('chinh-sach-van-chuyen'),
-                  policyPath('chinh-sach-doi-tra-hang-va-hoan-tien'),
-                  policyPath('chinh-sach-bao-hanh-san-pham'),
-                  PATHS.hotel,
-                  PATHS.faq,
-                ].flatMap((href, i) => (CONTACT_PAGE_TEXT.hoiNhanh[i] ? [[CONTACT_PAGE_TEXT.hoiNhanh[i], href]] : [])).map(([label, href]) => (
-                  <li key={label}>
-                    <Link to={href} className="group flex min-h-11 items-center justify-between gap-3 py-2.5 text-deep-900 hover:underline">
-                      {label}
-                      <Icon name="arrowRight" size={16} className="shrink-0 opacity-60 transition group-hover:translate-x-0.5" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-6 border-t border-line pt-5">
-                <p className="mb-3 text-sm text-ink-soft">{CONTACT_PAGE_TEXT.theoDoi}</p>
-                <SocialIcons />
+      {/* Văn phòng, chi nhánh; điểm bán (trước đây trang Hệ thống phân phối); form gửi tin nhắn.
+          Thứ tự khối: Ecopillo đổi ở Nội dung web → Bố cục trang Liên hệ mua hàng (src/data/pageLayout.ts) */}
+      <Blocks
+        order={CONTACT_ORDER}
+        blocks={{
+          'van-phong': (
+            <Container className="pb-6 sm:pb-10">
+              <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
+                <div className="lg:col-span-7">
+                  <OfficeMap />
+                </div>
+                <aside className="flex flex-col gap-6 lg:col-span-5">
+                  <div className="rounded-[2rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] sm:p-8">
+                    <h2 className="font-display text-[1.4rem] text-deep-900">{CONTACT_PAGE_TEXT.hoiNhanhTieuDe}</h2>
+                    <ul className="mt-2 divide-y divide-line text-body-sm">
+                      {[
+                        policyPath('chinh-sach-van-chuyen'),
+                        policyPath('chinh-sach-doi-tra-hang-va-hoan-tien'),
+                        policyPath('chinh-sach-bao-hanh-san-pham'),
+                        PATHS.hotel,
+                        PATHS.faq,
+                      ].flatMap((href, i) => (CONTACT_PAGE_TEXT.hoiNhanh[i] ? [[CONTACT_PAGE_TEXT.hoiNhanh[i], href]] : [])).map(([label, href]) => (
+                        <li key={label}>
+                          <Link to={href} className="group flex min-h-11 items-center justify-between gap-3 py-2.5 text-deep-900 hover:underline">
+                            {label}
+                            <Icon name="arrowRight" size={16} className="shrink-0 opacity-60 transition group-hover:translate-x-0.5" />
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-6 border-t border-line pt-5">
+                      <p className="mb-3 text-sm text-ink-soft">{CONTACT_PAGE_TEXT.theoDoi}</p>
+                      <SocialIcons />
+                    </div>
+                  </div>
+                </aside>
               </div>
-            </div>
-          </aside>
-        </div>
-      </Container>
-
-      {/* Điểm bán / đại lý (trước đây trang Hệ thống phân phối) */}
-      <DealerFinder embedded />
-
-      {/* Form gửi tin nhắn */}
-      <Container className="mt-6 sm:mt-10">
-        <section
-          aria-labelledby="message-title"
-          className="mx-auto max-w-3xl rounded-[2rem] bg-ivory p-6 shadow-[var(--shadow-soft)] sm:p-10"
-        >
-          <p className="eyebrow">{CONTACT_PAGE_TEXT.tinNhanNhan}</p>
-          <h2 id="message-title" className="font-display mt-3 text-[1.9rem] leading-tight text-deep-900 sm:text-[2.3rem]">
-            {CONTACT_PAGE_TEXT.tinNhanTieuDe}
-          </h2>
-          <p className="mt-2 mb-8 text-balance text-ink-soft">{CONTACT_PAGE_TEXT.tinNhanChu}</p>
-          <MessageForm key={topic} defaultTopic={topic} />
-        </section>
-      </Container>
+            </Container>
+          ),
+          'diem-ban': (
+            <DealerFinder embedded />
+          ),
+          'tin-nhan': (
+            <Container className="mt-6 sm:mt-10">
+              <section
+                aria-labelledby="message-title"
+                className="mx-auto max-w-3xl rounded-[2rem] bg-ivory p-6 shadow-[var(--shadow-soft)] sm:p-10"
+              >
+                <p className="eyebrow">{CONTACT_PAGE_TEXT.tinNhanNhan}</p>
+                <h2 id="message-title" className="font-display mt-3 text-[1.9rem] leading-tight text-deep-900 sm:text-[2.3rem]">
+                  {CONTACT_PAGE_TEXT.tinNhanTieuDe}
+                </h2>
+                <p className="mt-2 mb-8 text-balance text-ink-soft">{CONTACT_PAGE_TEXT.tinNhanChu}</p>
+                <MessageForm key={topic} defaultTopic={topic} />
+              </section>
+            </Container>
+          ),
+        }}
+      />
     </div>
   )
 }

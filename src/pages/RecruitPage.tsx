@@ -7,6 +7,8 @@ import { Container } from '../components/ui/primitives'
 import { PATHS } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { RECRUIT_TEXT } from '../data/pageText/recruit'
+import { Blocks } from '../components/ui/Blocks'
+import { RECRUIT_ORDER } from '../data/pageLayout'
 
 /**
  * Thư ngỏ hợp tác đầu trang: chữ chị Phương gửi Zalo 19/11/2026, giữ nguyên văn (thay tiêu đề "Tuyển đại lý chăn ga gối đệm Ecopillo").
@@ -50,13 +52,22 @@ export function RecruitPage() {
         </Link>
       </PageHero>
 
-      <Container className="mt-10 sm:mt-14">
-        <DistributionModel />
-      </Container>
-
-      <Container className="mt-14 sm:mt-20">
-        <AgentSignup />
-      </Container>
+      {/* Thứ tự khối: Ecopillo đổi ở Nội dung web → Bố cục trang Tuyển đại lý (src/data/pageLayout.ts) */}
+      <Blocks
+        order={RECRUIT_ORDER}
+        blocks={{
+          'mo-hinh': (
+            <Container className="mt-10 sm:mt-14">
+              <DistributionModel />
+            </Container>
+          ),
+          'dang-ky': (
+            <Container className="mt-14 sm:mt-20">
+              <AgentSignup />
+            </Container>
+          ),
+        }}
+      />
     </div>
   )
 }

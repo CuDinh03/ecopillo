@@ -499,12 +499,15 @@ const withCollectionText = (c: Collection): Collection => {
     ...(live.khauHieu ? { tagline: live.khauHieu } : {}),
     ...(live.moTa ? { description: live.moTa, metaDescription: undefined } : {}),
     ...(live.cauChuyen ? { story: live.cauChuyen } : {}),
+    ...(live.trongBo ? { contents: live.trongBo } : {}),
   }
 }
 
 const KIND_OF_NEW: Readonly<Record<LiveNewCollection['kieu'], Pick<Collection, 'kind' | 'kindLabel' | 'contents'>>> = {
   'ga-phu': { kind: 'ga-phu', kindLabel: 'Bộ ga phủ', contents: SET_PHU_CONTENTS },
   'ga-chun': { kind: 'ga-chun', kindLabel: 'Bộ ga chun', contents: SET_CHUN_CONTENTS },
+  'chan-ga': { kind: 'chan-ga', kindLabel: 'Bộ chăn ga gối', contents: SET_PHU_CONTENTS },
+  'chan-he': { kind: 'chan-he', kindLabel: 'Chăn hè', contents: ['1 chăn hè chần bông mỏng'] },
 }
 
 /**
@@ -517,6 +520,7 @@ const newCollection = (live: LiveNewCollection): Collection => {
     id: live.id,
     name: live.ten,
     ...KIND_OF_NEW[live.kieu],
+    ...(live.trongBo.length ? { contents: live.trongBo } : {}),
     tagline: live.khauHieu,
     description: live.moTa || live.khauHieu,
     prices,

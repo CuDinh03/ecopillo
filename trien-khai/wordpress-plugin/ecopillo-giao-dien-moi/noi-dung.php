@@ -150,6 +150,9 @@ function eco_nd_clean_field($field, $value)
                 }
             }
             return array_slice($out, 0, 60);
+        case 'mau':
+            $color = is_string($value) ? strtolower(trim($value)) : '';
+            return preg_match('/^#[0-9a-f]{6}$/', $color) ? $color : null;
         case 'anh':
             if (!is_array($value) || !isset($value['src']) || !eco_nd_is_link(trim((string) $value['src']))) {
                 return null;
@@ -193,6 +196,111 @@ function eco_nd_clean_row($set, $input, &$errors)
         $row[$field['khoa']] = $value;
     }
     return $row;
+}
+
+/* ---------------------------------------------------------------- Màu web (src/data/theme.ts) */
+
+/** Độ sáng tương đối WCAG của màu #rrggbb */
+function eco_nd_luminance($hex)
+{
+    $out = 0;
+    foreach (array(0.2126, 0.7152, 0.0722) as $i => $weight) {
+        $c = hexdec(substr($hex, 1 + $i * 2, 2)) / 255;
+        $c = $c <= 0.03928 ? $c / 12.92 : pow(($c + 0.055) / 1.055, 2.4);
+        $out += $weight * $c;
+    }
+    return $out;
+}
+
+function eco_nd_contrast($a, $b)
+{
+    $la = eco_nd_luminance($a);
+    $lb = eco_nd_luminance($b);
+    return (max($la, $lb) + 0.05) / (min($la, $lb) + 0.05);
+}
+
+/** Cặp chữ / nền chưa đủ tương phản (kiemTuongPhan của bộ màu); rỗng là đạt */
+function eco_nd_contrast_errors($set, $value)
+{
+    $errors = array();
+    $pick = function ($ref) use ($value) {
+        return strpos((string) $ref, '#') === 0 ? (string) $ref : (isset($value[$ref]) ? (string) $value[$ref] : '#000000');
+    };
+    foreach (isset($set['kiemTuongPhan']) ? (array) $set['kiemTuongPhan'] : array() as $rule) {
+        $ratio = eco_nd_contrast($pick($rule['chu']), $pick($rule['nen']));
+        if ($ratio + 1e-9 < (float) $rule['toiThieu']) {
+            $errors[] = $rule['nhan'] . ' chỉ đạt ' . number_format($ratio, 1, ',', '') . ':1, cần ' . number_format((float) $rule['toiThieu'], 1, ',', '') . ':1';
+        }
+    }
+    return $errors;
+}
+
+/** Nội dung mau.css: biến màu của các bộ có `bienCss` đã lưu; rỗng khi chưa đổi màu */
+function eco_nd_theme_css()
+{
+    $lines = array();
+    foreach (eco_nd_sets() as $key => $set) {
+        if (empty($set['bienCss']) || !eco_nd_saved($key)) {
+            continue;
+        }
+        $value = eco_nd_current($set);
+        foreach ((array) $set['bienCss'] as $field => $vars) {
+            $hex = isset($value[$field]) ? strtolower((string) $value[$field]) : '';
+            if (!preg_match('/^#[0-9a-f]{6}$/', $hex)) {
+                continue;
+            }
+            foreach ((array) $vars as $var) {
+                $name = (string) $var['bien'];
+                if (!preg_match('/^--[a-z0-9-]+$/', $name)) {
+                    continue;
+                }
+                $color = isset($var['alpha'])
+                    ? sprintf('rgb(%d %d %d / %s)', hexdec(substr($hex, 1, 2)), hexdec(substr($hex, 3, 2)), hexdec(substr($hex, 5, 2)), rtrim(rtrim(number_format((float) $var['alpha'], 2, '.', ''), '0'), '.'))
+                    : $hex;
+                $lines[] = '  ' . $name . ': ' . $color . ';';
+            }
+        }
+    }
+    return $lines ? "/* Màu web Ecopillo đổi ở Nội dung web, plugin ghi. Không sửa tay. */\n:root:root {\n" . implode("\n", $lines) . "\n}\n" : "/* Chưa đổi màu: dùng bộ màu gốc */\n";
+}
+
+/* ---------------------------------------------------------------- Chuyển hướng link Ecopillo tự thêm (src/data/liveRedirects.ts) */
+
+/** Bảng link cũ → link mới đã kiểm: chỉ link trong web, không trang chủ, không wp-…, không vòng */
+function eco_nd_redirects()
+{
+    $saved = eco_nd_saved('chuyen-huong');
+    $map = array();
+    foreach ($saved && is_array($saved['giaTri']) ? $saved['giaTri'] : array() as $row) {
+        $from = isset($row['tu']) ? strtolower(trailingslashit((string) $row['tu'])) : '';
+        $to = isset($row['toi']) ? (string) $row['toi'] : '';
+        if (!preg_match('#^/[a-z0-9/_.-]*$#i', $from) || !preg_match('#^/[a-z0-9/_.-]*$#i', $to) || strpos($from, '//') !== false) {
+            continue;
+        }
+        if ($from === '/' || strpos($from, '/wp-') === 0 || $from === strtolower(trailingslashit($to))) {
+            continue;
+        }
+        $map[$from] = $to;
+    }
+    foreach ($map as $from => $to) {
+        if (isset($map[strtolower(trailingslashit($to))])) {
+            unset($map[$from]);
+        }
+    }
+    return $map;
+}
+
+add_action('template_redirect', 'eco_nd_redirect', -10);
+function eco_nd_redirect()
+{
+    $path = (string) parse_url(isset($_SERVER['REQUEST_URI']) ? (string) $_SERVER['REQUEST_URI'] : '', PHP_URL_PATH);
+    $map = eco_nd_redirects();
+    $key = strtolower(trailingslashit($path));
+    if (!$map || !isset($map[$key])) {
+        return;
+    }
+    wp_safe_redirect(home_url($map[$key]), 301, 'Ecopillo');
+    exit;
 }
 
 /** Nội dung các bộ đã lưu, để ghi vào du-lieu.js */

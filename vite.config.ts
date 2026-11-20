@@ -50,6 +50,7 @@ function trackingHtml(): Plugin {
 
 /** File giá (WooCommerce) và nội dung Ecopillo sửa trong WordPress, do plugin ghi (src/data/liveData.ts, liveContent.ts; gia-woo.php, noi-dung.php) */
 const LIVE_PRICES_SRC = '/wp-content/uploads/ecopillo-du-lieu/du-lieu.js'
+const LIVE_THEME_CSS = '/wp-content/uploads/ecopillo-du-lieu/mau.css'
 
 /**
  * Bản chạy thật: nạp file giá mới nhất trước gói JS chính (defer giữ thứ tự với script module).
@@ -63,7 +64,12 @@ function livePricesHtml(): Plugin {
       order: 'pre',
       handler(html) {
         if (!html.includes('</head>')) throw new Error('index.html thiếu </head>: không chèn được file giá')
-        return html.replace('</head>', `  <script defer src="${LIVE_PRICES_SRC}"></script>\n  </head>`)
+        // Màu web Ecopillo đổi ở Nội dung web → Màu web (src/data/theme.ts): plugin ghi mau.css (luôn có, rỗng khi chưa đổi).
+        // Nạp như CSS chặn vẽ để trang không nháy màu cũ; luật dùng :root:root nên thắng màu gốc dù nạp trước hay sau
+        return html.replace(
+          '</head>',
+          `  <link rel="stylesheet" href="${LIVE_THEME_CSS}" />\n  <script defer src="${LIVE_PRICES_SRC}"></script>\n  </head>`,
+        )
       },
     },
   }

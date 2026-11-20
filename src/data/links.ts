@@ -1,6 +1,7 @@
 import type { Collection, Pattern } from './catalog'
-import { liveList, type EditableField, type EditableSet } from './liveContent'
+import { liveList, rowKey, type EditableField, type EditableSet } from './liveContent'
 import { liveNewCollections, liveNewPatternBySlug, liveNewProductBySlug } from './liveData'
+import { liveRedirectFor } from './liveRedirects'
 
 /**
  * Mọi đường link của web nằm ở đây.
@@ -369,11 +370,11 @@ export const LISTING_HEAD_SET: EditableSet = {
   khoaDong: 'path',
   truong: LISTING_FIELDS,
 }
-const LIVE_LISTING_ROWS = liveList(LISTING_HEAD_SET.khoa, LISTING_ROWS, LISTING_FIELDS, (i, row) => LISTING_ROWS.find((r) => r.path === row.path) ?? LISTING_ROWS[i] ?? LISTING_ROWS[0])
+const LIVE_LISTING_ROWS = liveList(LISTING_HEAD_SET.khoa, LISTING_ROWS, LISTING_FIELDS, (i, row) => LISTING_ROWS.find((r) => rowKey(r.path) === rowKey(row.path)) ?? LISTING_ROWS[i] ?? LISTING_ROWS[0])
 
 export const LISTINGS: Readonly<Record<string, ListingPreset>> = Object.fromEntries(
   Object.entries(BASE_LISTINGS).map(([path, listing]) => {
-    const row = LIVE_LISTING_ROWS.find((r) => r.path === path)
+    const row = LIVE_LISTING_ROWS.find((r) => rowKey(r.path) === rowKey(path))
     const withText = row ? { ...listing, title: row.title, description: row.description } : listing
     // Bộ ga phủ Ecopillo tạo trong Woo (đợt C) vào trang danh mục Bộ ga phủ
     const addGaPhu = path === '/danh-muc-san-pham/san-pham/bo-ga-phu/' && withText.collections
@@ -546,6 +547,9 @@ export const withSlash = (path: string): string => (path.endsWith('/') ? path : 
  */
 export const redirectFor = (rawPath: string, collections: readonly Collection[]): string | undefined => {
   const path = withSlash(rawPath)
+  // Chuyển hướng Ecopillo tự thêm ở Nội dung web (liveRedirects.ts) đứng trước bảng trong code
+  const live = liveRedirectFor(path)
+  if (live) return live
   if (REDIRECTS[path]) return REDIRECTS[path]
   const paged = path.match(/^(.*\/)page\/\d+\/$/)
   if (paged) return paged[1] === '/' ? PATHS.blog : (REDIRECTS[paged[1]] ?? paged[1])

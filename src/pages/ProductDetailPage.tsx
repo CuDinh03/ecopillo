@@ -229,7 +229,8 @@ function ProductDetail({ product }: { product: Product }) {
           </div>
         </div>
 
-        {info && <ProductStory sections={info.sections} />}
+        {/* Phần Ecopillo sửa trong Woo (đợt D) thay phần trong productInfo.ts; sản phẩm mới thêm phần đó cũng có */}
+        {(product.infoSections ?? info?.sections)?.length ? <ProductStory sections={product.infoSections ?? info?.sections ?? []} /> : null}
 
         <ProductInfoCards product={product} />
 

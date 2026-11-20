@@ -1,5 +1,5 @@
 import { staticImage, type ImageSource } from './catalog'
-import { anh, chu, definePageText, dsCap, dsDong } from './pageText/define'
+import { anh, chu, definePageText, dsAnh, dsCap, dsDong } from './pageText/define'
 import { liveObject, type EditableField, type EditableSet } from './liveContent'
 
 /**
@@ -141,6 +141,8 @@ const BASE_AWARD_NAME = 'Thương hiệu dẫn đầu Việt Nam 2025'
 const BASE_AWARD_IMAGE = staticImage('/images/about/thuong-hieu-dan-dau.webp', 'Ecopillo tại lễ công bố Thương hiệu dẫn đầu Việt Nam 2025')
 
 export interface Certificate {
+  /** Ảnh Ecopillo chọn từ Thư viện (đợt D): dùng cho cả ô nhỏ và khi bấm xem, thay `image` */
+  imageUrl?: string
   name: string
   /** Tên ngắn cho thẻ nhỏ (trang Khách sạn) */
   short: string
@@ -385,6 +387,12 @@ export const { set: ABOUT_MORE_SET, text: ABOUT_MORE } = definePageText(
     chungNhan: dsCap('Giấy chứng nhận chất lượng (3 ô, ảnh giữ theo thứ tự)', ['name', 'text'], ['Tên', 'Câu dưới'], BASE_CERTIFICATES.map((c) => ({ name: c.name, text: c.text }))),
     ghiNhanNhan: chu('Nhãn hàng ghi nhận cá nhân', 'Ghi nhận dành cho chị Phạm Thị Phương'),
     ghiNhan: dsCap('Ghi nhận dành cho người sáng lập (4 ô, ảnh giữ theo thứ tự)', ['name', 'text'], ['Tên', 'Câu dưới'], BASE_FOUNDER_HONOURS.map((c) => ({ name: c.name, text: c.text }))),
+    anhChungNhan: dsAnh(
+      'Ảnh giấy chứng nhận chất lượng (theo thứ tự các dòng ở trên)',
+      BASE_CERTIFICATES.map((c) => `${c.image}.webp`),
+      'Ảnh chụp giấy rõ nét, dọc. Thêm một giấy: thêm dòng ở ô chứng nhận và thêm ảnh ở đây cùng thứ tự',
+    ),
+    anhGhiNhan: dsAnh('Ảnh ghi nhận dành cho người sáng lập (theo thứ tự)', BASE_FOUNDER_HONOURS.map((c) => `${c.image}.webp`)),
   },
 )
 
@@ -428,6 +436,21 @@ const mergeCertificate = (b: Certificate, t: { name: string; text: string }): Ce
   short: t.name === b.name ? b.short : t.name,
   text: t.text,
 })
-export const CERTIFICATES: readonly Certificate[] = zipText(BASE_CERTIFICATES, ABOUT_MORE.chungNhan, mergeCertificate)
+/**
+ * Chữ (dsCap) và ảnh (dsAnh) ghép theo thứ tự. Ảnh khác ảnh gốc thì dùng ảnh Ecopillo chọn; dòng thêm mới chỉ hiện khi có ảnh
+ * cùng thứ tự (một giấy chứng nhận không có ảnh thì không hiện).
+ */
+const withImages = (base: readonly Certificate[], rows: readonly { name: string; text: string }[], images: readonly string[]): readonly Certificate[] => {
+  const kept = zipText(base, rows, mergeCertificate).map((c, i) =>
+    images[i] && images[i] !== `${base[i]?.image}.webp` ? { ...c, imageUrl: images[i] } : c,
+  )
+  const extra = rows.slice(base.length).flatMap((row, j) => {
+    const url = images[base.length + j]
+    return url ? [{ name: row.name, short: row.name, text: row.text, image: url, imageUrl: url }] : []
+  })
+  return [...kept, ...extra]
+}
+
+export const CERTIFICATES: readonly Certificate[] = withImages(BASE_CERTIFICATES, ABOUT_MORE.chungNhan, ABOUT_MORE.anhChungNhan)
 export const FOUNDER_HONOURS_LABEL: string = ABOUT_MORE.ghiNhanNhan
-export const FOUNDER_HONOURS: readonly Certificate[] = zipText(BASE_FOUNDER_HONOURS, ABOUT_MORE.ghiNhan, mergeCertificate)
+export const FOUNDER_HONOURS: readonly Certificate[] = withImages(BASE_FOUNDER_HONOURS, ABOUT_MORE.ghiNhan, ABOUT_MORE.anhGhiNhan)
