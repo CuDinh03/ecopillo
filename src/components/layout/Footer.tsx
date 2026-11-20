@@ -9,6 +9,7 @@ import { PATHS } from '../../data/links'
 import { NEAR_ME_URL } from '../../data/dealers'
 import { SocialIcons } from '../home/SocialLinks'
 import { Logo } from './Logo'
+import { FOOTER_TEXT } from '../../data/pageText/footer'
 
 /**
  * Điện thoại: mỗi link trong danh sách cao khoảng 44px (đệm trên dưới, rà điện thoại 05/11/2026) cho dễ bấm, các vùng bấm xếp sát nhau không chồng.
@@ -73,7 +74,7 @@ export function Footer() {
             <Logo className="h-14" />
             {/* Một màu chàm, đậm (chị Phương 09/11/2026: "in đậm chỗ này, chữ về 1 màu"; trước có chữ đỏ) */}
             <p className="mt-6 max-w-xs text-sm leading-relaxed font-semibold text-deep-900">
-              {BRAND.company}. Chăn ga gối đệm cao cấp, hơn 15 năm nâng niu giấc ngủ của {BRAND.customers} gia đình Việt.
+              {BRAND.company}. {FOOTER_TEXT.gioiThieu}
             </p>
             {/* Điện thoại: hotline và nhắn tin luôn hiện, không nằm trong nhóm gập (D2, 08/11/2026) */}
             <ul className="mt-4 text-sm sm:hidden">
@@ -183,8 +184,10 @@ export function Footer() {
 
         <div className="mt-16 flex flex-col gap-6 border-t border-line pt-8 text-xs text-ink-faint md:flex-row md:items-center md:justify-between">
           <div className="space-y-1.5">
-            <p>© {new Date().getFullYear()} {BRAND.company}. Đạt chứng nhận ISO 9001:2015 và TQC.</p>
-            <p>Chỉ đổi hàng, không trả hàng hoàn tiền · Kiểm hàng khi nhận · Thanh toán chuyển khoản</p>
+            <p>
+              © {new Date().getFullYear()} {BRAND.company}. {FOOTER_TEXT.chungNhan}
+            </p>
+            <p>{FOOTER_TEXT.camKet}</p>
             <p>
               <Link to={PATHS.privacy} className="-my-2.5 inline-block py-2.5 underline underline-offset-2 hover:text-deep-900">
                 Chính sách bảo vệ thông tin cá nhân
@@ -199,8 +202,8 @@ export function Footer() {
             aria-label="Website đã thông báo Bộ Công Thương"
           >
             <img
-              src="/images/partners/bo-cong-thuong.png"
-              alt="Đã thông báo Bộ Công Thương"
+              src={FOOTER_TEXT.anhBoCongThuong.src}
+              alt={FOOTER_TEXT.anhBoCongThuong.alt}
               width={300}
               height={113}
               loading="lazy"

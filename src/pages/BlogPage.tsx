@@ -9,6 +9,8 @@ import { POST_TOPICS, postGroupOf, type PostLabel } from '../data/postSections'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 import { useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
+import { BLOG_TEXT } from '../data/pageText/blog'
+import { Lines } from '../components/ui/Highlight'
 
 /** Mỗi lần hiện thêm bao nhiêu bài (61 bài: 3 bài trong code + 58 bài WordPress, 17/11/2026) */
 const PAGE_SIZE = 12
@@ -22,7 +24,7 @@ const LABELS: readonly PostLabel[] = (['Tin tức', 'Cẩm nang', ...POST_TOPICS
 
 /** Trang Tin tức: danh sách bài viết, lọc theo chủ đề (?chu-de=…), hiện dần 12 bài một */
 export function BlogPage() {
-  usePageMeta('Tin tức, cẩm nang giấc ngủ', 'Kiến thức về vải Lyocell, cách chọn kích thước chăn ga, giặt và bảo quản để giấc ngủ luôn êm, mát.')
+  usePageMeta('Tin tức, cẩm nang giấc ngủ', BLOG_TEXT.moTaGoogle)
   const [params, setParams] = useHydratedSearchParams()
   const active = LABELS.find((c) => c === params.get('chu-de')) ?? null
   const posts = active ? ALL_POSTS.filter((p) => matches(active, p)) : ALL_POSTS
@@ -37,15 +39,9 @@ export function BlogPage() {
     <div className="pb-24">
       <PageHero
         crumbs={[{ label: 'Tin tức' }]}
-        eyebrow="Tin tức · Cẩm nang"
-        title={
-          <>
-            Cẩm nang{' '}
-            <br />
-            cho giấc ngủ ngon
-          </>
-        }
-        lead="Hiểu về chất liệu, chọn đúng kích thước và chăm sóc chăn ga gối đệm để dùng bền, ngủ êm."
+        eyebrow={BLOG_TEXT.nhan}
+        title={<Lines text={BLOG_TEXT.tieuDe} />}
+        lead={BLOG_TEXT.danDat}
       >
       </PageHero>
 

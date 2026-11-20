@@ -11,6 +11,7 @@ import { breadcrumbLd } from '../../lib/structuredData'
 import { JsonLd } from '../seo/JsonLd'
 import { Icon, ZaloMark } from '../ui/Icon'
 import { ProductCard } from './ProductCard'
+import { COMMON_TEXT } from '../../data/pageText/common'
 
 /* Các phần dùng chung cho trang chi tiết sản phẩm lẻ và trang bộ sưu tập (từng phối màu); chữ giao hàng, bảo hành ở src/data/productCommonInfo.ts */
 
@@ -49,7 +50,7 @@ export function NearMeLine() {
     <p className="mt-5 text-sm text-ink-soft">
       <Link to={NEAR_ME_URL} className="inline-flex min-h-11 items-center gap-1.5 hover:text-deep-900">
         <Icon name="pin" size={15} className="text-mist-600" />
-        Muốn nằm thử trước?{' '}
+        {COMMON_TEXT.spNamThu}{' '}
         <span className="font-medium text-deep-900 underline underline-offset-4">Tìm đại lý gần Quý khách</span>
       </Link>
     </p>
@@ -141,7 +142,7 @@ export function RelatedProducts({ product, excludeCollections = [] }: RelatedPro
     <section aria-labelledby="related-title" className="mt-20">
       <div className="flex items-end justify-between gap-4">
         <h2 id="related-title" className="font-display text-[1.8rem] text-deep-900 sm:text-[2.2rem]">
-          Có thể Quý khách thích
+          {COMMON_TEXT.spCoTheThich}
         </h2>
         <Link to={productsUrl({ 'danh-muc': product.category })} className="text-sm font-medium text-deep-800 hover:underline">
           Xem tất cả

@@ -14,6 +14,7 @@ import { ExploreMore } from '../components/ui/ExploreMore'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 import { NotFoundPage } from './NotFoundPage'
+import { PRODUCTS_PAGE_TEXT } from '../data/pageText/products'
 
 /** Số phối màu hiện trên trang danh mục bộ chăn ga; xem hết ở trang Sản phẩm */
 const COLORWAY_PREVIEW = 8
@@ -53,7 +54,7 @@ export function CategoryPage() {
     <div className="pb-24">
       <PageHero
         crumbs={[{ label: 'Sản phẩm', to: PATHS.products }, { label: listing.title }]}
-        eyebrow="Sản phẩm Ecopillo"
+        eyebrow={PRODUCTS_PAGE_TEXT.tieuDe}
         title={listing.title}
         lead={listing.description}
       />
@@ -73,7 +74,7 @@ export function CategoryPage() {
         {colorways.length > 0 && (
           <section aria-labelledby="colorways-title" className="mt-16 sm:mt-20">
             <h2 id="colorways-title" className="font-display text-[1.6rem] leading-tight text-deep-900 sm:text-[2.2rem]">
-              Một vài phối màu
+              {PRODUCTS_PAGE_TEXT.phoiMau}
             </h2>
             <ul className="mt-6 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
               {colorways.slice(0, COLORWAY_PREVIEW).map((colorway) => (

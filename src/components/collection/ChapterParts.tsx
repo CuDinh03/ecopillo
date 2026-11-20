@@ -24,6 +24,7 @@ import { Lightbox, ZoomTrigger } from '../ui/Lightbox'
 import { Placeholder } from '../ui/Placeholder'
 import { ThumbStrip } from '../ui/ThumbStrip'
 import { buttonClass, FillIn } from '../ui/primitives'
+import { COMMON_TEXT } from '../../data/pageText/common'
 
 /* Sân khấu của một chương (phần lấy từ hướng A): ảnh lớn, câu chuyện, lựa chọn mua */
 
@@ -236,7 +237,7 @@ export function ChapterBuy({ collection, pattern, size, onSize, isSoldOut, class
         <p className="mt-6 flex items-start gap-3 rounded-2xl bg-brass-100 p-4 text-sm text-deep-900">
           <Icon name="gift" size={20} className="mt-0.5 shrink-0 text-brass-600" />
           <span>
-            <span className="font-medium">{gift.label}</span> cho mỗi bộ, chương trình Tri ân 15.000 khách hàng.
+            <span className="font-medium">{gift.label}</span> {COMMON_TEXT.quaBoSuuTap}
           </span>
         </p>
       )}

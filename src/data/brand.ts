@@ -1,5 +1,6 @@
 import { slugify } from '../lib/slug'
 import { liveList, liveObject, type EditableField, type EditableSet } from './liveContent'
+import { anh, chu, definePageText, doan } from './pageText/define'
 
 export const BRAND = {
   name: 'Ecopillo',
@@ -110,14 +111,34 @@ export const SOCIAL_LINKS: readonly SocialLink[] = liveList(SOCIAL_SET.khoa, BAS
   ...(BASE_SOCIAL_LINKS[i] ?? BASE_SOCIAL_LINKS[0]),
 }))
 
-/** Phim thương hiệu trên kênh YouTube Ecopillo */
-/** Câu dẫn khối phim thương hiệu (trang chủ, trang Giới thiệu); chị Phương 19/11/2026: "Xem video để hiểu hơn về chúng tôi" */
-export const BRAND_VIDEO_LEAD = 'Xem video để hiểu hơn về chúng tôi.'
+/**
+ * Phim thương hiệu trên kênh YouTube Ecopillo (trang chủ, trang Giới thiệu). Câu dẫn: chị Phương 19/11/2026.
+ * Ecopillo tự sửa ở Nội dung web → Chữ từng trang → Phim thương hiệu (pageText/define.ts).
+ */
+const { set: BRAND_VIDEO_SET_, text: VIDEO } = definePageText(
+  'phim',
+  'Phim thương hiệu',
+  'Khối phim YouTube ở trang chủ và trang Giới thiệu: tiêu đề, câu dẫn, mã phim, ảnh bìa.',
+  {
+    tieuDe: chu('Tiêu đề khối', 'Một giấc ngủ được nâng niu'),
+    danDat: doan('Câu dẫn', 'Xem video để hiểu hơn về chúng tôi.'),
+    maPhim: chu('Mã phim YouTube', 'MLo9LwZdmVQ', 'Phần sau "v=" trong link YouTube, ví dụ youtube.com/watch?v=MLo9LwZdmVQ'),
+    tenPhim: chu('Tên phim (hiện trên ảnh bìa)', 'Chăn ga gối đệm Ecopillo – Nâng niu giấc mơ xanh'),
+    kenh: chu('Dòng nhỏ trên ảnh bìa', 'YouTube · Ecopillo Việt Nam'),
+    nutKenh: chu('Chữ link sang kênh YouTube', 'Xem thêm trên kênh YouTube Ecopillo'),
+    anhBia: anh('Ảnh bìa', {
+      src: '/images/video/bia-phim.webp',
+      srcSet: '/images/video/bia-phim-sm.webp 800w, /images/video/bia-phim.webp 1280w',
+      alt: 'Đội ngũ Ecopillo tại cửa hàng',
+    }),
+  },
+)
+export const BRAND_VIDEO_SET = BRAND_VIDEO_SET_
+/** Mã phim chỉ gồm chữ, số, - và _ (đặt vào link nhúng): sai thì dùng mã gốc */
+const VIDEO_ID = /^[\w-]{6,20}$/.test(VIDEO.maPhim) ? VIDEO.maPhim : 'MLo9LwZdmVQ'
 
-export const BRAND_VIDEO = {
-  id: 'MLo9LwZdmVQ',
-  title: 'Chăn ga gối đệm Ecopillo – Nâng niu giấc mơ xanh',
-} as const
+export const BRAND_VIDEO_LEAD: string = VIDEO.danDat
+export const BRAND_VIDEO = { id: VIDEO_ID, title: VIDEO.tenPhim, heading: VIDEO.tieuDe, channel: VIDEO.kenh, channelLink: VIDEO.nutKenh, cover: VIDEO.anhBia }
 
 export const OPENING_HOURS: string = CONTACT.gioMoCua
 

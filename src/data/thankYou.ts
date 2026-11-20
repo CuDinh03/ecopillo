@@ -1,4 +1,5 @@
 import type { ImageSource } from './catalog'
+import { anh, chu, definePageText, doan } from './pageText/define'
 
 /**
  * Thư cảm ơn kèm ưu đãi 5% cho đơn tiếp theo (khách gửi 05/11/2026, mục 11).
@@ -16,7 +17,7 @@ const card = (key: string, alt: string): ImageSource => ({
   alt,
 })
 
-export const THANK_YOU_CARDS = {
+const BASE_CARDS = {
   front: card(
     'thu-cam-on-mat-truoc',
     'Mặt trước thư cảm ơn Ecopillo: Thư cảm ơn, sự đồng hành của bạn là động lực lớn nhất của chúng tôi',
@@ -27,20 +28,39 @@ export const THANK_YOU_CARDS = {
   ),
 } as const
 
-/** Chữ chép từ thiệp; không thêm điều kiện ngoài thiệp */
+/**
+ * Chữ chép từ thiệp; không thêm điều kiện ngoài thiệp. Ecopillo tự sửa ở Nội dung web → Chữ từng trang.
+ * Cách dùng ưu đãi: chờ Ecopillo (thư kèm đơn nào; dùng mã, mang thư hay báo hotline; hạn dùng; đơn online). Không hiện nhãn chờ (owner 28/10).
+ */
+const { set: THANK_YOU_SET_, text: TEXT } = definePageText(
+  'thu-cam-on',
+  'Trang chủ: khối Thư cảm ơn (ưu đãi 5%)',
+  'Chữ và hai ảnh thư cảm ơn ở trang chủ.',
+  {
+    nhan: chu('Nhãn nhỏ', 'Ưu đãi 5%'),
+    tieuDe: chu('Tiêu đề', 'Thư cảm ơn từ Ecopillo'),
+    trichDan: doan('Câu trích trong thư', 'Mỗi người đều xứng đáng có một “chốn yên” để trở về sau những bộn bề cuộc sống.'),
+    loiTriAn: doan(
+      'Lời tri ân và ưu đãi',
+      'Ecopillo trân trọng cảm ơn Quý khách đã tin tưởng lựa chọn. Như một lời tri ân, Ecopillo gửi tặng Quý khách ưu đãi 5% cho đơn hàng tiếp theo.',
+    ),
+    cachDung: doan('Cách dùng ưu đãi', 'Cách dùng ưu đãi: liên hệ hotline để được hướng dẫn.'),
+    nutXem: chu('Chữ nút xem thư', 'Xem thư cảm ơn'),
+    nutChon: chu('Chữ nút chọn bộ sưu tập', 'Chọn bộ sưu tập'),
+    anhMatTruoc: anh('Ảnh mặt trước thư', BASE_CARDS.front),
+    anhMatTrong: anh('Ảnh mặt trong thư', BASE_CARDS.inside),
+  },
+)
+export const THANK_YOU_SET = THANK_YOU_SET_
+export const THANK_YOU_CARDS = { front: TEXT.anhMatTruoc, inside: TEXT.anhMatTrong } as const
+
 export const THANK_YOU = {
-  eyebrow: 'Ưu đãi 5%',
-  title: 'Thư cảm ơn từ Ecopillo',
-  /** Câu trích mặt trong */
-  quote: 'Mỗi người đều xứng đáng có một “chốn yên” để trở về sau những bộn bề cuộc sống.',
-  /** Lời tri ân + ưu đãi; phần “kèm thư trong đơn” chờ Ecopillo xác nhận đơn nào */
-  body: 'Ecopillo trân trọng cảm ơn Quý khách đã tin tưởng lựa chọn. Như một lời tri ân, Ecopillo gửi tặng Quý khách ưu đãi 5% cho đơn hàng tiếp theo.',
-  /**
-   * Chỉ ghi phần đã biết. Chờ Ecopillo: thư kèm đơn nào; dùng mã, mang thư hay báo hotline;
-   * hạn dùng; có áp dụng đơn online không. Không hiện nhãn chờ trên web (owner 28/10).
-   */
-  howToUseLead: 'Cách dùng ưu đãi: liên hệ hotline để được hướng dẫn.',
-  viewLabel: 'Xem thư cảm ơn',
-  chooseLabel: 'Chọn bộ sưu tập',
+  eyebrow: TEXT.nhan,
+  title: TEXT.tieuDe,
+  quote: TEXT.trichDan,
+  body: TEXT.loiTriAn,
+  howToUseLead: TEXT.cachDung,
+  viewLabel: TEXT.nutXem,
+  chooseLabel: TEXT.nutChon,
   cards: THANK_YOU_CARDS,
-} as const
+}

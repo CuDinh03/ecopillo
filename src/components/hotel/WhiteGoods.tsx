@@ -1,6 +1,7 @@
 import { useId, useRef, useState, type KeyboardEvent } from 'react'
 import {
   HOTEL_LINEN,
+  HOTEL_PAGE,
   HOTEL_WHITE_GOODS,
   type HotelWhiteGoodsGroup,
   type HotelWhiteGoodsGroupId,
@@ -75,13 +76,11 @@ export function WhiteGoods({ onQuote }: { onQuote: (message: string) => void }) 
 
         <div>
           <header data-reveal="left">
-            <p className="eyebrow">Hàng trắng khách sạn</p>
+            <p className="eyebrow">{HOTEL_PAGE.hangTrangNhan}</p>
             <h2 id="white-goods-title" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.9rem]">
-              Hàng trắng cho phòng lưu trú
+              {HOTEL_PAGE.hangTrangTieuDe}
             </h2>
-            <p className="mt-4 max-w-md text-body leading-relaxed text-ink-soft">
-              Đệm, đồ vải trên giường và đồ phòng tắm. Giá báo theo số phòng, cỡ giường và số lượng.
-            </p>
+            <p className="mt-4 max-w-md text-body leading-relaxed text-ink-soft">{HOTEL_PAGE.hangTrangChu}</p>
           </header>
 
           <div

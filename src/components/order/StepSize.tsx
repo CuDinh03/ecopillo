@@ -12,6 +12,7 @@ import { formatVND } from '../../lib/format'
 import { MAX_QUANTITY, PRICE_ON_CALL, type OrderSummaryData } from '../../lib/order'
 import { Icon } from '../ui/Icon'
 import { QuantityStepper } from '../ui/QuantityStepper'
+import { ORDER_TEXT } from '../../data/pageText/order'
 
 interface StepSizeProps {
   summary: OrderSummaryData
@@ -23,8 +24,8 @@ interface StepSizeProps {
 
 // Chỉ tả kiểu ga chung, không thêm chi tiết sản phẩm chưa được Ecopillo xác nhận
 const SHEET_NOTES: Readonly<Record<SheetStyle, string>> = {
-  phu: 'Trải phủ mặt đệm, buông xuống quanh thành đệm',
-  chun: 'Bo chun ôm quanh đệm, không xô lệch',
+  phu: ORDER_TEXT.gaPhu,
+  chun: ORDER_TEXT.gaChun,
 }
 
 export function StepSize({ summary, sheet, onSelectSheet, onSelectSize, onChangeQuantity }: StepSizeProps) {
@@ -146,7 +147,7 @@ export function StepSize({ summary, sheet, onSelectSheet, onSelectSize, onChange
         </div>
 
         <p className="mt-4 text-xs leading-relaxed text-ink-soft">
-          Kích thước hết hàng sẽ sớm về lại — nhắn Zalo để được báo khi có.
+          {ORDER_TEXT.hetCo}
         </p>
       </fieldset>
 
@@ -178,12 +179,12 @@ export function StepSize({ summary, sheet, onSelectSheet, onSelectSize, onChange
             <Icon name="gift" size={26} />
           </span>
           <div className="mt-4 sm:mt-0">
-            <p className="text-label tracking-[0.14em] text-brass-600 uppercase">Quà tặng kèm · Tri ân 15.000 khách hàng</p>
+            <p className="text-label tracking-[0.14em] text-brass-600 uppercase">{ORDER_TEXT.quaNhan}</p>
             <p className="font-display mt-1 text-[1.35rem] leading-tight text-deep-900">
               {giftCount} {gift.unit} {gift.item}
             </p>
             <p className="mt-1 text-sm text-ink-soft">
-              {gift.label} × {quantity} bộ. Số lượng quà có hạn.
+              {gift.label} × {quantity} bộ. {ORDER_TEXT.quaGhiChu}
             </p>
           </div>
         </section>

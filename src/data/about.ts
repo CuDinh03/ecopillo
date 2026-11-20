@@ -1,4 +1,5 @@
 import { staticImage, type ImageSource } from './catalog'
+import { anh, chu, definePageText, dsCap, dsDong } from './pageText/define'
 import { liveObject, type EditableField, type EditableSet } from './liveContent'
 
 /**
@@ -24,7 +25,7 @@ const BASE_FOUNDER_SIGNATURE = ['Phạm Thị Phương', 'Người sáng lập t
  * Hai ảnh đi kèm thư ở trang 2 catalog 22.07.2026, cùng chương trình "Chăn ấm yêu thương" (Cẩm Xuyên, 3/2025).
  * Owner chọn đặt trong thư ở trang Về chúng tôi (24/10/2026). Trích, nén: tools/nen-anh-thu-sang-lap-2026-10-24.py
  */
-export const FOUNDER_LETTER_IMAGES: readonly ImageSource[] = [
+const BASE_FOUNDER_LETTER_IMAGES: readonly ImageSource[] = [
   {
     src: '/images/about/thu-trao-qua-tan-nha.webp',
     srcSet: '/images/about/thu-trao-qua-tan-nha-sm.webp 700w, /images/about/thu-trao-qua-tan-nha.webp 1200w',
@@ -96,12 +97,12 @@ export const isLongText = (text: string): boolean => text.length > 160
  * Ảnh thẻ Sứ mệnh, Tầm nhìn (góp ý 04/11 mục 2, 4: hai ảnh cũ là banner in sẵn chữ). Owner chọn kiểu A "ảnh thật đúng nghĩa" 06/11/2026,
  * mẫu docs/de-xuat-su-menh-tam-nhin-05-11.html. Cả ba ảnh đều 3:2 hoặc vuông, không có chữ in trong ảnh.
  */
-export const MISSION_IMAGE: ImageSource = {
+const BASE_MISSION_IMAGE: ImageSource = {
   src: '/images/about/thu-trao-qua-tan-nha.webp',
   srcSet: '/images/about/thu-trao-qua-tan-nha-sm.webp 700w, /images/about/thu-trao-qua-tan-nha.webp 1200w',
   alt: 'Ecopillo cùng Hội Chữ thập đỏ trao túi quà tận nhà một hộ gia đình',
 }
-export const VISION_IMAGE: ImageSource = {
+const BASE_VISION_IMAGE: ImageSource = {
   src: '/images/stores/ha-noi-1.webp',
   srcSet: '/images/stores/ha-noi-1-sm.webp 640w, /images/stores/ha-noi-1.webp 1200w',
   alt: 'Đội ngũ Ecopillo trước logo thương hiệu tại văn phòng 273 Xã Đàn, Hà Nội',
@@ -114,30 +115,30 @@ export const VISION_IMAGE: ImageSource = {
  * thay ảnh trao quà tại phòng trưng bày của khách. Cùng ảnh với sự kiện lớn ở trang Quà tặng và sự kiện (data/events.ts).
  * Ảnh 1200×750 (16:10) cắt còn 3:2: lệch xuống một chút để giữ băng khai trương và người.
  */
-export const MISSION_IMAGE_ABOUT_PAGE: ImageSource = {
+const BASE_MISSION_IMAGE_ABOUT_PAGE: ImageSource = {
   src: '/images/events/khai-truong-hcm-ngang.webp',
   srcSet: '/images/events/khai-truong-hcm-ngang-sm.webp 640w, /images/events/khai-truong-hcm-ngang.webp 1200w',
   alt: 'Lễ cắt băng khai trương chi nhánh Ecopillo TP. Hồ Chí Minh',
 }
 export const MISSION_IMAGE_ABOUT_PAGE_POSITION = '50% 55%'
 
-export const CORE_VALUES = [
+const BASE_CORE_VALUES: readonly { icon: 'award' | 'recycle' | 'lightbulb' | 'community'; title: string; text: string }[] = [
   { icon: 'award', title: 'Chất lượng vượt trội', text: 'Nguyên liệu tự nhiên, công nghệ tiên tiến.' },
   { icon: 'recycle', title: 'Bảo vệ môi trường', text: 'Vật liệu bền vững, quy trình thân thiện, sản phẩm dùng lâu bền.' },
   { icon: 'lightbulb', title: 'Đổi mới, sáng tạo', text: 'Cải tiến chất liệu và thiết kế từ góp ý của khách hàng.' },
   { icon: 'community', title: 'Kết nối cộng đồng xanh', text: 'Lan toả lối sống và tiêu dùng bền vững.' },
-] as const
+]
 
 /**
  * Mục 12 (khách 16/10/2026: bốn khối "phải đồng nhất cấu trúc"), owner chọn kiểu A 17/10: thẻ Giá trị cốt lõi cũng có ảnh.
  * Ảnh đội ngũ Hà Nội chuyển sang thẻ Tầm nhìn (06/11/2026). Từ 09/11/2026 dùng ảnh khai trương chi nhánh TP. HCM
  * (ảnh của chính Ecopillo, thay ảnh trao quà ở phòng trưng bày khách) cho tới khi Ecopillo gửi ảnh riêng (câu hỏi 11 trong Excel).
  */
-export const VALUES_IMAGE = MISSION_IMAGE_ABOUT_PAGE
 export const VALUES_IMAGE_POSITION = MISSION_IMAGE_ABOUT_PAGE_POSITION
 
-export const AWARD_NAME = 'Thương hiệu dẫn đầu Việt Nam 2025'
-export const AWARD_IMAGE = staticImage('/images/about/thuong-hieu-dan-dau.webp', 'Ecopillo tại lễ công bố Thương hiệu dẫn đầu Việt Nam 2025')
+
+const BASE_AWARD_NAME = 'Thương hiệu dẫn đầu Việt Nam 2025'
+const BASE_AWARD_IMAGE = staticImage('/images/about/thuong-hieu-dan-dau.webp', 'Ecopillo tại lễ công bố Thương hiệu dẫn đầu Việt Nam 2025')
 
 export interface Certificate {
   name: string
@@ -155,7 +156,7 @@ const certificateImage = (key: string): string => `/images/certificates/${key}`
  * Owner chọn "tủ chứng nhận" kiểu A (24/10/2026); tạm dùng ảnh cắt từ catalog cho tới khi có bản gốc nét hơn.
  * Trích, nén: tools/trich-anh-catalog-mau-2026-10-24.py rồi tools/nen-anh-catalog-phan-moi-2026-10-24.py
  */
-export const CERTIFICATES: readonly Certificate[] = [
+const BASE_CERTIFICATES: readonly Certificate[] = [
   {
     name: 'ISO 9001:2015',
     short: 'ISO 9001:2015',
@@ -177,7 +178,7 @@ export const CERTIFICATES: readonly Certificate[] = [
 ]
 
 /** Bốn ghi nhận dành cho chị Phạm Thị Phương: để riêng một hàng, không lẫn với giấy chất lượng */
-export const FOUNDER_HONOURS: readonly Certificate[] = [
+const BASE_FOUNDER_HONOURS: readonly Certificate[] = [
   {
     name: 'Tấm lòng vàng',
     short: 'Tấm lòng vàng',
@@ -235,8 +236,8 @@ export interface ProcessStage {
   steps: readonly ProcessStep[]
 }
 
-export const PRODUCT_PROCESS_TITLE = 'Quy trình phát triển sản phẩm'
-export const PRODUCT_PROCESS: readonly ProcessStage[] = [
+const BASE_PRODUCT_PROCESS_TITLE = 'Quy trình phát triển sản phẩm'
+const BASE_PRODUCT_PROCESS: readonly ProcessStage[] = [
   {
     name: 'Ý tưởng và thiết kế',
     steps: [
@@ -290,12 +291,12 @@ export const PRODUCT_PROCESS: readonly ProcessStage[] = [
   },
 ]
 /** Kết quả bước duyệt mẫu, chép đúng tài liệu */
-export const PROCESS_GATE_RESULTS = {
+const BASE_PROCESS_GATE_RESULTS = {
   pass: { label: 'Đạt yêu cầu', text: 'Chuyển sang sản xuất hàng loạt.' },
   fail: { label: 'Không đạt', text: 'Quay lại R&D để điều chỉnh, tối ưu.' },
 } as const
 
-export const LYOCELL_TRAITS: readonly { title: string; text: string }[] = [
+const BASE_LYOCELL_TRAITS: readonly { title: string; text: string }[] = [
   { title: 'Mềm', text: 'Bề mặt mịn như lụa, rủ nhẹ theo dáng giường.' },
   { title: 'Mát', text: 'Sợi hút ẩm nhanh, giữ cho lưng khô thoáng suốt đêm.' },
   { title: 'Thoáng khí', text: 'Cấu trúc sợi cho không khí lưu thông, không hầm bí.' },
@@ -356,3 +357,77 @@ export const VISION: string = ABOUT.tamNhin
 export const BRAND_STATS: readonly { value: string; label: string }[] = ABOUT.soLieu
 export const LYOCELL_INTRO: string = ABOUT.chatLieu
 export const CRAFT_QUOTE: string = ABOUT.loiTayNghe
+
+/* ——— Giá trị cốt lõi, danh hiệu, chứng nhận, quy trình, ảnh: Ecopillo tự sửa (Nội dung web → Chữ từng trang) ——— */
+
+const flatSteps = BASE_PRODUCT_PROCESS.flatMap((stage) => stage.steps)
+
+export const { set: ABOUT_MORE_SET, text: ABOUT_MORE } = definePageText(
+  'gioi-thieu-them',
+  'Giới thiệu: giá trị, chứng nhận, quy trình',
+  'Giá trị cốt lõi, danh hiệu, đặc tính vải Lyocell, quy trình 7 bước, chữ các giấy chứng nhận và ghi nhận, ảnh sứ mệnh / tầm nhìn / thư (trang chủ và trang Giới thiệu). Ảnh giấy chứng nhận gửi bên làm web.',
+  {
+    giaTriCotLoi: dsCap('Giá trị cốt lõi (4 ô)', ['title', 'text'], ['Tên', 'Câu mô tả'], BASE_CORE_VALUES.map((v) => ({ title: v.title, text: v.text }))),
+    danhHieu: chu('Danh hiệu', BASE_AWARD_NAME),
+    anhDanhHieu: anh('Ảnh danh hiệu', BASE_AWARD_IMAGE),
+    anhSuMenh: anh('Ảnh thẻ Sứ mệnh (trang chủ)', BASE_MISSION_IMAGE),
+    anhSuMenhTrangGioiThieu: anh('Ảnh thẻ Sứ mệnh và Giá trị cốt lõi (trang Giới thiệu, thẻ Giá trị ở trang chủ)', BASE_MISSION_IMAGE_ABOUT_PAGE),
+    anhTamNhin: anh('Ảnh thẻ Tầm nhìn', BASE_VISION_IMAGE),
+    anhThu1: anh('Ảnh thứ nhất trong thư người sáng lập', BASE_FOUNDER_LETTER_IMAGES[0]),
+    anhThu2: anh('Ảnh thứ hai trong thư người sáng lập', BASE_FOUNDER_LETTER_IMAGES[1]),
+    dacTinhLyocell: dsCap('Đặc tính vải Lyocell (4 ô)', ['title', 'text'], ['Chữ đậm', 'Câu mô tả'], BASE_LYOCELL_TRAITS.map((t) => ({ title: t.title, text: t.text }))),
+    quyTrinhTieuDe: chu('Quy trình: tiêu đề', BASE_PRODUCT_PROCESS_TITLE),
+    quyTrinhChang: dsDong('Quy trình: tên 3 chặng', BASE_PRODUCT_PROCESS.map((stage) => stage.name), 'Đúng 3 dòng'),
+    quyTrinhBuoc: dsCap('Quy trình: 7 bước', ['title', 'text'], ['Tên bước', 'Mô tả'], flatSteps.map((step) => ({ title: step.title, text: step.text })), 'Đúng 7 dòng, theo thứ tự (bước 5 là bước duyệt mẫu)'),
+    duyetDat: chu('Quy trình: bước duyệt, ô Đạt (nhãn | câu)', `${BASE_PROCESS_GATE_RESULTS.pass.label} | ${BASE_PROCESS_GATE_RESULTS.pass.text}`, 'Nhãn và câu cách nhau bằng dấu |'),
+    duyetKhongDat: chu('Quy trình: bước duyệt, ô Không đạt (nhãn | câu)', `${BASE_PROCESS_GATE_RESULTS.fail.label} | ${BASE_PROCESS_GATE_RESULTS.fail.text}`, 'Nhãn và câu cách nhau bằng dấu |'),
+    duyetQuayLai: chu('Quy trình: dòng quay lại dưới bước duyệt', 'Không đạt thì quay lại bước 1 (R&D)'),
+    chungNhan: dsCap('Giấy chứng nhận chất lượng (3 ô, ảnh giữ theo thứ tự)', ['name', 'text'], ['Tên', 'Câu dưới'], BASE_CERTIFICATES.map((c) => ({ name: c.name, text: c.text }))),
+    ghiNhanNhan: chu('Nhãn hàng ghi nhận cá nhân', 'Ghi nhận dành cho chị Phạm Thị Phương'),
+    ghiNhan: dsCap('Ghi nhận dành cho người sáng lập (4 ô, ảnh giữ theo thứ tự)', ['name', 'text'], ['Tên', 'Câu dưới'], BASE_FOUNDER_HONOURS.map((c) => ({ name: c.name, text: c.text }))),
+  },
+)
+
+/** Ghép chữ Ecopillo sửa lên danh sách gốc theo thứ tự; thêm dòng thì bỏ (không có ảnh / biểu tượng cho dòng đó) */
+const zipText = <B extends object, T extends object>(base: readonly B[], rows: readonly T[], merge: (b: B, t: T) => B): readonly B[] =>
+  base.map((b, i) => (rows[i] ? merge(b, rows[i]) : b)).slice(0, Math.max(1, Math.min(base.length, rows.length)))
+
+const splitPair = (text: string, fallback: { label: string; text: string }) => {
+  const [label, rest] = text.split('|').map((part) => part.trim())
+  return label && rest ? { label, text: rest } : fallback
+}
+
+export const CORE_VALUES = zipText(BASE_CORE_VALUES, ABOUT_MORE.giaTriCotLoi, (b, t) => ({ ...b, title: t.title, text: t.text }))
+export const AWARD_NAME: string = ABOUT_MORE.danhHieu
+export const AWARD_IMAGE: ImageSource = ABOUT_MORE.anhDanhHieu
+export const MISSION_IMAGE: ImageSource = ABOUT_MORE.anhSuMenh
+export const MISSION_IMAGE_ABOUT_PAGE: ImageSource = ABOUT_MORE.anhSuMenhTrangGioiThieu
+export const VALUES_IMAGE: ImageSource = MISSION_IMAGE_ABOUT_PAGE
+export const VISION_IMAGE: ImageSource = ABOUT_MORE.anhTamNhin
+export const FOUNDER_LETTER_IMAGES: readonly ImageSource[] = [ABOUT_MORE.anhThu1, ABOUT_MORE.anhThu2]
+export const LYOCELL_TRAITS: readonly { title: string; text: string }[] = ABOUT_MORE.dacTinhLyocell
+export const PRODUCT_PROCESS_TITLE: string = ABOUT_MORE.quyTrinhTieuDe
+export const PROCESS_GATE_RESULTS = {
+  pass: splitPair(ABOUT_MORE.duyetDat, BASE_PROCESS_GATE_RESULTS.pass),
+  fail: splitPair(ABOUT_MORE.duyetKhongDat, BASE_PROCESS_GATE_RESULTS.fail),
+  backLine: ABOUT_MORE.duyetQuayLai,
+}
+export const PRODUCT_PROCESS: readonly ProcessStage[] = (() => {
+  let index = 0
+  return BASE_PRODUCT_PROCESS.map((stage, stageIndex) => ({
+    name: ABOUT_MORE.quyTrinhChang[stageIndex] ?? stage.name,
+    steps: stage.steps.map((step) => {
+      const edited = ABOUT_MORE.quyTrinhBuoc[index++]
+      return edited ? { ...step, title: edited.title, text: edited.text } : step
+    }),
+  }))
+})()
+const mergeCertificate = (b: Certificate, t: { name: string; text: string }): Certificate => ({
+  ...b,
+  name: t.name,
+  short: t.name === b.name ? b.short : t.name,
+  text: t.text,
+})
+export const CERTIFICATES: readonly Certificate[] = zipText(BASE_CERTIFICATES, ABOUT_MORE.chungNhan, mergeCertificate)
+export const FOUNDER_HONOURS_LABEL: string = ABOUT_MORE.ghiNhanNhan
+export const FOUNDER_HONOURS: readonly Certificate[] = zipText(BASE_FOUNDER_HONOURS, ABOUT_MORE.ghiNhan, mergeCertificate)

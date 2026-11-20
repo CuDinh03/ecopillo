@@ -23,6 +23,7 @@ import { Confirmation } from './Confirmation'
 import { MobileOrderBar, OrderAssurances } from './OrderChrome'
 import { OrderSummary } from './OrderSummary'
 import { StepCustomer } from './StepCustomer'
+import { ORDER_TEXT } from '../../data/pageText/order'
 
 interface SingleOrderProps {
   product: Product
@@ -107,7 +108,7 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
         <Link to={productPath(product)} className="-my-3 inline-flex min-h-11 items-center gap-1.5 text-sm text-ink-soft hover:text-deep-900">
           <Icon name="arrowLeft" size={15} /> {product.name}
         </Link>
-        <h1 className="font-display mt-3 text-[2.2rem] leading-none text-deep-900 sm:text-5xl">Đặt hàng online</h1>
+        <h1 className="font-display mt-3 text-[2.2rem] leading-none text-deep-900 sm:text-5xl">{ORDER_TEXT.tieuDe}</h1>
         <p className="mt-3 text-sm text-ink-soft">
           Nhân viên gọi xác nhận đơn trước khi giao. Cần tư vấn?{' '}
           <a href={CONTACT.hotlineTel} className="tabular font-medium text-deep-900 hover:underline">

@@ -9,6 +9,7 @@ import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { Container, SectionHeading } from '../ui/primitives'
+import { HOME_TEXT } from '../../data/pageText/home'
 
 /**
  * Ruột chăn, ruột gối và phụ kiện ở trang chủ. Chị Phương (Zalo 09/11/2026 15:30): "phần này e cho hiển thị như đệm và chăn ga
@@ -17,7 +18,7 @@ import { Container, SectionHeading } from '../ui/primitives'
  * Máy tính thấy 4 ô một lúc (ruột gối 5 món thì vuốt sang), điện thoại vuốt ngang gần 2 ô. Bấm ô sang trang sản phẩm.
  */
 
-const SUMMER_QUILT_NAME = 'Chăn hè Lyocell'
+const SUMMER_QUILT_NAME = HOME_TEXT.chanHeTen
 const SUMMER_QUILT = collectionById('chan-he-lyocell')
 
 /** "Xem tất cả" của từng nhóm: trang danh mục nhỏ (LISTINGS trong links.ts) có đúng các sản phẩm của nhóm */
@@ -67,8 +68,8 @@ export function Essentials() {
       <Container>
         <SectionHeading
           id="essentials-title"
-          title="Ruột chăn, ruột gối và phụ kiện"
-          lead="Phần êm ái bên trong. Chọn độ êm hợp với thói quen ngủ của Quý khách: đặt online ngay, hoặc ghé cửa hàng Ecopillo để nằm thử từng loại gối."
+          title={HOME_TEXT.ruotTieuDe}
+          lead={HOME_TEXT.ruotDanDat}
         />
 
         <div className="mt-8 grid gap-10 sm:mt-12 sm:gap-14">
@@ -81,8 +82,7 @@ export function Essentials() {
           <Icon name="info" size={16} className="mt-0.5 shrink-0 text-mist-600" />
           {/* Gói chữ vào một khối: không thì mỗi mảnh chữ, link thành một cột riêng của flex và số điện thoại bị bẻ dòng */}
           <span>
-            Ruột gối, ruột chăn, topper và phụ kiện đều đặt online được; nhân viên gọi xác nhận trước khi giao. Cần tư vấn độ êm? Gọi
-            hoặc nhắn Zalo{' '}
+            {HOME_TEXT.ruotGhiChu}{' '}
             <a
               href={CONTACT.zaloUrl}
               target="_blank"

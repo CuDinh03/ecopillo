@@ -8,6 +8,7 @@ import { Placeholder } from '../ui/Placeholder'
 import { PreviewNotSent } from '../ui/PreviewNotSent'
 import { buttonClass, ContactButtons } from '../ui/primitives'
 import { BANK_LINE } from '../../data/paymentPolicy'
+import { ORDER_TEXT } from '../../data/pageText/order'
 
 interface ConfirmationProps {
   orderCode: string
@@ -24,10 +25,10 @@ export function Confirmation({ orderCode, delivered, summary, customer, onNewOrd
   if (!line) return null
 
   const steps: readonly { icon: IconName; title: string; text: ReactNode; done?: boolean }[] = [
-    { icon: 'check', title: 'Ecopillo đã nhận đơn', text: `Mã đơn ${orderCode}`, done: true },
+    { icon: 'check', title: ORDER_TEXT.buocNhan, text: `Mã đơn ${orderCode}`, done: true },
     {
       icon: 'phone',
-      title: 'Nhân viên gọi xác nhận',
+      title: ORDER_TEXT.buocGoi,
       text: (
         <>
           Gọi tới số <span className="tabular font-medium text-deep-900">{customer.phone}</span> trong giờ làm việc ({OPENING_HOURS})
@@ -37,7 +38,7 @@ export function Confirmation({ orderCode, delivered, summary, customer, onNewOrd
     },
     {
       icon: 'truck',
-      title: 'Giao hàng, kiểm hàng khi nhận',
+      title: ORDER_TEXT.buocGiao,
       text: `Dự kiến ${summary.deliveryTime?.toLowerCase() ?? 'theo khu vực'} sau khi xác nhận`,
     },
   ]
@@ -49,11 +50,11 @@ export function Confirmation({ orderCode, delivered, summary, customer, onNewOrd
           <Icon name="check" size={30} strokeWidth={2} />
         </span>
         <p className="eyebrow mt-7">Đã nhận đơn · Mã {orderCode}</p>
-        <h1 className="font-display mt-3 text-[1.85rem] text-deep-900 sm:text-5xl">Ecopillo cảm ơn Quý khách!</h1>
+        <h1 className="font-display mt-3 text-[1.85rem] text-deep-900 sm:text-5xl">{ORDER_TEXT.camOnTieuDe}</h1>
         <p className="mx-auto mt-4 max-w-md text-lead font-medium text-deep-800">
-          Nhân viên Ecopillo sẽ gọi điện xác nhận đơn trong thời gian sớm nhất.
+          {ORDER_TEXT.camOnChu}
         </p>
-        <p className="mt-2 text-sm text-ink-soft">Quý khách chưa cần thanh toán gì lúc này.</p>
+        <p className="mt-2 text-sm text-ink-soft">{ORDER_TEXT.camOnPhu}</p>
         <PreviewNotSent delivered={delivered} className="mx-auto mt-6 max-w-md" />
       </div>
 

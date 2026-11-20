@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import type { ImageSource } from '../../data/catalog'
-import { HOTEL_PRODUCTS, type HotelProductEntry } from '../../data/hotel'
+import { HOTEL_PAGE, HOTEL_PRODUCTS, type HotelProductEntry } from '../../data/hotel'
 import { productBySlug, productPath } from '../../data/products'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
@@ -27,13 +27,13 @@ export function HotelProducts({ onQuote }: { onQuote: (name: string) => void }) 
       <Container>
         <header data-reveal="left" className="flex flex-wrap items-end justify-between gap-x-10 gap-y-3">
           <div>
-            <p className="eyebrow">Sản phẩm cho khách sạn</p>
+            <p className="eyebrow">{HOTEL_PAGE.sanPhamNhan}</p>
             <h2 id="hotel-products-title" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.9rem]">
-              Đệm, ruột, đồ vải cho phòng lưu trú
+              {HOTEL_PAGE.sanPhamTieuDe}
             </h2>
           </div>
           <p className="max-w-sm text-body-sm leading-relaxed text-ink-soft">
-            Giá theo số lượng và số phòng: Ecopillo báo giá riêng cho từng khách sạn, dự án. Bấm thẻ để xem chi tiết hoặc nhận báo giá.
+            {HOTEL_PAGE.sanPhamChu}
           </p>
         </header>
         <ul className="mt-8 grid gap-4 max-sm:-mx-5 max-sm:flex max-sm:scroll-px-5 max-sm:snap-x max-sm:snap-mandatory max-sm:overflow-x-auto max-sm:overscroll-x-contain max-sm:px-5 max-sm:pb-3 max-sm:[scrollbar-width:none] sm:mt-10 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">

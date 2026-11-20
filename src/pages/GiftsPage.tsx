@@ -10,6 +10,8 @@ import { collectionById, coverOf } from '../data/catalog'
 import { collectionPathById } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
+import { GIFTS_TEXT } from '../data/pageText/gifts'
+import { Lines } from '../components/ui/Highlight'
 
 /**
  * Trang Quà tặng (biên bản mục 34, 48): quà tặng doanh nghiệp, sự kiện (Ecopillo gửi 27/10/2026, mẫu A),
@@ -17,52 +19,30 @@ import { revealDelay } from '../lib/reveal'
  * sự kiện đồng hành, gợi ý chọn chăn ga làm quà theo dịp.
  */
 
-const OCCASIONS = [
-  {
-    title: 'Quà cưới',
-    text: 'Bộ chăn ga dệt Jacquard hoa văn nổi hoặc dòng cao nhất, cho căn phòng đầu tiên của đôi vợ chồng trẻ.',
-    ids: ['eco-doris', 'eco-sweet'],
-  },
-  {
-    title: 'Quà tân gia',
-    text: 'Nhiều mẫu, nhiều màu để hợp với phòng ngủ mới. Có thể nhờ Ecopillo tư vấn theo ảnh phòng.',
-    ids: ['eco-rosa', 'eco-vera'],
-  },
-  {
-    title: 'Biếu cha mẹ, dịp Tết',
-    text: 'Màu trơn, sắc nhã, vải mềm mát dễ chịu cho người lớn tuổi; kèm ruột gối êm nâng đỡ cổ vai.',
-    ids: ['eco-tera', 'eco-liora'],
-  },
-] as const
+/** Bộ sưu tập gợi ý cho từng dịp (theo thứ tự dòng); chữ các dịp, dịch vụ Ecopillo sửa ở Nội dung web (GIFTS_TEXT) */
+const OCCASION_IDS: readonly (readonly string[])[] = [
+  ['eco-doris', 'eco-sweet'],
+  ['eco-rosa', 'eco-vera'],
+  ['eco-tera', 'eco-liora'],
+]
+const OCCASIONS = GIFTS_TEXT.dip.slice(0, OCCASION_IDS.length).map((o, i) => ({ ...o, ids: OCCASION_IDS[i] }))
 
-const SERVICES = [
-  { icon: 'box', title: 'Hộp đóng gói chỉn chu', text: 'Mỗi bộ đều đóng hộp, sẵn sàng để tặng.' },
-  { icon: 'truck', title: 'Giao tận tay người nhận', text: 'Ghi địa chỉ người nhận khi đặt, nhân viên gọi xác nhận trước khi giao.' },
-  { icon: 'ruler', title: 'Chưa rõ cỡ giường?', text: 'Gọi Ecopillo hỏi cách đo, hoặc đổi cỡ trong 7 ngày nếu chưa sử dụng.' },
-] as const
+const SERVICE_ICONS = ['box', 'truck', 'ruler'] as const
+const SERVICES = GIFTS_TEXT.dichVu.map((item, i) => ({ ...item, icon: SERVICE_ICONS[i % SERVICE_ICONS.length] }))
 
 export function GiftsPage() {
-  usePageMeta(
-    'Quà tặng và sự kiện',
-    // Mô tả viết tay 08/11/2026 (C2, chờ Ecopillo duyệt)
-    'Hộp quà chăn ga Ecopillo cho doanh nghiệp, sự kiện, quà cưới, tân gia, biếu Tết. Thư cảm ơn kèm ưu đãi 5% cho đơn tiếp theo.',
-  )
+  usePageMeta('Quà tặng và sự kiện', GIFTS_TEXT.moTaGoogle)
 
   return (
     <div className="pb-24">
       <PageHero
         crumbs={[{ label: 'Quà tặng và sự kiện' }]}
-        eyebrow="Quà tặng và sự kiện"
-        title={
-          <>
-            Món quà cho <br className="max-sm:hidden" />
-            những giấc ngủ <span className="whitespace-nowrap">thương yêu</span>
-          </>
-        }
-        lead="Ecopillo gửi kèm thư cảm ơn và ưu đãi 5% cho đơn hàng tiếp theo. Và một bộ chăn ga đẹp cũng là món quà được dùng mỗi ngày, nhắc người nhận nhớ tới Quý khách."
+        eyebrow={GIFTS_TEXT.nhan}
+        title={<Lines text={GIFTS_TEXT.tieuDe} breakClassName="max-sm:hidden" />}
+        lead={GIFTS_TEXT.danDat}
       >
         <a href="#qua-tang" className={buttonClass('primary', 'md', 'mt-8')}>
-          Xem thư cảm ơn
+          {GIFTS_TEXT.nutDau}
           <Icon name="chevronDown" size={17} />
         </a>
       </PageHero>
@@ -83,12 +63,8 @@ export function GiftsPage() {
         <Container>
           <SectionHeading
             id="occasion-title"
-            eyebrow="Gợi ý chọn quà"
-            title={
-              <>
-                Chọn theo từng dịp
-              </>
-            }
+            eyebrow={GIFTS_TEXT.dipNhan}
+            title={GIFTS_TEXT.dipTieuDe}
           />
           <ul className="m-rail mt-10 grid gap-5 sm:mt-12 lg:grid-cols-3">
             {OCCASIONS.map((o, i) => {
@@ -124,8 +100,8 @@ export function GiftsPage() {
       <section aria-labelledby="service-title" className="py-14 sm:py-24">
         <Container className="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-14">
           <div className="lg:col-span-5">
-            <SectionHeading id="service-title" eyebrow="Tặng dễ dàng" title="Ecopillo lo phần còn lại" />
-            <ContactButtons size="md" stretch className="mt-8" callLabel="Gọi tư vấn quà" />
+            <SectionHeading id="service-title" eyebrow={GIFTS_TEXT.dichVuNhan} title={GIFTS_TEXT.dichVuTieuDe} />
+            <ContactButtons size="md" stretch className="mt-8" callLabel={GIFTS_TEXT.dichVuNutGoi} />
           </div>
           <ul className="grid gap-3 lg:col-span-7">
             {SERVICES.map((s, i) => (

@@ -3,6 +3,7 @@ import { Icon } from '../components/ui/Icon'
 import { Container, LinkButton } from '../components/ui/primitives'
 import { PATHS } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { COMMON_TEXT } from '../data/pageText/common'
 
 /** Lối đi tiếp gần nhất cho khách bấm phải đường link cũ (biên bản mục 07: không để khách kẹt ở trang lỗi) */
 const SUGGESTIONS = [
@@ -17,8 +18,8 @@ export function NotFoundPage() {
   return (
     <Container className="py-24 text-center sm:py-32">
       <p className="eyebrow">Lỗi 404</p>
-      <h1 className="font-display mt-4 text-[2.2rem] text-deep-900">Trang này đã đi ngủ mất rồi</h1>
-      <p className="mt-4 text-ink-soft">Đường dẫn không tồn tại hoặc đã được đổi. Quý khách thử một trong các trang dưới đây.</p>
+      <h1 className="font-display mt-4 text-[2.2rem] text-deep-900">{COMMON_TEXT.loi404TieuDe}</h1>
+      <p className="mt-4 text-ink-soft">{COMMON_TEXT.loi404Chu}</p>
       <ul className="mx-auto mt-8 flex max-w-xl flex-wrap justify-center gap-2">
         {SUGGESTIONS.map((s) => (
           <li key={s.to}>

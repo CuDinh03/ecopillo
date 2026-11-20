@@ -1,5 +1,6 @@
 import { DISTRIBUTION_MAP, DISTRIBUTION_MODEL_TEXT, DISTRIBUTOR_COUNT, SALES_CHANNELS } from '../../data/dealers'
 import { revealDelay } from '../../lib/reveal'
+import { RECRUIT_TEXT } from '../../data/pageText/recruit'
 
 /**
  * Mô hình phân phối (kiểu 4B, owner chọn 24/10/2026; mẫu docs/de-xuat-phan-moi-catalog.html): bản đồ catalog 22.07.2026,
@@ -24,11 +25,11 @@ export function DistributionModel() {
           />
           <p className="absolute right-0 bottom-4 rounded-2xl bg-deep-900 px-5 py-4 text-ivory shadow-[var(--shadow-lift)] sm:bottom-8 sm:px-6 sm:py-5">
             <span className="font-display block text-[2.8rem] leading-none sm:text-[3.4rem]">{DISTRIBUTOR_COUNT}</span>
-            <span className="mt-1 block text-small text-mist-200">nhà phân phối</span>
+            <span className="mt-1 block text-small text-mist-200">{RECRUIT_TEXT.soNhaPhanPhoiChu}</span>
           </p>
         </div>
         <figcaption className="mt-4 text-center text-label leading-snug text-ink-faint">
-          Ngôi sao: văn phòng Hà Nội, chi nhánh TP. HCM. Biểu tượng E đánh dấu các vùng có nhà phân phối, không phải từng địa chỉ.
+          {RECRUIT_TEXT.banDoChuThich}
         </figcaption>
       </figure>
       <div>

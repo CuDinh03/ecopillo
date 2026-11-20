@@ -27,6 +27,7 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import { SEND_ERROR_ID, useSendOrder } from '../hooks/useSendOrder'
 import { focusField, scrollToElement } from '../lib/scroll'
 import { useHydrated, useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
+import { ORDER_TEXT } from '../data/pageText/order'
 
 const COLLECTION_PARAM = 'bo-suu-tap'
 const MOBILE_QUERY = '(max-width: 1023px)'
@@ -40,10 +41,7 @@ const PRODUCT_PARAM = 'san-pham'
 
 export function OrderPage() {
   // Mô tả riêng 08/11/2026 (C2, chờ Ecopillo duyệt): trước đó trang này dùng chung mô tả trang chủ
-  usePageMeta(
-    'Đặt hàng online',
-    'Đặt chăn ga gối đệm Ecopillo online: chọn mẫu, chọn kích thước, nhập địa chỉ nhận. Nhân viên gọi xác nhận, miễn phí giao từ 500.000đ.',
-  )
+  usePageMeta(ORDER_TEXT.tieuDe, ORDER_TEXT.moTaGoogle)
   const [searchParams] = useHydratedSearchParams()
   const hydrated = useHydrated()
   // Biên bản mục 47: ruột gối, ruột chăn, topper, đệm cũng đặt online được
@@ -225,7 +223,7 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
             <Link to="/" className="-my-3 inline-flex min-h-11 items-center gap-1.5 text-sm text-ink-soft hover:text-deep-900">
               <Icon name="arrowLeft" size={15} /> Trang chủ
             </Link>
-            <h1 className="font-display mt-3 text-[2.2rem] leading-none text-deep-900 sm:text-5xl">Đặt hàng online</h1>
+            <h1 className="font-display mt-3 text-[2.2rem] leading-none text-deep-900 sm:text-5xl">{ORDER_TEXT.tieuDe}</h1>
           </div>
           <p className="hidden text-sm text-ink-soft md:block">
             Cần tư vấn?{' '}

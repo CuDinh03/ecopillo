@@ -6,6 +6,7 @@ import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { ContactButtons, Container, SectionHeading } from '../ui/primitives'
+import { HOME_TEXT } from '../../data/pageText/home'
 
 export function Hospitality() {
   return (
@@ -20,7 +21,7 @@ export function Hospitality() {
             id="hotel-title"
             tone="dark"
             eyebrow={HOTEL_EYEBROW}
-            title="Giấc ngủ năm sao cho khách lưu trú"
+            title={HOME_TEXT.khachSanTieuDe}
             lead={
               // Trang chủ chỉ giữ đoạn đầu cho gọn; đủ ba đoạn ở trang Khách sạn và dự án (mục 38)
               <>
@@ -44,8 +45,8 @@ export function Hospitality() {
             size="lg"
             stretch
             className="mt-10"
-            callLabel="Gọi nhận báo giá"
-            zaloLabel="Gửi yêu cầu qua Zalo"
+            callLabel={HOME_TEXT.khachSanNutGoi}
+            zaloLabel={HOME_TEXT.khachSanNutZalo}
           />
           <Link
             to={PATHS.hotel}
@@ -70,7 +71,7 @@ export function Hospitality() {
 
       <Container className="mt-10 sm:mt-20">
         {/* 8 đối tác theo catalog 22.07.2026 + 3 của mục 36 + Panhou Retreat (khách gửi 09/11/2026); May 10, VTV3, DBV Insurance không phải khách sạn nên gọi là "Đối tác" */}
-        <p className="eyebrow !text-mist-400">Đối tác</p>
+        <p className="eyebrow !text-mist-400">{HOME_TEXT.doiTacNhan}</p>
         <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {HOTEL_PARTNERS.map((partner, i) => (
             <li

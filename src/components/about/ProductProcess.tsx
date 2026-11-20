@@ -57,7 +57,7 @@ function ProcessRow({ step, number }: { step: ProcessStep; number: number }) {
       {isGate && (
         <li className="flex items-center gap-2 pb-1 pl-11 text-small font-medium text-deep-700 sm:pl-14">
           <Icon name="back" size={17} />
-          Không đạt thì quay lại bước 1 (R&amp;D)
+          {PROCESS_GATE_RESULTS.backLine}
         </li>
       )}
     </>

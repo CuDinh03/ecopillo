@@ -29,6 +29,7 @@ import { useFirstRender } from '../hooks/useFirstRender'
 import { revealDelay } from '../lib/reveal'
 import { scrollToElement } from '../lib/scroll'
 import { useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
+import { PRODUCTS_PAGE_TEXT } from '../data/pageText/products'
 
 const CATEGORY_PARAM = 'danh-muc'
 const COLLECTION_PARAM = 'bo-suu-tap'
@@ -62,7 +63,7 @@ const bySort = <T,>(items: readonly T[], sort: SortId, priceOf: (item: T) => num
 }
 
 export function ProductsPage() {
-  usePageMeta('Sản phẩm', 'Bộ chăn ga, chăn, gối, đệm Ecopillo: vải Lyocell mềm mát, giá rõ theo từng kích thước, đặt online, nhân viên gọi xác nhận.')
+  usePageMeta('Sản phẩm', PRODUCTS_PAGE_TEXT.moTaGoogle)
   const [params, setParams] = useHydratedSearchParams()
   const rawCategory = params.get(CATEGORY_PARAM)
   const category = isCategory(rawCategory) ? rawCategory : rawCategory ? (LEGACY_CATEGORY[rawCategory] ?? null) : null
@@ -181,7 +182,7 @@ export function ProductsPage() {
             <span className="text-deep-900">Sản phẩm</span>
           </nav>
           <h1 className="font-display mt-4 text-[2.4rem] leading-tight text-deep-900 sm:text-[3.6rem]">
-            Sản phẩm Ecopillo
+            {PRODUCTS_PAGE_TEXT.tieuDe}
           </h1>
           <div className="mt-4 grid gap-6 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
             <p className="max-w-2xl text-ink-soft">{PRODUCTS_INTRO}</p>
@@ -250,7 +251,7 @@ export function ProductsPage() {
           {!isShelfMode && canBrowseByCollection && (
             <section aria-labelledby="browse-title" className="mt-7 sm:mt-9">
               <h2 id="browse-title" className="font-display text-[1.45rem] leading-tight text-deep-900 sm:text-[1.8rem]">
-                Quý khách tìm theo bộ sưu tập
+                {PRODUCTS_PAGE_TEXT.timTheoBo}
               </h2>
               <div role="group" aria-label="Bộ sưu tập" className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3 lg:grid-cols-8">
                 <Tile active={!collection} onPick={() => update({ [COLLECTION_PARAM]: null })} title="Tất cả bộ" note="Mọi bộ sưu tập" />

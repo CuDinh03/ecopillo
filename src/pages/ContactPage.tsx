@@ -11,6 +11,8 @@ import { DealerFinder, LocalBusinessData } from '../components/dealers/DealerFin
 import { usePageMeta } from '../hooks/usePageMeta'
 import { scrollToElement } from '../lib/scroll'
 import { useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
+import { CONTACT_PAGE_TEXT } from '../data/pageText/contact'
+import { Lines } from '../components/ui/Highlight'
 
 /**
  * Trang Liên hệ mua hàng (mục 9 phản hồi 05/11, phương án A).
@@ -100,8 +102,8 @@ const TOPIC_PARAM: Readonly<Record<string, Topic>> = {
  * các nút gọi khác trên web vẫn dùng hotline 072.
  */
 const CHANNELS: readonly (ChannelProps & { key: string })[] = [
-  { key: 'phone', href: CONTACT.phoneTel, icon: <Icon name="phone" size={18} />, label: 'Mua hàng', value: CONTACT.phoneDisplay, chip: 'bg-call text-ivory' },
-  { key: 'zalo', href: CONTACT.zaloUrl, icon: <ZaloMark />, label: 'Mở đại lý', value: CONTACT.hotlineDisplay, external: true, chip: 'bg-zalo' },
+  { key: 'phone', href: CONTACT.phoneTel, icon: <Icon name="phone" size={18} />, label: CONTACT_PAGE_TEXT.nhanSoMuaHang, value: CONTACT.phoneDisplay, chip: 'bg-call text-ivory' },
+  { key: 'zalo', href: CONTACT.zaloUrl, icon: <ZaloMark />, label: CONTACT_PAGE_TEXT.nhanSoDaiLy, value: CONTACT.hotlineDisplay, external: true, chip: 'bg-zalo' },
   {
     key: 'messenger',
     href: CONTACT.messengerUrl,
@@ -170,10 +172,7 @@ export function ContactPage() {
   const { hash } = useLocation()
   const navigate = useNavigate()
   const topic = TOPIC_PARAM[params.get('chu-de') ?? ''] ?? TOPICS[0]
-  usePageMeta(
-    'Liên hệ mua hàng',
-    'Hotline, Zalo, email, văn phòng Hà Nội, chi nhánh TP. HCM cùng hệ thống đại lý Ecopillo trên toàn quốc. Gửi tin nhắn, Ecopillo gọi lại trong giờ làm việc.',
-  )
+  usePageMeta('Liên hệ mua hàng', CONTACT_PAGE_TEXT.moTaGoogle)
 
   // 301 máy chủ từ /he-thong-phan-phoi/?gan-toi=1 mất #diem-ban: gắn lại neo qua React Router
   // (không dùng history.replaceState — SiteLayout cần hash để ẩn thanh liên hệ dưới đáy)
@@ -206,15 +205,12 @@ export function ContactPage() {
               <span aria-hidden>/</span>
               <span className="text-deep-900">Liên hệ mua hàng</span>
             </nav>
-            <p className="eyebrow mt-8">Liên hệ mua hàng</p>
+            <p className="eyebrow mt-8">{CONTACT_PAGE_TEXT.nhan}</p>
             <h1 id="contact-title" className="font-display mt-4 text-[2.4rem] leading-[1.05] text-deep-900 sm:text-[3.6rem]">
-              Ecopillo luôn{' '}
-              <br />
-              lắng nghe <span className="whitespace-nowrap">Quý khách</span>
+              <Lines text={CONTACT_PAGE_TEXT.tieuDe} />
             </h1>
             <p className="mt-5 max-w-md text-body leading-relaxed text-balance text-ink-soft">
-              Gọi, nhắn tin, ghé văn phòng hoặc tìm đại lý gần nhất. Bộ phận Chăm sóc khách hàng của Ecopillo Việt Nam
-              phản hồi trong giờ làm việc.
+              {CONTACT_PAGE_TEXT.danDat}
             </p>
             <ul className="mt-8 space-y-3 text-body-sm">
               <li className="flex gap-3">
@@ -254,15 +250,15 @@ export function ContactPage() {
           </div>
           <aside className="flex flex-col gap-6 lg:col-span-5">
             <div className="rounded-[2rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] sm:p-8">
-              <h2 className="font-display text-[1.4rem] text-deep-900">Hỏi nhanh</h2>
+              <h2 className="font-display text-[1.4rem] text-deep-900">{CONTACT_PAGE_TEXT.hoiNhanhTieuDe}</h2>
               <ul className="mt-2 divide-y divide-line text-body-sm">
                 {[
-                  ['Giao hàng, kiểm hàng khi nhận', policyPath('chinh-sach-van-chuyen')],
-                  ['Kiểm hàng, đổi hàng', policyPath('chinh-sach-doi-tra-hang-va-hoan-tien')],
-                  ['Bảo hành sản phẩm', policyPath('chinh-sach-bao-hanh-san-pham')],
-                  ['Chăn ga cho khách sạn, nhà nghỉ', PATHS.hotel],
-                  ['Câu hỏi thường gặp', PATHS.faq],
-                ].map(([label, href]) => (
+                  policyPath('chinh-sach-van-chuyen'),
+                  policyPath('chinh-sach-doi-tra-hang-va-hoan-tien'),
+                  policyPath('chinh-sach-bao-hanh-san-pham'),
+                  PATHS.hotel,
+                  PATHS.faq,
+                ].flatMap((href, i) => (CONTACT_PAGE_TEXT.hoiNhanh[i] ? [[CONTACT_PAGE_TEXT.hoiNhanh[i], href]] : [])).map(([label, href]) => (
                   <li key={label}>
                     <Link to={href} className="group flex min-h-11 items-center justify-between gap-3 py-2.5 text-deep-900 hover:underline">
                       {label}
@@ -272,7 +268,7 @@ export function ContactPage() {
                 ))}
               </ul>
               <div className="mt-6 border-t border-line pt-5">
-                <p className="mb-3 text-sm text-ink-soft">Theo dõi Ecopillo</p>
+                <p className="mb-3 text-sm text-ink-soft">{CONTACT_PAGE_TEXT.theoDoi}</p>
                 <SocialIcons />
               </div>
             </div>
@@ -289,11 +285,11 @@ export function ContactPage() {
           aria-labelledby="message-title"
           className="mx-auto max-w-3xl rounded-[2rem] bg-ivory p-6 shadow-[var(--shadow-soft)] sm:p-10"
         >
-          <p className="eyebrow">Để lại lời nhắn</p>
+          <p className="eyebrow">{CONTACT_PAGE_TEXT.tinNhanNhan}</p>
           <h2 id="message-title" className="font-display mt-3 text-[1.9rem] leading-tight text-deep-900 sm:text-[2.3rem]">
-            Gửi tin nhắn cho chúng tôi
+            {CONTACT_PAGE_TEXT.tinNhanTieuDe}
           </h2>
-          <p className="mt-2 mb-8 text-balance text-ink-soft">Chọn điều Quý khách cần, Ecopillo sẽ chuyển đúng người gọi lại.</p>
+          <p className="mt-2 mb-8 text-balance text-ink-soft">{CONTACT_PAGE_TEXT.tinNhanChu}</p>
           <MessageForm key={topic} defaultTopic={topic} />
         </section>
       </Container>

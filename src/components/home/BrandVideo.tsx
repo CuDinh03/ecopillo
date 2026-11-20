@@ -5,12 +5,8 @@ import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { Container, SectionHeading } from '../ui/primitives'
 
-/** Biên bản mục 25: ảnh bìa video là ảnh đội ngũ Ecopillo tại cửa hàng */
-const COVER: ImageSource = {
-  src: '/images/video/bia-phim.webp',
-  srcSet: '/images/video/bia-phim-sm.webp 800w, /images/video/bia-phim.webp 1280w',
-  alt: 'Đội ngũ Ecopillo tại cửa hàng',
-}
+/** Biên bản mục 25: ảnh bìa video là ảnh đội ngũ Ecopillo tại cửa hàng (Ecopillo đổi ở Nội dung web → Phim thương hiệu) */
+const COVER: ImageSource = BRAND_VIDEO.cover
 
 /** cover: chỉ ảnh bìa · auto: tự phát không tiếng khi lướt tới · manual: khách bấm phát, có tiếng */
 type Mode = 'cover' | 'auto' | 'manual'
@@ -34,7 +30,7 @@ export function BrandVideo() {
         <div className="lg:col-span-4">
           <SectionHeading
             id="video-title"
-            title="Một giấc ngủ được nâng niu"
+            title={BRAND_VIDEO.heading}
             lead={BRAND_VIDEO_LEAD}
           />
           <YoutubeChannelLink />
@@ -57,7 +53,7 @@ export function YoutubeChannelLink() {
       rel="noopener noreferrer"
       className="mt-4.5 -mb-2.5 inline-flex items-center gap-2 py-2.5 text-sm font-medium text-deep-800 underline-offset-4 hover:underline"
     >
-      <Icon name="youtube" size={18} /> Xem thêm trên kênh YouTube Ecopillo
+      <Icon name="youtube" size={18} /> {BRAND_VIDEO.channelLink}
     </a>
   )
 }
@@ -128,7 +124,7 @@ export function BrandVideoPlayer({ className = 'rounded-[1.75rem] shadow-[var(--
             </span>
           </span>
           <span className="absolute inset-x-6 bottom-5 hidden text-ivory sm:block">
-            <span className="block text-label tracking-[0.12em] text-mist-200 uppercase">YouTube · Ecopillo Việt Nam</span>
+            <span className="block text-label tracking-[0.12em] text-mist-200 uppercase">{BRAND_VIDEO.channel}</span>
             <span className="font-display mt-1 block text-xl sm:text-2xl">{BRAND_VIDEO.title}</span>
           </span>
         </button>

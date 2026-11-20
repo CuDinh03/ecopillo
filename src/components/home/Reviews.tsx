@@ -1,6 +1,7 @@
 import { REVIEWS, REVIEWS_ARE_REAL, type Review } from '../../data/content'
 import { revealDelay } from '../../lib/reveal'
 import { Container, SectionHeading } from '../ui/primitives'
+import { HOME_TEXT } from '../../data/pageText/home'
 
 function Stars() {
   return (
@@ -25,7 +26,7 @@ export function Reviews() {
   return (
     <section id="danh-gia" aria-labelledby="reviews-title" className="py-14 sm:py-24">
       <Container>
-        <SectionHeading id="reviews-title" title="Nhận xét của khách" lead="Những giấc ngủ được nâng niu, kể bằng lời của chính Quý khách." />
+        <SectionHeading id="reviews-title" title={HOME_TEXT.nhanXetTieuDe} lead={HOME_TEXT.nhanXetDanDat} />
 
         <div className="mt-8 grid gap-10 sm:mt-12 lg:grid-cols-12 lg:gap-16">
           <figure data-reveal className="lg:col-span-7">

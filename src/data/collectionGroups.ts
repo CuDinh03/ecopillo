@@ -1,4 +1,5 @@
 import { BEDDING_SETS, patternImage, type Collection, type ImageSource } from './catalog'
+import { chu, definePageText } from './pageText/define'
 
 /**
  * Trang chủ, phần bộ sưu tập chăn ga (C4, owner chốt 09/11/2026, phương án 1 trong docs/de-xuat-gop-y-08-11.html).
@@ -39,14 +40,27 @@ const MORE_SOURCES: readonly ShowcaseSource[] = [
   { id: 'eco-flora', fabric: 'In hoạ tiết' },
 ]
 
+/** Đoạn dẫn: chị Phương qua Zalo 09/11/2026, giữ nguyên văn (thay "Bốn dòng chăn ga chủ lực của Ecopillo") */
+const { set: SHOWCASE_SET, text: SHOWCASE } = definePageText(
+  'bo-suu-tap-trang-chu',
+  'Trang chủ: khối Bộ sưu tập chăn ga',
+  'Tiêu đề, đoạn dẫn, chữ ô "Xem tất cả" của khối bộ sưu tập chăn ga trang chủ.',
+  {
+    tieuDe: chu('Tiêu đề', 'Bộ sưu tập chăn ga'),
+    danDat: chu('Đoạn dẫn', 'Những dòng chăn ga bán chạy nhất Ecopillo'),
+    themLuaChon: chu('Nhãn hàng bộ thêm', 'Thêm lựa chọn'),
+    xemTatCa: chu('Ô cuối: chữ to', 'Xem tất cả sản phẩm'),
+    xemTatCaPhu: chu('Ô cuối: chữ nhỏ', 'Đệm, chăn ga, gối, chăn'),
+  },
+)
+export const COLLECTION_SHOWCASE_SET = SHOWCASE_SET
 export const COLLECTION_SHOWCASE_TEXT = {
-  title: 'Bộ sưu tập chăn ga',
-  // Chị Phương qua Zalo 09/11/2026, giữ nguyên văn (thay "Bốn dòng chăn ga chủ lực của Ecopillo")
-  lead: 'Những dòng chăn ga bán chạy nhất Ecopillo',
-  moreTitle: 'Thêm lựa chọn',
-  seeAll: 'Xem tất cả sản phẩm',
-  seeAllNote: 'Đệm, chăn ga, gối, chăn',
-} as const
+  title: SHOWCASE.tieuDe,
+  lead: SHOWCASE.danDat,
+  moreTitle: SHOWCASE.themLuaChon,
+  seeAll: SHOWCASE.xemTatCa,
+  seeAllNote: SHOWCASE.xemTatCaPhu,
+}
 
 /**
  * Ảnh nền ô "Xem tất cả sản phẩm" (chị Phương 18/11/2026: "bổ sung một số hình"; owner chọn phương án B,

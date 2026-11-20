@@ -14,6 +14,7 @@ import { JsonLd } from '../components/seo/JsonLd'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { organizationLd } from '../lib/structuredData'
+import { HOME_TEXT } from '../data/pageText/home'
 
 /**
  * HTML dựng sẵn có cả hai bản; trình duyệt chọn bằng CSS (`md:`). Lúc dựng trên máy chủ không biết khổ màn hình,
@@ -25,10 +26,7 @@ import { organizationLd } from '../lib/structuredData'
 export function HomePage() {
   // Mô tả chị Phương gửi 18/11/2026 (hiện dưới tiêu đề khi gửi link qua Zalo, Facebook, trên Google), trùng chữ với index.html.
   // Sửa chính tả "trãi" → "trải", thêm dấu chấm cuối câu
-  usePageMeta(
-    null,
-    'Chăn ga gối đệm Ecopillo mang giấc ngủ chất lượng cùng trải nghiệm tuyệt vời đến hàng triệu gia đình Việt một cách nhanh chóng và dễ dàng nhất.',
-  )
+  usePageMeta(null, HOME_TEXT.moTaGoogle)
   const isMobile = useIsMobile()
   return (
     <>

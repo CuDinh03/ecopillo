@@ -1,6 +1,7 @@
 import { CONTACT } from '../../data/brand'
 import { formatVND } from '../../lib/format'
 import { Icon, ZaloMark } from '../ui/Icon'
+import { ORDER_TEXT } from '../../data/pageText/order'
 
 /** Cam kết ngắn dưới tóm tắt đơn, dùng chung cho mọi kiểu đơn */
 export function OrderAssurances({ deliveryTime }: { deliveryTime?: string }) {
@@ -13,12 +14,7 @@ export function OrderAssurances({ deliveryTime }: { deliveryTime?: string }) {
         </p>
       )}
       <ul className="mt-5 space-y-2 px-2 text-meta text-ink-soft">
-        {[
-          'Nhân viên gọi xác nhận trước khi giao',
-          'Chuyển khoản vào tài khoản Ecopillo, miễn phí giao từ 500.000đ',
-          'Kiểm hàng khi nhận, trải nghiệm chăn ga tại nhà',
-          'Đổi hàng trong 7 ngày nếu còn nguyên tem mác',
-        ].map((t) => (
+        {ORDER_TEXT.camKet.map((t) => (
           <li key={t} className="flex gap-2">
             <Icon name="check" size={14} className="mt-0.5 shrink-0 text-mist-600" />
             {t}

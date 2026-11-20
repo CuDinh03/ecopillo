@@ -14,6 +14,7 @@ import { ExploreMore } from '../components/ui/ExploreMore'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { articleLd, shareImageOf } from '../lib/structuredData'
 import { NotFoundPage } from './NotFoundPage'
+import { COMMON_TEXT } from '../data/pageText/common'
 
 function Block({ block }: { block: PostBlock }) {
   switch (block.type) {
@@ -137,8 +138,8 @@ export function ArticlePage() {
           )}
 
           <div className="mt-10 rounded-[1.75rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] sm:p-8">
-            <p className="font-display text-[1.4rem] leading-tight text-deep-900">Cần tư vấn thêm?</p>
-            <p className="mt-1.5 text-body-sm text-ink-soft">Gửi ảnh phòng, số đo giường qua Zalo, Ecopillo gợi ý mẫu hợp nhất.</p>
+            <p className="font-display text-[1.4rem] leading-tight text-deep-900">{COMMON_TEXT.canTuVan}</p>
+            <p className="mt-1.5 text-body-sm text-ink-soft">{COMMON_TEXT.canTuVanChu}</p>
             <ContactButtons size="md" stretch className="mt-5" />
           </div>
         </div>

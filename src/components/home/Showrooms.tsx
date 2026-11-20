@@ -8,6 +8,8 @@ import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { buttonClass, ContactButtons, Container, FillIn, SectionHeading } from '../ui/primitives'
+import { HOME_TEXT } from '../../data/pageText/home'
+import { FAQ_PAGE_TEXT } from '../../data/pageText/faq'
 
 const isFillIn = (text: string) => text.startsWith('[') && text.endsWith(']')
 
@@ -28,8 +30,8 @@ export function Showrooms() {
       <Container>
         <SectionHeading
           id="phan-phoi-title"
-          title="Hệ thống phân phối"
-          lead="Chạm tay vào chất vải tại Ecopillo: cảm nhận độ mềm mát của vải Lyocell, nằm thử gối và đệm, được tư vấn mẫu hợp với phòng ngủ của Quý khách."
+          title={HOME_TEXT.phanPhoiTieuDe}
+          lead={HOME_TEXT.phanPhoiDanDat}
         />
         <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end">
           <div className="flex shrink-0 flex-col items-start gap-2 sm:items-end">
@@ -81,7 +83,7 @@ export function Showrooms() {
                       Chỉ đường
                     </a>
                     <a href={s.hotline ? `tel:${s.hotline.replace(/\D/g, '')}` : CONTACT.hotlineTel} className={buttonClass('secondary', 'sm')}>
-                      Gọi đặt lịch xem hàng
+                      {HOME_TEXT.phanPhoiNutGoi}
                     </a>
                   </div>
                 </div>
@@ -111,10 +113,10 @@ export function Faq({ standalone = false, compact = false }: { standalone?: bool
           <div className="lg:sticky lg:top-28">
             <SectionHeading
               id="faq-title"
-              title={standalone ? 'Câu trả lời nhanh' : 'Câu hỏi thường gặp'}
+              title={standalone ? FAQ_PAGE_TEXT.khoiTieuDe : HOME_TEXT.hoiDapTieuDe}
             />
             <p className="mt-5 text-ink-soft">
-              {!standalone && 'Mua sắm an tâm với Ecopillo. '}Chưa thấy câu trả lời Quý khách cần? Gọi hoặc nhắn Zalo, Ecopillo phản hồi ngay.
+              {standalone ? FAQ_PAGE_TEXT.khoiDanDat : HOME_TEXT.hoiDapDanDat}
             </p>
             <ContactButtons size="md" stretch className="mt-7" />
             {!standalone && (

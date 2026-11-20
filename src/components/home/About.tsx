@@ -24,6 +24,8 @@ import { EventsStrip } from './EventsStrip'
 import { MobileMore } from '../ui/MobileMore'
 import { Placeholder } from '../ui/Placeholder'
 import { Container, SectionHeading } from '../ui/primitives'
+import { HOME_TEXT } from '../../data/pageText/home'
+import { Highlight } from '../ui/Highlight'
 
 /* Chữ, ảnh dùng chung với trang Giới thiệu: data/about.ts */
 
@@ -58,16 +60,13 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
           <div className="min-w-0 lg:col-span-7">
             <SectionHeading
               id="about-title"
-              title="Từ trái tim một người làm nghề lâu năm"
+              title={HOME_TEXT.veChungToiTieuDe}
             />
             <div data-reveal style={revealDelay(1)} className="chu-deu mt-5 max-w-2xl space-y-5 text-body leading-relaxed text-ink-soft">
               <p>{STORY_OPENING}</p>
               <div className={isExpanded ? 'space-y-5' : 'hidden space-y-5 sm:block'}>
                 <p>
-                  Người đặt nền móng cho thương hiệu là <strong className="font-medium text-deep-900">chị Phạm Thị Phương</strong>,
-                  hơn 15 năm trong nghề chăn ga, từ sản xuất đến bán lẻ. Chị luôn trăn trở làm sao để mỗi sản phẩm giúp
-                  khách hàng tạo dựng một <em className="text-deep-900">“Chốn Yên”</em>: nơi giấc ngủ lành mạnh được vun
-                  đắp và cơ thể được phục hồi trọn vẹn.
+                  <Highlight text={HOME_TEXT.nguoiSangLap} strong={['chị Phạm Thị Phương']} em={['“Chốn Yên”']} />
                 </p>
                 <p>{BRAND_PROMISE}</p>
               </div>
@@ -132,14 +131,14 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
             <MissionText>{AWARD_NAME}</MissionText>
             <span className="mt-5 flex items-center gap-2">
               <img
-                src="/images/partners/iso-9001.webp"
-                alt="Chứng nhận ISO 9001:2015"
+                src={HOME_TEXT.anhChungNhan1.src}
+                alt={HOME_TEXT.anhChungNhan1.alt}
                 loading="lazy"
                 className="h-12 w-12 rounded-lg bg-white object-contain p-1"
               />
               <img
-                src="/images/partners/tqc.webp"
-                alt="Chứng nhận TQC"
+                src={HOME_TEXT.anhChungNhan2.src}
+                alt={HOME_TEXT.anhChungNhan2.alt}
                 loading="lazy"
                 className="h-12 w-auto rounded-lg bg-white object-contain p-1"
               />

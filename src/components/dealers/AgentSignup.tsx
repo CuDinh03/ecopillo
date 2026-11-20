@@ -3,6 +3,7 @@ import { AGENT_BENEFITS } from '../../data/dealers'
 import { Icon } from '../ui/Icon'
 import { SectionHeading } from '../ui/primitives'
 import { MessageForm } from '../contact/MessageForm'
+import { RECRUIT_TEXT } from '../../data/pageText/recruit'
 
 /**
  * Khối "Trở thành đại lý": quyền lợi + form đăng ký. Dùng ở trang Tuyển đại lý
@@ -18,13 +19,9 @@ export function AgentSignup() {
       <div className="lg:col-span-5">
         <SectionHeading
           id="agent-title"
-          eyebrow="Hợp tác"
-          title={
-            <>
-              Trở thành đại lý Ecopillo
-            </>
-          }
-          lead="Ecopillo tìm đối tác phân phối chăn ga gối đệm cao cấp tại các tỉnh, thành. Để lại thông tin, bộ phận kinh doanh sẽ gọi lại."
+          eyebrow={RECRUIT_TEXT.dangKyNhan}
+          title={RECRUIT_TEXT.dangKyTieuDe}
+          lead={RECRUIT_TEXT.dangKyChu}
         />
         <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
           {AGENT_BENEFITS.map((b) => (
@@ -37,7 +34,7 @@ export function AgentSignup() {
           ))}
         </ul>
         <p className="mt-7 flex flex-wrap items-center gap-x-2 gap-y-1 text-body-sm text-deep-900">
-          Liên hệ mở đại lý:
+          {RECRUIT_TEXT.dangKyLienHe}
           <a
             href={CONTACT.hotlineTel}
             className="tabular -my-2 inline-flex items-center gap-1.5 py-2 font-medium text-deep-800 underline decoration-mist-300 underline-offset-4 transition hover:text-mist-600 hover:decoration-mist-600"
@@ -50,8 +47,8 @@ export function AgentSignup() {
       <div className="rounded-[1.5rem] bg-ivory p-6 shadow-[var(--shadow-soft)] sm:p-8 lg:col-span-7">
         <MessageForm
           defaultTopic="Đăng ký mở đại lý"
-          placeholder="Ví dụ: cửa hàng chăn ga tại Nam Định, diện tích 60 m², muốn nhận bảng giá sỉ…"
-          submitLabel="Gửi đăng ký"
+          placeholder={RECRUIT_TEXT.dangKyViDu}
+          submitLabel={RECRUIT_TEXT.dangKyNut}
         />
       </div>
     </section>

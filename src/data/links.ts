@@ -1,4 +1,5 @@
 import type { Collection, Pattern } from './catalog'
+import { liveList, type EditableField, type EditableSet } from './liveContent'
 import { liveNewPatternBySlug, liveNewProductBySlug } from './liveData'
 
 /**
@@ -254,7 +255,7 @@ export interface ListingPreset {
   collections?: readonly string[]
 }
 
-export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
+const BASE_LISTINGS: Readonly<Record<string, ListingPreset>> = {
   '/danh-muc-san-pham/san-pham/bo-ga-phu/': {
     title: 'Bộ ga phủ',
     // Mô tả viết tay 08/11/2026 (C2, chờ Ecopillo duyệt): dưới 160 ký tự
@@ -327,6 +328,32 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
     products: ['dem-eco-foam-da-tang', 'dem-foam-cao-cap-nano-comfort'],
   },
 }
+
+/** Tên, mô tả các trang danh mục nhỏ Ecopillo tự sửa (Nội dung web → Chữ từng trang); đường link, sản phẩm giữ theo code */
+const LISTING_ROWS = Object.entries(BASE_LISTINGS).map(([path, l]) => ({ path, title: l.title, description: l.description }))
+const LISTING_FIELDS: readonly EditableField[] = [
+  { khoa: 'title', nhan: 'Tên danh mục', kieu: 'chu', batBuoc: true },
+  { khoa: 'description', nhan: 'Đoạn dưới tên (cũng là mô tả trên Google, dưới 160 chữ cái)', kieu: 'doan', batBuoc: true },
+]
+export const LISTING_HEAD_SET: EditableSet = {
+  khoa: 'chu-trang-danh-muc',
+  nhom: 'Chữ từng trang',
+  ten: 'Đầu trang các danh mục nhỏ',
+  moTa: 'Tên và đoạn mô tả của các trang danh mục nhỏ (đệm lò xo, ruột chăn, ruột gối…). Không thêm, bớt danh mục ở đây: link giữ theo web cũ.',
+  kieu: 'nhieu',
+  goc: LISTING_ROWS,
+  tieuDeDong: 'title',
+  khoaDong: 'path',
+  truong: LISTING_FIELDS,
+}
+const LIVE_LISTING_ROWS = liveList(LISTING_HEAD_SET.khoa, LISTING_ROWS, LISTING_FIELDS, (i, row) => LISTING_ROWS.find((r) => r.path === row.path) ?? LISTING_ROWS[i] ?? LISTING_ROWS[0])
+
+export const LISTINGS: Readonly<Record<string, ListingPreset>> = Object.fromEntries(
+  Object.entries(BASE_LISTINGS).map(([path, listing]) => {
+    const row = LIVE_LISTING_ROWS.find((r) => r.path === path)
+    return [path, row ? { ...listing, title: row.title, description: row.description } : listing]
+  }),
+)
 
 /**
  * Danh mục WooCommerce → trang danh mục của web mới (giai đoạn 4b, docs/ke-hoach-khach-tu-sua-du-lieu.md).

@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom'
 import {
   MATTRESS_ALL_PATH,
   MATTRESS_CHIPS,
+  MATTRESS_FEATURED_TEXT,
+  MATTRESS_TEXT,
   MATTRESS_FEATURED,
   MATTRESS_PICKER_LEAD,
   MATTRESS_PICKER_TITLE,
@@ -52,18 +54,18 @@ export function MattressPicker() {
               />
               <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-deep-950/80 from-25% to-deep-950/0" />
               <span className="absolute inset-x-5 bottom-4 text-ivory sm:inset-x-6 sm:bottom-5">
-                <span className="eyebrow !text-mist-200">Nổi bật</span>
+                <span className="eyebrow !text-mist-200">{MATTRESS_TEXT.noiBatNhan}</span>
                 <span className="font-display mt-1.5 block text-[1.55rem] leading-tight sm:text-[1.85rem]">{MATTRESS_FEATURED.name}</span>
               </span>
             </div>
             <div className="flex flex-col gap-2 p-5 sm:p-6">
-              <p className="text-body-sm leading-relaxed text-ink-soft">{MATTRESS_FEATURED.text}</p>
+              <p className="text-body-sm leading-relaxed text-ink-soft">{MATTRESS_FEATURED_TEXT}</p>
               <p className="tabular text-body-sm font-semibold text-deep-900">từ {formatVND(MATTRESS_FEATURED.min)}</p>
             </div>
           </Link>
 
           <div data-reveal style={revealDelay(1)} className="flex flex-col rounded-[1.75rem] bg-ivory p-5 shadow-[var(--shadow-soft)] sm:p-6">
-            <p className="eyebrow">Quý khách thích nằm thế nào?</p>
+            <p className="eyebrow">{MATTRESS_TEXT.cauHoi}</p>
             <ul className="mt-3.5 flex flex-1 flex-col divide-y divide-line">
               {MATTRESS_PREFERENCES.map((row) => (
                 <li key={row.to}>

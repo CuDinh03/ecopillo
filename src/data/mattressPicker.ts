@@ -2,6 +2,7 @@ import { productImage, type ImageSource } from './catalog'
 import { LISTINGS, singleProductPath } from './links'
 import { LISTING_GUIDES } from './listingGuides'
 import { productBySlug } from './products'
+import { chu, definePageText, doan, dsDong } from './pageText/define'
 
 /**
  * Khối "Chọn đệm theo cách Quý khách thích nằm" trên trang chủ (C3, owner chốt 02/11/2026).
@@ -34,7 +35,6 @@ export interface MattressChip {
 
 export interface MattressFeatured {
   name: string
-  text: string
   min: number
   to: string
   image: ImageSource
@@ -89,7 +89,6 @@ const ecoLuxe = productOf('dem-lo-xo-tui-cao-cap-eco-luxe')
 
 export const MATTRESS_FEATURED: MattressFeatured = {
   name: ecoLuxe.name,
-  text: 'Lõi lò xo túi 16 cm, thêm lớp topper foam 4 cm ôm vai, hông, eo. Bảo hành 10 năm.',
   min: ecoLuxe.min,
   to: singleProductPath('dem-lo-xo-tui-cao-cap-eco-luxe'),
   image: productImage('dem-lo-xo-tui-cao-cap-eco-luxe-2', ecoLuxe.name),
@@ -108,7 +107,7 @@ const chipOf = (path: string, label: string): MattressChip => {
   return { label, to: path }
 }
 
-export const MATTRESS_CHIPS: readonly MattressChip[] = [
+const BASE_CHIPS: readonly MattressChip[] = [
   chipOf('/danh-muc-san-pham/san-pham/dem-lo-xo/', 'Đệm lò xo'),
   chipOf('/danh-muc-san-pham/san-pham/dem-cao-su/', 'Đệm cao su'),
   chipOf('/danh-muc-san-pham/san-pham/dem-foam/', 'Đệm foam'),
@@ -117,8 +116,29 @@ export const MATTRESS_CHIPS: readonly MattressChip[] = [
 ]
 
 export const MATTRESS_ALL_PATH = DEM_PATH
-/** Khách 09/11/2026: "bộ sưu tập đệm - bộ sưu tập chăn ga nó bằng chữ nhau": tiêu đề cùng kiểu với "Bộ sưu tập chăn ga", bỏ nhãn nhỏ "Đệm Ecopillo" */
-export const MATTRESS_PICKER_TITLE = 'Bộ sưu tập đệm'
-/** Khách 09/11/2026 (chị Phương): "hệ thống phân phối và showroom Ecopillo trên toàn quốc" thay "ở Hà Nội, Đà Nẵng và TP. HCM" */
-export const MATTRESS_PICKER_LEAD =
-  'Lò xo, cao su thiên nhiên, foam, bông ép và topper, bảo hành tới 15 năm. Nằm thử tại hệ thống phân phối và showroom Ecopillo trên toàn quốc.'
+
+/**
+ * Chữ khối đệm Ecopillo tự sửa (Nội dung web → Chữ từng trang). Tiêu đề: khách 09/11/2026 ("bộ sưu tập đệm - bộ sưu tập chăn ga
+ * nó bằng chữ nhau"); đoạn dẫn: chị Phương 09/11/2026 ("hệ thống phân phối và showroom Ecopillo trên toàn quốc").
+ */
+export const { set: MATTRESS_TEXT_SET, text: MATTRESS_TEXT } = definePageText(
+  'dem-trang-chu',
+  'Trang chủ: khối Bộ sưu tập đệm',
+  'Tiêu đề, đoạn dẫn, câu mẫu nổi bật, chữ các nút nhóm đệm của khối đệm trang chủ. Chữ từng cách nằm sửa ở bộ "Đầu trang danh mục".',
+  {
+    tieuDe: chu('Tiêu đề', 'Bộ sưu tập đệm'),
+    danDat: doan(
+      'Đoạn dẫn',
+      'Lò xo, cao su thiên nhiên, foam, bông ép và topper, bảo hành tới 15 năm. Nằm thử tại hệ thống phân phối và showroom Ecopillo trên toàn quốc.',
+    ),
+    noiBatNhan: chu('Nhãn trên ảnh mẫu nổi bật', 'Nổi bật'),
+    noiBatChu: doan('Câu giới thiệu mẫu nổi bật (Eco Luxe)', 'Lõi lò xo túi 16 cm, thêm lớp topper foam 4 cm ôm vai, hông, eo. Bảo hành 10 năm.'),
+    cauHoi: chu('Câu hỏi trên 4 dòng cách nằm', 'Quý khách thích nằm thế nào?'),
+    nutNhom: dsDong('Chữ 5 nút nhóm đệm', BASE_CHIPS.map((chip) => chip.label), 'Đúng 5 dòng theo thứ tự: lò xo, cao su, foam, bông ép, topper'),
+  },
+)
+
+export const MATTRESS_PICKER_TITLE: string = MATTRESS_TEXT.tieuDe
+export const MATTRESS_PICKER_LEAD: string = MATTRESS_TEXT.danDat
+export const MATTRESS_FEATURED_TEXT: string = MATTRESS_TEXT.noiBatChu
+export const MATTRESS_CHIPS: readonly MattressChip[] = BASE_CHIPS.map((chip, i) => ({ ...chip, label: MATTRESS_TEXT.nutNhom[i] ?? chip.label }))

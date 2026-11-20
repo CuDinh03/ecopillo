@@ -14,6 +14,7 @@ import {
   type Pattern,
   type SizeId,
 } from './catalog'
+import { PRODUCTS_PAGE_TEXT } from './pageText/products'
 
 /**
  * Danh sách sản phẩm cho trang /san-pham, ghép từ danh mục trong catalog.ts.
@@ -44,15 +45,9 @@ export const categoryLabel = (id: CategoryId): string => CATEGORIES.find((c) => 
  * Đầu trang Sản phẩm: đoạn giới thiệu và 4 cam kết của web cũ (ecopillo.com.vn/danh-muc-san-pham/san-pham/),
  * đổi "bạn" thành "Quý khách". Khách yêu cầu 16/10/2026 (mục 31: "như web cũ ok hơn"); Ecopillo đã xác nhận 17/10/2026.
  */
-export const PRODUCTS_INTRO =
-  'Mỗi sản phẩm chăn ga gối đệm Ecopillo là một tác phẩm được thiết kế và hoàn thiện chỉn chu, để mang đến một không gian “Chốn Yên” cho gia đình Quý khách: đầy yêu thương và ấm áp, nơi nghỉ ngơi sau một ngày dài làm việc.'
+export const PRODUCTS_INTRO: string = PRODUCTS_PAGE_TEXT.gioiThieu
 
-export const PRODUCTS_PROMISES: readonly string[] = [
-  'Chất liệu tuyển chọn cao cấp bậc nhất trên thị trường',
-  'Hoàn thiện tỉ mỉ bởi những thợ lành nghề hơn 10 năm kinh nghiệm',
-  'Cập nhật sản phẩm theo xu hướng của thị trường',
-  'Giao hàng nhanh chóng, nhận đặt hàng theo kích thước riêng',
-]
+export const PRODUCTS_PROMISES: readonly string[] = PRODUCTS_PAGE_TEXT.camKet
 
 /** Một lựa chọn khi đặt sản phẩm lẻ (thường là kích thước). Không có giá = nhân viên báo giá khi gọi xác nhận */
 export interface ProductChoice {

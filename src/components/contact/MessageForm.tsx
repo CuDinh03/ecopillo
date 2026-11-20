@@ -10,6 +10,7 @@ import { Icon } from '../ui/Icon'
 import { PreviewNotSent } from '../ui/PreviewNotSent'
 import { SendFailed } from '../ui/SendFailed'
 import { buttonClass } from '../ui/primitives'
+import { CONTACT_PAGE_TEXT } from '../../data/pageText/contact'
 
 /**
  * Form "Gửi tin nhắn cho chúng tôi" (trang Liên hệ mua hàng, trang Khách sạn, Đăng ký mở đại lý).
@@ -86,8 +87,8 @@ interface MessageFormProps {
 
 export function MessageForm({
   defaultTopic = 'Tư vấn chọn mẫu',
-  placeholder = 'Ví dụ: giường 1m8 × 2m, muốn tư vấn mẫu mát cho mùa hè…',
-  submitLabel = 'Gửi tin nhắn',
+  placeholder = CONTACT_PAGE_TEXT.tinNhanViDu,
+  submitLabel = CONTACT_PAGE_TEXT.tinNhanNut,
   defaultMessage = '',
   prefillKey = 0,
 }: MessageFormProps) {
@@ -165,7 +166,7 @@ export function MessageForm({
         <span className="flex h-16 w-16 items-center justify-center rounded-full bg-mist-100 text-deep-800">
           <Icon name="check" size={28} />
         </span>
-        <h3 className="font-display mt-6 text-[1.9rem] leading-tight text-deep-900">Ecopillo đã nhận tin nhắn</h3>
+        <h3 className="font-display mt-6 text-[1.9rem] leading-tight text-deep-900">{CONTACT_PAGE_TEXT.daNhanTieuDe}</h3>
         <p className="mt-3 max-w-sm text-ink-soft">
           Cảm ơn {sent.form.name.trim()}. Bộ phận Chăm sóc khách hàng sẽ gọi lại số{' '}
           <span className="tabular font-medium text-deep-900">{sent.form.phone}</span> trong giờ làm việc ({OPENING_HOURS}).

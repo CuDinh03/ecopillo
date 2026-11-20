@@ -8,23 +8,19 @@ import { POLICY_NAV } from '../data/policyNav'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { faqLd } from '../lib/structuredData'
 import { PATHS } from '../data/links'
+import { FAQ_PAGE_TEXT } from '../data/pageText/faq'
+import { Lines } from '../components/ui/Highlight'
 
 /** Trang Hỏi đáp: câu hỏi thường gặp (biên bản mục 43) + lối tắt sang các trang chính sách */
 export function FaqPage() {
-  usePageMeta('Hỏi đáp', 'Câu hỏi thường gặp khi mua chăn ga gối đệm Ecopillo: giao hàng, kiểm hàng, đổi hàng, thanh toán, đặt cọc, may theo kích thước, bảo hành.')
+  usePageMeta('Hỏi đáp', FAQ_PAGE_TEXT.moTaGoogle)
   return (
     <>
       <PageHero
         crumbs={[{ label: 'Hỏi đáp' }]}
-        eyebrow="Hỏi đáp"
-        title={
-          <>
-            Mua sắm an tâm{' '}
-            <br />
-            với Ecopillo
-          </>
-        }
-        lead="Những câu Quý khách hỏi nhiều nhất về giao hàng, kiểm hàng, đổi hàng, thanh toán và bảo hành."
+        eyebrow={FAQ_PAGE_TEXT.nhan}
+        title={<Lines text={FAQ_PAGE_TEXT.tieuDe} />}
+        lead={FAQ_PAGE_TEXT.danDat}
       >
         <ul className="mt-8 flex flex-wrap gap-2">
           {/* Chị Phương 18/11/2026: bỏ nút Bảo vệ thông tin cá nhân ở đây (trang vẫn có ở chân trang, bước đặt hàng) */}

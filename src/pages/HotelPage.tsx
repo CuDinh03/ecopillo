@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { CertificateBadges, PartnerLogos } from '../components/about/Recognition'
 import { MessageForm } from '../components/contact/MessageForm'
 import { HotelProducts } from '../components/hotel/HotelProducts'
@@ -9,7 +9,7 @@ import { Breadcrumb } from '../components/ui/PageHero'
 import { buttonClass, Container } from '../components/ui/primitives'
 import { CONTACT } from '../data/brand'
 import { HOTEL_PARTNERS } from '../data/content'
-import { HOTEL_BENEFITS, HOTEL_EYEBROW, HOTEL_INTRO, HOTEL_INTRO_HEADING, HOTEL_PARTNER_POINTS, HOTEL_PHOTOS } from '../data/hotel'
+import { HOTEL_BENEFITS, HOTEL_EYEBROW, HOTEL_INTRO, HOTEL_INTRO_HEADING, HOTEL_PAGE, HOTEL_PARTNER_POINTS, HOTEL_PHOTOS } from '../data/hotel'
 import { useNearViewport } from '../hooks/useNearViewport'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
@@ -23,13 +23,7 @@ import { revealDelay } from '../lib/reveal'
  * Form báo giá dùng chung form Liên hệ, chọn sẵn chủ đề "Khách sạn, nhà nghỉ".
  */
 
-const STEPS: readonly { title: string; text: string }[] = [
-  { title: 'Khảo sát, tư vấn', text: 'Nhận số phòng, cỡ giường, phong cách; gửi mẫu vải để chọn.' },
-  { title: 'Báo giá, may mẫu', text: 'Báo giá theo số lượng, may một bộ mẫu để duyệt chất liệu và màu.' },
-  { title: 'Sản xuất', text: 'May theo số đo đã chốt, kiểm từng bộ trước khi đóng gói.' },
-  { title: 'Giao, trải thử', text: 'Giao tận nơi, trải thử trên giường mẫu trước khi nghiệm thu.' },
-  { title: 'Bổ sung, bảo hành', text: 'Bổ sung đúng mẫu khi cần, bảo hành theo hợp đồng.' },
-]
+const STEPS: readonly { title: string; text: string }[] = HOTEL_PAGE.buoc
 
 const HERO_IMAGE = HOTEL_PHOTOS.hero
 const QUOTE_IMAGE = HOTEL_PHOTOS.quote
@@ -37,11 +31,7 @@ const QUOTE_IMAGE = HOTEL_PHOTOS.quote
 const twoDigits = (n: number) => String(n).padStart(2, '0')
 
 export function HotelPage() {
-  usePageMeta(
-    'Chăn ga gối khách sạn và dự án',
-    // Mô tả viết tay 08/11/2026 (C2, chờ Ecopillo duyệt)
-    'Ecopillo cung cấp chăn ga gối đệm số lượng lớn cho khách sạn, resort, nhà nghỉ: đường may 4 mũi/cm, giải pháp đồng bộ, báo giá theo số lượng.',
-  )
+  usePageMeta('Chăn ga gối khách sạn và dự án', HOTEL_PAGE.moTaGoogle)
   // Chữ điền sẵn vào form khi bấm "Liên hệ báo giá" từ một món Hàng trắng
   const [quotePrefill, setQuotePrefill] = useState({ message: '', key: 0 })
   const prefillQuote = (message: string) => setQuotePrefill((prev) => ({ message, key: prev.key + 1 }))
@@ -93,7 +83,12 @@ function HotelHero() {
           id="page-title"
           className="font-display mt-4 text-[clamp(2rem,9.6vw,2.6rem)] leading-[1.05] text-deep-900 sm:text-[3.6rem] lg:text-[clamp(3rem,4.6vw,3.6rem)]"
         >
-          <span className="block">Giấc ngủ năm sao</span> <span className="block">cho khách lưu trú</span>
+          {HOTEL_PAGE.tieuDe.split('|').map((line, i) => (
+            <Fragment key={i}>
+              {i > 0 && ' '}
+              <span className="block">{line.trim()}</span>
+            </Fragment>
+          ))}
         </h1>
         {/* Viết thường như câu dẫn, trước in hoa giãn chữ chạy hai dòng khó đọc (B10, owner duyệt 24/10/2026) */}
         <p className="mt-5 max-w-sm text-lead leading-snug font-medium text-balance text-deep-800">{HOTEL_INTRO_HEADING}</p>
@@ -101,7 +96,7 @@ function HotelHero() {
         <p className="chu-deu mt-3 max-w-md text-body leading-relaxed text-ink-soft">{HOTEL_INTRO[0]}</p>
         <div className="mt-8 flex flex-wrap gap-3">
           <a href="#bao-gia" className={buttonClass('primary', 'lg')}>
-            Nhận báo giá
+            {HOTEL_PAGE.nutBaoGia}
             <Icon name="arrowRight" size={18} />
           </a>
           <a href={CONTACT.hotlineTel} className={buttonClass('secondary', 'lg')}>
@@ -126,9 +121,9 @@ function Partners() {
       <Container className="grid gap-10 lg:grid-cols-[5fr_6fr] lg:items-start lg:gap-16">
         <div>
           <header data-reveal="left">
-            <p className="eyebrow">Đối tác của chúng tôi</p>
+            <p className="eyebrow">{HOTEL_PAGE.doiTacNhan}</p>
             <h2 id="partners-title" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.6rem]">
-              Đối tác tin cậy của khách sạn, khu nghỉ dưỡng
+              {HOTEL_PAGE.doiTacTieuDe}
             </h2>
           </header>
           <dl className="mt-6 border-b border-line">
@@ -143,7 +138,7 @@ function Partners() {
         <div ref={imagesRef} className="grid gap-8">
           <PartnerLogos partners={HOTEL_PARTNERS} itemClassName="h-20 sm:h-24" showImages={showImages} />
           <div>
-            <p className="eyebrow">Chứng nhận, danh hiệu</p>
+            <p className="eyebrow">{HOTEL_PAGE.chungNhanNhan}</p>
             <div className="mt-4">
               <CertificateBadges showImages={showImages} />
             </div>
@@ -161,7 +156,7 @@ function Reasons() {
       <Container className="relative grid gap-10 lg:grid-cols-[5fr_7fr] lg:gap-16">
         <div data-reveal="left">
           <h2 id="reason-title" className="font-display text-[2.1rem] leading-[1.12] italic sm:text-[3.1rem]">
-            “Bền cho vận hành, êm cho khách nghỉ.”
+            {HOTEL_PAGE.trichDan}
           </h2>
           <div className="chu-deu mt-6 space-y-3 text-body-sm leading-relaxed text-mist-200/90">
             {HOTEL_INTRO.slice(1).map((paragraph) => (
@@ -187,9 +182,9 @@ function Steps() {
     <section aria-labelledby="step-title" className="py-16 sm:py-24">
       <Container>
         <header data-reveal="left">
-          <p className="eyebrow">Cách làm việc</p>
+          <p className="eyebrow">{HOTEL_PAGE.cachLamNhan}</p>
           <h2 id="step-title" className="font-display mt-4 text-[2rem] leading-tight text-deep-900 sm:text-[2.9rem]">
-            Từ khảo sát đến nghiệm thu
+            {HOTEL_PAGE.cachLamTieuDe}
           </h2>
         </header>
         <ol className="mt-8 grid lg:mt-12 lg:grid-cols-5 lg:gap-6">
@@ -208,7 +203,7 @@ function Steps() {
             </li>
           ))}
         </ol>
-        <p className="mt-6 max-w-2xl text-small text-ink-soft">Số lượng tối thiểu và thời gian may Ecopillo báo theo từng dự án, cùng với báo giá.</p>
+        <p className="mt-6 max-w-2xl text-small text-ink-soft">{HOTEL_PAGE.cachLamGhiChu}</p>
       </Container>
     </section>
   )
@@ -231,7 +226,7 @@ function Quote({ defaultMessage, prefillKey }: { defaultMessage: string; prefill
       </div>
       <div className="min-w-0 px-5 py-12 sm:px-8 sm:py-16 lg:py-20 lg:pr-[max(2.5rem,calc((100vw-1240px)/2+2.5rem))] lg:pl-14">
         <header data-reveal="left">
-          <p className="eyebrow">Nhận báo giá</p>
+          <p className="eyebrow">{HOTEL_PAGE.baoGiaNhan}</p>
           {/*
             Một dòng từ 640px (owner 09/11/2026: "chữ gửi yêu cầu để thành 1 dòng thôi"). Câu rộng ~17,8 lần cỡ chữ,
             nên cỡ chữ = bề ngang cột / 18,3: 640–1023px cột = 100vw − 4rem; từ 1024px cột = 7/12 màn hình − 6rem, tối đa 2,15rem.
@@ -241,19 +236,17 @@ function Quote({ defaultMessage, prefillKey }: { defaultMessage: string; prefill
             id="quote-title"
             className="font-display mt-4 text-[length:clamp(1.7rem,8.6vw,2rem)] leading-tight text-balance text-deep-900 sm:text-[length:min(2.6rem,calc((100vw_-_4rem)/18.3))] lg:text-[length:min(2.15rem,calc((58.333vw_-_6rem)/18.3))]"
           >
-            Gửi yêu cầu cho dự án của Quý khách
+            {HOTEL_PAGE.baoGiaTieuDe}
           </h2>
-          <p className="mt-4 max-w-xl text-body-sm leading-relaxed text-ink-soft">
-            Ghi số phòng, cỡ giường và món cần may. Bộ phận dự án gọi lại, gửi mẫu vải và báo giá riêng.
-          </p>
+          <p className="mt-4 max-w-xl text-body-sm leading-relaxed text-ink-soft">{HOTEL_PAGE.baoGiaChu}</p>
         </header>
         <div className="mt-8 rounded-[1.5rem] bg-ivory p-5 shadow-[var(--shadow-soft)] sm:p-8">
           <MessageForm
             defaultTopic="Khách sạn, nhà nghỉ"
             defaultMessage={defaultMessage}
             prefillKey={prefillKey}
-            placeholder="Ví dụ: khách sạn 40 phòng ở Đà Nẵng, 20 giường 1m6 và 20 giường 1m8, cần ga bọc, vỏ chăn, ruột gối…"
-            submitLabel="Gửi yêu cầu báo giá"
+            placeholder={HOTEL_PAGE.baoGiaViDu}
+            submitLabel={HOTEL_PAGE.baoGiaNut}
           />
         </div>
         <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-body-sm">

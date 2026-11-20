@@ -1,22 +1,16 @@
 import { Icon, type IconName } from '../ui/Icon'
 import { CRAFT_QUOTE, LYOCELL_INTRO, LYOCELL_TRAITS } from '../../data/about'
-import { staticImage } from '../../data/catalog'
 import { revealDelay } from '../../lib/reveal'
 import { Placeholder } from '../ui/Placeholder'
 import { Container, SectionHeading } from '../ui/primitives'
+import { HOME_TEXT } from '../../data/pageText/home'
 
-const TRUST: readonly { icon: IconName; title: string; text: string }[] = [
-  // Con số thương hiệu đặt ở đây; dòng "3 kháng vượt trội" ở đầu trang đã bỏ (chị Phương 17/11/2026: "ở dưới có rồi")
-  // Owner 18/11/2026: thay 15.000 bằng "hàng trăm nghìn" (mức số thống nhất cả web; tên chương trình "Tri ân 15.000 khách hàng" giữ nguyên)
-  { icon: 'award', title: '15+ năm trong nghề', text: 'Hàng trăm nghìn gia đình tin dùng' },
-  // Chị Phương 18/11/2026: "TQC" thay bằng quy chuẩn QCVN 01:2017/BCT. Cách sau "·" là dấu cách thường để ô hẹp xuống dòng ở đó,
-  // mỗi mã giữ liền một dòng (dấu cách không ngắt bên trong mã)
-  { icon: 'certified', title: 'ISO\u00a09001:2015\u00a0· QCVN\u00a001:2017/BCT', text: 'Quy trình sản xuất được chứng nhận' },
-  { icon: 'stitch', title: 'Đường may 4 mũi/cm', text: 'Chắc, phẳng, bền qua nhiều lần giặt' },
-  { icon: 'ruler', title: 'May theo kích thước', text: 'Vừa khít mọi chiếc giường' },
-  // Thông báo Ecopillo từ 07/08/2026: trải nghiệm chăn ga tại nhà theo khu vực (paymentPolicy.ts)
-  { icon: 'truck', title: 'Trải nghiệm tại nhà', text: 'Chăn ga: Hà Nội, TP. HCM mọi đơn; tỉnh khác từ 20 triệu' },
-]
+/** Biểu tượng theo thứ tự ô; chữ các ô Ecopillo sửa ở Nội dung web (HOME_TEXT.camKet), ô thứ 6 trở đi dùng lại từ đầu */
+const TRUST_ICONS: readonly IconName[] = ['award', 'certified', 'stitch', 'ruler', 'truck']
+const TRUST: readonly { icon: IconName; title: string; text: string }[] = HOME_TEXT.camKet.map((item, i) => ({
+  icon: TRUST_ICONS[i % TRUST_ICONS.length],
+  ...item,
+}))
 
 /**
  * Mỗi ô: biểu tượng ở trên, chữ căn giữa bên dưới, các ô rộng bằng nhau và cách vạch ngăn như nhau,
@@ -56,6 +50,19 @@ export function TrustStrip() {
   )
 }
 
+/** "Hàng trăm nghìn" → "Hàng trăm" + xuống dòng + "nghìn" */
+function lastWordOnNewLine(text: string) {
+  const at = text.lastIndexOf(' ')
+  if (at < 0) return text
+  return (
+    <>
+      {text.slice(0, at)}
+      <br />
+      {text.slice(at + 1)}
+    </>
+  )
+}
+
 export function BrandStory() {
   return (
     <section aria-labelledby="story-title" className="py-14 sm:py-24">
@@ -65,7 +72,7 @@ export function BrandStory() {
           <div className="xl:col-span-5">
             <SectionHeading
               id="story-title"
-              title="Từ thiên nhiên đến giấc ngủ"
+              title={HOME_TEXT.chatLieuTieuDe}
               lead={LYOCELL_INTRO}
             />
             <blockquote data-reveal style={revealDelay(1)} className="mt-6 border-l-2 sm:mt-8 border-mist-600 pl-5 font-display text-[1.35rem] leading-snug text-deep-800 italic">
@@ -74,13 +81,10 @@ export function BrandStory() {
             <div className="mt-10 hidden items-center gap-5 rounded-2xl bg-mist-50 p-5 shadow-[var(--shadow-soft)] sm:flex">
               {/* Owner 18/11/2026: "Hàng trăm nghìn" thay "15.000+" (chữ, không còn số đếm tăng dần) */}
               <p className="shrink-0 font-display text-[2rem] leading-[1.05] text-deep-900">
-                Hàng trăm
-                <br />
-                nghìn
+                {/* Chữ cuối xuống dòng như mẫu đã duyệt ("Hàng trăm / nghìn") */}
+                {lastWordOnNewLine(HOME_TEXT.soKhach)}
               </p>
-              <p className="text-sm leading-snug text-ink-soft">
-                gia đình, khách sạn và resort đã chọn Ecopillo cho phòng ngủ của mình.
-              </p>
+              <p className="text-sm leading-snug text-ink-soft">{HOME_TEXT.soKhachChu}</p>
             </div>
           </div>
 
@@ -93,8 +97,8 @@ export function BrandStory() {
           >
             <article data-reveal className="relative overflow-hidden rounded-[1.75rem] bg-deep-800 text-ivory sm:col-span-6 sm:grid sm:grid-cols-[1.35fr_1fr]">
               <div className="p-7 sm:p-9">
-                <p className="eyebrow !text-mist-300">Chất liệu</p>
-                <h3 className="font-display mt-3 text-[1.7rem] leading-tight">Lyocell từ sợi gỗ tự nhiên</h3>
+                <p className="eyebrow !text-mist-300">{HOME_TEXT.lyocellNhan}</p>
+                <h3 className="font-display mt-3 text-[1.7rem] leading-tight">{HOME_TEXT.lyocellTieuDe}</h3>
                 <dl className="mt-5 grid grid-cols-2 gap-x-5 gap-y-3 sm:mt-6 sm:gap-y-4">
                   {LYOCELL_TRAITS.map((t) => (
                     <div key={t.title}>
@@ -112,7 +116,7 @@ export function BrandStory() {
                   tone="deep"
                   className="h-full w-full"
                   note="Ảnh cận chất vải Lyocell"
-                  image={staticImage('/images/details/lyocell-et01.webp', 'Cận mặt vải Lyocell trơn bộ Eco Tera ET01')}
+                  image={HOME_TEXT.anhLyocell}
                 />
               </div>
             </article>
@@ -122,14 +126,12 @@ export function BrandStory() {
                 <Placeholder
                   className="h-full w-full"
                   note="Ảnh cận họa tiết chần thêu độc quyền"
-                  image={staticImage('/images/details/theu-ed25.webp', 'Họa tiết thêu chim và hoa trên bộ Eco Doris ED25')}
+                  image={HOME_TEXT.anhTheu}
                 />
               </div>
               <div className="p-6">
-                <h3 className="font-display text-2xl text-deep-900">Chần thêu độc quyền</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                  Họa tiết do Ecopillo tự thiết kế, chần thủ công và thêu tỉ mỉ, không trùng lặp ngoài thị trường.
-                </p>
+                <h3 className="font-display text-2xl text-deep-900">{HOME_TEXT.theuTieuDe}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{HOME_TEXT.theuChu}</p>
               </div>
             </article>
 
@@ -139,32 +141,28 @@ export function BrandStory() {
                 <Placeholder
                   className="aspect-[5/3] w-full rounded-b-[1.75rem] sm:aspect-auto sm:h-full sm:min-h-36 sm:rounded-none"
                   note="Ảnh cận đường may"
-                  image={staticImage('/images/details/duong-may-ed25.webp', 'Cận mép chăn và đường chần bộ Eco Doris ED25')}
+                  image={HOME_TEXT.anhDuongMay}
                   sizes="(min-width: 1024px) 160px, (min-width: 640px) 40vw, 300px"
                 />
                 <div className="p-5">
                   <Icon name="stitch" size={20} className="text-mist-600" />
-                  <h3 className="font-display mt-2 text-[1.35rem] leading-tight text-deep-900">Đường may 4 mũi/cm</h3>
-                  <p className="mt-1.5 text-small leading-relaxed text-ink-soft">
-                    Mép vải được khoá chắc, không sổ chỉ, giữ form đẹp sau nhiều năm.
-                  </p>
+                  <h3 className="font-display mt-2 text-[1.35rem] leading-tight text-deep-900">{HOME_TEXT.duongMayTieuDe}</h3>
+                  <p className="mt-1.5 text-small leading-relaxed text-ink-soft">{HOME_TEXT.duongMayChu}</p>
                 </div>
               </article>
               <article data-reveal style={revealDelay(3)} className="flex flex-col overflow-hidden rounded-[1.75rem] sm:grid sm:grid-cols-[2fr_3fr] bg-ivory shadow-[var(--shadow-soft)]">
                 <Placeholder
                   className="aspect-[5/3] w-full rounded-b-[1.75rem] sm:aspect-auto sm:h-full sm:min-h-36 sm:rounded-none"
                   note="Ảnh cận hoa văn dệt Jacquard"
-                  image={staticImage('/images/details/jacquard-es06.webp', 'Logo Ecopillo thêu trên vải dệt Jacquard hoa văn chìm, bộ Eco Sweet ES06')}
+                  image={HOME_TEXT.anhJacquard}
                   sizes="(min-width: 1024px) 160px, (min-width: 640px) 40vw, 300px"
                   // Giữ nhãn tròn "ES 06" góc dưới trái trong khung (Ecopillo trả lời 23/10/2026)
                   position="left center"
                 />
                 <div className="p-5">
                   <Icon name="weave" size={20} className="text-brass-500" />
-                  <h3 className="font-display mt-2 text-[1.35rem] leading-tight text-deep-900">Dệt Jacquard</h3>
-                  <p className="mt-1.5 text-small leading-relaxed text-ink-soft">
-                    Ở dòng Eco Sweet, hoa văn được dệt thẳng vào sợi, nổi khối tinh tế.
-                  </p>
+                  <h3 className="font-display mt-2 text-[1.35rem] leading-tight text-deep-900">{HOME_TEXT.jacquardTieuDe}</h3>
+                  <p className="mt-1.5 text-small leading-relaxed text-ink-soft">{HOME_TEXT.jacquardChu}</p>
                 </div>
               </article>
             </div>

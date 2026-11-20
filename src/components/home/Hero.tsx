@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import { Icon } from '../ui/Icon'
 import { buttonClass, Container } from '../ui/primitives'
 import { CONTACT } from '../../data/brand'
-import { VALUES_SHORT } from '../../data/about'
 import { productsUrl } from '../../data/links'
 import { HERO_CATEGORIES, HERO_HEADLINE, HERO_HEADLINE_PREFIX, HERO_IMAGES } from '../../data/heroBanner'
+import { HOME_TEXT } from '../../data/pageText/home'
 
 /**
  * Phần đầu trang chủ. Lịch sử: 12/10/2026 ảnh Bảng EC "ảnh trọn khung"; 02/11/2026 cụm logo A2.
@@ -19,13 +19,14 @@ import { HERO_CATEGORIES, HERO_HEADLINE, HERO_HEADLINE_PREFIX, HERO_IMAGES } fro
  * MỘT dải trắng ngay dưới ảnh.
  */
 
-/** "Hệ sinh thái sản phẩm" lấy ý từ Bảng EC; dòng mô tả chỉ hiện khi rê chuột (title) */
-const ECOSYSTEM: readonly { name: string; text: string; to: string; thumb: string }[] = [
-  { name: 'Chăn', text: 'Nhẹ nhàng, ấm áp', to: productsUrl({ 'danh-muc': 'chan' }), thumb: '/images/products/chan-long-vu-tu-nhien-sm.webp' },
-  { name: 'Ga', text: 'Mềm mại, thoáng mát', to: productsUrl({ 'danh-muc': 'bo-chan-ga' }), thumb: '/images/details/hero-ed25-sm.webp' },
-  { name: 'Gối', text: 'Nâng niu từng giấc ngủ', to: productsUrl({ 'danh-muc': 'goi' }), thumb: '/images/products/ruot-goi-micro-plus-sm.webp' },
-  { name: 'Đệm', text: 'Nâng đỡ chuẩn cột sống', to: productsUrl({ 'danh-muc': 'dem' }), thumb: '/images/products/dem-lo-xo-tui-doc-lap-sm.webp' },
+/** "Hệ sinh thái sản phẩm" lấy ý từ Bảng EC; dòng mô tả chỉ hiện khi rê chuột (title). Link, ảnh cố định; tên, câu Ecopillo sửa (HOME_TEXT) */
+const ECOSYSTEM_LINKS: readonly { to: string; thumb: string }[] = [
+  { to: productsUrl({ 'danh-muc': 'chan' }), thumb: '/images/products/chan-long-vu-tu-nhien-sm.webp' },
+  { to: productsUrl({ 'danh-muc': 'bo-chan-ga' }), thumb: '/images/details/hero-ed25-sm.webp' },
+  { to: productsUrl({ 'danh-muc': 'goi' }), thumb: '/images/products/ruot-goi-micro-plus-sm.webp' },
+  { to: productsUrl({ 'danh-muc': 'dem' }), thumb: '/images/products/dem-lo-xo-tui-doc-lap-sm.webp' },
 ]
+const ECOSYSTEM = ECOSYSTEM_LINKS.map((link, i) => ({ ...link, ...(HOME_TEXT.heSinhThaiO[i] ?? { name: '', text: '' }) })).filter((item) => item.name)
 
 const DESKTOP_MEDIA = '(min-width: 768px)'
 /**
@@ -178,7 +179,7 @@ function BangEcBar() {
       */}
       <section aria-labelledby="hero-ecosystem" className={GOLD_FRAME}>
         <h2 id="hero-ecosystem" className={GOLD_TITLE}>
-          Hệ sinh thái sản phẩm<span className="hidden sm:inline"> · cho giấc ngủ trọn vẹn</span>
+          {HOME_TEXT.heSinhThai}<span className="hidden sm:inline"> · {HOME_TEXT.heSinhThaiPhu}</span>
         </h2>
         <ul className="grid flex-1 grid-cols-4 gap-2 bg-brand-gold/10 p-2 sm:gap-2.5 sm:p-2.5">
           {ECOSYSTEM.map((item) => (
@@ -206,14 +207,14 @@ function BangEcBar() {
 
       <section aria-labelledby="hero-quality" className={GOLD_FRAME}>
         <h2 id="hero-quality" className={GOLD_TITLE}>
-          Vì một giấc ngủ chất lượng hơn
+          {HOME_TEXT.giaTriTieuDe}
         </h2>
         {/*
           Như bảng hiệu: mỗi chữ kèm một câu ngắn bên dưới (mục 5, khách yêu cầu 16/10/2026); ô trắng như ô Hệ sinh thái.
           Chị Phương 17/11/2026 bỏ dòng "Vải Lyocell nhập khẩu · 3 kháng vượt trội · Thoáng mát" dưới ba ô: "ở dưới có rồi, để cho gọn".
         */}
         <ul className="grid flex-1 grid-cols-3 gap-2 bg-brand-gold/10 p-2 sm:gap-2.5 sm:p-2.5">
-          {VALUES_SHORT.map((v) => (
+          {HOME_TEXT.giaTri.map((v) => (
             <li key={v.word} className={`flex flex-col items-center justify-center px-1 py-2 text-center sm:px-1.5 ${GOLD_CELL}`}>
               <span className="font-display block text-[1.25rem] leading-tight text-deep-900 sm:text-[1.45rem]">{v.word}</span>
               <span className="mt-0.5 block text-meta leading-snug text-ink-soft">{v.text}</span>

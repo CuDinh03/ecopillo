@@ -1,3 +1,4 @@
+import { liveList, type EditableField, type EditableSet } from './liveContent'
 /**
  * Phần "Chọn thế nào" ở cuối trang danh mục nhỏ (đệm lò xo, ruột chăn gối…). Khoá là đường link trong LISTINGS (links.ts).
  *
@@ -11,7 +12,7 @@ export interface ListingGuide {
   points: readonly { title: string; text: string }[]
 }
 
-export const LISTING_GUIDES: Readonly<Record<string, ListingGuide>> = {
+const BASE_LISTING_GUIDES: Readonly<Record<string, ListingGuide>> = {
   '/danh-muc-san-pham/dem-ecopillo/': {
     title: 'Chọn đệm theo cách Quý khách thích nằm',
     points: [
@@ -86,3 +87,30 @@ export const LISTING_GUIDES: Readonly<Record<string, ListingGuide>> = {
     ],
   },
 }
+
+/* ——— Ecopillo tự sửa (Nội dung web → Chữ từng trang). Thêm, bớt dòng trong một phần được; không thêm phần cho danh mục mới ——— */
+
+const GUIDE_ROWS = Object.entries(BASE_LISTING_GUIDES).map(([path, g]) => ({ path, title: g.title, points: g.points.map((p) => ({ ...p })) }))
+const GUIDE_FIELDS: readonly EditableField[] = [
+  { khoa: 'title', nhan: 'Tiêu đề phần', kieu: 'chu', batBuoc: true },
+  { khoa: 'points', nhan: 'Các ý', kieu: 'ds-cap', batBuoc: true, cap: ['title', 'text'], nhanCap: ['Chữ đậm', 'Câu giải thích'] },
+]
+export const LISTING_GUIDES_SET: EditableSet = {
+  khoa: 'chu-trang-danh-muc-chon-the-nao',
+  nhom: 'Chữ từng trang',
+  ten: 'Phần "Chọn thế nào" của danh mục',
+  moTa: 'Phần hướng dẫn chọn ở cuối các trang danh mục nhỏ (và 4 dòng cách nằm của khối đệm trang chủ, lấy từ phần của danh mục Đệm Ecopillo).',
+  kieu: 'nhieu',
+  goc: GUIDE_ROWS,
+  tieuDeDong: 'title',
+  khoaDong: 'path',
+  truong: GUIDE_FIELDS,
+}
+const LIVE_GUIDES = liveList(LISTING_GUIDES_SET.khoa, GUIDE_ROWS, GUIDE_FIELDS, (i, row) => GUIDE_ROWS.find((r) => r.path === row.path) ?? GUIDE_ROWS[i] ?? GUIDE_ROWS[0])
+
+export const LISTING_GUIDES: Readonly<Record<string, ListingGuide>> = Object.fromEntries(
+  Object.entries(BASE_LISTING_GUIDES).map(([path, guide]) => {
+    const row = LIVE_GUIDES.find((r) => r.path === path)
+    return [path, row ? { title: row.title, points: row.points } : guide]
+  }),
+)

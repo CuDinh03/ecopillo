@@ -5,6 +5,7 @@ import { relatedForPolicy } from '../../data/related'
 import { ExploreMore } from '../ui/ExploreMore'
 import { PageHero } from '../ui/PageHero'
 import { ContactButtons, Container } from '../ui/primitives'
+import { COMMON_TEXT } from '../../data/pageText/common'
 
 interface PolicyLayoutProps {
   title: string
@@ -19,7 +20,7 @@ export function PolicyLayout({ title, intro, meta, children }: PolicyLayoutProps
   const { pathname } = useLocation()
   return (
     <div className="pb-24">
-      <PageHero crumbs={[{ label: 'Chính sách' }, { label: title }]} eyebrow="Chính sách mua hàng" title={title} lead={intro}>
+      <PageHero crumbs={[{ label: 'Chính sách' }, { label: title }]} eyebrow={COMMON_TEXT.chinhSachNhan} title={title} lead={intro}>
         {meta}
       </PageHero>
 
@@ -53,8 +54,8 @@ export function PolicyLayout({ title, intro, meta, children }: PolicyLayoutProps
 
           <div className="mt-14 flex max-w-3xl flex-col gap-5 rounded-[2rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] sm:flex-row sm:items-center sm:justify-between sm:p-8">
             <div>
-              <p className="font-display text-[1.4rem] text-deep-900">Còn điều chưa rõ?</p>
-              <p className="mt-1 text-sm text-ink-soft">Gọi hoặc nhắn Zalo, Ecopillo trả lời ngay trong giờ làm việc.</p>
+              <p className="font-display text-[1.4rem] text-deep-900">{COMMON_TEXT.conChuaRo}</p>
+              <p className="mt-1 text-sm text-ink-soft">{COMMON_TEXT.conChuaRoChu}</p>
             </div>
             <ContactButtons size="md" stretch />
           </div>

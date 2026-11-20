@@ -20,6 +20,7 @@ import {
 } from '../../data/dealers'
 import { useDealers } from '../../hooks/useDealers'
 import { scrollToElement } from '../../lib/scroll'
+import { COMMON_TEXT } from '../../data/pageText/common'
 
 /**
  * Khối tìm điểm bán (thiết kế chốt 13/10/2026).
@@ -83,7 +84,7 @@ function NoDealerNearby({ place }: { place?: string }) {
         {place ? `${place} chưa có đại lý Ecopillo` : 'Khu vực của Quý khách chưa có đại lý Ecopillo'}
       </p>
       <p className="mt-3 max-w-xl text-body-sm text-mist-200/90">
-        Ecopillo giao hàng toàn quốc, miễn phí giao từ 500.000đ. Nhắn Zalo để được tư vấn mẫu qua video.
+        {COMMON_TEXT.chuaCoDaiLy}
       </p>
       <div className="mt-6 flex flex-wrap gap-3">
         <Link to={PATHS.order} className={buttonClass('light', 'md')}>
@@ -265,18 +266,18 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
       <Container className={embedded ? undefined : 'pt-6 pb-7 sm:pt-12 sm:pb-12'}>
         {embedded ? (
           <header className="max-w-2xl">
-            <p className="eyebrow">Điểm bán</p>
+            <p className="eyebrow">{COMMON_TEXT.diemBanNhan}</p>
             <h2 id="diem-ban-title" className="font-display mt-3 text-[1.9rem] leading-tight text-deep-900 sm:text-[2.4rem]">
-              Tìm Ecopillo gần Quý khách
+              {COMMON_TEXT.diemBanTieuDe}
             </h2>
-            <p className="mt-2 text-body text-ink-soft">Nằm thử gối, đệm và chạm tay vào vải Lyocell.</p>
+            <p className="mt-2 text-body text-ink-soft">{COMMON_TEXT.diemBanChu}</p>
           </header>
         ) : (
           <>
             <h1 id="page-title" className="font-display mt-4 text-[2rem] leading-[1.1] text-balance text-deep-900 sm:mt-6 sm:text-[2.8rem]">
-              Tìm Ecopillo gần Quý khách
+              {COMMON_TEXT.diemBanTieuDe}
             </h1>
-            <p className="mt-2 text-body text-ink-soft sm:mt-3">Nằm thử gối, đệm và chạm tay vào vải Lyocell.</p>
+            <p className="mt-2 text-body text-ink-soft sm:mt-3">{COMMON_TEXT.diemBanChu}</p>
           </>
         )}
 

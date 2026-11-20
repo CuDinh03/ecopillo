@@ -3,6 +3,7 @@ import { FEATURED_EVENT, MAJOR_EVENTS, OTHER_EVENTS, type BrandEvent } from '../
 import { postBySlug, postPath } from '../../data/posts'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
+import { HOME_TEXT } from '../../data/pageText/home'
 
 /**
  * Sự kiện Ecopillo đồng hành, cuối phần "Về chúng tôi" (mục 35, owner chọn mẫu B 20/10/2026: docs/de-xuat-su-kien-dong-hanh.html).
@@ -24,11 +25,11 @@ export function EventsStrip({ standalone = false }: EventsStripProps) {
     <section aria-labelledby="events-title" className={standalone ? '' : 'mt-14 sm:mt-24'}>
       <header data-reveal="left">
         <Heading id="events-title" className={`font-display text-deep-900 ${standalone ? 'text-[2rem] sm:text-[2.9rem]' : 'text-[1.75rem] sm:text-[2.2rem]'}`}>
-          Ecopillo đồng hành
+          {HOME_TEXT.suKienTieuDe}
         </Heading>
         {/* Một dòng trên máy tính (khách 04/11/2026: chữ "vị bạn." rơi xuống dòng riêng) */}
         <p className="mt-3 text-body-sm leading-relaxed text-pretty text-ink-soft">
-          Những chương trình, sự kiện Ecopillo góp mặt cùng cộng đồng và các đơn vị bạn.
+          {HOME_TEXT.suKienDanDat}
         </p>
       </header>
 

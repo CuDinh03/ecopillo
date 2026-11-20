@@ -10,6 +10,7 @@ import { CONTACT, SHOWROOMS, type Showroom } from './brand'
 import { slugify } from '../lib/slug'
 import { PATHS } from './links'
 import { liveList, type EditableField, type EditableSet } from './liveContent'
+import { RECRUIT_TEXT } from './pageText/recruit'
 
 export type DealerKind = 'van-phong' | 'chi-nhanh' | 'dai-ly'
 
@@ -261,17 +262,7 @@ export const DEALERS: readonly Dealer[] = sortDefault([...OFFICIAL, ...AGENTS])
  * Quyền lợi đại lý: Ecopillo gửi qua Zalo 16/10/2026 (thay cả danh sách cũ).
  * Chỉ sửa chính tả và bỏ chữ "Được" đầu dòng, giữ đúng ý.
  */
-export const AGENT_BENEFITS: readonly string[] = [
-  'Giá chiết khấu cơ bản và chính sách theo từng gói',
-  'Hàng mẫu, catalogue, ảnh và video sản phẩm',
-  'Đào tạo sản phẩm, đào tạo bán hàng, có sẵn kịch bản bán hàng',
-  'Hỗ trợ bán hàng online',
-  'Hỗ trợ biển bảng và một phần giá kệ theo từng gói hàng',
-  'Độc quyền theo từng khu vực',
-  'Hỗ trợ đổi hàng nếu khó bán',
-  'Không cần ôm tồn, không lo đọng vốn',
-  'Chi phí vốn rất thấp',
-]
+export const AGENT_BENEFITS: readonly string[] = RECRUIT_TEXT.quyenLoi
 
 /**
  * Mô hình phân phối theo catalog Ecopillo 22.07.2026 (trang 3), khối ở trang Tuyển đại lý (owner chọn kiểu B 24/10/2026).
@@ -279,32 +270,19 @@ export const AGENT_BENEFITS: readonly string[] = [
  * các điểm đã có địa chỉ (DEALERS), khách lẻ thấy 50 mà chỉ tìm được 14 điểm sẽ thắc mắc.
  * Ghim trên bản đồ catalog là tượng trưng, không trùng các điểm thật: chú thích bản đồ ghi rõ.
  */
-export const DISTRIBUTOR_COUNT = 50
+export const DISTRIBUTOR_COUNT: string = RECRUIT_TEXT.soNhaPhanPhoi
 
 /** Khối "Mô hình kinh doanh" trang Tuyển đại lý: chữ chị Phương gửi Zalo 19/11/2026 ("Sửa lại hộ c"), giữ nguyên văn */
 export const DISTRIBUTION_MODEL_TEXT = {
-  eyebrow: 'Mô hình kinh doanh',
-  title: 'Ba trụ cột – Một hệ sinh thái',
-  lead: 'Ecopillo xây dựng mô hình kinh doanh đa kênh với ba trụ cột chiến lược: bán lẻ trực tiếp, cung ứng dự án và phát triển hệ thống phân phối. Kết nối đồng bộ từ sản phẩm, dịch vụ đến mạng lưới đối tác, đưa giải pháp giấc ngủ chất lượng đến gần hơn với mọi khách hàng.',
-} as const
+  eyebrow: RECRUIT_TEXT.moHinhNhan,
+  title: RECRUIT_TEXT.moHinhTieuDe,
+  lead: RECRUIT_TEXT.moHinhChu,
+}
 
-export const SALES_CHANNELS: readonly { title: string; tagline: string; text: string }[] = [
-  {
-    title: 'Bán lẻ trực tiếp',
-    tagline: 'Kết nối khách hàng – Nâng tầm trải nghiệm',
-    text: 'Phát triển hệ thống bán lẻ đa nền tảng từ showroom, website, mạng xã hội đến các sàn thương mại điện tử. Mang đến trải nghiệm mua sắm thuận tiện, tư vấn tận tâm và dịch vụ nhanh chóng trên mọi điểm chạm.',
-  },
-  {
-    title: 'Cung ứng dự án',
-    tagline: 'Giải pháp toàn diện cho ngành lưu trú',
-    text: 'Đồng hành cùng khách sạn, resort, homestay và các dự án lưu trú với giải pháp chăn ga gối đệm đồng bộ. Đảm bảo chất lượng, tính thẩm mỹ, độ bền và năng lực cung ứng theo yêu cầu của từng dự án.',
-  },
-  {
-    title: 'Hệ thống phân phối',
-    tagline: 'Cộng sinh cùng phát triển',
-    text: 'Mở rộng mạng lưới đại lý và nhà phân phối trên toàn quốc. Xây dựng hệ thống hợp tác bền vững dựa trên lợi ích song phương, với nguồn hàng ổn định, chính sách kinh doanh cạnh tranh, hỗ trợ bán hàng và đồng hành phát triển thị trường.',
-  },
-]
+export const SALES_CHANNELS: readonly { title: string; tagline: string; text: string }[] = RECRUIT_TEXT.truCotTen.map((c, i) => ({
+  ...c,
+  text: RECRUIT_TEXT.truCotMoTa[i] ?? '',
+}))
 
 export const DISTRIBUTION_MAP = {
   src: '/images/distribution/ban-do-phan-phoi.webp',

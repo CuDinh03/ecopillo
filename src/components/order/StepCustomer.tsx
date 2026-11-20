@@ -7,6 +7,7 @@ import { PROVINCES } from '../../lib/shipping'
 import { Icon } from '../ui/Icon'
 import { Select } from '../ui/Select'
 import { BANK_LINE, DEPOSIT_SHORT, NO_DEPOSIT } from '../../data/paymentPolicy'
+import { ORDER_TEXT } from '../../data/pageText/order'
 
 interface StepCustomerProps {
   customer: CustomerInfo
@@ -134,9 +135,9 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
           </span>
           <div className="flex-1">
             <p className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-              <span className="font-medium text-deep-900">Chuyển khoản vào tài khoản Ecopillo</span>
+              <span className="font-medium text-deep-900">{ORDER_TEXT.thanhToanTieuDe}</span>
               <span className="text-sm text-mist-600">
-                {shipFee === null ? 'Miễn phí giao từ 500.000đ' : shipFee === 0 ? 'Miễn phí giao hàng' : `Phí giao ${formatVND(shipFee)}`}
+                {shipFee === null ? ORDER_TEXT.mienPhiGiao : shipFee === 0 ? 'Miễn phí giao hàng' : `Phí giao ${formatVND(shipFee)}`}
               </span>
             </p>
             <p className="mt-1 text-small leading-relaxed text-ink-soft">
@@ -147,8 +148,7 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
           </div>
         </div>
         <p className="mt-4 text-xs leading-relaxed text-ink-soft">
-          Muốn xem hàng tận mắt? Ghé hệ thống phân phối và showroom Ecopillo trên toàn quốc. Khi bấm “Đặt
-          hàng”, Quý khách đồng ý để Ecopillo dùng thông tin trên để gọi xác nhận và giao hàng, theo{' '}
+          {ORDER_TEXT.xemHang} Khi bấm “Đặt hàng”, Quý khách đồng ý để Ecopillo dùng thông tin trên để gọi xác nhận và giao hàng, theo{' '}
           <Link to={PATHS.privacy} className="-my-2 inline-block py-2 font-medium text-deep-900 underline underline-offset-2">
             chính sách bảo vệ thông tin
           </Link>

@@ -22,6 +22,7 @@ import { formatRange } from '../lib/format'
 import { productMetaDescription } from '../lib/metaDescription'
 import { productLd, shareImageOf } from '../lib/structuredData'
 import { NotFoundPage } from './NotFoundPage'
+import { COMMON_TEXT } from '../data/pageText/common'
 
 /**
  * Trang sản phẩm, ở đúng đường link của web cũ (src/data/links.ts):
@@ -217,7 +218,7 @@ function ProductDetail({ product }: { product: Product }) {
                 </a>
               </div>
               <p className="text-sm text-ink-soft">
-                Đặt online, nhân viên gọi xác nhận trước khi giao. Thanh toán chuyển khoản vào tài khoản Ecopillo.
+                {COMMON_TEXT.spDatMua}
               </p>
             </div>
 
@@ -295,7 +296,7 @@ function ProductStory({ sections }: { sections: readonly InfoSection[] }) {
   return (
     <section aria-labelledby="story-title" className="mt-16 sm:mt-20">
       <h2 id="story-title" className="font-display text-[1.8rem] leading-tight text-deep-900 sm:text-[2.2rem]">
-        Hiểu kỹ trước khi chọn
+        {COMMON_TEXT.spHieuKy}
       </h2>
       <div className="mt-6 grid gap-x-12 gap-y-8 lg:grid-cols-3">
         {sections.map((section) => (

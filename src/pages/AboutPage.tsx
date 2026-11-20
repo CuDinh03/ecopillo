@@ -31,13 +31,14 @@ import {
   VISION,
   VISION_IMAGE,
 } from '../data/about'
-import { patternImage, type ImageSource } from '../data/catalog'
 import { HOTEL_PARTNERS } from '../data/content'
 import { FEATURED_EVENT } from '../data/events'
 import { PATHS } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
-import { BRAND_VIDEO_LEAD } from '../data/brand'
+import { BRAND_VIDEO, BRAND_VIDEO_LEAD } from '../data/brand'
+import { ABOUT_PAGE_TEXT, ABOUT_PAGE_TEXT_SET } from '../data/pageText/aboutPage'
+import { Highlight } from '../components/ui/Highlight'
 
 /**
  * Trang Giới thiệu (/gioi-thieu, giữ đường link web cũ) dạng chương sách (mẫu 1, owner chọn 16/10/2026,
@@ -55,46 +56,32 @@ interface TocItem {
   icon: IconName
 }
 
-const TOC: readonly TocItem[] = [
-  { id: 'loi-mo', numeral: '', title: 'Lời mở: một giấc ngủ không trọn', icon: 'night' },
-  { id: 'thu-sang-lap', numeral: '', title: 'Chia sẻ từ người sáng lập', icon: 'feather' },
-  { id: 'chuong-1', numeral: 'I', title: 'Người làm nghề', icon: 'feather' },
-  { id: 'chuong-2', numeral: 'II', title: 'Chốn Yên', icon: 'home' },
-  { id: 'chuong-3', numeral: 'III', title: 'Triết lý kinh doanh', icon: 'community' },
-  { id: 'chuong-4', numeral: 'IV', title: 'Từ sợi gỗ đến giấc ngủ', icon: 'leaf' },
-  { id: 'chuong-5', numeral: 'V', title: 'Điều chúng tôi theo đuổi', icon: 'compass' },
-  { id: 'chuong-6', numeral: 'VI', title: 'Được ghi nhận', icon: 'award' },
-  { id: 'loi-ket', numeral: '', title: 'Lời kết: mời Quý khách ghé thăm', icon: 'pin' },
-]
+/** Chữ gốc của sáu chương: Ecopillo xoá bớt dòng thì chương thiếu dùng lại tên gốc */
+const CHAPTERS_GOC = (ABOUT_PAGE_TEXT_SET.goc as { chuong: readonly { nhan: string; ten: string }[] }).chuong
 
-const CHON_YEN_IMAGE = patternImage('ED25', 'Phòng ngủ trải bộ chăn ga Eco Doris ED25')
-const LYOCELL_IMAGE: ImageSource = { src: '/images/details/lyocell-et01.webp', srcSet: '', alt: 'Cận mặt vải Lyocell trơn bộ Eco Tera ET01' }
-const EMBROIDERY_IMAGE: ImageSource = { src: '/images/details/theu-ed25.webp', srcSet: '', alt: 'Cận đường thêu bộ Eco Doris ED25' }
-// Tạm dùng ảnh phòng ngủ ED25 cho lời kết, chờ Ecopillo gửi ảnh công ty, văn phòng
-const VISIT_IMAGE: ImageSource = {
-  src: '/images/details/hero-ed25.webp',
-  srcSet: '/images/details/hero-ed25-sm.webp 640w, /images/details/hero-ed25.webp 1200w',
-  alt: 'Phòng ngủ trải bộ Eco Doris ED25',
-}
+/** Tên chương I–VI (nhãn nhỏ + tên) Ecopillo sửa ở Nội dung web; thiếu dòng thì giữ chữ gốc */
+const CHAPTER_IDS = ['chuong-1', 'chuong-2', 'chuong-3', 'chuong-4', 'chuong-5', 'chuong-6'] as const
+const CHAPTER_ICONS: readonly IconName[] = ['feather', 'home', 'community', 'leaf', 'compass', 'award']
+const NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI'] as const
+const chapter = (i: number) => ABOUT_PAGE_TEXT.chuong[i] ?? CHAPTERS_GOC[i]
+
+const TOC: readonly TocItem[] = [
+  { id: 'loi-mo', numeral: '', title: ABOUT_PAGE_TEXT.mucLoiMo, icon: 'night' },
+  { id: 'thu-sang-lap', numeral: '', title: ABOUT_PAGE_TEXT.mucThu, icon: 'feather' },
+  ...CHAPTER_IDS.map((id, i) => ({ id, numeral: NUMERALS[i], title: chapter(i).ten, icon: CHAPTER_ICONS[i] })),
+  { id: 'loi-ket', numeral: '', title: ABOUT_PAGE_TEXT.mucLoiKet, icon: 'pin' },
+]
 
 /** Phần giới thiệu đầu trang (chị Phương 19/11/2026, thay "Hơn 15 năm nâng niu giấc ngủ Việt") */
 const INTRO = {
-  title: 'Hành trình kiến tạo Chốn Yên',
-  subtitle: 'Từ tâm huyết với giấc ngủ Việt đến khát vọng nâng niu hàng triệu giấc mơ.',
-  paragraphs: [
-    'Ecopillo Eternal Việt Nam ra đời với niềm tin rằng một giấc ngủ chất lượng không chỉ bắt đầu từ chiếc giường êm ái, mà còn từ sự an tâm về chất liệu, sự chỉn chu trong từng sản phẩm và tình yêu dành cho mỗi gia đình.',
-    'Theo đuổi những giá trị bền vững trong ngành chăn ga gối đệm, Ecopillo không ngừng lựa chọn, cải tiến và phát triển các sản phẩm từ chất liệu thân thiện, mang đến sự nâng niu trong từng trải nghiệm nghỉ ngơi.',
-    'Bởi chúng tôi tin rằng, mỗi gia đình đều xứng đáng có một Chốn Yên – nơi yêu thương sum vầy, cơ thể được tái tạo năng lượng và những giấc mơ được nâng niu.',
-  ],
-  signOff: 'Ecopillo – Nâng niu giấc mơ xanh',
-} as const
+  title: ABOUT_PAGE_TEXT.tieuDe,
+  subtitle: ABOUT_PAGE_TEXT.tieuDePhu,
+  paragraphs: ABOUT_PAGE_TEXT.gioiThieu,
+  signOff: ABOUT_PAGE_TEXT.kyTen,
+}
 
 export function AboutPage() {
-  usePageMeta(
-    'Giới thiệu',
-    // Mô tả viết tay 08/11/2026 (C2, chờ Ecopillo duyệt): dưới 160 ký tự để Google không cắt
-    'Hơn 15 năm làm chăn ga gối đệm, triết lý Tốt · Thật · Thiện, vải Lyocell, chứng nhận ISO 9001:2015 và TQC. Câu chuyện của Ecopillo.',
-  )
+  usePageMeta('Giới thiệu', ABOUT_PAGE_TEXT.moTaGoogle)
 
   return (
     <>
@@ -102,7 +89,7 @@ export function AboutPage() {
       <TableOfContents />
 
       <StoryRail>
-        <Chapter id="loi-mo" icon="night" eyebrow="Lời mở" title="Lời mở: một giấc ngủ không trọn" isTitleHidden>
+        <Chapter id="loi-mo" icon="night" eyebrow="Lời mở" title={ABOUT_PAGE_TEXT.mucLoiMo} isTitleHidden>
           <Prose dropCap>{STORY_OPENING}</Prose>
         </Chapter>
 
@@ -112,16 +99,11 @@ export function AboutPage() {
           id="chuong-1"
           numeral="I"
           icon="feather"
-          eyebrow="Người sáng lập"
-          title={
-            <>
-              Người làm nghề
-            </>
-          }
+          eyebrow={chapter(0).nhan}
+          title={chapter(0).ten}
         >
           <Prose>
-            Người đặt nền móng cho thương hiệu là <strong>{FOUNDER_NAME}</strong>, hơn 15 năm trong nghề chăn ga, từ sản xuất đến bán lẻ.
-            Chị luôn trăn trở làm sao để mỗi sản phẩm giúp khách hàng tạo dựng một <em className="text-deep-900">“Chốn Yên”</em>.
+            <Highlight text={ABOUT_PAGE_TEXT.nguoiSangLap} strong={[FOUNDER_NAME]} em={['“Chốn Yên”']} />
           </Prose>
           <PullQuote>“{FOUNDER_QUOTE}”</PullQuote>
         </Chapter>
@@ -130,30 +112,21 @@ export function AboutPage() {
           id="chuong-2"
           numeral="II"
           icon="home"
-          eyebrow="Khát vọng"
-          title={
-            <>
-              Chốn Yên
-            </>
-          }
+          eyebrow={chapter(1).nhan}
+          title={chapter(1).ten}
         >
           {/* Câu định nghĩa cùng kiểu ô trích các chương (trước là hộp trắng lạc màu) */}
-          <PullQuote isQuote={false}>“Chốn Yên”: nơi giấc ngủ lành mạnh được vun đắp và cơ thể được phục hồi trọn vẹn.</PullQuote>
+          <PullQuote isQuote={false}>{ABOUT_PAGE_TEXT.chonYen}</PullQuote>
           <Prose>{BRAND_PROMISE}</Prose>
-          <StoryFigure image={CHON_YEN_IMAGE} caption="Một Chốn Yên: phòng ngủ trải bộ Eco Doris ED25." />
+          <StoryFigure image={ABOUT_PAGE_TEXT.anhChonYen} caption={ABOUT_PAGE_TEXT.chuThichChonYen} />
         </Chapter>
 
         <Chapter
           id="chuong-3"
           numeral="III"
           icon="community"
-          eyebrow="Tốt · Thật · Thiện"
-          title={
-            <>
-              {/* Tên chương theo web cũ (khách 05/11/2026: "triết lý kinh doanh") */}
-              Triết lý kinh doanh
-            </>
-          }
+          eyebrow={chapter(2).nhan}
+          title={chapter(2).ten}
         >
           {/* Chữ Tốt / Thật / Thiện đứng thẳng, đậm 600 (chị Phương 09/11/2026 chê chữ nghiêng to) */}
           <ol className="mt-6 border-b border-line">
@@ -170,16 +143,12 @@ export function AboutPage() {
           id="chuong-4"
           numeral="IV"
           icon="leaf"
-          eyebrow="Chất liệu và tay nghề"
-          title={
-            <>
-              Từ sợi gỗ đến giấc ngủ
-            </>
-          }
+          eyebrow={chapter(3).nhan}
+          title={chapter(3).ten}
         >
           <Prose>{LYOCELL_INTRO}</Prose>
           <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4">
-            {[LYOCELL_IMAGE, EMBROIDERY_IMAGE].map((img, i) => (
+            {[ABOUT_PAGE_TEXT.anhChatLieu1, ABOUT_PAGE_TEXT.anhChatLieu2].map((img, i) => (
               <img
                 key={img.src}
                 src={img.src}
@@ -207,7 +176,7 @@ export function AboutPage() {
         </Chapter>
 
         {/* Phim thương hiệu cùng kiểu khối như các chương (trước là một dải riêng giống trang chủ) */}
-        <Chapter id="phim" icon="play" eyebrow="Phim thương hiệu" title="Một giấc ngủ được nâng niu">
+        <Chapter id="phim" icon="play" eyebrow={ABOUT_PAGE_TEXT.phimNhan} title={BRAND_VIDEO.heading}>
           {/* Chị Phương 19/11/2026 */}
           <Prose>{BRAND_VIDEO_LEAD}</Prose>
           <BrandVideoPlayer className="mt-6 rounded-2xl" />
@@ -218,17 +187,13 @@ export function AboutPage() {
           id="chuong-5"
           numeral="V"
           icon="compass"
-          eyebrow="Sứ mệnh, tầm nhìn"
-          title={
-            <>
-              Điều chúng tôi theo đuổi
-            </>
-          }
+          eyebrow={chapter(4).nhan}
+          title={chapter(4).ten}
         >
           <div className="mt-6 grid gap-7 sm:grid-cols-2">
             {[
-              { label: 'Sứ mệnh', paragraphs: MISSION, image: MISSION_IMAGE_ABOUT_PAGE, position: MISSION_IMAGE_ABOUT_PAGE_POSITION },
-              { label: 'Tầm nhìn', paragraphs: [VISION], image: VISION_IMAGE, position: undefined },
+              { label: ABOUT_PAGE_TEXT.suMenhNhan, paragraphs: MISSION, image: MISSION_IMAGE_ABOUT_PAGE, position: MISSION_IMAGE_ABOUT_PAGE_POSITION },
+              { label: ABOUT_PAGE_TEXT.tamNhinNhan, paragraphs: [VISION], image: VISION_IMAGE, position: undefined },
             ].map((m, i) => (
               <article key={m.label} data-reveal style={revealDelay(i)}>
                 <img
@@ -251,7 +216,7 @@ export function AboutPage() {
             ))}
           </div>
           {/* Giá trị cốt lõi: lưới 2 × 2 ô xanh nhạt có số (mẫu 2, chị Phương 09/11/2026 "in đậm") */}
-          <p className={`mt-9 ${STORY_LABEL}`}>Giá trị cốt lõi</p>
+          <p className={`mt-9 ${STORY_LABEL}`}>{ABOUT_PAGE_TEXT.giaTriNhan}</p>
           <ol className="mt-3 grid gap-2.5 sm:grid-cols-2">
             {CORE_VALUES.map((v, i) => (
               <li key={v.title} data-reveal style={revealDelay(i)} className="flex gap-3 rounded-[0.875rem] bg-mist-100 p-3.5">
@@ -271,12 +236,8 @@ export function AboutPage() {
           id="chuong-6"
           numeral="VI"
           icon="award"
-          eyebrow="Chứng nhận, đối tác"
-          title={
-            <>
-              Được ghi nhận
-            </>
-          }
+          eyebrow={chapter(5).nhan}
+          title={chapter(5).ten}
         >
           <Recognition />
         </Chapter>
@@ -307,13 +268,13 @@ function Cover() {
           className="absolute inset-0 h-full w-full object-cover"
         />
         <span className="absolute right-4 bottom-3 rounded-full bg-ivory/90 px-3 py-1 text-label text-deep-900 lg:right-6 lg:bottom-5">
-          Chị Phạm Thị Phương tại VTV3
+          {ABOUT_PAGE_TEXT.chuThichAnh}
         </span>
       </div>
       <div className="flex min-w-0 flex-col justify-center px-5 pt-7 pb-10 sm:px-8 lg:py-16 lg:pr-14 lg:pl-[max(2.5rem,calc((100vw-1240px)/2+2.5rem))]">
         <Breadcrumb items={[{ label: 'Giới thiệu' }]} />
         <p className="eyebrow mt-8 flex items-center gap-2">
-          <Icon name="book" size={15} className="text-deep-700" /> Câu chuyện Ecopillo
+          <Icon name="book" size={15} className="text-deep-700" /> {ABOUT_PAGE_TEXT.nhan}
         </p>
         {/* Chữ chị Phương gửi Zalo 19/11/2026 ("Phần giới thiệu sửa lại giúp c"), giữ nguyên văn */}
         <h1 id="page-title" className="font-display mt-4 text-[2.6rem] leading-[1.02] text-balance text-deep-900 sm:text-[3.6rem] xl:text-[3.9rem]">
@@ -403,17 +364,17 @@ function Recognition() {
       <CertificateCabinet />
       {/* 2A: báo chí, bấm logo đổi câu trích */}
       <p className={`mt-12 flex items-center gap-2 ${STORY_LABEL}`}>
-        <Icon name="quote" size={15} className="text-deep-700" /> Báo chí nói về Ecopillo
+        <Icon name="quote" size={15} className="text-deep-700" /> {ABOUT_PAGE_TEXT.baoChiNhan}
       </p>
       <h3 className="font-display mt-3 text-[1.6rem] leading-tight text-deep-900 sm:text-[2rem]">
-        Người khác kể về chúng tôi
+        {ABOUT_PAGE_TEXT.baoChiTieuDe}
       </h3>
       <PressQuotes />
       {/* Đối tác (3A): May 10, DBV Insurance không phải khách sạn nên gọi chung là đối tác */}
       <p className={`mt-12 flex items-center gap-2 ${STORY_LABEL}`}>
-        <Icon name="building" size={15} className="text-deep-700" /> Đối tác
+        <Icon name="building" size={15} className="text-deep-700" /> {ABOUT_PAGE_TEXT.doiTacNhan}
       </p>
-      <Prose>Ngoài các gia đình, Ecopillo may chăn ga gối theo kích thước cho khách sạn, khu nghỉ dưỡng và doanh nghiệp trên cả nước.</Prose>
+      <Prose>{ABOUT_PAGE_TEXT.doiTacChu}</Prose>
       {/* Trong khối trắng: ô logo xanh nhạt, không bóng (như ô Giá trị cốt lõi) */}
       <PartnerLogos partners={HOTEL_PARTNERS} className="mt-6" itemClassName="h-16 sm:h-20 !bg-mist-100 !shadow-none" />
       <Link to={PATHS.hotel} className={buttonClass('secondary', 'md', 'mt-6')}>
@@ -431,14 +392,12 @@ function Closing() {
     <section id="loi-ket" aria-labelledby="loi-ket-tieu-de" className="grain relative grid scroll-mt-[4.5rem] grid-cols-1 overflow-hidden bg-deep-900 text-ivory lg:grid-cols-[7fr_5fr]">
       <div className="relative min-w-0 px-5 py-14 sm:px-8 sm:py-20 lg:pr-14 lg:pl-[max(2.5rem,calc((100vw-1240px)/2+2.5rem))]">
         <p className="eyebrow flex items-center gap-2 !text-mist-300">
-          <Icon name="pin" size={15} /> Lời kết · Ghé thăm Ecopillo
+          <Icon name="pin" size={15} /> {ABOUT_PAGE_TEXT.loiKetNhan}
         </p>
         <h2 id="loi-ket-tieu-de" className="font-display mt-4 text-[2.1rem] leading-tight sm:text-[2.8rem]">
-          Chạm tay vào chất vải trước khi chọn
+          {ABOUT_PAGE_TEXT.loiKetTieuDe}
         </h2>
-        <p className="mt-4 max-w-md text-mist-200/90">
-          Cảm nhận độ mềm mát của Lyocell, nằm thử gối và đệm, được tư vấn mẫu hợp với phòng ngủ của Quý khách.
-        </p>
+        <p className="mt-4 max-w-md text-mist-200/90">{ABOUT_PAGE_TEXT.loiKetChu}</p>
         <div className="mt-8 flex flex-wrap gap-3">
           <LinkButton to={`${PATHS.contact}#diem-ban`} variant="light">
             <Icon name="pin" size={17} />
@@ -456,10 +415,10 @@ function Closing() {
       </div>
       <div className="relative aspect-[16/10] lg:aspect-auto">
         <img
-          src={VISIT_IMAGE.src}
-          srcSet={VISIT_IMAGE.srcSet}
+          src={ABOUT_PAGE_TEXT.anhLoiKet.src}
+          srcSet={ABOUT_PAGE_TEXT.anhLoiKet.srcSet}
           sizes="(min-width: 1024px) 42vw, 100vw"
-          alt={VISIT_IMAGE.alt}
+          alt={ABOUT_PAGE_TEXT.anhLoiKet.alt}
           loading="lazy"
           decoding="async"
           className="absolute inset-0 h-full w-full object-cover"

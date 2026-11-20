@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { CERTIFICATES, FOUNDER_HONOURS, type Certificate } from '../../data/about'
+import { CERTIFICATES, FOUNDER_HONOURS, FOUNDER_HONOURS_LABEL, type Certificate } from '../../data/about'
 import type { Partner } from '../../data/content'
 import { PRESS } from '../../data/press'
 import { revealDelay } from '../../lib/reveal'
@@ -99,7 +99,7 @@ export function CertificateCabinet() {
         ))}
       </ul>
       <p className="eyebrow mt-10 flex items-center gap-2">
-        <Icon name="community" size={15} className="text-deep-700" /> Ghi nhận dành cho chị Phạm Thị Phương
+        <Icon name="community" size={15} className="text-deep-700" /> {FOUNDER_HONOURS_LABEL}
       </p>
       <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {FOUNDER_HONOURS.map((c, i) => (

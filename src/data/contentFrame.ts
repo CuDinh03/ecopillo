@@ -12,6 +12,26 @@ import { PRESS_SET } from './press'
 import { LISTING_PRODUCTS_SET } from './listingProducts'
 import { PRODUCT_COMMON_SET } from './productCommonInfo'
 import { PRODUCT_MENU_SET } from './productMenu'
+import { ABOUT_MORE_SET } from './about'
+import { BRAND_VIDEO_SET } from './brand'
+import { COLLECTION_SHOWCASE_SET } from './collectionGroups'
+import { HOTEL_PAGE_SET } from './hotel'
+import { LISTING_HEAD_SET } from './links'
+import { LISTING_GUIDES_SET } from './listingGuides'
+import { MATTRESS_TEXT_SET } from './mattressPicker'
+import { ABOUT_PAGE_TEXT_SET } from './pageText/aboutPage'
+import { BLOG_TEXT_SET } from './pageText/blog'
+import { COMMON_TEXT_SET } from './pageText/common'
+import { CONTACT_PAGE_TEXT_SET } from './pageText/contact'
+import { FAQ_PAGE_TEXT_SET } from './pageText/faq'
+import { FOOTER_TEXT_SET } from './pageText/footer'
+import { GIFTS_TEXT_SET } from './pageText/gifts'
+import { HOME_TEXT_SET } from './pageText/home'
+import { ORDER_TEXT_SET } from './pageText/order'
+import { PRIVACY_SECTIONS_SET, PRIVACY_TEXT_SET } from './pageText/privacy'
+import { PRODUCTS_PAGE_TEXT_SET } from './pageText/products'
+import { RECRUIT_TEXT_SET } from './pageText/recruit'
+import { THANK_YOU_SET } from './thankYou'
 
 /**
  * Mọi bộ dữ liệu Ecopillo tự sửa trong WordPress (liveContent.ts), theo thứ tự hiện trên menu "Nội dung web".
@@ -37,9 +57,31 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   FAQS_SET,
   POLICY_HEAD_SET,
   ...POLICY_SECTION_SETS,
+  PRIVACY_TEXT_SET,
+  PRIVACY_SECTIONS_SET,
   PRODUCT_COMMON_SET,
   PRODUCT_MENU_SET,
   LISTING_PRODUCTS_SET,
+  // Chữ từng trang (owner 20/11/2026: "đảm bảo tất cả mọi thứ trên web, khách đều tự chỉnh sửa được")
+  HOME_TEXT_SET,
+  MATTRESS_TEXT_SET,
+  COLLECTION_SHOWCASE_SET,
+  THANK_YOU_SET,
+  BRAND_VIDEO_SET,
+  ABOUT_PAGE_TEXT_SET,
+  ABOUT_MORE_SET,
+  HOTEL_PAGE_SET,
+  GIFTS_TEXT_SET,
+  RECRUIT_TEXT_SET,
+  CONTACT_PAGE_TEXT_SET,
+  PRODUCTS_PAGE_TEXT_SET,
+  LISTING_HEAD_SET,
+  LISTING_GUIDES_SET,
+  ORDER_TEXT_SET,
+  BLOG_TEXT_SET,
+  FAQ_PAGE_TEXT_SET,
+  FOOTER_TEXT_SET,
+  COMMON_TEXT_SET,
 ]
 
 export const buildContentFrame = (): { boDuLieu: readonly EditableSet[] } => ({ boDuLieu: CONTENT_SETS })
