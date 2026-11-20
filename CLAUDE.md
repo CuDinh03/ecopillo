@@ -45,6 +45,8 @@ cái Ecopillo được tự sửa, hay xong một bước chuyển web, thì s�
   Muốn ghi lại là đang chờ thì đánh dấu `[ĐIỀN …]`, `[XÁC NHẬN …]`, `[ECOPILLO …]` **trong comment code** và ghi vào `docs/bo-nao/dang-cho.md`.
   `<FillIn>` và `RichText` vẫn còn và **tô nổi mọi chữ dạng `[…]`** trong dữ liệu, nên đừng để chữ `[…]` lọt vào `src/data/`.
   Nhãn câu chuyện chờ duyệt đi theo cờ `STORIES_APPROVED` (đang bật, không hiện).
+- **Ecopillo tự đổi màu, bố cục, chuyển hướng link** ở Nội dung web → Giao diện (owner 20/11/2026 "ecopillo cần tự làm hết được"): `src/data/theme.ts` (mau.css, plugin kiểm tương phản), `src/data/pageLayout.ts` (khối mới của các trang đó phải khai vào đây và vẽ qua `Blocks`), `src/data/liveRedirects.ts`. Màu dưới đây là màu gốc.
+- **Ecopillo tự đổi màu, bố cục, chuyển hướng link** ở Nội dung web → Giao diện (owner 20/11/2026 "ecopillo cần tự làm hết được"): `src/data/theme.ts` (mau.css, plugin kiểm tương phản), `src/data/pageLayout.ts` (khối mới của các trang đó phải khai vào đây và vẽ qua `Blocks`), `src/data/liveRedirects.ts`. Màu dưới đây là màu gốc.
 - Màu: chỉ dùng bộ nhận diện trong `src/index.css` (`@theme`): chàm `#2D2E8D`, chàm sáng `#333DBA`,
   xanh nhạt `#D3EFFF`/`#E9F8FF`, trắng, vàng `#FFC271` (chỉ cho quà tặng, ưu đãi; ngoại lệ: dải trắng ngay dưới banner trang chủ có hai khung vàng, "Hệ sinh thái sản phẩm" (owner duyệt 17/10/2026)
   và "Tốt · Thật · Thiện" (chị Phương 09/11/2026: "làm khung cam như bên hệ sinh thái cho cân"), `BangEcBar` trong `Hero.tsx`).
@@ -121,6 +123,8 @@ pnpm lint       # đang có 4 cảnh báo cũ react-refresh, không phải lỗi
 | Khối đệm trang chủ (C3: chọn theo cách nằm) | `src/data/mattressPicker.ts`, `src/components/home/MattressPicker.tsx` |
 | Kệ trang Sản phẩm mục "Tất cả" (ô nhóm + 4 kệ) | `src/data/productShelves.ts`, `src/components/products/GroupTiles.tsx`, `ProductShelves.tsx` |
 | Chữ, ảnh từng trang (tiêu đề, đoạn dẫn, mô tả Google, cam kết, chân trang…): Ecopillo sửa ở Nội dung web → Chữ từng trang (owner 20/11/2026). Đổi chữ gốc hay thêm ô thì sửa ở đây, **không viết chữ cứng mới trong component** | `src/data/pageText/` (khai bằng `definePageText` trong `define.ts`, đăng ký ở `src/data/contentFrame.ts`); vài bộ nằm cạnh dữ liệu: `about.ts` (`ABOUT_MORE_SET`), `hotel.ts` (`HOTEL_PAGE_SET`), `brand.ts` (phim), `links.ts` (đầu trang danh mục), `listingGuides.ts`, `mattressPicker.ts`, `collectionGroups.ts`, `thankYou.ts`. Tiêu đề dùng `\|` để xuống dòng (`Lines` trong `src/components/ui/Highlight.tsx`) |
+| Màu web, bố cục (thứ tự / ẩn khối), chuyển hướng link Ecopillo tự đổi | `src/data/theme.ts`, `src/data/pageLayout.ts` + `src/components/ui/Blocks.tsx`, `src/data/liveRedirects.ts`; plugin `noi-dung.php` (mau.css, kiểm tương phản, 301) |
+| Màu web, bố cục (thứ tự / ẩn khối), chuyển hướng link Ecopillo tự đổi | `src/data/theme.ts`, `src/data/pageLayout.ts` + `src/components/ui/Blocks.tsx`, `src/data/liveRedirects.ts`; plugin `noi-dung.php` (mau.css, kiểm tương phản, 301) |
 | Tiêu đề tab, mô tả SEO, canonical, ảnh chia sẻ, JSON-LD | `usePageMeta` ở từng trang; `src/lib/structuredData.ts` + `src/components/seo/JsonLd.tsx`; ảnh chia sẻ `public/images/chia-se/` (tạo lại: `python3 -I tools/tao-anh-chia-se-2026-10-28.py public/images`); ghi vào HTML: `tools/dung-san-html.mjs` |
 
 ## Bẫy đã gặp (đọc trước khi debug)
