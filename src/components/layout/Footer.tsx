@@ -10,6 +10,7 @@ import { NEAR_ME_URL } from '../../data/dealers'
 import { SocialIcons } from '../home/SocialLinks'
 import { Logo } from './Logo'
 import { FOOTER_TEXT } from '../../data/pageText/footer'
+import { useHydrated } from '../../hooks/useHydratedSearchParams'
 
 /**
  * Điện thoại: mỗi link trong danh sách cao khoảng 44px (đệm trên dưới, rà điện thoại 05/11/2026) cho dễ bấm, các vùng bấm xếp sát nhau không chồng.
@@ -66,6 +67,9 @@ function FooterGroup({ id, title, listClassName, children }: FooterGroupProps) {
 }
 
 export function Footer() {
+  // Năm lúc dựng cho HTML dựng sẵn và lần React gắn vào trang (khớp nhau), năm thật ngay sau đó:
+  // sang năm mới mà chưa dựng lại thì không lệch HTML (lỗi #418 ở mọi trang)
+  const year = useHydrated() ? new Date().getFullYear() : __NAM_DUNG__
   return (
     <footer className="border-t border-line bg-ivory pt-20 pb-32 text-ink-soft md:pb-14">
       <Container>
@@ -185,7 +189,7 @@ export function Footer() {
         <div className="mt-16 flex flex-col gap-6 border-t border-line pt-8 text-xs text-ink-faint md:flex-row md:items-center md:justify-between">
           <div className="space-y-1.5">
             <p>
-              © {new Date().getFullYear()} {BRAND.company}. {FOOTER_TEXT.chungNhan}
+              © {year} {BRAND.company}. {FOOTER_TEXT.chungNhan}
             </p>
             <p>{FOOTER_TEXT.camKet}</p>
             <p>

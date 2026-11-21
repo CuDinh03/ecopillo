@@ -86,6 +86,8 @@ export default defineConfig(({ mode }) => {
       tailwindcss(),
       ...(isPreview ? [previewHtml(env.XEM_THU_URL || PREVIEW_URL_DEFAULT)] : [livePricesHtml(), trackingHtml()]),
     ],
+    // Năm lúc dựng (chân trang, src/vite-env.d.ts): bản trình duyệt và bản dựng sẵn HTML cùng một năm
+    define: { __NAM_DUNG__: JSON.stringify(new Date().getFullYear()) },
     /**
      * Build cho máy chủ (dựng sẵn HTML, tools/dung-san-html.mjs). React Router để mặc định thì Node chọn bản CommonJS
      * và Vite báo "module is not defined" (lỗi gặp 15/10/2026): đóng gói nó vào luôn, và ưu tiên bản ESM ("module-sync", "import").

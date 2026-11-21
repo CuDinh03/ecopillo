@@ -10,6 +10,7 @@ import {
   type Dealer,
 } from '../../data/dealers'
 import { directionsUrl } from '../../data/brand'
+import { useHydrated } from '../../hooks/useHydratedSearchParams'
 import { Icon, ZaloMark } from '../ui/Icon'
 import { buttonClass } from '../ui/primitives'
 
@@ -108,7 +109,10 @@ function Actions({ dealer, className, size = 'sm' }: { dealer: Dealer; className
 }
 
 export function DealerCard({ dealer, km, selected = false, onSelect, featured = false }: DealerCardProps) {
-  const status = openStatus(dealer)
+  // "Đang mở / Đã đóng cửa" tính theo giờ lúc xem: HTML dựng sẵn và lần React gắn vào trang chỉ ghi giờ mở cửa,
+  // tính trạng thái ngay sau đó. Tính luôn lúc gắn thì chữ lệch HTML dựng lúc build → lỗi #418 (trang Liên hệ, 21/11/2026)
+  const hydrated = useHydrated()
+  const status = hydrated ? openStatus(dealer) : null
 
   // Bấm vào vùng trống của thẻ thì chọn; bấm nút, link thì để nút tự làm việc của nó
   const handleClick = (e: MouseEvent) => {

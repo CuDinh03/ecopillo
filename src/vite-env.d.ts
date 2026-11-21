@@ -7,6 +7,9 @@ interface ImportMetaEnv {
   readonly VITE_DEALERS_URL?: string
 }
 
+/** Năm lúc dựng (vite.config.ts `define`): chân trang dùng lúc dựng sẵn HTML và lúc React gắn vào trang */
+declare const __NAM_DUNG__: number
+
 interface ImportMeta {
   readonly env: ImportMetaEnv
 }
