@@ -10,10 +10,11 @@ interface HighlightProps {
 
 /**
  * Đoạn chữ Ecopillo tự sửa (Nội dung web) vẫn giữ chỗ in đậm, in nghiêng như mẫu đã duyệt: cụm nào còn trong đoạn thì
- * tô, Ecopillo bỏ cụm đó thì thôi. Không nhận HTML từ dữ liệu.
+ * tô, Ecopillo bỏ cụm đó thì thôi (đoạn hiện chữ thường). Cụm cần tô cũng là ô Ecopillo sửa. Không nhận HTML từ dữ liệu.
  */
 export function Highlight({ text, strong = [], em = [] }: HighlightProps) {
-  const marks = [...strong.map((w) => ({ w, kind: 'strong' as const })), ...em.map((w) => ({ w, kind: 'em' as const }))].filter((m) => m.w)
+  // "-": Ecopillo không muốn tô cụm nào (ô cụm chữ ở Nội dung web không để trống được)
+  const marks = [...strong.map((w) => ({ w, kind: 'strong' as const })), ...em.map((w) => ({ w, kind: 'em' as const }))].filter((m) => m.w && m.w.trim() !== '-')
   if (!marks.length) return <>{text}</>
   const parts: ReactNode[] = []
   let rest = text

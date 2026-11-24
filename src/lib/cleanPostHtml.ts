@@ -1,5 +1,6 @@
 import { COLLECTIONS } from '../data/catalog'
 import { redirectFor } from '../data/links'
+import { BLOG_TEXT } from '../data/pageText/blog'
 
 /**
  * Thân bài Ecopillo đăng mới / sửa trong WordPress (livePosts.ts). Plugin đã lọc thẻ bằng wp_kses và đổi chữ chất liệu cũ
@@ -81,7 +82,7 @@ export function cleanPostHtml(input: string, slug: string, title: string): strin
     wrap.className = 'bang-cuon'
     wrap.setAttribute('tabindex', '0')
     wrap.setAttribute('role', 'region')
-    wrap.setAttribute('aria-label', 'Bảng, cuộn ngang để xem hết')
+    wrap.setAttribute('aria-label', BLOG_TEXT.bangCuon)
     table.replaceWith(wrap)
     wrap.append(table)
   })

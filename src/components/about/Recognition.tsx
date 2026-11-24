@@ -25,7 +25,7 @@ function useCertificateViewer() {
   const viewer = (
     <dialog
       ref={dialogRef}
-      aria-label={shown ? `Giấy ${shown.name}` : ABOUT_PAGE_TEXT.giayNhan}
+      aria-label={shown ? chen(ABOUT_PAGE_TEXT.giayDoc, { ten: shown.name }) : ABOUT_PAGE_TEXT.giayNhan}
       className="m-auto max-h-[calc(100svh-2rem)] w-[min(34rem,calc(100%-2rem))] rounded-[1.5rem] bg-ivory p-4 backdrop:bg-deep-950/70 sm:p-6"
       onClick={(e) => e.target === e.currentTarget && dialogRef.current?.close()}
     >

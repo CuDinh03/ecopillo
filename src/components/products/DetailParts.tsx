@@ -83,7 +83,10 @@ function InfoCard({ title, children }: { title: string; children: ReactNode }) {
 /** Ba thẻ thông tin: trong bộ gồm (bộ chăn ga), chất liệu, giao hàng và bảo hành */
 export function ProductInfoCards({ product, className = 'mt-16' }: { product: Product; className?: string }) {
   const collection = product.collection
-  const warranty = product.specs?.find((spec) => spec.label === 'Bảo hành')?.value ?? WARRANTY_BY_CATEGORY[product.category]
+  // Thông số bảo hành: tên gốc "Bảo hành" (dữ liệu trong code) hoặc tên Ecopillo đặt ở Nội dung web (thuộc tính Woo)
+  const warrantyLabels = new Set(['bảo hành', T.thongSoBaoHanh.trim().toLowerCase()])
+  const warranty =
+    product.specs?.find((spec) => warrantyLabels.has(spec.label.trim().toLowerCase()))?.value ?? WARRANTY_BY_CATEGORY[product.category]
   return (
     // items-start: mỗi thẻ cao theo nội dung, không kéo thẻ 4 dòng cao bằng thẻ 10 dòng rồi để trống nửa dưới
     <div className={`grid items-start gap-5 ${collection ? 'lg:grid-cols-3' : 'lg:grid-cols-2'} ${className}`}>

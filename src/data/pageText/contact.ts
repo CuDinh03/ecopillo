@@ -59,6 +59,11 @@ export const { set: CONTACT_PAGE_TEXT_SET, text: CONTACT_PAGE_TEXT } = definePag
     baoMatTruoc: chu('Form tin nhắn: câu bảo mật (trước link)', 'Ecopillo chỉ dùng thông tin này để liên hệ lại, theo'),
     baoMatLink: chu('Form tin nhắn: câu bảo mật (chữ link)', 'chính sách bảo vệ thông tin'),
     dangGui: chu('Form tin nhắn: chữ nút khi đang gửi', 'Đang gửi…'),
+    chuaGuiGi: chu(
+      'Form tin nhắn: tên thứ chưa gửi được (khung báo lỗi)',
+      'tin nhắn',
+      'Hiện trong câu "Chưa gửi được tin nhắn. Thông tin Quý khách nhập vẫn còn…"',
+    ),
     daNhanTieuDe: chu('Sau khi gửi: tiêu đề', 'Ecopillo đã nhận tin nhắn'),
     daNhanChu: doan(
       'Sau khi gửi: câu cảm ơn',

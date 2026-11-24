@@ -1,4 +1,4 @@
-import { chu, definePageText } from './define'
+import { chen, chu, definePageText, dsDong } from './define'
 
 /**
  * Nhãn của bộ chăn ga dựng lúc nạp trang (catalog.ts): kích thước, kiểu ga, tên loại bộ, nhãn nổi trên thẻ, đơn vị đếm
@@ -9,7 +9,7 @@ import { chu, definePageText } from './define'
 export const { set: CATALOG_TEXT_SET, text: CATALOG_TEXT } = definePageText(
   'nhan-bo-chan-ga',
   'Bộ chăn ga: kích thước, kiểu ga, loại bộ',
-  'Chữ ba kích thước giường, hai kiểu ga (ga phủ chần / ga chun chần), tên loại của từng bộ sưu tập (nhãn nhỏ trên bìa bộ, đầu tên sản phẩm như "Bộ chăn ga Lyocell Eco Rosa"), nhãn nổi trên thẻ sản phẩm và đơn vị đếm khi đặt hàng.',
+  'Chữ ba kích thước giường, hai kiểu ga (ga phủ chần / ga chun chần), tên loại của từng bộ sưu tập (nhãn nhỏ trên bìa bộ, đầu tên sản phẩm như "Bộ chăn ga Lyocell Eco Rosa"), nhãn nổi trên thẻ sản phẩm, đơn vị đếm khi đặt hàng, đơn vị tiền và chữ thay ảnh phụ.',
   {
     co160: chu('Kích thước 1: chữ', '160 × 200 cm', 'Hiện ở bảng chọn kích thước trang bộ sưu tập, bước đặt hàng, tóm tắt đơn. Mã cỡ không đổi.'),
     giuong160: chu('Kích thước 1: giường', 'Giường 1m6'),
@@ -40,8 +40,25 @@ export const { set: CATALOG_TEXT_SET, text: CATALOG_TEXT } = definePageText(
 
     donViBo: chu('Đơn vị đếm: bộ chăn ga', 'bộ', 'Hiện cạnh số lượng khi đặt hàng, ví dụ "2 bộ".'),
     donViChiec: chu('Đơn vị đếm: chăn hè', 'chiếc'),
+
+    trongBoChanHeMoi: dsDong(
+      'Bộ mới kiểu chăn hè: "Trong bộ gồm" mặc định',
+      ['1 chăn hè chần bông mỏng'],
+      'Dùng khi bộ chăn hè tạo mới trong WooCommerce chưa ghi "Trong bộ gồm". Mỗi dòng một món.',
+    ),
+
+    tienDong: chu('Đơn vị tiền sau mọi giá', 'đ', 'Ví dụ "3.500.000đ". Hiện sau mọi giá web tự ghi (thẻ sản phẩm, trang sản phẩm, đặt hàng, menu). Giá viết trong câu chữ thì sửa ở câu đó.'),
+    trieu: chu('Chữ "triệu" trong giá gọn', 'triệu', 'Ví dụ "từ 3,5 triệu" ở bước chọn bộ sưu tập khi đặt hàng.'),
+    anhPhu: chu(
+      'Ảnh phụ của mẫu, sản phẩm: chữ thay ảnh (Google, trình đọc màn hình)',
+      'ảnh {so}',
+      'Web ghép sau tên mẫu, ví dụ "Eco Rosa ER25 · Xanh ngọc · ảnh 2". {so} là số thứ tự ảnh.',
+    ),
   },
 )
+
+/** Chữ thay ảnh phụ thứ `so` (2, 3…): "<tên> · ảnh 2" */
+export const extraPhotoAlt = (name: string, so: number): string => `${name} · ${chen(CATALOG_TEXT.anhPhu, { so })}`
 
 /** Nhãn nổi: "-" là Ecopillo bỏ nhãn */
 export const badgeText = (text: string): { badge?: string } => (text.trim() === '-' ? {} : { badge: text })

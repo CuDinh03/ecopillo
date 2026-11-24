@@ -19,7 +19,6 @@ import {
   FOUNDER_IMAGE,
   FOUNDER_LETTER,
   FOUNDER_LETTER_IMAGES,
-  FOUNDER_NAME,
   FOUNDER_QUOTE,
   FOUNDER_SIGNATURE,
   LYOCELL_INTRO,
@@ -138,7 +137,7 @@ export function AboutPage() {
         title={chapter(0).ten}
       >
         <Prose>
-          <Highlight text={ABOUT_PAGE_TEXT.nguoiSangLap} strong={[FOUNDER_NAME]} em={['“Chốn Yên”']} />
+          <Highlight text={ABOUT_PAGE_TEXT.nguoiSangLap} strong={[ABOUT_PAGE_TEXT.nguoiSangLapDam]} em={[ABOUT_PAGE_TEXT.nguoiSangLapNghieng]} />
         </Prose>
         <PullQuote>“{FOUNDER_QUOTE}”</PullQuote>
       </Chapter>

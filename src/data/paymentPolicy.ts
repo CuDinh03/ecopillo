@@ -1,4 +1,6 @@
 import { CONTACT } from './brand'
+import { COMMON_TEXT } from './pageText/common'
+import { chen } from './pageText/define'
 
 /**
  * Thanh toán, đặt cọc, trải nghiệm chăn ga tại nhà: theo THÔNG BÁO Ecopillo áp dụng từ 07/08/2026 (chị Phương gửi Zalo 18/11/2026),
@@ -8,7 +10,12 @@ import { CONTACT } from './brand'
  * Một chỗ cho các câu dùng lại (trang chính sách, hỏi đáp, trang sản phẩm, bước đặt hàng) để không lệch nhau.
  */
 
-export const BANK_LINE = `${CONTACT.chuTaiKhoan} · Số tài khoản ${CONTACT.soTaiKhoan} · ${CONTACT.nganHang}`
+// Khuôn dòng Ecopillo sửa ở Nội dung web → Chữ chung nhiều trang; chủ tài khoản, số, ngân hàng ở bộ Thông tin liên hệ
+export const BANK_LINE = chen(COMMON_TEXT.taiKhoanDong, {
+  chuTaiKhoan: CONTACT.chuTaiKhoan,
+  soTaiKhoan: CONTACT.soTaiKhoan,
+  nganHang: CONTACT.nganHang,
+})
 
 // Chị Phương (Zalo 19/11/2026): không cọc phải đủ cả hai ý, chăn ga tiêu chuẩn VÀ đơn dưới 10 triệu (không phải "hoặc")
 export const NO_DEPOSIT = 'Không cần đặt cọc: đơn chăn ga tiêu chuẩn dưới 10 triệu đồng.'

@@ -37,7 +37,7 @@ function Photos({ dealer, flush = false }: { dealer: Dealer; flush?: boolean }) 
   const cover = (
     <img
       src={photos[0]}
-      alt={dealer.anh.length > 0 ? `Cửa hàng ${dealer.ten}` : DEFAULT_DEALER_PHOTO_ALT}
+      alt={dealer.anh.length > 0 ? chen(DEALER_TEXT.anhCuaHang, { ten: dealer.ten }) : DEFAULT_DEALER_PHOTO_ALT}
       loading="lazy"
       decoding="async"
       className="h-full w-full object-cover"

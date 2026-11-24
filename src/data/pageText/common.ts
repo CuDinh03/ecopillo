@@ -4,7 +4,7 @@ import { chu, definePageText, doan } from './define'
 export const { set: COMMON_TEXT_SET, text: COMMON_TEXT } = definePageText(
   'chung',
   'Chữ chung nhiều trang',
-  'Các câu lặp ở nhiều trang: khối "Còn điều chưa rõ?" cuối trang chính sách, "Cần tư vấn thêm?" cuối bài viết, phần tìm điểm bán, trang sản phẩm, bộ sưu tập, trang báo lỗi 404.',
+  'Các câu lặp ở nhiều trang: khối "Còn điều chưa rõ?" cuối trang chính sách, "Cần tư vấn thêm?" cuối bài viết, phần tìm điểm bán, trang sản phẩm, bộ sưu tập, trang báo lỗi 404, cặp nút Gọi / Nhắn Zalo, dòng tài khoản nhận tiền.',
   {
     chinhSachNhan: chu('Trang chính sách: nhãn nhỏ trên tên trang', 'Chính sách mua hàng'),
     conChuaRo: chu('Trang chính sách: tiêu đề khối cuối', 'Còn điều chưa rõ?'),
@@ -26,5 +26,16 @@ export const { set: COMMON_TEXT_SET, text: COMMON_TEXT } = definePageText(
     quaBoSuuTap: chu('Bộ sưu tập: chữ sau tên quà kèm', 'cho mỗi bộ, chương trình Tri ân 15.000 khách hàng.'),
     loi404TieuDe: chu('Trang 404: tiêu đề', 'Trang này đã đi ngủ mất rồi'),
     loi404Chu: doan('Trang 404: đoạn', 'Đường dẫn không tồn tại hoặc đã được đổi. Quý khách thử một trong các trang dưới đây.'),
+    nutGoi: chu(
+      'Nút gọi hotline (cuối trang chính sách, bài viết, điểm bán, xác nhận đơn, quà tặng)',
+      'Gọi {so}',
+      '{so} là số hotline ở bộ Thông tin liên hệ, web tự điền',
+    ),
+    nutZalo: chu('Nút nhắn Zalo đi cặp với nút gọi', 'Nhắn Zalo'),
+    taiKhoanDong: chu(
+      'Dòng tài khoản nhận tiền (bước nhận hàng, xác nhận đơn, chính sách thanh toán, hỏi đáp)',
+      '{chuTaiKhoan} · Số tài khoản {soTaiKhoan} · {nganHang}',
+      '{chuTaiKhoan}, {soTaiKhoan}, {nganHang} lấy ở bộ Thông tin liên hệ, web tự điền',
+    ),
   },
 )

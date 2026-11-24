@@ -67,7 +67,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
               <p>{STORY_OPENING}</p>
               <div className={isExpanded ? 'space-y-5' : 'hidden space-y-5 sm:block'}>
                 <p>
-                  <Highlight text={HOME_TEXT.nguoiSangLap} strong={['chị Phạm Thị Phương']} em={['“Chốn Yên”']} />
+                  <Highlight text={HOME_TEXT.nguoiSangLap} strong={[HOME_TEXT.nguoiSangLapDam]} em={[HOME_TEXT.nguoiSangLapNghieng]} />
                 </p>
                 <p>{BRAND_PROMISE}</p>
               </div>

@@ -1,5 +1,5 @@
 import { PATHS } from './links'
-import { chu, definePageText } from './pageText/define'
+import { chu, definePageText, doan } from './pageText/define'
 
 /**
  * Danh sách trang chính sách cho menu, chân trang và bộ định tuyến. Tách riêng khỏi policies.ts
@@ -17,19 +17,6 @@ export const POLICY_PAGES = [
 
 export type PolicySlug = (typeof POLICY_PAGES)[number]['slug']
 
-/**
- * Web cũ có riêng trang "Chính sách kiểm tra hàng"; web mới gộp kiểm hàng vào trang đổi hàng.
- * Link cũ vẫn mở đúng nội dung đó (không chuyển hướng), tiêu đề giữ như web cũ.
- * `description`: mô tả Google riêng để không trùng với trang gốc (08/11/2026, chờ Ecopillo duyệt).
- */
-export const POLICY_ALIASES: Readonly<Record<string, { slug: PolicySlug; title: string; description?: string }>> = {
-  'chinh-sach-kiem-tra-hang': {
-    slug: 'chinh-sach-doi-tra-hang-va-hoan-tien',
-    title: 'Chính sách kiểm tra hàng',
-    description: 'Quý khách được kiểm hàng khi nhận, trải nghiệm chăn ga tại nhà. Có lỗi thì báo Ecopillo trong 24 giờ, gửi đổi trong 7 ngày.',
-  },
-}
-
 export const policyPath = (slug: string): string => `/${slug}/`
 
 const labelOf = (slug: PolicySlug): string => POLICY_PAGES.find((p) => p.slug === slug)?.label ?? slug
@@ -38,7 +25,7 @@ const labelOf = (slug: PolicySlug): string => POLICY_PAGES.find((p) => p.slug ==
 export const { set: POLICY_NAV_TEXT_SET, text: POLICY_NAV_TEXT } = definePageText(
   'menu-chinh-sach',
   'Menu chính sách',
-  'Tên ngắn của các trang chính sách trên menu bên trái trang chính sách, cột "Chính sách" ở chân trang, trang Hỏi đáp, ô tìm. Tiêu đề lớn của từng trang sửa ở mục chính sách.',
+  'Tên ngắn của các trang chính sách trên menu bên trái trang chính sách, cột "Chính sách" ở chân trang, trang Hỏi đáp, ô tìm; tiêu đề, mô tả Google của link cũ "Chính sách kiểm tra hàng". Tiêu đề lớn của từng trang sửa ở mục chính sách.',
   {
     huongDan: chu('Hướng dẫn mua hàng', labelOf('huong-dan-mua-hang')),
     giaoHang: chu('Chính sách vận chuyển', labelOf('chinh-sach-van-chuyen')),
@@ -48,8 +35,30 @@ export const { set: POLICY_NAV_TEXT_SET, text: POLICY_NAV_TEXT } = definePageTex
     baoMat: chu('Chính sách bảo vệ thông tin cá nhân', 'Bảo vệ thông tin cá nhân'),
     tieuDeMenu: chu('Trang chính sách: tiêu đề menu bên trái', 'Các chính sách'),
     duongDan: chu('Trang chính sách: mục giữa của đường dẫn "Trang chủ / … / tên trang"', 'Chính sách'),
+    kiemTraHangTieuDe: chu(
+      'Trang "Chính sách kiểm tra hàng" (link cũ /chinh-sach-kiem-tra-hang/): tiêu đề',
+      'Chính sách kiểm tra hàng',
+      'Trang này hiện nội dung trang Kiểm hàng, đổi hàng; chỉ tiêu đề và mô tả Google là riêng.',
+    ),
+    kiemTraHangMoTa: doan(
+      'Trang "Chính sách kiểm tra hàng": mô tả trên Google',
+      'Quý khách được kiểm hàng khi nhận, trải nghiệm chăn ga tại nhà. Có lỗi thì báo Ecopillo trong 24 giờ, gửi đổi trong 7 ngày.',
+    ),
   },
 )
+
+/**
+ * Web cũ có riêng trang "Chính sách kiểm tra hàng"; web mới gộp kiểm hàng vào trang đổi hàng.
+ * Link cũ vẫn mở đúng nội dung đó (không chuyển hướng), tiêu đề giữ như web cũ.
+ * `description`: mô tả Google riêng để không trùng với trang gốc (08/11/2026). Tiêu đề, mô tả Ecopillo sửa ở bộ "Menu chính sách".
+ */
+export const POLICY_ALIASES: Readonly<Record<string, { slug: PolicySlug; title: string; description?: string }>> = {
+  'chinh-sach-kiem-tra-hang': {
+    slug: 'chinh-sach-doi-tra-hang-va-hoan-tien',
+    title: POLICY_NAV_TEXT.kiemTraHangTieuDe,
+    description: POLICY_NAV_TEXT.kiemTraHangMoTa,
+  },
+}
 
 const LIVE_LABELS: Readonly<Record<PolicySlug, string>> = {
   'huong-dan-mua-hang': POLICY_NAV_TEXT.huongDan,

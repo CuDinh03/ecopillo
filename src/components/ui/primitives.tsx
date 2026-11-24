@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
+import { COMMON_TEXT } from '../../data/pageText/common'
+import { chen } from '../../data/pageText/define'
 import { Icon, ZaloMark } from './Icon'
 
 /** Đánh dấu nội dung còn chờ chủ shop điền/xác nhận — để nổi bật, dễ tìm */
@@ -69,8 +71,9 @@ export function ContactButtons({
   variant = 'onLight',
   size = 'md',
   className = '',
-  callLabel = `Gọi ${CONTACT.hotlineDisplay}`,
-  zaloLabel = 'Nhắn Zalo',
+  // Chữ hai nút Ecopillo sửa ở Nội dung web → Chữ chung nhiều trang
+  callLabel = chen(COMMON_TEXT.nutGoi, { so: CONTACT.hotlineDisplay }),
+  zaloLabel = COMMON_TEXT.nutZalo,
   stretch = false,
 }: ContactButtonsProps) {
   const onDark = variant === 'onDark'

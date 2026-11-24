@@ -99,7 +99,17 @@ export const { set: HOME_TEXT_SET, text: HOME_TEXT } = definePageText(
     nguoiSangLap: doan(
       'Về chúng tôi: đoạn về người sáng lập',
       'Người đặt nền móng cho thương hiệu là chị Phạm Thị Phương, hơn 15 năm trong nghề chăn ga, từ sản xuất đến bán lẻ. Chị luôn trăn trở làm sao để mỗi sản phẩm giúp khách hàng tạo dựng một “Chốn Yên”: nơi giấc ngủ lành mạnh được vun đắp và cơ thể được phục hồi trọn vẹn.',
-      'Tên "chị Phạm Thị Phương" tự in đậm',
+      'Cụm chữ in đậm, in nghiêng ghi ở hai ô ngay dưới',
+    ),
+    nguoiSangLapDam: chu(
+      'Về chúng tôi: cụm chữ in đậm trong đoạn người sáng lập',
+      'chị Phạm Thị Phương',
+      'Chép đúng cụm chữ có trong đoạn. Ghi một dấu - để không in đậm chữ nào.',
+    ),
+    nguoiSangLapNghieng: chu(
+      'Về chúng tôi: cụm chữ in nghiêng trong đoạn người sáng lập',
+      '“Chốn Yên”',
+      'Chép đúng cụm chữ có trong đoạn (kể cả dấu ngoặc kép). Ghi một dấu - để không in nghiêng chữ nào.',
     ),
     nutDocTiep: chu('Về chúng tôi (điện thoại): chữ nút đọc tiếp', 'Đọc tiếp câu chuyện'),
     nutGioiThieu: chu('Về chúng tôi: chữ link sang trang Giới thiệu', 'Xem trang Giới thiệu đầy đủ'),
