@@ -362,6 +362,13 @@ function eco_dl_write()
     update_option(ECO_BST_OPT_TRANG, $collections['pagesBo'], false);
     // Bài viết mới / đã sửa (bai-viet-moi.php): danh sách vào du-lieu.js, thân bài mỗi bài một file
     $posts = function_exists('eco_bv_compute') ? eco_bv_compute() : array('live' => array(), 'bodies' => array(), 'pages' => array());
+    // Trang mới Ecopillo tạo (Trang WordPress có tích "Hiện bằng giao diện mới", trang-moi.php, đợt G): cùng đường đi với bài
+    if (function_exists('eco_tm_compute')) {
+        $own_pages = eco_tm_compute();
+        $posts['live'] = array_merge($posts['live'], $own_pages['live']);
+        $posts['bodies'] = array_merge($posts['bodies'], $own_pages['bodies']);
+        $posts['pages'] = array_merge($posts['pages'], $own_pages['pages']);
+    }
     eco_bv_write_bodies($posts['bodies']);
     update_option(ECO_BV_OPT_TRANG, $posts['pages'], false);
     $content = function_exists('eco_nd_live') ? eco_nd_live() : array();
@@ -444,5 +451,6 @@ require_once __DIR__ . '/bo-suu-tap-moi.php';
 require_once __DIR__ . '/danh-muc.php';
 require_once __DIR__ . '/an-xoa.php';
 require_once __DIR__ . '/ton-kho.php';
+require_once __DIR__ . '/trang-moi.php';
 require_once __DIR__ . '/bai-viet-moi.php';
 require_once __DIR__ . '/gia-woo-quan-tri.php';

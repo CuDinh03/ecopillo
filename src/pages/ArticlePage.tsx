@@ -110,8 +110,13 @@ export function ArticlePage() {
               modified: post.wp?.modified,
             })}
           />
-          <Breadcrumb items={[{ label: BLOG_TEXT.duongDan, to: PATHS.blog }, { label: postLabelText(post.category) }]} current={post.title} />
-          <p className="mt-8 flex flex-wrap items-center gap-x-2 gap-y-1 text-meta text-ink-soft">
+          {/* Trang Ecopillo tự tạo (đợt G): không có mục, phút đọc, ngày */}
+          {post.isPage ? (
+            <Breadcrumb items={[]} current={post.title} />
+          ) : (
+            <Breadcrumb items={[{ label: BLOG_TEXT.duongDan, to: PATHS.blog }, { label: postLabelText(post.category) }]} current={post.title} />
+          )}
+          {!post.isPage && <p className="mt-8 flex flex-wrap items-center gap-x-2 gap-y-1 text-meta text-ink-soft">
             <Link to={`${PATHS.blog}?chu-de=${encodeURIComponent(post.category)}`} className="font-medium tracking-[0.12em] text-mist-600 uppercase hover:underline">
               {postLabelText(post.category)}
             </Link>
@@ -123,7 +128,7 @@ export function ArticlePage() {
                 <time dateTime={post.wp.date}>{formatPostDate(post.wp.date)}</time>
               </>
             )}
-          </p>
+          </p>}
           <h1 className="font-display mt-4 text-[2.2rem] leading-[1.1] text-deep-900 sm:text-[3rem]">{post.title}</h1>
           <p className="mt-5 text-lead leading-relaxed text-ink-soft">{post.excerpt}</p>
         </div>
@@ -193,7 +198,7 @@ export function ArticlePage() {
               </div>
             </Container>
           ),
-          'bai-khac': others.length > 0 && (
+          'bai-khac': !post.isPage && others.length > 0 && (
             <Container className="mt-16 sm:mt-24">
               <div className="flex items-end justify-between gap-4">
                 <h2 className="font-display text-[1.8rem] text-deep-900 sm:text-[2.2rem]">{BLOG_TEXT.baiKhac}</h2>

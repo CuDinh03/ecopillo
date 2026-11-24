@@ -22,6 +22,8 @@ export interface LivePost {
   modified: string
   readMinutes: number
   cover: { src: string; srcSet: string; alt: string } | null
+  /** Trang WordPress Ecopillo tích "Hiện bằng giao diện mới" (trang-moi.php, đợt G): không vào danh sách Tin tức */
+  isPage?: boolean
 }
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/
@@ -46,6 +48,7 @@ function clean(input: unknown): LivePost | undefined {
     date,
     modified: typeof v.sua === 'string' && DATE.test(v.sua) ? v.sua : date,
     readMinutes: typeof v.phut === 'number' && v.phut > 0 && v.phut < 120 ? Math.round(v.phut) : 3,
+    ...(v.trang === true ? { isPage: true } : {}),
     cover:
       cover && isUrl(cover.src)
         ? { src: cover.src, srcSet: typeof cover.srcSet === 'string' && !/[<>"]/.test(cover.srcSet) ? cover.srcSet : '', alt: text(cover.alt, 300) || title }

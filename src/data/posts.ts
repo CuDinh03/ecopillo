@@ -34,6 +34,8 @@ export interface WordPressInfo {
 }
 
 export interface Post {
+  /** Trang Ecopillo tự tạo trong WordPress (đợt G): hiện bằng khung bài viết, không có ngày, mục, bài liên quan */
+  isPage?: boolean
   slug: string
   title: string
   excerpt: string

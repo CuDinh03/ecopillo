@@ -58,7 +58,9 @@ const livePost = (entry: LivePost): Post => ({
 
 // Cả bài dựng sẵn đã ẩn: bài WordPress trùng tên không hiện thay
 const CODE_SLUGS = new Set(CODE_POST_SLUGS)
-const LIVE = LIVE_POSTS.filter((p) => !CODE_SLUGS.has(p.slug)).map(livePost)
+const LIVE = LIVE_POSTS.filter((p) => !CODE_SLUGS.has(p.slug) && !p.isPage).map(livePost)
+/** Trang Ecopillo tự tạo (đợt G): mở được ở link của nó, không nằm trong Tin tức, tìm bài, bài liên quan */
+const OWN_PAGES: readonly Post[] = LIVE_POSTS.filter((p) => p.isPage && !CODE_SLUGS.has(p.slug)).map((p) => ({ ...livePost(p), isPage: true }))
 const LIVE_SLUGS = new Set(LIVE.map((p) => p.slug))
 
 /** Bài WordPress: bản sửa trong WordPress thay bản lúc dựng; bài mới (chưa có lúc dựng) lên đầu, mới nhất trước */
@@ -78,7 +80,8 @@ export const ALL_POSTS: readonly Post[] = [
   ...MERGED_WORDPRESS,
 ].filter((p) => !HIDDEN_POSTS.has(p.slug))
 
-export const anyPostBySlug = (slug: string | undefined): Post | undefined => ALL_POSTS.find((p) => p.slug === slug)
+export const anyPostBySlug = (slug: string | undefined): Post | undefined =>
+  ALL_POSTS.find((p) => p.slug === slug) ?? OWN_PAGES.find((p) => p.slug === slug)
 
 /** Ngày đăng kiểu Việt Nam: "08/11/2025" */
 export const formatPostDate = (iso: string): string => iso.split('-').reverse().join('/')
