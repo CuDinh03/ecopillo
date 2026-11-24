@@ -50,7 +50,7 @@ export const { set: ABOUT_PAGE_TEXT_SET, text: ABOUT_PAGE_TEXT } = definePageTex
         { nhan: 'Sứ mệnh, tầm nhìn', ten: 'Điều chúng tôi theo đuổi' },
         { nhan: 'Chứng nhận, đối tác', ten: 'Được ghi nhận' },
       ],
-      'Đúng 6 dòng, theo thứ tự chương I đến VI',
+      'Đúng 6 dòng, theo thứ tự gốc của chương (thứ tự trên web và số La Mã đổi ở Giao diện → Bố cục trang Giới thiệu)',
     ),
     nguoiSangLap: doan(
       'Chương I: đoạn về người sáng lập',

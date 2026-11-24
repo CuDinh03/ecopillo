@@ -26,6 +26,7 @@ import { StepCustomer } from './StepCustomer'
 import { ORDER_TEXT } from '../../data/pageText/order'
 import { ORDER_STEPS_TEXT as T, ORDER_SUMMARY_TEXT } from '../../data/pageText/orderFlow'
 import { chen } from '../../data/pageText/define'
+import { ORDER_SHOWN } from '../../data/pageLayout'
 
 interface SingleOrderProps {
   product: Product
@@ -112,11 +113,18 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
         </Link>
         <h1 className="font-display mt-3 text-[2.2rem] leading-none text-deep-900 sm:text-5xl">{ORDER_TEXT.tieuDe}</h1>
         <p className="mt-3 text-sm text-ink-soft">
-          {T.leXacNhan} {T.canTuVan}{' '}
-          <a href={CONTACT.hotlineTel} className="tabular font-medium text-deep-900 hover:underline">
-            {CONTACT.hotlineDisplay}
-          </a>{' '}
-          {T.coZalo}
+          {T.leXacNhan}
+          {/* Ẩn / hiện: Nội dung web → Giao diện → Bố cục trang Đặt hàng (đợt E6) */}
+          {ORDER_SHOWN.has('hotline') && (
+            <>
+              {' '}
+              {T.canTuVan}{' '}
+              <a href={CONTACT.hotlineTel} className="tabular font-medium text-deep-900 hover:underline">
+                {CONTACT.hotlineDisplay}
+              </a>{' '}
+              {T.coZalo}
+            </>
+          )}
         </p>
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_340px] lg:gap-12 xl:grid-cols-[1fr_380px]">

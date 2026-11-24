@@ -30,6 +30,7 @@ import { useHydrated, useHydratedSearchParams } from '../hooks/useHydratedSearch
 import { ORDER_TEXT } from '../data/pageText/order'
 import { ORDER_STEPS_TEXT as T, ORDER_SUMMARY_TEXT } from '../data/pageText/orderFlow'
 import { chen } from '../data/pageText/define'
+import { ORDER_SHOWN } from '../data/pageLayout'
 
 const COLLECTION_PARAM = 'bo-suu-tap'
 const MOBILE_QUERY = '(max-width: 1023px)'
@@ -229,13 +230,16 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
             </Link>
             <h1 className="font-display mt-3 text-[2.2rem] leading-none text-deep-900 sm:text-5xl">{ORDER_TEXT.tieuDe}</h1>
           </div>
-          <p className="hidden text-sm text-ink-soft md:block">
-            {T.canTuVan}{' '}
-            <a href={CONTACT.hotlineTel} className="tabular font-medium text-deep-900 hover:underline">
-              {CONTACT.hotlineDisplay}
-            </a>{' '}
-            {T.coZalo}
-          </p>
+          {/* Ẩn / hiện: Nội dung web → Giao diện → Bố cục trang Đặt hàng (đợt E6) */}
+          {ORDER_SHOWN.has('hotline') && (
+            <p className="hidden text-sm text-ink-soft md:block">
+              {T.canTuVan}{' '}
+              <a href={CONTACT.hotlineTel} className="tabular font-medium text-deep-900 hover:underline">
+                {CONTACT.hotlineDisplay}
+              </a>{' '}
+              {T.coZalo}
+            </p>
+          )}
         </div>
 
         <div className="mt-8 sm:mt-10">

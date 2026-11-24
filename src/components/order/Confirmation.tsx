@@ -11,6 +11,7 @@ import { BANK_LINE } from '../../data/paymentPolicy'
 import { ORDER_TEXT } from '../../data/pageText/order'
 import { ORDER_SUMMARY_TEXT as T } from '../../data/pageText/orderFlow'
 import { chen } from '../../data/pageText/define'
+import { ORDER_SHOWN } from '../../data/pageLayout'
 
 interface ConfirmationProps {
   orderCode: string
@@ -61,87 +62,96 @@ export function Confirmation({ orderCode, delivered, summary, customer, onNewOrd
         <PreviewNotSent delivered={delivered} className="mx-auto mt-6 max-w-md" />
       </div>
 
-      <ol className="mt-10 grid gap-3 sm:grid-cols-3">
-        {steps.map((step, i) => (
-          <li
-            key={step.title}
-            className={`rounded-2xl p-5 ring-1 ${step.done ? 'bg-mist-100 ring-mist-200' : 'bg-ivory ring-cream-200'}`}
-          >
-            <span className="flex items-center gap-2.5">
-              <span
-                className={`flex h-8 w-8 items-center justify-center rounded-full ${
-                  step.done ? 'bg-deep-800 text-ivory' : 'bg-mist-100 text-deep-800'
-                }`}
-              >
-                <Icon name={step.icon} size={15} />
+      {/* Ẩn / hiện ba khối dưới: Nội dung web → Giao diện → Bố cục trang Đặt hàng (đợt E6); lời cảm ơn, mã đơn, các nút luôn hiện */}
+      {ORDER_SHOWN.has('cam-on-buoc') && (
+        <ol className="mt-10 grid gap-3 sm:grid-cols-3">
+          {steps.map((step, i) => (
+            <li
+              key={step.title}
+              className={`rounded-2xl p-5 ring-1 ${step.done ? 'bg-mist-100 ring-mist-200' : 'bg-ivory ring-cream-200'}`}
+            >
+              <span className="flex items-center gap-2.5">
+                <span
+                  className={`flex h-8 w-8 items-center justify-center rounded-full ${
+                    step.done ? 'bg-deep-800 text-ivory' : 'bg-mist-100 text-deep-800'
+                  }`}
+                >
+                  <Icon name={step.icon} size={15} />
+                </span>
+                <span className="tabular text-xs text-ink-faint">{chen(T.buocSo, { so: i + 1 })}</span>
               </span>
-              <span className="tabular text-xs text-ink-faint">{chen(T.buocSo, { so: i + 1 })}</span>
-            </span>
-            <p className="mt-3 font-medium text-deep-900">{step.title}</p>
-            <p className="mt-1 text-small leading-relaxed text-ink-soft">{step.text}</p>
-          </li>
-        ))}
-      </ol>
+              <p className="mt-3 font-medium text-deep-900">{step.title}</p>
+              <p className="mt-1 text-small leading-relaxed text-ink-soft">{step.text}</p>
+            </li>
+          ))}
+        </ol>
+      )}
 
-      <article className="mt-10 overflow-hidden rounded-[2rem] bg-ivory shadow-[var(--shadow-lift)]">
-        <div className="flex gap-5 border-b border-dashed border-line bg-mist-100 p-6 sm:p-8">
-          <div className="h-24 w-32 shrink-0 rounded-2xl sm:h-28 sm:w-40">
-            <Placeholder compact className="h-full w-full" tint={line.tint} note={line.imageNote} image={line.image} sizes="160px" />
+      {ORDER_SHOWN.has('cam-on-chi-tiet') && (
+        <article className="mt-10 overflow-hidden rounded-[2rem] bg-ivory shadow-[var(--shadow-lift)]">
+          <div className="flex gap-5 border-b border-dashed border-line bg-mist-100 p-6 sm:p-8">
+            <div className="h-24 w-32 shrink-0 rounded-2xl sm:h-28 sm:w-40">
+              <Placeholder compact className="h-full w-full" tint={line.tint} note={line.imageNote} image={line.image} sizes="160px" />
+            </div>
+            <div>
+              <p className="text-label tracking-[0.14em] text-mist-600 uppercase">{line.kindLabel}</p>
+              <h2 className="font-display text-3xl leading-tight text-deep-900">{line.name}</h2>
+              <p className="mt-1 text-sm text-ink-soft">{line.detail}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-label tracking-[0.14em] text-mist-600 uppercase">{line.kindLabel}</p>
-            <h2 className="font-display text-3xl leading-tight text-deep-900">{line.name}</h2>
-            <p className="mt-1 text-sm text-ink-soft">{line.detail}</p>
-          </div>
-        </div>
 
-        <dl className="grid gap-x-10 gap-y-4 p-6 text-sm sm:grid-cols-2 sm:p-8">
-          <Item label={T.ctKichThuoc} value={line.sizeLabel ?? '—'} />
-          <Item
-            label={T.ctSoLuong}
-            value={`${line.quantity} ${line.unit}${line.unitPrice ? ` × ${formatVND(line.unitPrice)}` : ''}`}
-          />
-          {line.gift && (
+          <dl className="grid gap-x-10 gap-y-4 p-6 text-sm sm:grid-cols-2 sm:p-8">
+            <Item label={T.ctKichThuoc} value={line.sizeLabel ?? '—'} />
             <Item
-              label={T.ctQua}
-              value={
-                <>
-                  {line.giftCount} {line.gift.unit} {line.gift.item}
-                </>
-              }
+              label={T.ctSoLuong}
+              value={`${line.quantity} ${line.unit}${line.unitPrice ? ` × ${formatVND(line.unitPrice)}` : ''}`}
             />
-          )}
-          <Item label={T.ctThanhToan} value={chen(T.ctChuyenKhoan, { taiKhoan: BANK_LINE })} />
-          <Item label={T.ctNguoiNhan} value={`${customer.name.trim()} · ${customer.phone}`} />
-          <Item label={T.ctGiaoDen} value={`${customer.address}, ${summary.province?.name ?? ''}`} />
-          {customer.note.trim() && <Item label={T.ctGhiChu} value={customer.note.trim()} />}
-          <Item label={T.ctThoiGian} value={summary.deliveryTime ?? '—'} highlight />
-        </dl>
+            {line.gift && (
+              <Item
+                label={T.ctQua}
+                value={
+                  <>
+                    {line.giftCount} {line.gift.unit} {line.gift.item}
+                  </>
+                }
+              />
+            )}
+            <Item label={T.ctThanhToan} value={chen(T.ctChuyenKhoan, { taiKhoan: BANK_LINE })} />
+            <Item label={T.ctNguoiNhan} value={`${customer.name.trim()} · ${customer.phone}`} />
+            <Item label={T.ctGiaoDen} value={`${customer.address}, ${summary.province?.name ?? ''}`} />
+            {customer.note.trim() && <Item label={T.ctGhiChu} value={customer.note.trim()} />}
+            <Item label={T.ctThoiGian} value={summary.deliveryTime ?? '—'} highlight />
+          </dl>
 
-        <dl className="space-y-2.5 border-t border-line bg-mist-100/60 p-6 text-sm sm:p-8">
-          <div className="flex justify-between">
-            <dt className="text-ink-soft">{T.ctTamTinh}</dt>
-            <dd className="tabular text-deep-900">{subtotal ? formatVND(subtotal) : PRICE_ON_CALL}</dd>
-          </div>
-          <div className="flex justify-between">
-            <dt className="text-ink-soft">{T.ctPhiGiao}</dt>
-            <dd className="tabular text-deep-900">{shippingFee === 0 ? T.mienPhi : formatVND(shippingFee)}</dd>
-          </div>
-          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-t border-deep-900/15 pt-4">
-            <dt className="font-medium text-deep-900">{T.ctTong}</dt>
-            <dd className="tabular font-display text-3xl text-deep-900 sm:text-4xl">
-              {subtotal ? formatVND(total) : <span className="text-lg">{PRICE_ON_CALL}</span>}
-            </dd>
-          </div>
-        </dl>
-      </article>
+          <dl className="space-y-2.5 border-t border-line bg-mist-100/60 p-6 text-sm sm:p-8">
+            <div className="flex justify-between">
+              <dt className="text-ink-soft">{T.ctTamTinh}</dt>
+              <dd className="tabular text-deep-900">{subtotal ? formatVND(subtotal) : PRICE_ON_CALL}</dd>
+            </div>
+            <div className="flex justify-between">
+              <dt className="text-ink-soft">{T.ctPhiGiao}</dt>
+              <dd className="tabular text-deep-900">{shippingFee === 0 ? T.mienPhi : formatVND(shippingFee)}</dd>
+            </div>
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-t border-deep-900/15 pt-4">
+              <dt className="font-medium text-deep-900">{T.ctTong}</dt>
+              <dd className="tabular font-display text-3xl text-deep-900 sm:text-4xl">
+                {subtotal ? formatVND(total) : <span className="text-lg">{PRICE_ON_CALL}</span>}
+              </dd>
+            </div>
+          </dl>
+        </article>
+      )}
 
       <div className="mt-10 flex flex-col items-center gap-6">
-        <p className="text-center text-sm text-ink-soft">
-          {T.canDoi}{' '}
-          <span className="tabular font-medium text-deep-900">{CONTACT.hotlineDisplay}</span>:
-        </p>
-        <ContactButtons className="justify-center" />
+        {ORDER_SHOWN.has('cam-on-lien-he') && (
+          <>
+            <p className="text-center text-sm text-ink-soft">
+              {T.canDoi}{' '}
+              <span className="tabular font-medium text-deep-900">{CONTACT.hotlineDisplay}</span>:
+            </p>
+            <ContactButtons className="justify-center" />
+          </>
+        )}
         <div className="flex flex-wrap justify-center gap-3">
           <button type="button" onClick={onNewOrder} className={buttonClass('ghost', 'md')}>
             {T.datThem}
