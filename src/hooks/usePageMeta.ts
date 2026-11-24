@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { SITE_ORIGIN, withSlash } from '../data/links'
 import { pageSeoFor } from '../data/liveSeo'
+import { publicPath } from '../data/pageAliases'
 import type { ShareImage } from '../lib/structuredData'
 
 const SITE = 'Ecopillo'
@@ -36,7 +37,10 @@ export const PageMetaContext = createContext<PrerenderCollector | null>(null)
 
 export const fullTitle = (title: string | null): string => (title ? `${title} · ${SITE}` : DEFAULT_TITLE)
 
-/** Thẻ canonical: luôn trỏ về đúng link của web cũ (có "/" cuối, không tham số lọc), như Yoast đang khai */
+/**
+ * Thẻ canonical: link của trang (có "/" cuối, không tham số lọc), như Yoast đang khai. Trang Ecopillo đã đổi link (pageAliases.ts):
+ * link mới, vì `pathname` của bộ định tuyến là link trong (link cũ)
+ */
 function setCanonical(pathname: string) {
   let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
   if (!link) {
@@ -44,7 +48,7 @@ function setCanonical(pathname: string) {
     link.rel = 'canonical'
     document.head.appendChild(link)
   }
-  link.href = `${SITE_ORIGIN}${withSlash(pathname)}`
+  link.href = `${SITE_ORIGIN}${publicPath(withSlash(pathname))}`
 }
 
 /**
@@ -62,7 +66,8 @@ export function usePageMeta(title: string | null, description?: string, options:
 
   // SEO Ecopillo điền ở Nội dung web → "SEO từng trang" hoặc ở danh mục Woo (liveSeo.ts): đứng trên chữ của trang.
   // Máy chủ đã ghi sẵn các thẻ này vào HTML (plugin trang-wp.php); ở đây giữ đúng khi chuyển trang trong trình duyệt
-  const seo = pageSeoFor(pathname)
+  // Trang đã đổi link: dòng SEO ghi theo link mới đứng trên dòng ghi theo link cũ (như plugin)
+  const seo = pageSeoFor(publicPath(pathname)) ?? pageSeoFor(pathname)
   const tabTitle = seo?.tieuDe ?? fullTitle(title)
   const metaDescription = seo?.moTa ?? description
 

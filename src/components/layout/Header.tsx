@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { useLocation } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
 import { PATHS, withSlash } from '../../data/links'
+import { internalPath } from '../../data/pageAliases'
 import { HEADER_TEXT } from '../../data/pageText/header'
 import { isProductMenuItem, menuKey, SHOWN_MENU } from '../../data/pageText/mainMenu'
 import { SEARCH_TEXT } from '../../data/pageText/search'
@@ -43,7 +44,8 @@ function useActiveHref(): string | null {
   const { pathname } = useLocation()
   const path = withSlash(pathname)
   // Chỉ so mục trỏ trong web; bỏ trang chủ (mọi đường dẫn đều bắt đầu bằng "/")
-  const page = SHOWN_MENU.map((i) => menuKey(i.link)).find((key) => key !== '/' && key.startsWith('/') && path.startsWith(key))
+  // Link Ecopillo gõ vào menu có thể là link mới của trang đã đổi link: so theo link trong (pageAliases.ts)
+  const page = SHOWN_MENU.map((i) => menuKey(i.link)).find((key) => key !== '/' && key.startsWith('/') && path.startsWith(internalPath(key)))
   if (page) return page
   // Bộ sưu tập, danh mục nhỏ và trang từng sản phẩm của web cũ nằm dưới mục Sản phẩm
   if (path.startsWith('/danh-muc-san-pham/') || path.startsWith('/san-pham/')) return PATHS.products

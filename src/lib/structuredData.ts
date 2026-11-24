@@ -2,6 +2,7 @@ import { BRAND, CONTACT, SOCIAL_LINKS } from '../data/brand'
 import type { ImageSource } from '../data/catalog'
 import type { Faq } from '../data/content'
 import { SITE_ORIGIN, withSlash } from '../data/links'
+import { publicPath } from '../data/pageAliases'
 import { FOOTER_TEXT } from '../data/pageText/footer'
 import { PAGE_FRAME_TEXT } from '../data/pageText/pageFrame'
 
@@ -15,8 +16,8 @@ type JsonLdObject = Record<string, unknown>
 const CONTEXT = 'https://schema.org'
 const LOGO_PATH = '/images/brand/logo-ecopillo.png'
 
-/** Đường dẫn trong web → link đầy đủ; link đã đầy đủ (ảnh bìa bài WordPress) giữ nguyên */
-export const absoluteUrl = (path: string): string => (/^https?:\/\//.test(path) ? path : `${SITE_ORIGIN}${path}`)
+/** Đường dẫn trong web → link đầy đủ (trang Ecopillo đã đổi link: link mới, pageAliases.ts); link đã đầy đủ (ảnh bìa bài WordPress) giữ nguyên */
+export const absoluteUrl = (path: string): string => (/^https?:\/\//.test(path) ? path : `${SITE_ORIGIN}${publicPath(path)}`)
 const pageUrl = (path: string): string => absoluteUrl(withSlash(path))
 
 /** Ảnh chia sẻ (og:image) của một trang: đường dẫn trong public/ và chữ mô tả ảnh */

@@ -18,7 +18,7 @@ export const REDIRECT_SET: EditableSet = {
   coTheTrong: true,
   nhom: 'Giao diện',
   ten: 'Chuyển hướng link',
-  moTa: 'Link cũ chuyển sang link mới (301), để link Google đã biết không ra trang lỗi: đổi đường dẫn bài viết, ngừng bán một mẫu, gộp trang. Chỉ ghi link trong web (bắt đầu bằng /). Không chuyển trang chủ, không chuyển vòng.',
+  moTa: 'Link cũ chuyển sang link mới (301), để link Google đã biết không ra trang lỗi: đổi đường dẫn bài viết, ngừng bán một mẫu, gộp trang. Chỉ ghi link trong web (bắt đầu bằng /). Không chuyển trang chủ, không chuyển vòng. Muốn một trang có sẵn của web mở ở link khác thì dùng Giao diện → Đổi link trang.',
   kieu: 'nhieu',
   goc: [],
   tieuDeDong: 'tu',

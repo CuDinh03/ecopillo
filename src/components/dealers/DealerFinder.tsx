@@ -7,6 +7,7 @@ import { Select, type SelectHandle } from '../ui/Select'
 import { buttonClass, Container } from '../ui/primitives'
 import { CONTACT, SHOWROOMS } from '../../data/brand'
 import { PATHS, SITE_ORIGIN } from '../../data/links'
+import { publicPath } from '../../data/pageAliases'
 import {
   FAR_KM,
   OFFICIAL_CLOSE,
@@ -75,7 +76,7 @@ export function LocalBusinessData() {
     telephone: s.hotline ?? CONTACT.hotlineDisplay,
     openingHours: `Mo-Su ${OFFICIAL_OPEN}-${OFFICIAL_CLOSE}`,
     // URL chuẩn sau khi gộp: trang Liên hệ mua hàng, neo điểm bán
-    url: `${SITE_ORIGIN}${PATHS.contact}#diem-ban`,
+    url: `${SITE_ORIGIN}${publicPath(PATHS.contact)}#diem-ban`,
   }))
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
 }

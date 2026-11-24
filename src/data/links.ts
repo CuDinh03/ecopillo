@@ -3,6 +3,7 @@ import { isCodePostHidden } from './codePostKeys'
 import { liveList, rowKey, type EditableField, type EditableSet } from './liveContent'
 import { liveCategories, liveHidden, liveNewCollections, liveNewPatternBySlug, liveNewProductBySlug, markLiveDiffers } from './liveData'
 import { liveRedirectFor } from './liveRedirects'
+import { isAliasPath } from './pageAliases'
 import { isPolicyHidden } from './policyKeys'
 
 /**
@@ -605,8 +606,9 @@ export const withSlash = (path: string): string => (path.endsWith('/') ? path : 
  */
 export const redirectFor = (rawPath: string, collections: readonly Collection[]): string | undefined => {
   const path = withSlash(rawPath)
-  // Chuyển hướng Ecopillo tự thêm ở Nội dung web (liveRedirects.ts) đứng trước bảng trong code
-  const live = liveRedirectFor(path)
+  // Chuyển hướng Ecopillo tự thêm ở Nội dung web (liveRedirects.ts) đứng trước bảng trong code; trừ link cũ / link mới của trang
+  // Ecopillo đã đổi link (pageAliases.ts): "Đổi link trang" đứng trên, như plugin (eco_nd_redirects)
+  const live = isAliasPath(path) ? undefined : liveRedirectFor(path)
   if (live) return live
   // Trang Ecopillo đã gỡ: danh mục ẩn / xoá (đợt E), sản phẩm, mẫu, bộ, bài viết (đợt E2)
   const hidden = hiddenPageTarget(path)
