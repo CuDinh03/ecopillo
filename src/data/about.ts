@@ -1,6 +1,6 @@
 import { staticImage, type ImageSource } from './catalog'
-import { anh, chu, definePageText, dsAnh, dsCap, dsDong } from './pageText/define'
-import { liveObject, type EditableField, type EditableSet } from './liveContent'
+import { anh, chu, definePageText, dsAnh, dsCap, dsDong, legacyPageText } from './pageText/define'
+import { liveList, liveObject, type EditableField, type EditableSet } from './liveContent'
 
 /**
  * Chữ và ảnh của câu chuyện thương hiệu, dùng chung cho phần "Về chúng tôi" ở trang chủ (components/home/About.tsx)
@@ -367,9 +367,15 @@ const flatSteps = BASE_PRODUCT_PROCESS.flatMap((stage) => stage.steps)
 export const { set: ABOUT_MORE_SET, text: ABOUT_MORE } = definePageText(
   'gioi-thieu-them',
   'Giới thiệu: giá trị, chứng nhận, quy trình',
-  'Giá trị cốt lõi, danh hiệu, đặc tính vải Lyocell, quy trình 7 bước, chữ các giấy chứng nhận và ghi nhận, ảnh sứ mệnh / tầm nhìn / thư (trang chủ và trang Giới thiệu). Ảnh giấy chứng nhận gửi bên làm web.',
+  'Giá trị cốt lõi, danh hiệu, đặc tính vải Lyocell, tiêu đề và ô Đạt / Không đạt của quy trình, chữ các giấy chứng nhận và ghi nhận, ảnh sứ mệnh / tầm nhìn / thư (trang chủ và trang Giới thiệu). Các bước quy trình sửa ở mục "Giới thiệu: các bước quy trình".',
   {
-    giaTriCotLoi: dsCap('Giá trị cốt lõi (4 ô)', ['title', 'text'], ['Tên', 'Câu mô tả'], BASE_CORE_VALUES.map((v) => ({ title: v.title, text: v.text }))),
+    giaTriCotLoi: dsCap(
+      'Giá trị cốt lõi (tối đa 4 ô)',
+      ['title', 'text'],
+      ['Tên', 'Câu mô tả'],
+      BASE_CORE_VALUES.map((v) => ({ title: v.title, text: v.text })),
+      'Mỗi dòng một ô, tối đa 4 ô (thẻ trang chủ xếp 2 × 2); biểu tượng lần lượt: huy chương, tái chế, bóng đèn, cộng đồng',
+    ),
     danhHieu: chu('Danh hiệu', BASE_AWARD_NAME),
     anhDanhHieu: anh('Ảnh danh hiệu', BASE_AWARD_IMAGE),
     anhSuMenh: anh('Ảnh thẻ Sứ mệnh (trang chủ)', BASE_MISSION_IMAGE),
@@ -379,8 +385,6 @@ export const { set: ABOUT_MORE_SET, text: ABOUT_MORE } = definePageText(
     anhThu2: anh('Ảnh thứ hai trong thư người sáng lập', BASE_FOUNDER_LETTER_IMAGES[1]),
     dacTinhLyocell: dsCap('Đặc tính vải Lyocell (4 ô)', ['title', 'text'], ['Chữ đậm', 'Câu mô tả'], BASE_LYOCELL_TRAITS.map((t) => ({ title: t.title, text: t.text }))),
     quyTrinhTieuDe: chu('Quy trình: tiêu đề', BASE_PRODUCT_PROCESS_TITLE),
-    quyTrinhChang: dsDong('Quy trình: tên 3 chặng', BASE_PRODUCT_PROCESS.map((stage) => stage.name), 'Đúng 3 dòng'),
-    quyTrinhBuoc: dsCap('Quy trình: 7 bước', ['title', 'text'], ['Tên bước', 'Mô tả'], flatSteps.map((step) => ({ title: step.title, text: step.text })), 'Đúng 7 dòng, theo thứ tự (bước 5 là bước duyệt mẫu)'),
     duyetDat: chu('Quy trình: bước duyệt, ô Đạt (nhãn | câu)', `${BASE_PROCESS_GATE_RESULTS.pass.label} | ${BASE_PROCESS_GATE_RESULTS.pass.text}`, 'Nhãn và câu cách nhau bằng dấu |'),
     duyetKhongDat: chu('Quy trình: bước duyệt, ô Không đạt (nhãn | câu)', `${BASE_PROCESS_GATE_RESULTS.fail.label} | ${BASE_PROCESS_GATE_RESULTS.fail.text}`, 'Nhãn và câu cách nhau bằng dấu |'),
     duyetQuayLai: chu('Quy trình: dòng quay lại dưới bước duyệt', 'Không đạt thì quay lại bước 1 (R&D)'),
@@ -405,7 +409,13 @@ const splitPair = (text: string, fallback: { label: string; text: string }) => {
   return label && rest ? { label, text: rest } : fallback
 }
 
-export const CORE_VALUES = zipText(BASE_CORE_VALUES, ABOUT_MORE.giaTriCotLoi, (b, t) => ({ ...b, title: t.title, text: t.text }))
+/** Giá trị cốt lõi: bao nhiêu dòng Ecopillo lưu thì bấy nhiêu ô (tối đa 4, thẻ trang chủ xếp 2 × 2), biểu tượng lặp lại theo vòng */
+const MAX_CORE_VALUES = 4
+export const CORE_VALUES = ABOUT_MORE.giaTriCotLoi.slice(0, MAX_CORE_VALUES).map((t, i) => ({
+  icon: BASE_CORE_VALUES[i % BASE_CORE_VALUES.length].icon,
+  title: t.title,
+  text: t.text,
+}))
 export const AWARD_NAME: string = ABOUT_MORE.danhHieu
 export const AWARD_IMAGE: ImageSource = ABOUT_MORE.anhDanhHieu
 export const MISSION_IMAGE: ImageSource = ABOUT_MORE.anhSuMenh
@@ -420,15 +430,95 @@ export const PROCESS_GATE_RESULTS = {
   fail: splitPair(ABOUT_MORE.duyetKhongDat, BASE_PROCESS_GATE_RESULTS.fail),
   backLine: ABOUT_MORE.duyetQuayLai,
 }
-export const PRODUCT_PROCESS: readonly ProcessStage[] = (() => {
+/* ——— Các bước quy trình: Ecopillo thêm, xoá, đổi thứ tự bước, đổi chặng (đợt G, 24/11/2026) ——— */
+
+interface ProcessRowInput {
+  /** Tên chặng; các bước liền nhau cùng tên chặng gom chung một chặng */
+  chang: string
+  title: string
+  text: string
+  /** 'co': bước duyệt mẫu (nổi bật, kèm ô Đạt / Không đạt) */
+  duyet: string
+}
+
+const rowsOfStages = (stages: readonly ProcessStage[]): readonly ProcessRowInput[] =>
+  stages.flatMap((stage) => stage.steps.map((step) => ({ chang: stage.name, title: step.title, text: step.text, duyet: step.isGate ? 'co' : 'khong' })))
+
+/**
+ * Trước 24/11/2026 tên chặng, chữ bước nằm ở hai ô của bộ "Giới thiệu: giá trị, chứng nhận, quy trình", ghép theo thứ tự.
+ * Đọc phần Ecopillo đã lưu ở đó làm dữ liệu ban đầu, để web không đổi khi Ecopillo chưa lưu bộ mới.
+ */
+const LEGACY_PROCESS = legacyPageText('gioi-thieu-them', {
+  quyTrinhChang: dsDong('Quy trình: tên chặng', BASE_PRODUCT_PROCESS.map((stage) => stage.name)),
+  quyTrinhBuoc: dsCap('Quy trình: các bước', ['title', 'text'], ['Tên bước', 'Mô tả'], flatSteps.map((step) => ({ title: step.title, text: step.text }))),
+})
+
+const LEGACY_STAGES: readonly ProcessStage[] = (() => {
   let index = 0
   return BASE_PRODUCT_PROCESS.map((stage, stageIndex) => ({
-    name: ABOUT_MORE.quyTrinhChang[stageIndex] ?? stage.name,
+    name: LEGACY_PROCESS.quyTrinhChang[stageIndex] ?? stage.name,
     steps: stage.steps.map((step) => {
-      const edited = ABOUT_MORE.quyTrinhBuoc[index++]
+      const edited = LEGACY_PROCESS.quyTrinhBuoc[index++]
       return edited ? { ...step, title: edited.title, text: edited.text } : step
     }),
   }))
+})()
+
+const PROCESS_FIELDS: readonly EditableField[] = [
+  { khoa: 'chang', nhan: 'Chặng', kieu: 'chu', batBuoc: true, goiY: 'Các bước liền nhau ghi cùng tên chặng thì gom chung một chặng (Chặng 1, 2, 3… tự đánh số)' },
+  { khoa: 'title', nhan: 'Tên bước', kieu: 'chu', batBuoc: true },
+  { khoa: 'text', nhan: 'Mô tả', kieu: 'doan', batBuoc: true },
+  {
+    khoa: 'duyet',
+    nhan: 'Kiểu bước',
+    kieu: 'chon',
+    batBuoc: true,
+    luaChon: ['khong', 'co'],
+    nhanLuaChon: ['Bước thường', 'Bước duyệt (nổi bật, kèm ô Đạt / Không đạt, dòng quay lại)'],
+  },
+]
+
+export const PRODUCT_PROCESS_SET: EditableSet = {
+  khoa: 'gioi-thieu-quy-trinh',
+  nhom: 'Trang giới thiệu, khách sạn, quà tặng',
+  ten: 'Giới thiệu: các bước quy trình',
+  moTa:
+    'Các bước của "Quy trình phát triển sản phẩm" (trang Giới thiệu, chương IV): thêm, xoá, đổi thứ tự bước, đổi tên chặng. Bước tự đánh số. ' +
+    'Tiêu đề quy trình, chữ ô Đạt / Không đạt, dòng quay lại sửa ở mục "Giới thiệu: giá trị, chứng nhận, quy trình".',
+  kieu: 'nhieu',
+  goc: rowsOfStages(BASE_PRODUCT_PROCESS),
+  truong: PROCESS_FIELDS,
+  tieuDeDong: 'title',
+}
+
+const PROCESS_ROWS = liveList<ProcessRowInput>(PRODUCT_PROCESS_SET.khoa, rowsOfStages(LEGACY_STAGES), PROCESS_FIELDS, () => ({
+  chang: '',
+  title: '',
+  text: '',
+  duyet: 'khong',
+}))
+
+/** Biểu tượng bước thường theo vòng (thứ tự gốc); bước duyệt luôn là chiếc khiên */
+const STEP_ICONS: readonly ProcessIcon[] = flatSteps.filter((step) => !step.isGate).map((step) => step.icon)
+const GATE_ICON: ProcessIcon = flatSteps.find((step) => step.isGate)?.icon ?? 'shield'
+
+/** Gom các bước liền nhau cùng tên chặng thành một chặng */
+export const PRODUCT_PROCESS: readonly ProcessStage[] = (() => {
+  let plain = 0
+  const stages: { name: string; steps: ProcessStep[] }[] = []
+  for (const row of PROCESS_ROWS) {
+    const isGate = row.duyet === 'co'
+    const step: ProcessStep = {
+      title: row.title,
+      text: row.text,
+      icon: isGate ? GATE_ICON : STEP_ICONS[plain++ % STEP_ICONS.length],
+      ...(isGate ? { isGate: true } : {}),
+    }
+    const last = stages[stages.length - 1]
+    if (last && last.name === row.chang) last.steps.push(step)
+    else stages.push({ name: row.chang, steps: [step] })
+  }
+  return stages
 })()
 const mergeCertificate = (b: Certificate, t: { name: string; text: string }): Certificate => ({
   ...b,

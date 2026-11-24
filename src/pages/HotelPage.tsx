@@ -1,6 +1,7 @@
 import { Fragment, useState } from 'react'
 import { CertificateBadges, PartnerLogos } from '../components/about/Recognition'
 import { MessageForm } from '../components/contact/MessageForm'
+import { HomeLink } from '../components/home/HomeLink'
 import { HotelProducts } from '../components/hotel/HotelProducts'
 import { WhiteGoods } from '../components/hotel/WhiteGoods'
 import { scrollToElement } from '../lib/scroll'
@@ -104,10 +105,10 @@ function HotelHero() {
         {/* Chỉ đoạn đầu: đủ 3 đoạn thì phần đầu cao thêm, ảnh bị cắt lệch (owner báo 17/10/2026). Đoạn 2, 3 ở phần nền chàm */}
         <p className="chu-deu mt-3 max-w-md text-body leading-relaxed text-ink-soft">{HOTEL_INTRO[0]}</p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <a href="#bao-gia" className={buttonClass('primary', 'lg')}>
+          <HomeLink to={HOTEL_PAGE.linkBaoGia} className={buttonClass('primary', 'lg')}>
             {HOTEL_PAGE.nutBaoGia}
             <Icon name="arrowRight" size={18} />
-          </a>
+          </HomeLink>
           <a href={CONTACT.hotlineTel} className={buttonClass('secondary', 'lg')}>
             <Icon name="phone" size={18} />
             {CONTACT.hotlineDisplay}

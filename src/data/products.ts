@@ -1084,9 +1084,6 @@ export const orderUrl = (collection: Collection, pattern?: Pattern, size?: SizeI
   return `${PATHS.order}?${params}`
 }
 
-/** Sản phẩm ứng với một dòng trong bảng giá ruột chăn gối ở trang chủ */
-export const productForEssential = (itemName: string): Product | undefined =>
-  PRODUCTS.find((p) => p.name === itemName || p.slug === slugify(`Ruột gối ${itemName}`))
 
 /* ——— Lọc theo mức giá (mẫu 1 "Mốc giá theo từng loại", owner chọn 15/10/2026; mẫu: docs/de-xuat-bo-loc-gia.html) ——— */
 

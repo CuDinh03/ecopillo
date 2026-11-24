@@ -684,6 +684,11 @@ export const collectionRange = (collection: Collection): { min: number; max: num
 /* ——— Ruột chăn, ruột gối, topper ——— */
 
 export interface EssentialItem {
+  /**
+   * Khoá sản phẩm (trang sản phẩm lẻ, hoặc bộ chăn hè Lyocell): ô trang chủ tra theo khoá, nên Ecopillo đổi tên trong Woo
+   * vẫn đúng ô, gỡ sản phẩm thì ô tự bỏ. Lúc build entry-server.tsx kiểm mọi khoá phải có trong products.ts
+   */
+  slug: string
   name: string
   note: string
   min: number
@@ -710,12 +715,12 @@ export const ESSENTIALS: readonly EssentialGroup[] = [
     items: [
       // Chị Phương (Zalo 11/11/2026): "cho thêm cái ruột gối pe hiển thị ra đầu vì nó rẻ, dễ hút khách".
       // Sản phẩm riêng RUOT_GOI_BONG_PE (products.ts): đổi giá thì sửa cả hai chỗ
-      { name: 'Bông PE', note: 'Nhẹ, thoáng, không hút ẩm', min: 180_000, max: 215_000 },
-      { name: 'Micro Fiber', note: 'Sợi siêu mảnh, êm vừa, dễ giặt', min: 380_000, max: 450_000 },
-      { name: 'Micro Plus', note: 'Bông cao cấp, đàn hồi tốt', min: 515_000, max: 550_000 },
-      { name: 'Tơ tằm', note: 'Mềm mượt, điều hoà nhiệt', min: 960_000, max: 960_000 },
-      { name: 'Cao su thiên nhiên', note: 'Nâng đỡ cổ, thoáng khí', min: 1_260_000, max: 1_260_000 },
-      { name: 'Lông vũ tự nhiên', note: 'Bồng bềnh, chuẩn khách sạn 5 sao', min: 2_880_000, max: 2_880_000 },
+      { slug: 'ruot-goi-bong-pe', name: 'Bông PE', note: 'Nhẹ, thoáng, không hút ẩm', min: 180_000, max: 215_000 },
+      { slug: 'ruot-goi-micro-fiber', name: 'Micro Fiber', note: 'Sợi siêu mảnh, êm vừa, dễ giặt', min: 380_000, max: 450_000 },
+      { slug: 'ruot-goi-micro-plus', name: 'Micro Plus', note: 'Bông cao cấp, đàn hồi tốt', min: 515_000, max: 550_000 },
+      { slug: 'ruot-goi-to-tam', name: 'Tơ tằm', note: 'Mềm mượt, điều hoà nhiệt', min: 960_000, max: 960_000 },
+      { slug: 'ruot-goi-cao-su-thien-nhien', name: 'Cao su thiên nhiên', note: 'Nâng đỡ cổ, thoáng khí', min: 1_260_000, max: 1_260_000 },
+      { slug: 'ruot-goi-long-vu-tu-nhien', name: 'Lông vũ tự nhiên', note: 'Bồng bềnh, chuẩn khách sạn 5 sao', min: 2_880_000, max: 2_880_000 },
     ],
   },
   {
@@ -725,9 +730,9 @@ export const ESSENTIALS: readonly EssentialGroup[] = [
     imageNote: 'Ảnh ruột chăn lông vũ phồng nhẹ',
     imageKey: 'chan-to-tam',
     items: [
-      { name: 'Chăn đông Micro Fiber', note: 'Ấm, nhẹ, giặt máy được', min: 1_680_000, max: 1_680_000 },
-      { name: 'Chăn tơ tằm', note: 'Mỏng nhẹ, thoáng, ít bám bụi', min: 2_650_000, max: 2_650_000 },
-      { name: 'Chăn lông vũ tự nhiên', note: 'Ấm sâu, siêu nhẹ cho mùa đông', min: 5_630_000, max: 5_630_000 },
+      { slug: 'chan-dong-micro-fiber', name: 'Chăn đông Micro Fiber', note: 'Ấm, nhẹ, giặt máy được', min: 1_680_000, max: 1_680_000 },
+      { slug: 'chan-to-tam', name: 'Chăn tơ tằm', note: 'Mỏng nhẹ, thoáng, ít bám bụi', min: 2_650_000, max: 2_650_000 },
+      { slug: 'chan-long-vu-tu-nhien', name: 'Chăn lông vũ tự nhiên', note: 'Ấm sâu, siêu nhẹ cho mùa đông', min: 5_630_000, max: 5_630_000 },
     ],
   },
   {
@@ -738,13 +743,13 @@ export const ESSENTIALS: readonly EssentialGroup[] = [
     imageNote: 'Ảnh topper trải trên đệm, chăn hè gấp cạnh',
     imageKey: 'topper-micro-fiber',
     items: [
-      { name: 'Chăn hè Lyocell', note: 'Chần bông mỏng, mát cho mùa hè', min: 1_380_000, max: 1_380_000 },
+      { slug: 'chan-he-lyocell', name: 'Chăn hè Lyocell', note: 'Chần bông mỏng, mát cho mùa hè', min: 1_380_000, max: 1_380_000 },
       // Chị Phương 11/11/2026 "thiếu chăn Ecool": sản phẩm riêng CHAN_HE_E_COOL (products.ts), đổi giá thì sửa cả hai chỗ
-      { name: 'Chăn hè E-Cool Ecopillo', note: 'Vải mát E-Cool, bông siêu nhẹ', min: 1_380_000, max: 1_380_000 },
-      { name: 'Topper Micro Fiber', note: 'Làm mềm mặt đệm cứng', min: 3_550_000, max: 4_200_000 },
+      { slug: 'chan-he-e-cool', name: 'Chăn hè E-Cool Ecopillo', note: 'Vải mát E-Cool, bông siêu nhẹ', min: 1_380_000, max: 1_380_000 },
+      { slug: 'topper-micro-fiber', name: 'Topper Micro Fiber', note: 'Làm mềm mặt đệm cứng', min: 3_550_000, max: 4_200_000 },
       // Giá từng cỡ ở BAO_VE_DEM, DIVAN (products.ts): đổi giá thì sửa cả hai chỗ
-      { name: 'Bảo vệ đệm chống thấm', note: 'Chống thấm, chống bụi, dễ tháo giặt', min: 675_000, max: 889_000 },
-      { name: 'Divan Ecopillo', note: 'Kệ giường khung gỗ thông, cao 30 cm', min: 6_580_000, max: 9_250_000 },
+      { slug: 'bao-ve-dem-chong-tham', name: 'Bảo vệ đệm chống thấm', note: 'Chống thấm, chống bụi, dễ tháo giặt', min: 675_000, max: 889_000 },
+      { slug: 'divan-ecopillo', name: 'Divan Ecopillo', note: 'Kệ giường khung gỗ thông, cao 30 cm', min: 6_580_000, max: 9_250_000 },
     ],
   },
 ]

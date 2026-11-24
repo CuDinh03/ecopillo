@@ -6,6 +6,7 @@ import { buttonClass, Container } from '../ui/primitives'
 import { Icon } from '../ui/Icon'
 import { chen } from '../../data/pageText/define'
 import { PRODUCT_DETAIL_TEXT } from '../../data/pageText/productUi'
+import { useInPageTarget } from '../../hooks/useInPageTarget'
 
 /**
  * Thư cảm ơn + ưu đãi 5% (mục 11 phản hồi 05/11/2026, owner chọn kiểu A).
@@ -14,7 +15,7 @@ import { PRODUCT_DETAIL_TEXT } from '../../data/pageText/productUi'
  */
 
 interface ThankYouLettersProps {
-  /** Trang Quà tặng: nút dẫn sang danh sách bộ chăn ga thay vì cuộn tới #bo-suu-tap */
+  /** Trang Quà tặng: nút dẫn sang danh sách bộ chăn ga thay vì nút chọn bộ sưu tập của trang chủ (#bo-suu-tap) */
   standalone?: boolean
 }
 
@@ -52,6 +53,8 @@ function CardButton({
 export function ThankYouLetters({ standalone = false }: ThankYouLettersProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [shown, setShown] = useState<ImageSource | null>(null)
+  // Dòng "quà doanh nghiệp vẫn ở phần trên": khối đó ẩn ở Bố cục trang Quà tặng thì bỏ cả dòng
+  const hasGiftsBlock = useInPageTarget(THANK_YOU.giftsBackTo)
 
   const open = (image: ImageSource) => {
     setShown(image)
@@ -105,18 +108,18 @@ export function ThankYouLetters({ standalone = false }: ThankYouLettersProps) {
                   <Icon name="arrowRight" size={17} />
                 </HomeLink>
               ) : (
-                <a href="#bo-suu-tap" className={buttonClass('secondary', 'md', 'justify-center')}>
+                <HomeLink to={THANK_YOU.chooseTo} className={buttonClass('secondary', 'md', 'justify-center')}>
                   {THANK_YOU.chooseLabel}
                   <Icon name="arrowRight" size={17} />
-                </a>
+                </HomeLink>
               )}
             </div>
-            {standalone && (
+            {standalone && hasGiftsBlock && (
               <p className="mt-4 text-meta text-ink-faint">
                 {THANK_YOU.giftsNote} ·{' '}
-                <a href="#qua-tang-doanh-nghiep" className="underline underline-offset-4 hover:text-deep-800">
+                <HomeLink to={THANK_YOU.giftsBackTo} className="underline underline-offset-4 hover:text-deep-800">
                   {THANK_YOU.giftsBack}
-                </a>
+                </HomeLink>
                 .
               </p>
             )}

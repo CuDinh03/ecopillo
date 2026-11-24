@@ -238,9 +238,9 @@ function MobileTop() {
         <Headline isMain className="w-[min(100%,22rem)]" />
         <CategoryRow size={MOBILE_ROW} />
         <div style={delay(160)} className="hero-in mt-5 grid w-full grid-cols-2 gap-2.5">
-          <a href="#bo-suu-tap" className={buttonClass('primary', 'md', 'px-3')}>
+          <HomeLink to={HOME_TEXT.linkXemBoSuuTap} className={buttonClass('primary', 'md', 'px-3')}>
             {HOME_TEXT.nutXemBoSuuTap}
-          </a>
+          </HomeLink>
           {/* Mục 3: thay "Đặt hàng online"; điện thoại rút còn "Gọi ngay" để hai nút vẫn một hàng (owner chốt 17/10/2026) */}
           <a href={CONTACT.hotlineTel} className={buttonClass('light', 'md', 'px-3')}>
             <Icon name="phone" size={16} />
@@ -272,10 +272,10 @@ export function Hero() {
             <Headline isMain={false} className="-ml-[2.7cqi] w-[clamp(18.5rem,39.15cqi,50rem)]" />
             <CategoryRow size={DESKTOP_ROW} />
             <div style={delay(160)} className="hero-in mt-[clamp(1.25rem,2.4cqi,2.5rem)] flex gap-3">
-              <a href="#bo-suu-tap" className={buttonClass('primary', 'md', 'xl:h-14 xl:px-7 xl:text-base')}>
+              <HomeLink to={HOME_TEXT.linkXemBoSuuTap} className={buttonClass('primary', 'md', 'xl:h-14 xl:px-7 xl:text-base')}>
                 {HOME_TEXT.nutXemBoSuuTap}
                 <Icon name="arrowRight" size={18} />
-              </a>
+              </HomeLink>
               <a href={CONTACT.hotlineTel} className={buttonClass('secondary', 'md', 'xl:h-14 xl:px-7 xl:text-base')}>
                 <Icon name="phone" size={18} />
                 {HOME_TEXT.nutGoiMayTinh}

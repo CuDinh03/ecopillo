@@ -41,7 +41,7 @@ export function MattressPicker() {
         </div>
 
         <div className="mt-8 grid gap-5 lg:mt-10 lg:grid-cols-[1.05fr_1fr] lg:gap-6">
-          {/* Mẫu lớn Eco Luxe — [XÁC NHẬN mẫu đặt lớn] */}
+          {/* Mẫu lớn: Ecopillo chọn ở Nội dung web (gốc Eco Luxe) */}
           <Link
             to={MATTRESS_FEATURED.to}
             data-reveal
@@ -70,9 +70,9 @@ export function MattressPicker() {
           <div data-reveal style={revealDelay(1)} className="flex flex-col rounded-[1.75rem] bg-ivory p-5 shadow-[var(--shadow-soft)] sm:p-6">
             <p className="eyebrow">{MATTRESS_TEXT.cauHoi}</p>
             <ul className="mt-3.5 flex flex-1 flex-col divide-y divide-line">
-              {MATTRESS_PREFERENCES.map((row) => (
-                <li key={row.to}>
-                  <Link
+              {MATTRESS_PREFERENCES.map((row, i) => (
+                <li key={`${row.to}-${i}`}>
+                  <HomeLink
                     to={row.to}
                     className="group -mx-2 flex gap-3.5 rounded-xl px-2 py-3.5 transition-colors hover:bg-mist-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mist-600 sm:gap-4"
                   >
@@ -90,7 +90,7 @@ export function MattressPicker() {
                       <span className="mt-0.5 line-clamp-2 text-meta leading-snug text-ink-soft">{row.text}</span>
                       <span className="tabular mt-1.5 block text-label font-semibold text-deep-900">{chen(HOME_TEXT.giaTu, { gia: formatVND(row.min) })}</span>
                     </span>
-                  </Link>
+                  </HomeLink>
                 </li>
               ))}
             </ul>
@@ -103,14 +103,14 @@ export function MattressPicker() {
             className="-mx-5 flex gap-2 overflow-x-auto px-5 py-0.5 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
           >
             {/* Chị Phương 09/11/2026: "cho nền hoặc chữ đậm hơn": chữ đậm + viền chàm mảnh để nút nổi khỏi nền xanh */}
-            {MATTRESS_CHIPS.map((chip) => (
-              <li key={chip.to} className="shrink-0">
-                <Link
+            {MATTRESS_CHIPS.map((chip, i) => (
+              <li key={`${chip.to}-${i}`} className="shrink-0">
+                <HomeLink
                   to={chip.to}
                   className="inline-flex h-10 items-center rounded-full bg-ivory px-4 text-small font-semibold text-deep-900 shadow-[var(--shadow-soft)] ring-1 ring-deep-900/15 transition duration-300 ease-[var(--ease-soft)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)]"
                 >
                   {chip.label}
-                </Link>
+                </HomeLink>
               </li>
             ))}
           </ul>

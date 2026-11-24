@@ -8,7 +8,8 @@ const img = (src: string, alt: string) => ({ src, srcSet: '', alt })
 const link = (nhan: string, goc: string, goiY?: string): TextField<string> => ({ nhan, kieu: 'link', goc, goiY })
 
 /** Ruột chăn gối trang chủ: câu nhỏ dưới tên từng ô, theo thứ tự ô (ESSENTIALS trong catalog.ts) */
-const NOTE_HINT = 'Mỗi dòng một ô, đúng thứ tự ô trên web; thiếu dòng thì các ô cuối dùng câu gốc'
+const NOTE_HINT =
+  'Mỗi dòng một ô, theo thứ tự ô gốc (ô của sản phẩm đã gỡ trong Woo tự ẩn, dòng của nó vẫn giữ chỗ); thiếu dòng thì các ô cuối dùng câu gốc. Sản phẩm mới đăng trong Woo ở trang danh mục của nhóm tự thêm ô cuối, câu nhỏ là câu đầu của mô tả'
 
 /**
  * Chữ, ảnh trang chủ (trừ banner, đã có bộ riêng; chữ dùng chung với trang Giới thiệu, Khách sạn nằm ở bộ của trang đó).
@@ -20,6 +21,11 @@ export const { set: HOME_TEXT_SET, text: HOME_TEXT } = definePageText(
   'Tiêu đề, đoạn dẫn, ảnh, link, chữ nút các khối trang chủ: hai nút dưới banner, dải Hệ sinh thái, dải cam kết, chất liệu, về chúng tôi, ruột chăn gối, sự kiện, khách sạn, hệ thống phân phối, hỏi đáp, nhận xét. Banner sửa ở bộ Banner, phim ở bộ Phim thương hiệu, khối đệm, bộ sưu tập, thư cảm ơn ở bộ riêng.',
   {
     nutXemBoSuuTap: chu('Banner: chữ nút Xem bộ sưu tập', 'Xem bộ sưu tập'),
+    linkXemBoSuuTap: link(
+      'Banner: link nút Xem bộ sưu tập',
+      '#bo-suu-tap',
+      '#bo-suu-tap là khối Bộ sưu tập chăn ga ngay trên trang chủ; cũng nhận /duong-dan/ hay https://…. Khối đó đã ẩn ở Bố cục thì nút tự ẩn',
+    ),
     nutGoiDienThoai: chu('Banner: chữ nút gọi (điện thoại, ngắn để hai nút một hàng)', 'Gọi ngay'),
     nutGoiMayTinh: chu('Banner: chữ nút gọi (máy tính)', 'Gọi ngay cho chúng tôi'),
     giaTu: chu('Chữ giá thấp nhất trên các ô (bộ sưu tập chăn ga, đệm, ruột chăn gối)', 'từ {gia}', 'Giữ {gia} là chỗ hiện giá'),

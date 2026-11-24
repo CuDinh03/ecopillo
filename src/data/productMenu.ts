@@ -1,4 +1,5 @@
 import {
+  ALL_COLLECTIONS,
   BEDDING_SETS,
   collectionById,
   patternImage,
@@ -131,16 +132,12 @@ const group = (g: Omit<MenuGroup, 'min'>): MenuGroup => {
   return { ...g, rows, ...(g.sections ? { sections } : {}), min: groupMin(allRows) }
 }
 
-/** Bộ sưu tập Ecopillo tạo trong Woo (đợt C) theo kiểu: vào cuối nhóm tương ứng của ô xổ (đợt E2) */
-const newSetRows = (kinds: readonly string[]): MenuRow[] =>
-  BEDDING_SETS.filter((c) => c.livePath && kinds.includes(c.kind)).map((c) => collectionRow(c.id))
-
 const DEM_PATH = '/danh-muc-san-pham/dem-ecopillo/'
 const GA_PHU_PATH = '/danh-muc-san-pham/san-pham/bo-ga-phu/'
 const RUOT_PATH = '/danh-muc-san-pham/san-pham/ruot-chan-goi/'
 const CHAN_HE_PATH = '/danh-muc-san-pham/san-pham/chan-he/'
 
-/** Thứ tự ga phủ: cao cấp trước (Doris → Sweet → Liora → Rosa → Tera → Vera), khớp mục 8 */
+/** Thứ tự ga phủ gốc: cao cấp trước (Doris → Sweet → Liora → Rosa → Tera → Vera), khớp mục 8. Ecopillo đổi ở Nội dung web */
 const GA_PHU_ORDER: readonly string[] = [
   'eco-doris',
   'eco-sweet',
@@ -150,7 +147,7 @@ const GA_PHU_ORDER: readonly string[] = [
   'eco-vera',
 ]
 
-/** Bộ có tuỳ chọn ga chun chần (Rosa, Tera, Vera; mục 28) */
+/** Bộ có tuỳ chọn ga chun chần (Rosa, Tera, Vera; mục 28). Ecopillo đổi ở Nội dung web */
 const GA_CHUN_CHAN_ORDER: readonly string[] = ['eco-rosa', 'eco-tera', 'eco-vera']
 
 
@@ -158,7 +155,7 @@ const GA_CHUN_CHAN_ORDER: readonly string[] = ['eco-rosa', 'eco-tera', 'eco-vera
 
 /**
  * Ba nhóm Ecopillo tự sửa dòng (owner 18/11/2026: "cho tự sửa", sau góp ý chị Phương chuyển ruột chăn khỏi nhóm Chăn).
- * Bộ chăn ga (giá ga chun chần tính riêng) và Sản phẩm khách sạn vẫn trong code.
+ * Các bộ của nhóm Bộ chăn ga (giá ga chun chần tính riêng) sửa ở bộ riêng (PRODUCT_MENU_SETS_SET), dòng Sản phẩm khách sạn ở MENU_TEXT.
  */
 const EDITABLE_GROUPS = [
   { id: 'dem', title: 'Đệm Ecopillo' },
@@ -239,7 +236,7 @@ export const PRODUCT_MENU_SET: EditableSet = {
   ten: 'Ô xổ "Sản phẩm" trên thanh đầu trang',
   moTa:
     'Các dòng của ba nhóm Đệm Ecopillo, Đồ ruột, Chăn đông và chăn hè (cả trên điện thoại). Đổi chữ, đổi trang mở khi bấm, chuyển dòng sang nhóm khác, thêm, xoá, đổi thứ tự. ' +
-    'Chăn đăng mới trong WooCommerce tự thêm cuối nhóm Chăn. Nhóm Bộ chăn ga và Sản phẩm khách sạn không sửa ở đây.',
+    'Đệm, ruột gối, chăn đăng mới trong WooCommerce tự thêm cuối nhóm của nó (trừ khi đã có dòng trỏ tới trang danh mục chứa nó). Các bộ trong nhóm Bộ chăn ga sửa ở mục riêng; dòng Sản phẩm khách sạn ở mục tên nhóm, ảnh, link cuối.',
   kieu: 'nhieu',
   goc: BASE_MENU_ROWS,
   truong: MENU_ROW_FIELDS,
@@ -266,10 +263,84 @@ const menuRowOf = (input: MenuRowInput): MenuRow | undefined => {
 const newChanRows = (rows: readonly MenuRowInput[]): MenuRow[] =>
   PRODUCTS.filter((p) => p.listings && p.category === 'chan' && !rows.some((r) => r.trang === productTarget(p.slug))).map((p) => productRow(p.slug))
 
+/** Nhóm của sản phẩm mới đăng trong Woo theo loại (chăn đã có newChanRows) */
+const NEW_PRODUCT_GROUP: Partial<Record<Product['category'], EditableGroupId>> = { dem: 'dem', goi: 'do-ruot' }
+
+/**
+ * Đệm, ruột gối Ecopillo đăng mới trong Woo: thêm cuối nhóm Đệm / Đồ ruột như chăn mới, trừ khi đã có dòng trỏ tới chính nó
+ * hoặc tới trang danh mục chứa nó (ví dụ đệm lò xo mới đã nằm trong dòng "Đệm lò xo", giá "từ" tính cả nó)
+ */
+const newProductRows = (id: EditableGroupId, rows: readonly MenuRowInput[]): MenuRow[] =>
+  PRODUCTS.filter(
+    (p) =>
+      p.listings &&
+      NEW_PRODUCT_GROUP[p.category] === id &&
+      !rows.some((r) => r.trang === productTarget(p.slug) || p.listings?.some((path) => r.trang === listingTarget(path))),
+  ).map((p) => productRow(p.slug))
+
 const editableRows = (id: EditableGroupId): MenuRow[] => {
   const rows = MENU_ROWS.filter((r) => r.nhom === id).flatMap((r) => menuRowOf(r) ?? [])
-  return id === 'chan' ? [...rows, ...newChanRows(MENU_ROWS)] : rows
+  return [...rows, ...(id === 'chan' ? newChanRows(MENU_ROWS) : newProductRows(id, MENU_ROWS))]
 }
+
+/* ---------------------------------------------------------------- Bộ chăn ga: bộ nào ở nhóm con nào, thứ tự (Nội dung web) */
+
+type SetSectionId = 'ga-phu' | 'ga-chun-chan' | 'ga-chun'
+
+interface SetRowInput {
+  nhom: SetSectionId
+  bo: string
+}
+
+const SET_SECTIONS: readonly { id: SetSectionId; label: string }[] = [
+  { id: 'ga-phu', label: 'Bộ ga phủ' },
+  { id: 'ga-chun-chan', label: 'Bộ ga phủ và chun chần (giá ga chun chần)' },
+  { id: 'ga-chun', label: 'Bộ ga chun' },
+]
+
+/** Lựa chọn: các bộ chăn ga có trong code; bộ Ecopillo tạo trong Woo tự vào cuối nhóm con theo kiểu ga */
+const SET_CHOICES = ALL_COLLECTIONS.filter((c) => c.kind !== 'chan-he' && !c.livePath)
+
+const BASE_SET_ROWS: readonly SetRowInput[] = [
+  ...GA_PHU_ORDER.map((bo) => ({ nhom: 'ga-phu' as const, bo })),
+  ...GA_CHUN_CHAN_ORDER.map((bo) => ({ nhom: 'ga-chun-chan' as const, bo })),
+  { nhom: 'ga-chun', bo: 'eco-flora' },
+]
+
+const SET_ROW_FIELDS: readonly EditableField[] = [
+  {
+    khoa: 'nhom',
+    nhan: 'Nhóm con',
+    kieu: 'chon',
+    batBuoc: true,
+    luaChon: SET_SECTIONS.map((s) => s.id),
+    nhanLuaChon: SET_SECTIONS.map((s) => s.label),
+    goiY: 'Nhóm con "ga phủ và chun chần" ghi giá thấp nhất của ga chun chần',
+  },
+  { khoa: 'bo', nhan: 'Bộ sưu tập', kieu: 'chon', batBuoc: true, luaChon: SET_CHOICES.map((c) => c.id), nhanLuaChon: SET_CHOICES.map((c) => c.name) },
+]
+
+export const PRODUCT_MENU_SETS_SET: EditableSet = {
+  khoa: 'menu-san-pham-bo-chan-ga',
+  nhom: 'Sản phẩm',
+  ten: 'Ô xổ "Sản phẩm": các bộ trong nhóm Bộ chăn ga',
+  moTa:
+    'Bộ nào nằm ở nhóm con nào của nhóm Bộ chăn ga (ga phủ; ga phủ và chun chần; ga chun), theo thứ tự nào. Thêm, xoá, đổi thứ tự ở đây. ' +
+    'Bộ tạo mới trong WooCommerce tự vào cuối nhóm con theo kiểu ga. Tên nhóm con sửa ở mục "Ô xổ Sản phẩm: tên nhóm, ảnh, link cuối".',
+  kieu: 'nhieu',
+  goc: BASE_SET_ROWS,
+  truong: SET_ROW_FIELDS,
+  tieuDeDong: 'bo',
+}
+
+const SET_ROWS = liveList<SetRowInput>(PRODUCT_MENU_SETS_SET.khoa, BASE_SET_ROWS, SET_ROW_FIELDS, () => ({ nhom: '', bo: '' }) as unknown as SetRowInput)
+
+/** Bộ của một nhóm con theo thứ tự Ecopillo xếp; một bộ ghi hai lần trong cùng nhóm con thì giữ lần đầu */
+const setIdsOf = (section: SetSectionId): readonly string[] => [...new Set(SET_ROWS.filter((r) => r.nhom === section).map((r) => r.bo))]
+
+/** Bộ Ecopillo tạo trong Woo chưa có dòng nào ở nhóm con đó */
+const newSetRowsFor = (section: SetSectionId, kinds: readonly string[]): MenuRow[] =>
+  BEDDING_SETS.filter((c) => c.livePath && kinds.includes(c.kind) && !setIdsOf(section).includes(c.id)).map((c) => collectionRow(c.id))
 
 /* ---------------------------------------------------------------- Chữ, ảnh, link Ecopillo tự sửa (Nội dung web) */
 
@@ -280,8 +351,10 @@ export const { set: PRODUCT_MENU_TEXT_SET, text: MENU_TEXT } = definePageText(
   'Tên và ảnh năm nhóm của ô xổ Sản phẩm (máy tính và điện thoại), tên ba nhóm con của Bộ chăn ga, dòng Sản phẩm khách sạn, chữ "từ" trước giá, link cuối ô xổ. Các dòng của nhóm Đệm, Đồ ruột, Chăn sửa ở mục "Ô xổ Sản phẩm trên thanh đầu trang".',
   {
     nhomDem: chu('Nhóm 1: tên', EDITABLE_GROUPS[0].title),
+    linkDem: lienKet('Nhóm 1: link khi bấm tên, ảnh nhóm', DEM_PATH),
     anhDem: anh('Nhóm 1: ảnh', productImage('dem-lo-xo-tui-cao-cap-eco-luxe-2', 'Đệm Ecopillo')),
     nhomBoChanGa: chu('Nhóm 2: tên', 'Bộ chăn ga Ecopillo'),
+    linkBoChanGa: lienKet('Nhóm 2: link khi bấm tên, ảnh nhóm', GA_PHU_PATH),
     anhBoChanGa: anh('Nhóm 2: ảnh', patternImage('ED25', 'Bộ chăn ga Ecopillo')),
     // "Bộ" đứng trước (chị Phương 18/11/2026): không có thì khách tưởng giá là của riêng một tấm ga
     nhomGaPhu: chu('Nhóm 2: tên nhóm con ga phủ', 'Bộ ga phủ'),
@@ -291,6 +364,7 @@ export const { set: PRODUCT_MENU_TEXT_SET, text: MENU_TEXT } = definePageText(
     nhomDoRuot: chu('Nhóm 3: tên', EDITABLE_GROUPS[1].title),
     anhDoRuot: anh('Nhóm 3: ảnh', productImage('ruot-goi-micro-plus', 'Đồ ruột Ecopillo')),
     nhomChan: chu('Nhóm 4: tên', EDITABLE_GROUPS[2].title),
+    linkChan: lienKet('Nhóm 4: link khi bấm tên, ảnh nhóm', CHAN_HE_PATH),
     anhChan: anh('Nhóm 4: ảnh', patternImage('ER09', 'Chăn đông và chăn hè')),
     nhomKhachSan: chu('Nhóm 5: tên', 'Sản phẩm khách sạn'),
     anhKhachSan: anh('Nhóm 5: ảnh', HOTEL_PHOTOS.sheets),
@@ -311,30 +385,30 @@ export const PRODUCT_MENU: readonly MenuGroup[] = [
   group({
     id: 'dem',
     title: MENU_TEXT.nhomDem,
-    to: DEM_PATH,
+    to: MENU_TEXT.linkDem,
     image: MENU_TEXT.anhDem,
     rows: editableRows('dem'),
   }),
   group({
     id: 'bo-chan-ga',
     title: MENU_TEXT.nhomBoChanGa,
-    to: GA_PHU_PATH,
+    to: MENU_TEXT.linkBoChanGa,
     image: MENU_TEXT.anhBoChanGa,
     rows: [],
     sections: [
       {
         title: MENU_TEXT.nhomGaPhu,
-        rows: [...GA_PHU_ORDER.map(collectionRow), ...newSetRows(['ga-phu', 'chan-ga'])],
+        rows: [...setIdsOf('ga-phu').map(collectionRow), ...newSetRowsFor('ga-phu', ['ga-phu', 'chan-ga'])],
       },
       {
         title: MENU_TEXT.nhomGaChunChan,
-        // Rosa, Tera, Vera — chọn ga chun chần ở bước kích thước khi đặt
+        // Gốc Rosa, Tera, Vera — chọn ga chun chần ở bước kích thước khi đặt
         note: MENU_TEXT.ghiChuGaChunChan,
-        rows: GA_CHUN_CHAN_ORDER.map(fittedRow),
+        rows: setIdsOf('ga-chun-chan').map(fittedRow),
       },
       {
         title: MENU_TEXT.nhomGaChun,
-        rows: [collectionRow('eco-flora'), ...newSetRows(['ga-chun'])],
+        rows: [...setIdsOf('ga-chun').map(collectionRow), ...newSetRowsFor('ga-chun', ['ga-chun'])],
       },
     ],
   }),
@@ -349,7 +423,7 @@ export const PRODUCT_MENU: readonly MenuGroup[] = [
   group({
     id: 'chan',
     title: MENU_TEXT.nhomChan,
-    to: CHAN_HE_PATH,
+    to: MENU_TEXT.linkChan,
     image: MENU_TEXT.anhChan,
     rows: editableRows('chan'),
   }),

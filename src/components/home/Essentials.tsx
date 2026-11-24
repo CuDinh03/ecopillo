@@ -4,7 +4,7 @@ import { HomeLink } from './HomeLink'
 import { CONTACT } from '../../data/brand'
 import { collectionById, coverOf, ESSENTIALS, type EssentialItem, type ImageSource } from '../../data/catalog'
 import { collectionPath, hiddenPageTarget, PATHS } from '../../data/links'
-import { productForEssential, productPath } from '../../data/products'
+import { isProductShown, productBySlug, productPath, PRODUCTS } from '../../data/products'
 import { formatVND } from '../../lib/format'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
@@ -20,12 +20,12 @@ import { chen } from '../../data/pageText/define'
  * Máy tính thấy 4 ô một lúc (ruột gối 5 món thì vuốt sang), điện thoại vuốt ngang gần 2 ô. Bấm ô sang trang sản phẩm.
  */
 
-/** Dòng chăn hè trong ESSENTIALS (catalog.ts) tra theo tên gốc; tên hiện trên ô Ecopillo sửa (HOME_TEXT.chanHeTen) */
-const SUMMER_QUILT_ITEM = 'Chăn hè Lyocell'
-const SUMMER_QUILT = collectionById('chan-he-lyocell')
+/** Ô chăn hè trong ESSENTIALS (catalog.ts) là bộ sưu tập có phối màu; tên hiện trên ô Ecopillo sửa (HOME_TEXT.chanHeTen) */
+const SUMMER_QUILT_SLUG = 'chan-he-lyocell'
+const SUMMER_QUILT = collectionById(SUMMER_QUILT_SLUG)
 
 /**
- * Chữ, link từng nhóm Ecopillo sửa (HOME_TEXT): tên, câu dưới tên theo thứ tự nhóm; câu nhỏ từng ô theo thứ tự ô.
+ * Chữ, link từng nhóm Ecopillo sửa (HOME_TEXT): tên, câu dưới tên theo thứ tự nhóm; câu nhỏ từng ô theo thứ tự ô gốc.
  * "Xem tất cả" mặc định là trang danh mục nhỏ (LISTINGS trong links.ts) có đúng các sản phẩm của nhóm.
  */
 const GROUP_TEXT: Readonly<Record<string, { to: string; notes: readonly string[] }>> = {
@@ -35,6 +35,7 @@ const GROUP_TEXT: Readonly<Record<string, { to: string; notes: readonly string[]
 }
 
 interface EssentialTile {
+  key: string
   name: string
   note: string
   price: string
@@ -47,30 +48,50 @@ interface EssentialTile {
 const priceText = (item: { min: number; max: number }): string =>
   item.min === item.max ? formatVND(item.min) : chen(HOME_TEXT.giaTu, { gia: formatVND(item.min) })
 
-/** Chăn hè là bộ sưu tập có phối màu, không phải sản phẩm lẻ: ảnh bìa và trang của bộ đó */
-const toTile = (item: EssentialItem, note: string): EssentialTile => {
-  const base = { name: item.name, note, price: priceText(item) }
-  if (item.name === SUMMER_QUILT_ITEM && SUMMER_QUILT) {
+/**
+ * Một ô theo khoá sản phẩm (đổi tên trong Woo không làm lạc ô). Sản phẩm Ecopillo đã gỡ trong Woo (nháp, thùng rác: đợt E2)
+ * thì không có ô. Chăn hè là bộ sưu tập có phối màu, không phải sản phẩm lẻ: ảnh bìa và trang của bộ đó.
+ */
+const toTile = (item: EssentialItem, note: string): EssentialTile | undefined => {
+  if (!isProductShown(item.slug)) return undefined
+  const base = { key: item.slug, name: item.name, note, price: priceText(item) }
+  if (item.slug === SUMMER_QUILT_SLUG && SUMMER_QUILT) {
     return { ...base, name: HOME_TEXT.chanHeTen, to: collectionPath(SUMMER_QUILT), image: coverOf(SUMMER_QUILT), imageNote: HOME_TEXT.chanHeTen }
   }
-  const product = productForEssential(item.name)
+  const product = productBySlug(item.slug)
+  if (!product) return undefined
   // Tên trong ESSENTIALS ngắn ("Micro Fiber"), tên ô dùng tên đầy đủ của trang sản phẩm ("Ruột gối Micro Fiber")
-  // Giá lấy theo trang sản phẩm khi có: Ecopillo sửa giá trong WooCommerce thì ô này đổi theo (liveData.ts)
-  return product
-    ? { ...base, price: priceText(product), name: product.name, to: productPath(product), image: product.image, imageNote: product.imageNote }
-    : { ...base, to: PATHS.products, imageNote: item.name }
+  // Giá lấy theo trang sản phẩm: Ecopillo sửa giá trong WooCommerce thì ô này đổi theo (liveData.ts)
+  return { ...base, price: priceText(product), name: product.name, to: productPath(product), image: product.image, imageNote: product.imageNote }
 }
+
+/** Câu đầu của mô tả sản phẩm mới (ô nhỏ chỉ đủ chỗ một câu ngắn) */
+const firstSentence = (text: string): string => text.split(/(?<=[.!?])\s/)[0] ?? text
+
+/** Sản phẩm Ecopillo đăng mới trong Woo ở trang danh mục của nhóm (link "Xem tất cả"): thêm ô cuối nhóm */
+const newTiles = (to: string, taken: ReadonlySet<string>): EssentialTile[] =>
+  PRODUCTS.filter((p) => p.listings?.includes(to) && !taken.has(p.slug)).map((p) => ({
+    key: p.slug,
+    name: p.name,
+    note: firstSentence(p.summary),
+    price: priceText(p),
+    to: productPath(p),
+    image: p.image,
+    imageNote: p.imageNote,
+  }))
 
 const GROUPS = ESSENTIALS.map((g, i) => {
   const text = GROUP_TEXT[g.id]
   const label = HOME_TEXT.ruotNhom[i]
+  const to = text?.to ?? PATHS.products
+  // Ô trỏ tới sản phẩm / trang Ecopillo đã gỡ trong WordPress (đợt E2) thì bỏ
+  const tiles = g.items.flatMap((item, j) => toTile(item, text?.notes[j] ?? item.note) ?? []).filter((tile) => !hiddenPageTarget(tile.to))
   return {
     id: g.id,
     title: label?.title ?? g.title,
     subtitle: label?.subtitle ?? g.subtitle,
-    to: text?.to ?? PATHS.products,
-    // Ô trỏ tới sản phẩm / trang Ecopillo đã gỡ trong WordPress (đợt E2) thì bỏ
-    tiles: g.items.map((item, j) => toTile(item, text?.notes[j] ?? item.note)).filter((tile) => !hiddenPageTarget(tile.to)),
+    to,
+    tiles: [...tiles, ...newTiles(to, new Set(g.items.map((item) => item.slug)))],
   }
 })
 
@@ -183,7 +204,7 @@ function EssentialRow({ group }: { group: Group }) {
         className="-mx-5 mt-4 grid scroll-px-5 auto-cols-[46%] grid-flow-col gap-3 overflow-x-auto overscroll-x-contain px-5 pt-1 pb-3 [scrollbar-width:none] snap-x snap-mandatory sm:mx-0 sm:scroll-px-0 sm:auto-cols-[calc((100%-2*1rem)/3)] sm:gap-4 sm:px-0 lg:auto-cols-[calc((100%-3*1.25rem)/4)] lg:gap-5"
       >
         {group.tiles.map((tile, i) => (
-          <li key={tile.name} data-reveal style={revealDelay(i)} className="min-w-0 snap-start">
+          <li key={tile.key} data-reveal style={revealDelay(i)} className="min-w-0 snap-start">
             <EssentialCard tile={tile} />
           </li>
         ))}

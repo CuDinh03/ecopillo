@@ -1,4 +1,4 @@
-import { anh, chu, definePageText, doan, dsCap, dsDong, type PageImage } from './define'
+import { anh, chu, definePageText, doan, dsCap, dsDong, link, type PageImage } from './define'
 
 /** Ảnh quà tặng doanh nghiệp (Ecopillo gửi 27/10/2026, ảnh vuông, nén bằng tools/nen-anh-qua-tang-2026-10-27.py) */
 const giftImage = (key: string, alt: string): PageImage => ({
@@ -11,7 +11,7 @@ const giftImage = (key: string, alt: string): PageImage => ({
 export const { set: GIFTS_TEXT_SET, text: GIFTS_TEXT } = definePageText(
   'qua-tang',
   'Trang Quà tặng và sự kiện',
-  'Tiêu đề, đoạn dẫn, gợi ý chọn quà theo dịp, dịch vụ tặng quà của trang Quà tặng và sự kiện.',
+  'Tiêu đề, đoạn dẫn, nhãn phần chọn quà theo dịp, dịch vụ tặng quà của trang Quà tặng và sự kiện. Các thẻ dịp (tên, câu, bộ gợi ý) sửa ở mục "Quà tặng: chọn theo từng dịp".',
   {
     // Mô tả viết tay 08/11/2026 (C2)
     moTaGoogle: doan(
@@ -26,6 +26,11 @@ export const { set: GIFTS_TEXT_SET, text: GIFTS_TEXT } = definePageText(
       'Ecopillo gửi kèm thư cảm ơn và ưu đãi 5% cho đơn hàng tiếp theo. Và một bộ chăn ga đẹp cũng là món quà được dùng mỗi ngày, nhắc người nhận nhớ tới Quý khách.',
     ),
     nutDau: chu('Đầu trang: chữ nút', 'Xem thư cảm ơn'),
+    linkNutDau: link(
+      'Đầu trang: link nút',
+      '#qua-tang',
+      '#qua-tang là khối Thư cảm ơn cùng trang; cũng nhận /duong-dan/ hay https://…. Khối đó đã ẩn ở Bố cục thì nút tự ẩn',
+    ),
     quaGiaTu: chu('Quà doanh nghiệp: chữ trước giá', 'từ'),
     anhQuangCao: anh(
       'Quà doanh nghiệp: ảnh quảng cáo lớn (hiện trọn, không chú thích)',
@@ -52,17 +57,6 @@ export const { set: GIFTS_TEXT_SET, text: GIFTS_TEXT } = definePageText(
     ),
     dipNhan: chu('Chọn quà: nhãn nhỏ', 'Gợi ý chọn quà'),
     dipTieuDe: chu('Chọn quà: tiêu đề', 'Chọn theo từng dịp'),
-    dip: dsCap(
-      'Chọn quà: 3 dịp (bộ sưu tập gợi ý giữ theo thứ tự)',
-      ['title', 'text'],
-      ['Tên dịp', 'Câu gợi ý'],
-      [
-        { title: 'Quà cưới', text: 'Bộ chăn ga dệt Jacquard hoa văn nổi hoặc dòng cao nhất, cho căn phòng đầu tiên của đôi vợ chồng trẻ.' },
-        { title: 'Quà tân gia', text: 'Nhiều mẫu, nhiều màu để hợp với phòng ngủ mới. Có thể nhờ Ecopillo tư vấn theo ảnh phòng.' },
-        { title: 'Biếu cha mẹ, dịp Tết', text: 'Màu trơn, sắc nhã, vải mềm mát dễ chịu cho người lớn tuổi; kèm ruột gối êm nâng đỡ cổ vai.' },
-      ],
-      'Đúng 3 dòng: cưới (Doris, Sweet), tân gia (Rosa, Vera), biếu (Tera, Liora)',
-    ),
     dichVuNhan: chu('Dịch vụ: nhãn nhỏ', 'Tặng dễ dàng'),
     dichVuTieuDe: chu('Dịch vụ: tiêu đề', 'Ecopillo lo phần còn lại'),
     dichVuNutGoi: chu('Dịch vụ: chữ nút gọi', 'Gọi tư vấn quà'),
@@ -75,7 +69,7 @@ export const { set: GIFTS_TEXT_SET, text: GIFTS_TEXT } = definePageText(
         { title: 'Giao tận tay người nhận', text: 'Ghi địa chỉ người nhận khi đặt, nhân viên gọi xác nhận trước khi giao.' },
         { title: 'Chưa rõ cỡ giường?', text: 'Gọi Ecopillo hỏi cách đo, hoặc đổi cỡ trong 7 ngày nếu chưa sử dụng.' },
       ],
-      'Biểu tượng theo thứ tự: hộp, xe giao, thước',
+      'Thêm, bớt ô tuỳ ý; biểu tượng lần lượt: hộp, xe giao, thước (ô thứ 4 lặp lại từ hộp)',
     ),
     themAnhDoc: chu('Quà doanh nghiệp: dải ảnh thêm (trình đọc màn hình)', 'Thêm ảnh quà tặng doanh nghiệp'),
   },
