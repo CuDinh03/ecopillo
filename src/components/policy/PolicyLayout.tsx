@@ -6,6 +6,11 @@ import { ExploreMore } from '../ui/ExploreMore'
 import { PageHero } from '../ui/PageHero'
 import { ContactButtons, Container } from '../ui/primitives'
 import { COMMON_TEXT } from '../../data/pageText/common'
+import { Blocks } from '../ui/Blocks'
+import { POLICY_ORDER } from '../../data/pageLayout'
+
+/** Menu chính sách luôn ở cột trái, chỉ ẩn / hiện được (Nội dung web → Giao diện → Bố cục các trang chính sách, đợt E6) */
+const SHOW_MENU = POLICY_ORDER.includes('menu')
 
 interface PolicyLayoutProps {
   title: string
@@ -25,42 +30,50 @@ export function PolicyLayout({ title, intro, meta, children }: PolicyLayoutProps
       </PageHero>
 
       <Container className="mt-10 grid gap-10 sm:mt-14 lg:grid-cols-12 lg:gap-14">
-        <aside className="min-w-0 lg:col-span-3">
-          <nav aria-label={POLICY_NAV_TEXT.tieuDeMenu} className="lg:sticky lg:top-28">
-            <p className="eyebrow hidden lg:block">{POLICY_NAV_TEXT.tieuDeMenu}</p>
-            <ul className="m-rail -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 sm:-mx-8 sm:px-8 lg:mx-0 lg:mt-5 lg:flex-col lg:gap-1 lg:overflow-visible lg:px-0">
-              {POLICY_NAV.map((item) => (
-                <li key={item.to} className="shrink-0">
-                  <NavLink
-                    to={item.to}
-                    className={({ isActive }) =>
-                      `block rounded-full px-4 py-2 text-small whitespace-nowrap transition lg:rounded-xl lg:px-4 lg:py-2.5 ${
-                        isActive
-                          ? 'bg-deep-800 font-medium text-ivory'
-                          : 'bg-cream-50 text-deep-900 ring-1 ring-cream-200 hover:ring-deep-700/40 lg:bg-transparent lg:ring-0 lg:hover:bg-mist-100'
-                      }`
-                    }
-                  >
-                    {item.label}
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </aside>
+        {SHOW_MENU && (
+          <aside className="min-w-0 lg:col-span-3">
+            <nav aria-label={POLICY_NAV_TEXT.tieuDeMenu} className="lg:sticky lg:top-28">
+              <p className="eyebrow hidden lg:block">{POLICY_NAV_TEXT.tieuDeMenu}</p>
+              <ul className="m-rail -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 sm:-mx-8 sm:px-8 lg:mx-0 lg:mt-5 lg:flex-col lg:gap-1 lg:overflow-visible lg:px-0">
+                {POLICY_NAV.map((item) => (
+                  <li key={item.to} className="shrink-0">
+                    <NavLink
+                      to={item.to}
+                      className={({ isActive }) =>
+                        `block rounded-full px-4 py-2 text-small whitespace-nowrap transition lg:rounded-xl lg:px-4 lg:py-2.5 ${
+                          isActive
+                            ? 'bg-deep-800 font-medium text-ivory'
+                            : 'bg-cream-50 text-deep-900 ring-1 ring-cream-200 hover:ring-deep-700/40 lg:bg-transparent lg:ring-0 lg:hover:bg-mist-100'
+                        }`
+                      }
+                    >
+                      {item.label}
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </aside>
+        )}
 
         <div className="min-w-0 lg:col-span-9">
-          <article className="max-w-3xl">{children}</article>
-
-          <div className="mt-14 flex max-w-3xl flex-col gap-5 rounded-[2rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] sm:flex-row sm:items-center sm:justify-between sm:p-8">
-            <div>
-              <p className="font-display text-[1.4rem] text-deep-900">{COMMON_TEXT.conChuaRo}</p>
-              <p className="mt-1 text-sm text-ink-soft">{COMMON_TEXT.conChuaRoChu}</p>
-            </div>
-            <ContactButtons size="md" stretch />
-          </div>
-
-          <ExploreMore groups={relatedForPolicy(pathname)} className="max-w-3xl" />
+          {/* Thứ tự, ẩn / hiện ba khối cột phải: Ecopillo chọn ở Nội dung web → Giao diện → Bố cục các trang chính sách (đợt E6) */}
+          <Blocks
+            order={POLICY_ORDER}
+            blocks={{
+              'noi-dung': <article className="max-w-3xl [&:not(:first-child)]:mt-14">{children}</article>,
+              'lien-he': (
+                <div className="mt-14 flex max-w-3xl flex-col gap-5 rounded-[2rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] first:mt-0 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+                  <div>
+                    <p className="font-display text-[1.4rem] text-deep-900">{COMMON_TEXT.conChuaRo}</p>
+                    <p className="mt-1 text-sm text-ink-soft">{COMMON_TEXT.conChuaRoChu}</p>
+                  </div>
+                  <ContactButtons size="md" stretch />
+                </div>
+              ),
+              'kham-pha': <ExploreMore groups={relatedForPolicy(pathname)} className="max-w-3xl first:mt-0 sm:first:mt-0" />,
+            }}
+          />
         </div>
       </Container>
     </div>

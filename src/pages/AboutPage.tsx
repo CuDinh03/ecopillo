@@ -1,3 +1,4 @@
+import { Fragment, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { ProductProcess } from '../components/about/ProductProcess'
 import { CertificateCabinet, PartnerLogos, PressQuotes } from '../components/about/Recognition'
@@ -40,6 +41,7 @@ import { BRAND_VIDEO, BRAND_VIDEO_LEAD } from '../data/brand'
 import { ABOUT_PAGE_TEXT, ABOUT_PAGE_TEXT_SET } from '../data/pageText/aboutPage'
 import { Highlight } from '../components/ui/Highlight'
 import { chen } from '../data/pageText/define'
+import { ABOUT_ORDER } from '../data/pageLayout'
 
 /**
  * Trang Giới thiệu (/gioi-thieu, giữ đường link web cũ) dạng chương sách (mẫu 1, owner chọn 16/10/2026,
@@ -66,12 +68,46 @@ const CHAPTER_ICONS: readonly IconName[] = ['feather', 'home', 'community', 'lea
 const NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI'] as const
 const chapter = (i: number) => ABOUT_PAGE_TEXT.chuong[i] ?? CHAPTERS_GOC[i]
 
-const TOC: readonly TocItem[] = [
-  { id: 'loi-mo', numeral: '', title: ABOUT_PAGE_TEXT.mucLoiMo, icon: 'night' },
-  { id: 'thu-sang-lap', numeral: '', title: ABOUT_PAGE_TEXT.mucThu, icon: 'feather' },
-  ...CHAPTER_IDS.map((id, i) => ({ id, numeral: NUMERALS[i], title: chapter(i).ten, icon: CHAPTER_ICONS[i] })),
-  { id: 'loi-ket', numeral: '', title: ABOUT_PAGE_TEXT.mucLoiKet, icon: 'pin' },
-]
+/*
+ * Thứ tự, ẩn / hiện các khối: Ecopillo chọn ở Nội dung web → Giao diện → Bố cục trang Giới thiệu (đợt E6, owner 24/11/2026;
+ * trước đó thứ tự chương cố định). Số La Mã chạy theo thứ tự đang hiện: ẩn hay đổi chỗ chương thì số đánh lại từ I.
+ * Mã neo (#chuong-1…) đi theo nội dung chương, không đổi.
+ */
+const isChapterId = (id: string): id is (typeof CHAPTER_IDS)[number] => (CHAPTER_IDS as readonly string[]).includes(id)
+const NUMERAL_OF: Readonly<Record<string, string>> = Object.fromEntries(
+  ABOUT_ORDER.filter(isChapterId).map((id, k) => [id, NUMERALS[k] ?? '']),
+)
+const numeralOf = (id: (typeof CHAPTER_IDS)[number]) => NUMERAL_OF[id] ?? ''
+
+/** Khối nằm trên đường chỉ; các khối này đứng liền nhau thì chung một đường chỉ */
+const RAIL_IDS: ReadonlySet<string> = new Set(['loi-mo', 'thu-sang-lap', ...CHAPTER_IDS, 'phim'])
+
+/** Gom các khối liền nhau trên đường chỉ thành một nhóm (thứ tự gốc: một đường chỉ từ Lời mở đến chương VI) */
+interface Run {
+  rail: boolean
+  ids: readonly string[]
+}
+const RUNS: readonly Run[] = ABOUT_ORDER.reduce<readonly Run[]>((runs, id) => {
+  const rail = RAIL_IDS.has(id)
+  const last = runs[runs.length - 1]
+  return rail && last?.rail ? [...runs.slice(0, -1), { rail, ids: [...last.ids, id] }] : [...runs, { rail, ids: [id] }]
+}, [])
+
+/** Dòng mục lục của từng khối (Phim, dải cam kết không có dòng) */
+const TOC_ITEMS: Readonly<Record<string, Omit<TocItem, 'numeral'>>> = {
+  'loi-mo': { id: 'loi-mo', title: ABOUT_PAGE_TEXT.mucLoiMo, icon: 'night' },
+  'thu-sang-lap': { id: 'thu-sang-lap', title: ABOUT_PAGE_TEXT.mucThu, icon: 'feather' },
+  ...Object.fromEntries(CHAPTER_IDS.map((id, i) => [id, { id, title: chapter(i).ten, icon: CHAPTER_ICONS[i] }])),
+  'loi-ket': { id: 'loi-ket', title: ABOUT_PAGE_TEXT.mucLoiKet, icon: 'pin' },
+}
+
+const TOC: readonly TocItem[] = ABOUT_ORDER.flatMap((id) => {
+  const item = TOC_ITEMS[id]
+  return item ? [{ ...item, numeral: isChapterId(id) ? numeralOf(id) : '' }] : []
+})
+
+/** Nút "Đọc câu chuyện" đầu trang: tới mục lục; Ecopillo ẩn mục lục thì tới khối đầu tiên */
+const READ_TARGET = ABOUT_ORDER.includes('muc-luc') ? 'muc-luc' : (ABOUT_ORDER[0] ?? 'muc-luc')
 
 /** Phần giới thiệu đầu trang (chị Phương 19/11/2026, thay "Hơn 15 năm nâng niu giấc ngủ Việt") */
 const INTRO = {
@@ -84,171 +120,191 @@ const INTRO = {
 export function AboutPage() {
   usePageMeta('Giới thiệu', ABOUT_PAGE_TEXT.moTaGoogle)
 
-  return (
-    <>
-      <Cover />
-      <TableOfContents />
-
-      <StoryRail>
-        <Chapter id="loi-mo" icon="night" eyebrow={ABOUT_PAGE_TEXT.loiMoNhan} title={ABOUT_PAGE_TEXT.mucLoiMo} isTitleHidden>
-          <Prose dropCap>{STORY_OPENING}</Prose>
-        </Chapter>
-
-        <FounderLetter />
-
-        <Chapter
-          id="chuong-1"
-          numeral="I"
-          icon="feather"
-          eyebrow={chapter(0).nhan}
-          title={chapter(0).ten}
-        >
-          <Prose>
-            <Highlight text={ABOUT_PAGE_TEXT.nguoiSangLap} strong={[FOUNDER_NAME]} em={['“Chốn Yên”']} />
-          </Prose>
-          <PullQuote>“{FOUNDER_QUOTE}”</PullQuote>
-        </Chapter>
-
-        <Chapter
-          id="chuong-2"
-          numeral="II"
-          icon="home"
-          eyebrow={chapter(1).nhan}
-          title={chapter(1).ten}
-        >
-          {/* Câu định nghĩa cùng kiểu ô trích các chương (trước là hộp trắng lạc màu) */}
-          <PullQuote isQuote={false}>{ABOUT_PAGE_TEXT.chonYen}</PullQuote>
-          <Prose>{BRAND_PROMISE}</Prose>
-          <StoryFigure image={ABOUT_PAGE_TEXT.anhChonYen} caption={ABOUT_PAGE_TEXT.chuThichChonYen} />
-        </Chapter>
-
-        <Chapter
-          id="chuong-3"
-          numeral="III"
-          icon="community"
-          eyebrow={chapter(2).nhan}
-          title={chapter(2).ten}
-        >
-          {/* Chữ Tốt / Thật / Thiện đứng thẳng, đậm 600 (chị Phương 09/11/2026 chê chữ nghiêng to) */}
-          <ol className="mt-6 border-b border-line">
-            {PHILOSOPHY.map((p, i) => (
-              <li key={p.word} data-reveal style={revealDelay(i)} className="grid gap-1 border-t border-line py-4 sm:grid-cols-[8rem_1fr] sm:items-baseline sm:gap-5">
-                <p className="font-display text-[1.7rem] leading-none text-deep-900 sm:text-[2.1rem]">{p.word}</p>
-                <p className="chu-deu text-body leading-relaxed text-ink-soft">{p.text}</p>
-              </li>
-            ))}
-          </ol>
-        </Chapter>
-
-        <Chapter
-          id="chuong-4"
-          numeral="IV"
-          icon="leaf"
-          eyebrow={chapter(3).nhan}
-          title={chapter(3).ten}
-        >
-          <Prose>{LYOCELL_INTRO}</Prose>
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4">
-            {[ABOUT_PAGE_TEXT.anhChatLieu1, ABOUT_PAGE_TEXT.anhChatLieu2].map((img, i) => (
+  // Mỗi khối một mã (ABOUT_ORDER trong src/data/pageLayout.ts); Ecopillo đổi thứ tự, ẩn khối ở Nội dung web
+  const blocks: Readonly<Record<string, ReactNode>> = {
+    'muc-luc': <TableOfContents />,
+    'loi-mo': (
+      <Chapter id="loi-mo" icon="night" eyebrow={ABOUT_PAGE_TEXT.loiMoNhan} title={ABOUT_PAGE_TEXT.mucLoiMo} isTitleHidden>
+        <Prose dropCap>{STORY_OPENING}</Prose>
+      </Chapter>
+    ),
+    'thu-sang-lap': <FounderLetter />,
+    'chuong-1': (
+      <Chapter
+        id="chuong-1"
+        numeral={numeralOf('chuong-1')}
+        icon="feather"
+        eyebrow={chapter(0).nhan}
+        title={chapter(0).ten}
+      >
+        <Prose>
+          <Highlight text={ABOUT_PAGE_TEXT.nguoiSangLap} strong={[FOUNDER_NAME]} em={['“Chốn Yên”']} />
+        </Prose>
+        <PullQuote>“{FOUNDER_QUOTE}”</PullQuote>
+      </Chapter>
+    ),
+    'chuong-2': (
+      <Chapter
+        id="chuong-2"
+        numeral={numeralOf('chuong-2')}
+        icon="home"
+        eyebrow={chapter(1).nhan}
+        title={chapter(1).ten}
+      >
+        {/* Câu định nghĩa cùng kiểu ô trích các chương (trước là hộp trắng lạc màu) */}
+        <PullQuote isQuote={false}>{ABOUT_PAGE_TEXT.chonYen}</PullQuote>
+        <Prose>{BRAND_PROMISE}</Prose>
+        <StoryFigure image={ABOUT_PAGE_TEXT.anhChonYen} caption={ABOUT_PAGE_TEXT.chuThichChonYen} />
+      </Chapter>
+    ),
+    'chuong-3': (
+      <Chapter
+        id="chuong-3"
+        numeral={numeralOf('chuong-3')}
+        icon="community"
+        eyebrow={chapter(2).nhan}
+        title={chapter(2).ten}
+      >
+        {/* Chữ Tốt / Thật / Thiện đứng thẳng, đậm 600 (chị Phương 09/11/2026 chê chữ nghiêng to) */}
+        <ol className="mt-6 border-b border-line">
+          {PHILOSOPHY.map((p, i) => (
+            <li key={p.word} data-reveal style={revealDelay(i)} className="grid gap-1 border-t border-line py-4 sm:grid-cols-[8rem_1fr] sm:items-baseline sm:gap-5">
+              <p className="font-display text-[1.7rem] leading-none text-deep-900 sm:text-[2.1rem]">{p.word}</p>
+              <p className="chu-deu text-body leading-relaxed text-ink-soft">{p.text}</p>
+            </li>
+          ))}
+        </ol>
+      </Chapter>
+    ),
+    'chuong-4': (
+      <Chapter
+        id="chuong-4"
+        numeral={numeralOf('chuong-4')}
+        icon="leaf"
+        eyebrow={chapter(3).nhan}
+        title={chapter(3).ten}
+      >
+        <Prose>{LYOCELL_INTRO}</Prose>
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4">
+          {[ABOUT_PAGE_TEXT.anhChatLieu1, ABOUT_PAGE_TEXT.anhChatLieu2].map((img, i) => (
+            <img
+              key={img.src}
+              src={img.src}
+              alt={img.alt}
+              loading="lazy"
+              decoding="async"
+              className={`aspect-[3/4] w-full rounded-2xl bg-mist-100 object-cover ${i === 1 ? 'mt-8 sm:mt-12' : ''}`}
+            />
+          ))}
+        </div>
+        <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-5">
+          {LYOCELL_TRAITS.map((t) => (
+            <div key={t.title}>
+              <dt className="font-display flex items-center gap-2 text-[1.15rem] text-deep-900">
+                <Icon name="leaf" size={15} className="text-deep-700" />
+                {t.title}
+              </dt>
+              <dd className="mt-1 text-small leading-relaxed text-ink-soft">{t.text}</dd>
+            </div>
+          ))}
+        </dl>
+        {/* Quy trình 7 bước: sau 4 ô đặc tính, trước câu trích (cách 1, chị Phương chọn 12/11/2026) */}
+        <ProductProcess />
+        <PullQuote>“{CRAFT_QUOTE}”</PullQuote>
+      </Chapter>
+    ),
+    // Phim thương hiệu cùng kiểu khối như các chương (trước là một dải riêng giống trang chủ)
+    'phim': (
+      <Chapter id="phim" icon="play" eyebrow={ABOUT_PAGE_TEXT.phimNhan} title={BRAND_VIDEO.heading}>
+        {/* Chị Phương 19/11/2026 */}
+        <Prose>{BRAND_VIDEO_LEAD}</Prose>
+        <BrandVideoPlayer className="mt-6 rounded-2xl" />
+        <YoutubeChannelLink />
+      </Chapter>
+    ),
+    'chuong-5': (
+      <Chapter
+        id="chuong-5"
+        numeral={numeralOf('chuong-5')}
+        icon="compass"
+        eyebrow={chapter(4).nhan}
+        title={chapter(4).ten}
+      >
+        <div className="mt-6 grid gap-7 sm:grid-cols-2">
+          {[
+            { label: ABOUT_PAGE_TEXT.suMenhNhan, paragraphs: MISSION, image: MISSION_IMAGE_ABOUT_PAGE, position: MISSION_IMAGE_ABOUT_PAGE_POSITION },
+            { label: ABOUT_PAGE_TEXT.tamNhinNhan, paragraphs: [VISION], image: VISION_IMAGE, position: undefined },
+          ].map((m, i) => (
+            <article key={m.label} data-reveal style={revealDelay(i)}>
               <img
-                key={img.src}
-                src={img.src}
-                alt={img.alt}
+                src={m.image.src}
+                srcSet={m.image.srcSet || undefined}
+                alt={m.image.alt}
                 loading="lazy"
                 decoding="async"
-                className={`aspect-[3/4] w-full rounded-2xl bg-mist-100 object-cover ${i === 1 ? 'mt-8 sm:mt-12' : ''}`}
+                style={m.position ? { objectPosition: m.position } : undefined}
+                className="aspect-[3/2] w-full rounded-xl bg-mist-100 object-cover"
               />
-            ))}
-          </div>
-          <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-5">
-            {LYOCELL_TRAITS.map((t) => (
-              <div key={t.title}>
-                <dt className="font-display flex items-center gap-2 text-[1.15rem] text-deep-900">
-                  <Icon name="leaf" size={15} className="text-deep-700" />
-                  {t.title}
-                </dt>
-                <dd className="mt-1 text-small leading-relaxed text-ink-soft">{t.text}</dd>
-              </div>
-            ))}
-          </dl>
-          {/* Quy trình 7 bước: sau 4 ô đặc tính, trước câu trích (cách 1, chị Phương chọn 12/11/2026) */}
-          <ProductProcess />
-          <PullQuote>“{CRAFT_QUOTE}”</PullQuote>
-        </Chapter>
-
-        {/* Phim thương hiệu cùng kiểu khối như các chương (trước là một dải riêng giống trang chủ) */}
-        <Chapter id="phim" icon="play" eyebrow={ABOUT_PAGE_TEXT.phimNhan} title={BRAND_VIDEO.heading}>
-          {/* Chị Phương 19/11/2026 */}
-          <Prose>{BRAND_VIDEO_LEAD}</Prose>
-          <BrandVideoPlayer className="mt-6 rounded-2xl" />
-          <YoutubeChannelLink />
-        </Chapter>
-
-        <Chapter
-          id="chuong-5"
-          numeral="V"
-          icon="compass"
-          eyebrow={chapter(4).nhan}
-          title={chapter(4).ten}
-        >
-          <div className="mt-6 grid gap-7 sm:grid-cols-2">
-            {[
-              { label: ABOUT_PAGE_TEXT.suMenhNhan, paragraphs: MISSION, image: MISSION_IMAGE_ABOUT_PAGE, position: MISSION_IMAGE_ABOUT_PAGE_POSITION },
-              { label: ABOUT_PAGE_TEXT.tamNhinNhan, paragraphs: [VISION], image: VISION_IMAGE, position: undefined },
-            ].map((m, i) => (
-              <article key={m.label} data-reveal style={revealDelay(i)}>
-                <img
-                  src={m.image.src}
-                  srcSet={m.image.srcSet || undefined}
-                  alt={m.image.alt}
-                  loading="lazy"
-                  decoding="async"
-                  style={m.position ? { objectPosition: m.position } : undefined}
-                  className="aspect-[3/2] w-full rounded-xl bg-mist-100 object-cover"
-                />
-                <p className={`mt-4 ${STORY_LABEL}`}>{m.label}</p>
-                {/* Chữ thường của web, không nghiêng (chị Phương 09/11/2026: "in thường, điều chỉnh font chữ") */}
-                {m.paragraphs.map((text) => (
-                  <p key={text} className="chu-deu mt-2 text-body-sm leading-[1.75] text-ink-soft">
-                    {text}
-                  </p>
-                ))}
-              </article>
-            ))}
-          </div>
-          {/* Giá trị cốt lõi: lưới 2 × 2 ô xanh nhạt có số (mẫu 2, chị Phương 09/11/2026 "in đậm") */}
-          <p className={`mt-9 ${STORY_LABEL}`}>{ABOUT_PAGE_TEXT.giaTriNhan}</p>
-          <ol className="mt-3 grid gap-2.5 sm:grid-cols-2">
-            {CORE_VALUES.map((v, i) => (
-              <li key={v.title} data-reveal style={revealDelay(i)} className="flex gap-3 rounded-[0.875rem] bg-mist-100 p-3.5">
-                <span aria-hidden="true" className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full bg-ivory text-[0.9rem] font-semibold text-deep-900">
-                  {i + 1}
-                </span>
-                <span>
-                  <span className="block font-semibold text-deep-900">{v.title}</span>
-                  <span className="mt-0.5 block text-meta leading-relaxed text-ink-soft">{v.text}</span>
-                </span>
-              </li>
-            ))}
-          </ol>
-        </Chapter>
-
-        <Chapter
-          id="chuong-6"
-          numeral="VI"
-          icon="award"
-          eyebrow={chapter(5).nhan}
-          title={chapter(5).ten}
-        >
-          <Recognition />
-        </Chapter>
-      </StoryRail>
-
+              <p className={`mt-4 ${STORY_LABEL}`}>{m.label}</p>
+              {/* Chữ thường của web, không nghiêng (chị Phương 09/11/2026: "in thường, điều chỉnh font chữ") */}
+              {m.paragraphs.map((text) => (
+                <p key={text} className="chu-deu mt-2 text-body-sm leading-[1.75] text-ink-soft">
+                  {text}
+                </p>
+              ))}
+            </article>
+          ))}
+        </div>
+        {/* Giá trị cốt lõi: lưới 2 × 2 ô xanh nhạt có số (mẫu 2, chị Phương 09/11/2026 "in đậm") */}
+        <p className={`mt-9 ${STORY_LABEL}`}>{ABOUT_PAGE_TEXT.giaTriNhan}</p>
+        <ol className="mt-3 grid gap-2.5 sm:grid-cols-2">
+          {CORE_VALUES.map((v, i) => (
+            <li key={v.title} data-reveal style={revealDelay(i)} className="flex gap-3 rounded-[0.875rem] bg-mist-100 p-3.5">
+              <span aria-hidden="true" className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full bg-ivory text-[0.9rem] font-semibold text-deep-900">
+                {i + 1}
+              </span>
+              <span>
+                <span className="block font-semibold text-deep-900">{v.title}</span>
+                <span className="mt-0.5 block text-meta leading-relaxed text-ink-soft">{v.text}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+      </Chapter>
+    ),
+    'chuong-6': (
+      <Chapter
+        id="chuong-6"
+        numeral={numeralOf('chuong-6')}
+        icon="award"
+        eyebrow={chapter(5).nhan}
+        title={chapter(5).ten}
+      >
+        <Recognition />
+      </Chapter>
+    ),
+    'cam-ket': (
       <div className="mt-16 sm:mt-24">
         <TrustStrip />
       </div>
+    ),
+    'loi-ket': <Closing />,
+  }
 
-      <Closing />
+  return (
+    <>
+      <Cover />
+      {RUNS.map((run) =>
+        run.rail ? (
+          <StoryRail key={run.ids.join(' ')}>
+            {run.ids.map((id) => (
+              <Fragment key={id}>{blocks[id]}</Fragment>
+            ))}
+          </StoryRail>
+        ) : (
+          <Fragment key={run.ids[0]}>{blocks[run.ids[0]]}</Fragment>
+        ),
+      )}
     </>
   )
 }
@@ -291,7 +347,7 @@ function Cover() {
           <p className="font-medium text-deep-900">{INTRO.signOff}</p>
         </div>
         <div className="mt-8 flex flex-wrap gap-3">
-          <a href="#muc-luc" className={buttonClass('primary', 'lg')}>
+          <a href={`#${READ_TARGET}`} className={buttonClass('primary', 'lg')}>
             <Icon name="book" size={18} />
             {ABOUT_PAGE_TEXT.nutDocChuyen}
           </a>

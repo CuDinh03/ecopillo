@@ -4,6 +4,7 @@ import { Icon, ZaloMark } from '../ui/Icon'
 import { ORDER_TEXT } from '../../data/pageText/order'
 import { ORDER_SUMMARY_TEXT as T } from '../../data/pageText/orderFlow'
 import { chen } from '../../data/pageText/define'
+import { ORDER_SHOWN } from '../../data/pageLayout'
 
 /** Cam kết ngắn dưới tóm tắt đơn, dùng chung cho mọi kiểu đơn */
 export function OrderAssurances({ deliveryTime }: { deliveryTime?: string }) {
@@ -15,14 +16,17 @@ export function OrderAssurances({ deliveryTime }: { deliveryTime?: string }) {
           {T.giaoDuKien} <span className="font-medium text-deep-900">{deliveryTime}</span>
         </p>
       )}
-      <ul className="mt-5 space-y-2 px-2 text-meta text-ink-soft">
-        {ORDER_TEXT.camKet.map((t) => (
-          <li key={t} className="flex gap-2">
-            <Icon name="check" size={14} className="mt-0.5 shrink-0 text-mist-600" />
-            {t}
-          </li>
-        ))}
-      </ul>
+      {/* Ẩn / hiện: Nội dung web → Giao diện → Bố cục trang Đặt hàng (đợt E6) */}
+      {ORDER_SHOWN.has('cam-ket') && (
+        <ul className="mt-5 space-y-2 px-2 text-meta text-ink-soft">
+          {ORDER_TEXT.camKet.map((t) => (
+            <li key={t} className="flex gap-2">
+              <Icon name="check" size={14} className="mt-0.5 shrink-0 text-mist-600" />
+              {t}
+            </li>
+          ))}
+        </ul>
+      )}
     </>
   )
 }
