@@ -34,6 +34,7 @@ const FIELDS: readonly EditableField[] = [
 
 export const SEO_SET: EditableSet = {
   khoa: 'seo-tung-trang',
+  coTheTrong: true,
   nhom: 'Giao diện',
   ten: 'SEO từng trang',
   moTa:

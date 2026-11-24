@@ -361,9 +361,11 @@ const LISTING_FIELDS: readonly EditableField[] = [
 ]
 export const LISTING_HEAD_SET: EditableSet = {
   khoa: 'chu-trang-danh-muc',
+  khongThemXoa: true,
+  khongDoiThuTu: true,
   nhom: 'Chữ từng trang',
   ten: 'Đầu trang các danh mục nhỏ',
-  moTa: 'Tên và đoạn mô tả của các trang danh mục nhỏ (đệm lò xo, ruột chăn, ruột gối…). Không thêm, bớt danh mục ở đây: link giữ theo web cũ.',
+  moTa: 'Tên và đoạn mô tả của các trang danh mục nhỏ (đệm lò xo, ruột chăn, ruột gối…). Thêm, ẩn, xoá danh mục, SEO danh mục: Sản phẩm → Danh mục, khung "Giao diện mới: trang danh mục, SEO" (tên, mô tả tích dùng ở đó thì đứng trên bản ở đây).',
   kieu: 'nhieu',
   goc: LISTING_ROWS,
   tieuDeDong: 'title',

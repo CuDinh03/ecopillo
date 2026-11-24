@@ -15,6 +15,7 @@ const FIELDS: readonly EditableField[] = [
 
 export const REDIRECT_SET: EditableSet = {
   khoa: 'chuyen-huong',
+  coTheTrong: true,
   nhom: 'Giao diện',
   ten: 'Chuyển hướng link',
   moTa: 'Link cũ chuyển sang link mới (301), để link Google đã biết không ra trang lỗi: đổi đường dẫn bài viết, ngừng bán một mẫu, gộp trang. Chỉ ghi link trong web (bắt đầu bằng /). Không chuyển trang chủ, không chuyển vòng.',

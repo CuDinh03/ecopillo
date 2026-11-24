@@ -40,7 +40,7 @@ export const LISTING_PRODUCTS_SET: EditableSet = {
   ten: 'Sản phẩm trong trang danh mục',
   moTa:
     'Tích sản phẩm hiện trong từng trang danh mục (Đệm lò xo, Ruột gối, Ruột chăn…). Ô xổ "Sản phẩm" trên thanh đầu trang lấy giá "từ …" theo các trang này. ' +
-    'Sản phẩm đăng mới trong WooCommerce tự vào trang theo danh mục Woo, không cần tích. Tên trang và đường link giữ như web cũ, muốn đổi thì báo bên làm web.',
+    'Sản phẩm đăng mới trong WooCommerce tự vào trang theo danh mục Woo, không cần tích. Tên, mô tả, SEO, ẩn trang, thêm trang danh mục mới: Sản phẩm → Danh mục.',
   kieu: 'mot',
   goc: BASE,
   truong: FIELDS,

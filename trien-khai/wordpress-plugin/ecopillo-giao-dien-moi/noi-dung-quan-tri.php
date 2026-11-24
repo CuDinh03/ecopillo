@@ -58,6 +58,47 @@ function eco_nd_overview()
 
 /* ---------------------------------------------------------------- Lưu */
 
+/** Bộ một đối tượng: ô bắt buộc để trống thì lấy nội dung gốc (ảnh bỏ đi cũng về ảnh gốc) */
+function eco_nd_fill_from_goc($set, $raw)
+{
+    $goc = is_array($set['goc']) ? $set['goc'] : array();
+    foreach ($set['truong'] as $field) {
+        $key = $field['khoa'];
+        if (empty($field['batBuoc']) || !array_key_exists($key, $goc)) {
+            continue;
+        }
+        $value = isset($raw[$key]) ? $raw[$key] : null;
+        $empty = $field['kieu'] === 'anh'
+            ? !is_array($value) || !isset($value['src']) || trim((string) $value['src']) === ''
+            : (is_array($value) ? !array_filter($value, function ($v) { return is_array($v) ? (bool) array_filter($v) : trim((string) $v) !== ''; }) : trim((string) $value) === '');
+        if ($empty) {
+            $raw[$key] = eco_nd_goc_as_input($field, $goc[$key]);
+        }
+    }
+    return $raw;
+}
+
+/** Giá trị gốc dạng như ô nhập gửi lên (danh sách dòng → chữ nhiều dòng, cặp → "a | b") */
+function eco_nd_goc_as_input($field, $goc)
+{
+    switch ($field['kieu']) {
+        case 'doan-nhieu':
+            return implode("\n\n", (array) $goc);
+        case 'ds-dong':
+        case 'ds-anh':
+            return implode("\n", (array) $goc);
+        case 'ds-cap':
+            $names = isset($field['cap']) ? array_values((array) $field['cap']) : array('a', 'b');
+            $lines = array();
+            foreach ((array) $goc as $pair) {
+                $lines[] = (isset($pair[$names[0]]) ? $pair[$names[0]] : '') . ' | ' . (isset($pair[$names[1]]) ? $pair[$names[1]] : '');
+            }
+            return implode("\n", $lines);
+        default:
+            return $goc;
+    }
+}
+
 add_action('admin_post_eco_nd_luu', 'eco_nd_save');
 function eco_nd_save()
 {
@@ -82,6 +123,8 @@ function eco_nd_save()
     $raw = isset($_POST['du_lieu']) && is_array($_POST['du_lieu']) ? wp_unslash($_POST['du_lieu']) : array();
     $errors = array();
     if ($set['kieu'] === 'mot') {
+        // Ô bắt buộc để trống: dùng lại nội dung gốc của ô đó thay vì không cho lưu cả bộ (đợt E3)
+        $raw = eco_nd_fill_from_goc($set, $raw);
         $value = eco_nd_clean_row($set, $raw, $errors);
         if ($value === null) {
             wp_safe_redirect(eco_nd_page_url($key, array('ket-qua' => 'thieu', 'o' => rawurlencode(implode(', ', $errors)))));
@@ -105,7 +148,8 @@ function eco_nd_save()
             }
             $value[] = $clean;
         }
-        if (!$value) {
+        // Danh sách được xoá hết (chuyển hướng, SEO…: coTheTrong); danh sách khác phải còn ít nhất một dòng
+        if (!$value && (empty($set['coTheTrong']) || $dropped > 0)) {
             wp_safe_redirect(eco_nd_page_url($key, array('ket-qua' => 'rong')));
             exit;
         }
@@ -123,8 +167,11 @@ function eco_nd_save()
 /* ---------------------------------------------------------------- Màn hình sửa */
 
 /** Một ô nhập; $name là tên gốc, ví dụ du_lieu[3][ten] */
-function eco_nd_input($field, $name, $value)
+function eco_nd_input($field, $name, $value, $in_form_set = false)
 {
+    // "Bỏ ảnh": ô không bắt buộc thì bỏ hẳn; bộ một đối tượng thì về ảnh gốc (eco_nd_fill_from_goc)
+    $field_restores = $in_form_set && !empty($field['batBuoc']);
+    $can_clear = empty($field['batBuoc']) || $field_restores;
     $id = 'eco-' . md5($name);
     $hint = !empty($field['goiY']) ? '<p class="description">' . esc_html($field['goiY']) . '</p>' : '';
     $label = '<label for="' . esc_attr($id) . '"><strong>' . esc_html($field['nhan']) . '</strong>' . (!empty($field['batBuoc']) ? ' <span style="color:#b32d2e">*</span>' : '') . '</label><br>';
@@ -188,7 +235,8 @@ function eco_nd_input($field, $name, $value)
                 . '<img src="' . esc_url($src) . '" alt="" style="width:120px;height:90px;object-fit:cover;background:#eee;' . ($src === '' ? 'visibility:hidden' : '') . '">'
                 . '<div><input type="hidden" class="eco-anh-src" name="' . esc_attr($name) . '[src]" value="' . esc_attr($src) . '">'
                 . '<input type="hidden" class="eco-anh-srcset" name="' . esc_attr($name) . '[srcSet]" value="' . esc_attr(isset($img['srcSet']) ? $img['srcSet'] : '') . '">'
-                . '<button type="button" class="button eco-chon-anh">Chọn ảnh</button><br>'
+                . '<button type="button" class="button eco-chon-anh">Chọn ảnh</button> '
+                . ($can_clear ? '<button type="button" class="button-link eco-bo-anh" style="color:#b32d2e">' . ($field_restores ? 'Bỏ ảnh (về ảnh gốc)' : 'Bỏ ảnh') . '</button>' : '') . '<br>'
                 . '<label>Mô tả ảnh (cho người không nhìn thấy, cho Google) <input type="text" class="regular-text" name="' . esc_attr($name) . '[alt]" value="' . esc_attr(isset($img['alt']) ? $img['alt'] : '') . '"></label></div></div>' . $hint;
         case 'mau':
             $color = is_string($value) && preg_match('/^#[0-9a-f]{6}$/i', $value) ? strtolower($value) : '#000000';
@@ -205,9 +253,16 @@ function eco_nd_row_html($set, $index, $row)
 {
     $title = !empty($set['tieuDeDong']) && isset($row[$set['tieuDeDong']]) ? (string) $row[$set['tieuDeDong']] : 'Dòng mới';
     $html = '<fieldset class="eco-dong" style="background:#fff;border:1px solid #ccd0d4;padding:12px 16px;margin:0 0 12px">';
-    $html .= '<legend style="padding:0 6px"><strong class="eco-tieu-de">' . esc_html($title) . '</strong> '
-        . '<button type="button" class="button-link eco-len">Lên</button> · <button type="button" class="button-link eco-xuong">Xuống</button> · '
-        . '<button type="button" class="button-link eco-xoa" style="color:#b32d2e">Xoá dòng</button></legend>';
+    // Bộ dòng cố định (banner 4 nhóm, đầu trang chính sách, bố cục…): không thêm / xoá, có bộ không đổi thứ tự (đợt E3)
+    $buttons = array();
+    if (empty($set['khongDoiThuTu'])) {
+        $buttons[] = '<button type="button" class="button-link eco-len">Lên</button>';
+        $buttons[] = '<button type="button" class="button-link eco-xuong">Xuống</button>';
+    }
+    if (empty($set['khongThemXoa'])) {
+        $buttons[] = '<button type="button" class="button-link eco-xoa" style="color:#b32d2e">Xoá dòng</button>';
+    }
+    $html .= '<legend style="padding:0 6px"><strong class="eco-tieu-de">' . esc_html($title) . '</strong> ' . implode(' · ', $buttons) . '</legend>';
     if (!empty($set['khoaDong'])) {
         $html .= '<input type="hidden" name="du_lieu[' . $index . '][' . esc_attr($set['khoaDong']) . ']" value="' . esc_attr(isset($row[$set['khoaDong']]) ? (string) $row[$set['khoaDong']] : '') . '">';
     }
@@ -238,7 +293,7 @@ function eco_nd_page()
         'ok' => array('success', 'Đã lưu. Web đã đổi (khách tải lại trang là thấy).'),
         'goc' => array('success', 'Đã trả về nội dung có sẵn của web.'),
         'rong' => array('error', 'Chưa lưu: danh sách không còn dòng nào đủ ô bắt buộc.'),
-        'thieu' => array('error', 'Chưa lưu: còn ô bắt buộc để trống hoặc sai'),
+        'thieu' => array('error', 'Chưa lưu: còn ô bắt buộc sai'),
         'tuong-phan' => array('error', 'Chưa lưu: màu làm chữ khó đọc'),
     );
     echo '<div class="wrap"><h1>' . esc_html($set['ten']) . '</h1><p>' . esc_html($set['moTa']) . '</p>';
@@ -252,7 +307,7 @@ function eco_nd_page()
         }
         echo '<div class="notice notice-' . esc_attr($notices[$result][0]) . '"><p>' . esc_html($text) . '</p></div>';
     }
-    echo '<p style="color:#555">' . ($saved ? 'Đang dùng bản đã sửa lúc ' . esc_html(isset($saved['luc']) ? $saved['luc'] : '') . '.' : 'Đang dùng nội dung có sẵn của web (chưa sửa lần nào).') . ' Ô có dấu <span style="color:#b32d2e">*</span> là bắt buộc.</p>';
+    echo '<p style="color:#555">' . ($saved ? 'Đang dùng bản đã sửa lúc ' . esc_html(isset($saved['luc']) ? $saved['luc'] : '') . '.' : 'Đang dùng nội dung có sẵn của web (chưa sửa lần nào).') . ' ' . ($set['kieu'] === 'mot' ? 'Ô để trống thì web dùng nội dung gốc của ô đó.' : 'Ô có dấu <span style="color:#b32d2e">*</span> là bắt buộc.') . '</p>';
 
     echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '" id="eco-nd-form">';
     echo '<input type="hidden" name="action" value="eco_nd_luu"><input type="hidden" name="bo" value="' . esc_attr($key) . '">';
@@ -260,7 +315,7 @@ function eco_nd_page()
     if ($set['kieu'] === 'mot') {
         echo '<div style="background:#fff;border:1px solid #ccd0d4;padding:12px 16px;max-width:960px">';
         foreach ($set['truong'] as $field) {
-            echo '<div style="margin:10px 0">' . eco_nd_input($field, 'du_lieu[' . $field['khoa'] . ']', isset($value[$field['khoa']]) ? $value[$field['khoa']] : '') . '</div>'; // eco_nd_input đã thoát chữ
+            echo '<div style="margin:10px 0">' . eco_nd_input($field, 'du_lieu[' . $field['khoa'] . ']', isset($value[$field['khoa']]) ? $value[$field['khoa']] : '', true) . '</div>'; // eco_nd_input đã thoát chữ
         }
         echo '</div>';
     } else {
@@ -268,8 +323,14 @@ function eco_nd_page()
         foreach (array_values((array) $value) as $i => $row) {
             echo eco_nd_row_html($set, $i, is_array($row) ? $row : array()); // đã thoát chữ
         }
-        echo '</div><template id="eco-dong-mau">' . eco_nd_row_html($set, '__I__', array()) . '</template>';
-        echo '<p><button type="button" class="button" id="eco-them-dong">+ Thêm dòng</button></p>';
+        echo '</div>';
+        if (empty($set['khongThemXoa'])) {
+            echo '<template id="eco-dong-mau">' . eco_nd_row_html($set, '__I__', array()) . '</template>';
+            echo '<p><button type="button" class="button" id="eco-them-dong">+ Thêm dòng</button></p>';
+        }
+        if (!empty($set['coTheTrong'])) {
+            echo '<p class="description">Xoá hết dòng rồi Lưu là bỏ hết.</p>';
+        }
     }
     echo '<p class="submit"><button type="submit" class="button button-primary">Lưu</button> ';
     if ($saved) {
@@ -298,6 +359,14 @@ function eco_nd_script()
             var t = e.target;
             var row = t.closest && t.closest('.eco-dong');
             if (row && t.classList.contains('eco-xoa')) { if (confirm('Xoá dòng này?')) row.remove(); }
+            if (t.classList.contains('eco-bo-anh')) {
+                var box = t.closest('.eco-anh');
+                box.querySelector('.eco-anh-src').value = '';
+                box.querySelector('.eco-anh-srcset').value = '';
+                var pic = box.querySelector('img');
+                pic.removeAttribute('src');
+                pic.style.visibility = 'hidden';
+            }
             if (row && t.classList.contains('eco-len') && row.previousElementSibling) row.parentNode.insertBefore(row, row.previousElementSibling);
             if (row && t.classList.contains('eco-xuong') && row.nextElementSibling) row.parentNode.insertBefore(row.nextElementSibling, row);
             if (t.classList.contains('eco-chon-anh') || t.classList.contains('eco-them-anh')) {

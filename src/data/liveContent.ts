@@ -78,6 +78,12 @@ export interface EditableSet {
    * Bộ màu (theme.ts): ô màu → biến CSS. Plugin ghi các biến vào mau.css; `alpha` là độ trong (đường kẻ, chữ phụ pha từ màu chàm)
    */
   bienCss?: Readonly<Record<string, readonly { bien: string; alpha?: number }[]>>
+  /** Danh sách được xoá hết (lưu 0 dòng): chuyển hướng, SEO… (đợt E3). Không có thì plugin không cho lưu danh sách rỗng */
+  coTheTrong?: boolean
+  /** Dòng gắn cố định theo vị trí / theo link (banner 4 nhóm, đầu trang chính sách…): màn hình sửa ẩn nút thêm, xoá dòng */
+  khongThemXoa?: boolean
+  /** Như trên, và thứ tự dòng không có nghĩa: ẩn cả nút Lên / Xuống */
+  khongDoiThuTu?: boolean
   /** Bộ màu: cặp chữ / nền phải đủ tương phản (WCAG), không đủ thì plugin không lưu. `chu`, `nen` là mã ô hoặc "#ffffff" */
   kiemTuongPhan?: readonly { chu: string; nen: string; toiThieu: number; nhan: string }[]
 }

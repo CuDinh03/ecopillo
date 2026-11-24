@@ -88,6 +88,8 @@ export const HERO_IMAGES = {
 
 export const BANNER_GROUPS_SET: EditableSet = {
   khoa: 'banner-nhom',
+  khongThemXoa: true,
+  khongDoiThuTu: true,
   nhom: 'Trang chủ',
   ten: 'Bốn nhóm dưới banner',
   moTa: 'Chữ dưới 4 biểu tượng Chăn · Ga · Gối · Đệm trên banner (biểu tượng và link giữ nguyên).',

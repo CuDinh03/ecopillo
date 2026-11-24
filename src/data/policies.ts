@@ -345,6 +345,8 @@ const NHOM_CHINH_SACH = 'Trang chính sách'
 /** Đầu mỗi trang chính sách (tên, mô tả Google, đoạn mở, 3 thẻ ý chính). Không thêm, bớt trang: link trang giữ theo web cũ */
 export const POLICY_HEAD_SET: EditableSet = {
   khoa: 'chinh-sach-dau-trang',
+  khongThemXoa: true,
+  khongDoiThuTu: true,
   nhom: NHOM_CHINH_SACH,
   ten: 'Đầu các trang chính sách',
   moTa: 'Tên trang, mô tả hiện trên Google, đoạn mở đầu, 3 thẻ ý chính của từng trang chính sách. Không thêm hay bớt trang ở đây.',

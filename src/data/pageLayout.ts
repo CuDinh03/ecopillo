@@ -29,9 +29,11 @@ export function defineLayout(khoa: string, ten: string, blocks: readonly LayoutB
   const goc: readonly LayoutRow[] = blocks.map((b) => ({ ma: b.ma, ten: b.ten, hien: 'co' }))
   const set: EditableSet = {
     khoa: `bo-cuc-${khoa}`,
+    // Thêm, xoá dòng không có nghĩa (khối có sẵn trong trang): chỉ Lên / Xuống và Ẩn
+    khongThemXoa: true,
     nhom: 'Giao diện',
     ten: `Bố cục ${ten}`,
-    moTa: `Thứ tự các khối của ${ten}: bấm Lên / Xuống để đổi chỗ, chọn "Ẩn" để tắt một khối. Đừng xoá dòng (xoá cũng là ẩn). "Trả về nội dung gốc" để về bố cục đã duyệt.`,
+    moTa: `Thứ tự các khối của ${ten}: bấm Lên / Xuống để đổi chỗ, chọn "Ẩn" để tắt một khối. "Trả về nội dung gốc" để về bố cục đã duyệt.`,
     kieu: 'nhieu',
     goc,
     tieuDeDong: 'ten',

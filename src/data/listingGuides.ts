@@ -97,6 +97,8 @@ const GUIDE_FIELDS: readonly EditableField[] = [
 ]
 export const LISTING_GUIDES_SET: EditableSet = {
   khoa: 'chu-trang-danh-muc-chon-the-nao',
+  khongThemXoa: true,
+  khongDoiThuTu: true,
   nhom: 'Chữ từng trang',
   ten: 'Phần "Chọn thế nào" của danh mục',
   moTa: 'Phần hướng dẫn chọn ở cuối các trang danh mục nhỏ (và 4 dòng cách nằm của khối đệm trang chủ, lấy từ phần của danh mục Đệm Ecopillo).',
