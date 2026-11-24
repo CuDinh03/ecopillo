@@ -1,5 +1,6 @@
 import { LISTINGS, type ListingPreset } from './links'
 import { liveObject, type EditableField, type EditableSet } from './liveContent'
+import { orderByNames } from './productOrder'
 import { PRODUCTS } from './products'
 
 /**
@@ -27,7 +28,7 @@ const FIELDS: readonly EditableField[] = EDITABLE_PATHS.map((path) => ({
   batBuoc: true,
   luaChon: CHOICES.map((p) => p.slug),
   nhanLuaChon: CHOICES.map((p) => p.name),
-  goiY: `Link ${path}. Thứ tự trên trang theo thứ tự có sẵn của web; sản phẩm mới tích thêm xếp sau.`,
+  goiY: `Link ${path}. Thứ tự trên trang: bộ "Sản phẩm trong trang danh mục: thứ tự"; sản phẩm tích thêm mà chưa ghi ở đó xếp sau.`,
 }))
 
 const BASE: Readonly<Record<string, readonly string[]>> = Object.fromEntries(
@@ -48,12 +49,55 @@ export const LISTING_PRODUCTS_SET: EditableSet = {
 
 const LIVE = liveObject(LISTING_PRODUCTS_SET.khoa, BASE, FIELDS)
 
-/** Sản phẩm (theo khoá) của một trang danh mục, đã ghép bản Ecopillo sửa. Giữ thứ tự gốc; sản phẩm tích thêm xếp sau */
+/* ——— Thứ tự sản phẩm trong từng trang (owner 24/11/2026: khách tự xếp) ——— */
+
+const nameOf = (slug: string): string => PRODUCTS.find((p) => p.slug === slug)?.name ?? slug
+
+const ORDER_FIELDS: readonly EditableField[] = EDITABLE_PATHS.map((path) => ({
+  khoa: fieldKeyOf(path),
+  nhan: `Trang "${LISTINGS[path]?.title ?? path}" (mỗi dòng một sản phẩm)`,
+  kieu: 'ds-dong',
+  batBuoc: true,
+  goiY: `Link ${path}. Ghi tên sản phẩm như trên web, mỗi dòng một tên, theo thứ tự muốn hiện. Sản phẩm trong trang mà không ghi ở đây (tích thêm, đăng mới trong Woo) xếp sau.`,
+}))
+
+const ORDER_BASE: Readonly<Record<string, readonly string[]>> = Object.fromEntries(
+  EDITABLE_PATHS.map((path) => [fieldKeyOf(path), (LISTINGS[path]?.products ?? []).map(nameOf)]),
+)
+
+export const LISTING_ORDER_SET: EditableSet = {
+  khoa: 'thu-tu-trong-danh-muc',
+  nhom: 'Sản phẩm',
+  ten: 'Sản phẩm trong trang danh mục: thứ tự',
+  moTa:
+    'Thứ tự sản phẩm trong từng trang danh mục (Đệm lò xo, Ruột gối, Ruột chăn…) và trong ô xổ "Sản phẩm" trên thanh đầu trang. ' +
+    'Chọn sản phẩm nào hiện trong trang: bộ "Sản phẩm trong trang danh mục".',
+  kieu: 'mot',
+  goc: ORDER_BASE,
+  truong: ORDER_FIELDS,
+}
+
+const ORDER_LIVE = liveObject(LISTING_ORDER_SET.khoa, ORDER_BASE, ORDER_FIELDS)
+
+/** Các dòng thứ tự Ecopillo ghi cho một trang; chưa sửa thì undefined (giữ thứ tự gốc) */
+const orderLinesOf = (path: string): readonly string[] | undefined =>
+  ORDER_LIVE === ORDER_BASE ? undefined : ORDER_LIVE[fieldKeyOf(path)]
+
+/** Xếp sản phẩm của một trang danh mục theo thứ tự Ecopillo ghi (CategoryPage dùng cho cả sản phẩm đăng mới trong Woo) */
+export const orderInListing = <T extends { slug: string; name: string }>(path: string, items: readonly T[]): readonly T[] => {
+  const lines = EDITABLE_PATHS.includes(path) ? orderLinesOf(path) : undefined
+  return lines ? orderByNames(items, lines) : items
+}
+
+/** Sản phẩm (theo khoá) của một trang danh mục, đã ghép bản Ecopillo sửa. Giữ thứ tự gốc, sản phẩm tích thêm xếp sau; rồi xếp theo thứ tự Ecopillo ghi */
 const productsOf = (path: string, base: readonly string[]): readonly string[] => {
   const picked = LIVE[fieldKeyOf(path)]
-  if (!picked || picked === base) return base
-  const chosen = new Set(picked)
-  return [...base.filter((slug) => chosen.has(slug)), ...picked.filter((slug) => !base.includes(slug))]
+  const chosen = new Set(picked ?? base)
+  const members = !picked || picked === base ? base : [...base.filter((slug) => chosen.has(slug)), ...picked.filter((slug) => !base.includes(slug))]
+  const lines = orderLinesOf(path)
+  if (!lines) return members
+  const ordered = orderByNames(members.map((slug) => ({ slug, name: nameOf(slug) })), lines).map((p) => p.slug)
+  return ordered.every((slug, i) => slug === members[i]) ? members : ordered
 }
 
 /** Trang danh mục (LISTINGS) với danh sách sản phẩm Ecopillo đã chọn */

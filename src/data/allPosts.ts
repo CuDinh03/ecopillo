@@ -2,7 +2,7 @@ import { liveHidden } from './liveData'
 import wordpressIndex from './bai-viet-wp/danh-sach.json'
 import { LIVE_POSTS, type LivePost } from './livePosts'
 import { CODE_POST_SLUGS, POSTS, type Post } from './posts'
-import { POST_SECTIONS, SECTION_LABELS, type PostLabel } from './postSections'
+import { isPostSection, POST_SECTIONS, SECTION_LABELS, type PostLabel } from './postSections'
 
 /**
  * Tất cả bài viết: 3 bài viết trong code (src/data/posts.ts) và bài lấy từ WordPress của web cũ (GĐ3, giữ nguyên link).
@@ -27,10 +27,13 @@ interface WordPressEntry {
 
 const FALLBACK_COVER = { src: '/og-image.jpg', srcSet: '', alt: 'Ecopillo' }
 
-/** Nhóm của bài: ô "Mục trên web" Ecopillo chọn trong WordPress > bảng xếp sẵn (postSections.ts) > chuyên mục WordPress */
-const labelOf = (slug: string, fallback: PostLabel, chosen?: keyof typeof SECTION_LABELS): PostLabel => {
+/**
+ * Nhóm của bài: ô "Mục trên web" Ecopillo chọn trong WordPress > bảng xếp sẵn (postSections.ts) > chuyên mục WordPress.
+ * Chủ đề Ecopillo đã xoá ở Nội dung web thì theo chuyên mục WordPress
+ */
+const labelOf = (slug: string, fallback: PostLabel, chosen?: string): PostLabel => {
   const section = chosen ?? POST_SECTIONS[slug]
-  return section ? SECTION_LABELS[section] : fallback
+  return (section && isPostSection(section) && SECTION_LABELS[section]) || fallback
 }
 
 const WORDPRESS_POSTS: readonly Post[] = (wordpressIndex as readonly WordPressEntry[]).map((entry) => ({

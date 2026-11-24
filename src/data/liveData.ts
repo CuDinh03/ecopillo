@@ -41,7 +41,7 @@ export interface LiveImage {
  */
 /**
  * Câu chuyện phối màu Ecopillo nhập trong Woo (đợt C): ô Mô tả của sản phẩm mẫu, dòng đầu là tên câu chuyện, các dòng sau là
- * đoạn kể; thuộc tính "Gam màu" chọn một gam (mã trong stories.ts TONES). Không có gam thì mẫu không vào bộ lọc gam.
+ * đoạn kể; thuộc tính "Gam màu" chọn một gam (mã trong stories.ts TONES, Ecopillo thêm gam ở Nội dung web). Không có gam thì mẫu không vào bộ lọc gam.
  */
 export interface LiveStory {
   ten: string
@@ -240,7 +240,8 @@ const cleanStory = (input: unknown): LiveStory | undefined => {
   const v = input as Record<string, unknown>
   const ten = typeof v.ten === 'string' ? v.ten.trim().slice(0, 80) : ''
   const doan = typeof v.doan === 'string' ? v.doan.trim().slice(0, 1200) : ''
-  const gam = typeof v.gam === 'string' && /^[a-z]{2,10}$/.test(v.gam) ? v.gam : undefined
+  // Mã gam: gam gốc hoặc gam Ecopillo thêm ở Nội dung web (mã theo tên gam, stories.ts TONE_SET)
+  const gam = typeof v.gam === 'string' && /^[a-z0-9-]{1,60}$/.test(v.gam) ? v.gam : undefined
   return ten && doan ? { ten, doan, ...(gam ? { gam } : {}) } : undefined
 }
 

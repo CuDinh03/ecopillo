@@ -5,7 +5,7 @@ import { Icon } from '../components/ui/Icon'
 import { PageHero } from '../components/ui/PageHero'
 import { buttonClass, Container } from '../components/ui/primitives'
 import { PATHS, productsUrl, withSlash } from '../data/links'
-import { listingOf } from '../data/listingProducts'
+import { listingOf, orderInListing } from '../data/listingProducts'
 import { PRODUCTS } from '../data/products'
 import { LISTING_GUIDES } from '../data/listingGuides'
 import { relatedForListing } from '../data/related'
@@ -50,7 +50,8 @@ export function CategoryPage() {
   // sản phẩm không có trong danh sách (đăng mới trong Woo) xếp cuối
   const order = listing.products
   const rank = (slug: string) => (order?.includes(slug) ? order.indexOf(slug) : Number.MAX_SAFE_INTEGER)
-  const products = order ? [...matched].sort((a, b) => rank(a.slug) - rank(b.slug)) : matched
+  // Rồi theo thứ tự Ecopillo ghi ở Nội dung web (listingProducts.ts LISTING_ORDER_SET), kể cả sản phẩm đăng mới trong Woo
+  const products = orderInListing(path, order ? [...matched].sort((a, b) => rank(a.slug) - rank(b.slug)) : matched)
   const colorways = listing.collections ? COLORWAYS.filter((c) => listing.collections?.includes(c.collection.id)) : []
   const moreUrl = productsUrl(listing.category ? { 'danh-muc': listing.category } : {})
   const guide = LISTING_GUIDES[withSlash(pathname)]

@@ -1,27 +1,105 @@
+import { slugify } from '../lib/slug'
+import { liveList, type EditableField, type EditableSet } from './liveContent'
+
 /**
  * Nhóm của bài viết trên trang Tin tức (owner duyệt 18/11/2026, docs/de-xuat-phan-loai-bai-viet-18-11.html):
- * Tin tức là tin về chính Ecopillo; Cẩm nang là bài kiến thức, chia 4 chủ đề.
+ * Tin tức là tin về chính Ecopillo; Cẩm nang là bài kiến thức, chia chủ đề (4 chủ đề gốc; Ecopillo thêm, xoá, đổi tên ở Nội dung web).
  * Bài mới / sửa trong WordPress: Ecopillo chọn ở ô "Mục trên web" khi soạn bài (plugin bai-viet-moi.php, khoá meta
  * `_eco_muc_web`), giá trị là các mã dưới đây; ô đó thắng bảng này. Không chọn mà bài không có trong bảng: theo chuyên mục
  * WordPress như trước (chuyên mục Tin tức → Tin tức, còn lại → Cẩm nang).
  */
 
-export const POST_TOPICS = ['Chọn chăn ga gối đệm', 'Giấc ngủ và sức khoẻ', 'Phòng ngủ và phong thuỷ', 'Cưới hỏi, lễ tết'] as const
-export type PostTopic = (typeof POST_TOPICS)[number]
-/** Nhãn của bài: "Tin tức", "Cẩm nang" (chưa có chủ đề) hoặc một chủ đề Cẩm nang */
-export type PostLabel = 'Tin tức' | 'Cẩm nang' | PostTopic
+interface TopicRow {
+  ma: string
+  ten: string
+}
 
-/** Mã lưu trong WordPress → nhãn trên web (khớp ECO_BV_MUC ở bai-viet-moi.php) */
-export const SECTION_LABELS = {
+/** 4 chủ đề Cẩm nang gốc (owner duyệt 18/11/2026). Mã là giá trị lưu trong WordPress (ô "Mục trên web") */
+const BASE_TOPIC_ROWS: readonly TopicRow[] = [
+  { ma: 'chon-chan-ga', ten: 'Chọn chăn ga gối đệm' },
+  { ma: 'giac-ngu', ten: 'Giấc ngủ và sức khoẻ' },
+  { ma: 'phong-ngu', ten: 'Phòng ngủ và phong thuỷ' },
+  { ma: 'cuoi-hoi-le-tet', ten: 'Cưới hỏi, lễ tết' },
+]
+
+/** Mã mục không dùng được cho chủ đề: Tin tức, Cẩm nang là hai nhóm lớn cố định (bai-viet-moi.php eco_bv_muc_options cũng bỏ hai mã này) */
+const RESERVED = new Set(['tin-tuc', 'cam-nang'])
+
+/**
+ * Chủ đề Cẩm nang Ecopillo sửa ở Nội dung web → Bài viết → "Chủ đề Cẩm nang" (owner 24/11/2026: thêm, xoá, sửa được):
+ * tên chủ đề (nút lọc trang Tin tức, nhãn trên thẻ bài, đầu bài viết), thứ tự nút. Mã chủ đề có sẵn giữ nguyên; chủ đề mới lấy mã
+ * theo tên (cùng cách với plugin bai-viet-moi.php eco_bv_muc_options), nên đổi tên chủ đề mới thêm thì chọn lại mục cho bài.
+ * Xoá chủ đề: bài của chủ đề đó về nhóm theo chuyên mục WordPress (Tin tức / Cẩm nang).
+ */
+export const POST_TOPIC_SET: EditableSet = {
+  khoa: 'chu-de-bai-viet',
+  nhom: 'Bài viết',
+  ten: 'Chủ đề Cẩm nang',
+  moTa:
+    'Các chủ đề của bài Cẩm nang: nút lọc trang Tin tức (theo thứ tự ở đây), nhãn trên thẻ bài, đầu bài viết. ' +
+    'Bài chọn chủ đề ở ô "Mục trên web" khi soạn bài. Thêm chủ đề mới rồi lưu là ô đó có ngay chủ đề mới. Tin tức, Cẩm nang là hai nhóm cố định.',
+  kieu: 'nhieu',
+  goc: BASE_TOPIC_ROWS,
+  tieuDeDong: 'ten',
+  khoaDong: 'ma',
+  truong: [
+    {
+      khoa: 'ten',
+      nhan: 'Tên chủ đề',
+      kieu: 'chu',
+      batBuoc: true,
+      goiY: 'Chủ đề thêm mới: đổi tên là đổi mã, các bài đã chọn chủ đề đó phải chọn lại ở ô "Mục trên web".',
+    },
+  ] satisfies EditableField[],
+}
+
+const TOPIC_ROWS = liveList<TopicRow>(POST_TOPIC_SET.khoa, BASE_TOPIC_ROWS, POST_TOPIC_SET.truong, (_i, row) => ({
+  ...(BASE_TOPIC_ROWS.find((r) => r.ma === row.ma) ?? { ma: '', ten: '' }),
+}))
+
+export interface PostTopicEntry {
+  /** Mã lưu trong WordPress */
+  id: string
+  /**
+   * Nhãn mã của chủ đề (Post.category, tham số ?chu-de= trên link): chủ đề gốc dùng tên gốc (link cũ giữ nguyên khi Ecopillo đổi tên),
+   * chủ đề mới dùng mã (không trùng tên gốc, "Tin tức", "Cẩm nang")
+   */
+  key: string
+  /** Tên hiện trên web */
+  label: string
+}
+
+/** Chủ đề đang dùng, theo thứ tự Ecopillo xếp. Mã trùng, mã Tin tức / Cẩm nang, tên không ra mã thì bỏ */
+export const POST_TOPIC_LIST: readonly PostTopicEntry[] = (() => {
+  const used = new Set<string>()
+  return TOPIC_ROWS.flatMap((row) => {
+    const id = row.ma || slugify(row.ten)
+    if (!id || used.has(id) || RESERVED.has(id)) return []
+    used.add(id)
+    return [{ id, key: BASE_TOPIC_ROWS.find((r) => r.ma === id)?.ten ?? id, label: row.ten }]
+  })
+})()
+
+/** Nhãn mã các chủ đề Cẩm nang, theo thứ tự nút lọc */
+export const POST_TOPICS: readonly string[] = POST_TOPIC_LIST.map((t) => t.key)
+/** Nhãn mã của bài: "Tin tức", "Cẩm nang" (chưa có chủ đề) hoặc nhãn mã một chủ đề (POST_TOPICS) */
+export type PostLabel = string
+
+/** Mã lưu trong WordPress → nhãn mã trên web (ECO_BV_MUC_META ở bai-viet-moi.php lưu mã này) */
+export const SECTION_LABELS: Readonly<Record<string, PostLabel>> = {
   'tin-tuc': 'Tin tức',
-  'chon-chan-ga': 'Chọn chăn ga gối đệm',
-  'giac-ngu': 'Giấc ngủ và sức khoẻ',
-  'phong-ngu': 'Phòng ngủ và phong thuỷ',
-  'cuoi-hoi-le-tet': 'Cưới hỏi, lễ tết',
-} as const satisfies Readonly<Record<string, PostLabel>>
-export type PostSection = keyof typeof SECTION_LABELS
+  ...Object.fromEntries(POST_TOPIC_LIST.map((t) => [t.id, t.key])),
+}
+export type PostSection = string
 
-export const isPostSection = (v: unknown): v is PostSection => typeof v === 'string' && v in SECTION_LABELS
+export const isPostSection = (v: unknown): v is PostSection => typeof v === 'string' && Object.prototype.hasOwnProperty.call(SECTION_LABELS, v)
+
+/** Nhãn mã còn dùng được; chủ đề Ecopillo đã xoá thì về "Cẩm nang" */
+export const knownLabel = (label: PostLabel): PostLabel =>
+  label === 'Tin tức' || label === 'Cẩm nang' || POST_TOPICS.includes(label) ? label : 'Cẩm nang'
+
+/** Tên hiện của một chủ đề (nhãn mã → tên Ecopillo đặt); không phải chủ đề thì undefined */
+export const topicLabelText = (label: PostLabel): string | undefined => POST_TOPIC_LIST.find((t) => t.key === label)?.label
 
 /** Bài thuộc nhóm lớn nào */
 export const postGroupOf = (label: PostLabel): 'Tin tức' | 'Cẩm nang' => (label === 'Tin tức' ? 'Tin tức' : 'Cẩm nang')

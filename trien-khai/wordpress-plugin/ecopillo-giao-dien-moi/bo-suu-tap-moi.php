@@ -11,7 +11,7 @@
  * Bộ có sẵn (8 danh mục bộ sưu tập web đang dùng): cùng khung đó, tích là web dùng khẩu hiệu, mô tả danh mục, câu chuyện ở đây.
  *
  * Câu chuyện phối màu: ô Mô tả của sản phẩm mẫu, dòng đầu là tên câu chuyện, các dòng sau là đoạn kể; thuộc tính "Gam màu"
- * ghi một gam (Xanh; Hồng, đỏ cam; Tím; Trắng, kem; Xám; Cho bé). Mẫu mới, mẫu của bộ mới: dùng ngay. Mẫu có sẵn: khi đã tích
+ * ghi một gam (tên gam ở Nội dung web → Sản phẩm → Gam màu; gốc: Xanh; Hồng, đỏ cam; Tím; Trắng, kem; Xám; Cho bé). Mẫu mới, mẫu của bộ mới: dùng ngay. Mẫu có sẵn: khi đã tích
  * "Giao diện mới dùng tên, ảnh, mô tả" (noi-dung-woo.php).
  * Ghi vào du-lieu.js: `boSuuTapMoi`, `boSuuTapChu` (src/data/liveData.ts). Dữ liệu không rời hosting.
  */
@@ -131,14 +131,52 @@ function eco_bst_save($term_id)
 
 /* ---------------------------------------------------------------- Câu chuyện phối màu */
 
-/** Mã gam từ thuộc tính "Gam màu" (so tên gam không dấu với khung-gia.json `boMoi.gam`) */
-function eco_bst_tone($product)
+/** Mã từ chữ, giống slugify ở src/lib/slug.ts: bỏ dấu, chữ thường, mọi ký tự khác a-z0-9 thành một dấu "-" */
+function eco_bst_slug($text)
 {
-    $frame = eco_gia_frame();
+    $text = strtolower(remove_accents((string) $text));
+    return trim((string) preg_replace('/[^a-z0-9]+/', '-', $text), '-');
+}
+
+/**
+ * Tên gam (không dấu) → mã gam. Ecopillo đã lưu bộ "Gam màu" ở Nội dung web (khoá gam-mau, src/data/stories.ts TONE_SET) thì
+ * theo bộ đó (thêm, xoá, đổi tên gam); chưa lưu thì theo khung-gia.json `boMoi.gam`. Mã như web tính (tonesOf trong stories.ts):
+ * gam có sẵn giữ mã đã lưu, gam mới lấy mã theo tên gam, mã trùng thì bỏ.
+ */
+function eco_bst_tones()
+{
+    // Không giữ sẵn: lưu bộ "Gam màu" rồi ghi du-lieu.js ngay trong cùng lần tải trang phải đọc bản vừa lưu
     $tones = array();
+    $saved = function_exists('eco_nd_saved') ? eco_nd_saved('gam-mau') : null;
+    if ($saved && is_array($saved['giaTri'])) {
+        $used = array();
+        foreach ($saved['giaTri'] as $row) {
+            if (!is_array($row) || !isset($row['ten']) || trim((string) $row['ten']) === '') {
+                continue;
+            }
+            $id = isset($row['ma']) && is_string($row['ma']) && $row['ma'] !== '' ? $row['ma'] : eco_bst_slug($row['ten']);
+            if ($id === '' || isset($used[$id])) {
+                continue;
+            }
+            $used[$id] = true;
+            $key = eco_gia_key($row['ten']);
+            if (!isset($tones[$key])) {
+                $tones[$key] = $id;
+            }
+        }
+        return $tones;
+    }
+    $frame = eco_gia_frame();
     foreach (isset($frame['boMoi']['gam']) ? (array) $frame['boMoi']['gam'] : array() as $t) {
         $tones[eco_gia_key($t['ten'])] = (string) $t['id'];
     }
+    return $tones;
+}
+
+/** Mã gam từ thuộc tính "Gam màu" (so tên gam không dấu với bộ "Gam màu", eco_bst_tones) */
+function eco_bst_tone($product)
+{
+    $tones = eco_bst_tones();
     foreach ($product->get_attributes() as $attr) {
         if (!is_object($attr) || eco_gia_key(wc_attribute_label($attr->get_name(), $product)) !== 'gam-mau') {
             continue;
