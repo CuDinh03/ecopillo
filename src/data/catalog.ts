@@ -433,6 +433,7 @@ const withPatternContent = (collection: Collection, pattern: Pattern): Pattern =
   return {
     ...pattern,
     colorName,
+    ...(live.mauNen ? { swatch: live.mauNen } : {}),
     ...(live.anh ? { hasImage: true, image: { ...live.anh, alt: live.anh.alt || alt } } : {}),
     ...(live.anhPhu ? { hasImage: true, gallery: live.anhPhu.map((img, i) => ({ ...img, alt: img.alt || `${alt} · ảnh ${i + 2}` })) } : {}),
     ...(live.cauChuyen ? { liveStory: storyOf(live.cauChuyen) } : {}),
@@ -468,7 +469,7 @@ const newPattern = (collection: Collection, p: LiveNewPattern): Pattern => {
   return {
     code: p.ma,
     colorName: p.ten,
-    swatch: '#d9d4cc',
+    swatch: p.mauNen ?? '#d9d4cc',
     isNew: true,
     hasImage: true,
     slug: p.duongDan,

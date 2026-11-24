@@ -156,6 +156,7 @@ function eco_nw_pattern_entry($product)
         'anhPhu' => eco_nw_gallery($product),
         'tenMau' => mb_strlen($short, 'UTF-8') <= 60 ? $short : '',
         'cauChuyen' => function_exists('eco_bst_story') ? eco_bst_story($product) : null,
+        'mauNen' => function_exists('eco_mm_swatch') ? eco_mm_swatch($product) : '',
     );
     return array_filter($entry, function ($v) {
         return $v !== '' && $v !== null && $v !== array();

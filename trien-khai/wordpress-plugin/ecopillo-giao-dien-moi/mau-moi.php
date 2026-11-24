@@ -157,6 +157,10 @@ function eco_mm_compute()
             if ($story) {
                 $item['cauChuyen'] = $story;
             }
+            $swatch = eco_mm_swatch($product);
+            if ($swatch !== '') {
+                $item['mauNen'] = $swatch;
+            }
             $live[] = $item;
             $pages[$slug] = array('khung' => $col['khung'], 'tieuDe' => $col['ten'] . ' ' . $code . ' · ' . $item['ten'], 'anh' => $image['src']);
         }
@@ -222,4 +226,28 @@ function eco_mm_shell($html, $slug, $page)
         }
     }
     return $html;
+}
+
+/**
+ * Màu chấm / dải của mẫu (ô lọc màu, bìa bộ sưu tập, đặt hàng) (đợt F): thuộc tính sản phẩm tên "Mã màu", giá trị dạng #c9a7b4.
+ * Không có hoặc sai dạng thì rỗng (web giữ màu đang có, mẫu mới dùng màu be nhạt).
+ */
+function eco_mm_swatch($product)
+{
+    foreach ($product->get_attributes() as $attr) {
+        if (!is_object($attr) || eco_gia_key(wc_attribute_label($attr->get_name(), $product)) !== 'ma-mau') {
+            continue;
+        }
+        $values = $attr->is_taxonomy()
+            ? wc_get_product_terms($product->get_id(), $attr->get_name(), array('fields' => 'names'))
+            : $attr->get_options();
+        foreach ((array) $values as $value) {
+            $hex = strtolower(trim((string) $value));
+            $hex = strpos($hex, '#') === 0 ? $hex : '#' . $hex;
+            if (preg_match('/^#[0-9a-f]{6}$/', $hex)) {
+                return $hex;
+            }
+        }
+    }
+    return '';
 }

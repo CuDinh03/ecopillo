@@ -220,6 +220,10 @@ function eco_bst_pattern($product, $known, $seen)
     if ($story) {
         $item['cauChuyen'] = $story;
     }
+    $swatch = eco_mm_swatch($product);
+    if ($swatch !== '') {
+        $item['mauNen'] = $swatch;
+    }
     return array($item, array());
 }
 

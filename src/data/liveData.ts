@@ -50,6 +50,8 @@ export interface LiveStory {
 }
 
 export interface LiveNewPattern {
+  /** Màu chấm / dải: thuộc tính "Mã màu" (đợt F); không có thì màu be nhạt */
+  mauNen?: string
   /** Mã bộ sưu tập trên web (eco-rosa…) */
   bo: string
   /** Mã mẫu (ER50) */
@@ -134,6 +136,8 @@ export interface LiveProductContent {
 
 /** Ảnh, ảnh phụ, tên màu của một mẫu chăn ga có sẵn (khoá `${collectionId}/${code}`) */
 export interface LivePatternContent {
+  /** Màu chấm / dải của mẫu: thuộc tính "Mã màu" trong Woo (đợt F) */
+  mauNen?: string
   anh?: LiveImage
   anhPhu?: readonly LiveImage[]
   tenMau?: string
@@ -271,6 +275,7 @@ function cleanNewPattern(input: unknown): LiveNewPattern | undefined {
     giaChun: cleanPrices(v.giaChun),
     het: cleanList(v.het) ?? [],
     ...(cleanStory(v.cauChuyen) ? { cauChuyen: cleanStory(v.cauChuyen) } : {}),
+    ...(cleanSwatch(v.mauNen) ? { mauNen: cleanSwatch(v.mauNen) } : {}),
   }
 }
 
@@ -412,13 +417,23 @@ function cleanProductContent(input: unknown): LiveProductContent {
   }
 }
 
+/** Màu "#rrggbb" (thuộc tính "Mã màu" của mẫu trong Woo) */
+const cleanSwatch = (v: unknown): string | undefined => (typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v) ? v.toLowerCase() : undefined)
+
 function cleanPatternContent(input: unknown): LivePatternContent {
   const v = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>
   const anh = cleanImage(v.anh)
   const anhPhu = cleanImages(v.anhPhu)
   const tenMau = cleanText(v.tenMau, 60)
   const cauChuyen = cleanStory(v.cauChuyen)
-  return { ...(anh ? { anh } : {}), ...(anhPhu.length ? { anhPhu } : {}), ...(tenMau ? { tenMau } : {}), ...(cauChuyen ? { cauChuyen } : {}) }
+  const mauNen = cleanSwatch(v.mauNen)
+  return {
+    ...(anh ? { anh } : {}),
+    ...(anhPhu.length ? { anhPhu } : {}),
+    ...(tenMau ? { tenMau } : {}),
+    ...(cauChuyen ? { cauChuyen } : {}),
+    ...(mauNen ? { mauNen } : {}),
+  }
 }
 
 const cleanContentMap = <T extends object>(input: unknown, clean: (v: unknown) => T): Record<string, T> =>
