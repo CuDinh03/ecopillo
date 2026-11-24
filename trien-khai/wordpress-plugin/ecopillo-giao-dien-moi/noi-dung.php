@@ -261,7 +261,42 @@ function eco_nd_theme_css()
             }
         }
     }
-    return $lines ? "/* Màu web Ecopillo đổi ở Nội dung web, plugin ghi. Không sửa tay. */\n:root:root {\n" . implode("\n", $lines) . "\n}\n" : "/* Chưa đổi màu: dùng bộ màu gốc */\n";
+    // Kiểu chữ web (theme.ts FONT_SET, đợt E5): font đã chọn nạp từ Google Fonts, ghi biến font và cỡ chữ gốc
+    $imports = array();
+    $root = '';
+    foreach (eco_nd_sets() as $key => $set) {
+        if (empty($set['bienFont']) || !eco_nd_saved($key)) {
+            continue;
+        }
+        $value = eco_nd_current($set);
+        foreach ((array) $set['bienFont'] as $field => $font) {
+            $family = isset($value[$field]) ? (string) $value[$field] : '';
+            $options = array();
+            foreach ($set['truong'] as $f) {
+                if ($f['khoa'] === $field) {
+                    $options = isset($f['luaChon']) ? (array) $f['luaChon'] : array();
+                }
+            }
+            $same = isset($set['goc'][$field]) && $set['goc'][$field] === $family;
+            if ($same || !in_array($family, $options, true) || !preg_match('/^[A-Za-z ]{2,40}$/', $family)
+                || !preg_match('/^--[a-z0-9-]+$/', (string) $font['bien']) || !preg_match('/^[a-z0-9,;@.]{0,60}$/', (string) $font['nap'])
+                || preg_match('/[;{}<>]/', (string) $font['duPhong'])) {
+                continue;
+            }
+            $imports[] = "@import url('https://fonts.googleapis.com/css2?family=" . str_replace(' ', '+', $family) . ':' . $font['nap'] . "&display=swap');";
+            $lines[] = '  ' . $font['bien'] . ": '" . $family . "', " . $font['duPhong'] . ';';
+        }
+        $size = !empty($set['oCoChu']) && isset($value[$set['oCoChu']]) ? (string) $value[$set['oCoChu']] : '100';
+        if ($size !== '100' && preg_match('/^(9[05]|1[01][05]|100)$/', $size)) {
+            $root = "html:root { font-size: " . $size . "%; }\n";
+        }
+    }
+    if (!$lines && $root === '') {
+        return "/* Chưa đổi màu, kiểu chữ: dùng bộ gốc */\n";
+    }
+    return ($imports ? implode("\n", $imports) . "\n" : '')
+        . "/* Màu web, kiểu chữ Ecopillo đổi ở Nội dung web, plugin ghi. Không sửa tay. */\n"
+        . ($lines ? ":root:root {\n" . implode("\n", $lines) . "\n}\n" : '') . $root;
 }
 
 /* ---------------------------------------------------------------- Chuyển hướng link Ecopillo tự thêm (src/data/liveRedirects.ts) */

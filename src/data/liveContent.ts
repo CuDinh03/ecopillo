@@ -84,6 +84,13 @@ export interface EditableSet {
   khongThemXoa?: boolean
   /** Như trên, và thứ tự dòng không có nghĩa: ẩn cả nút Lên / Xuống */
   khongDoiThuTu?: boolean
+  /**
+   * Bộ kiểu chữ (theme.ts, đợt E5): ô chọn font → biến CSS và họ dự phòng. Plugin nạp font đã chọn từ Google Fonts (cùng nơi
+   * web đang nạp font) và ghi biến vào mau.css. `nap`: các độ đậm / nghiêng cần nạp (cú pháp css2 của Google Fonts)
+   */
+  bienFont?: Readonly<Record<string, { bien: string; duPhong: string; nap: string }>>
+  /** Bộ kiểu chữ: ô cỡ chữ (phần trăm, ví dụ "105") → cỡ chữ gốc của trang (mọi khoảng cách tính theo rem co giãn theo) */
+  oCoChu?: string
   /** Bộ màu: cặp chữ / nền phải đủ tương phản (WCAG), không đủ thì plugin không lưu. `chu`, `nen` là mã ô hoặc "#ffffff" */
   kiemTuongPhan?: readonly { chu: string; nen: string; toiThieu: number; nhan: string }[]
 }

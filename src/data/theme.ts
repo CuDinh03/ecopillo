@@ -93,3 +93,49 @@ export const THEME_SET: EditableSet = {
     { chu: 'canhBao', nen: '#ffffff', toiThieu: 4.5, nhan: 'Chữ đỏ cảnh báo trên nền trắng' },
   ],
 }
+
+/**
+ * Kiểu chữ web Ecopillo tự đổi (đợt E5 24/11/2026: owner "kể cả về bố cục, các câu chữ, hình ảnh, theme của web").
+ * Nội dung web → Giao diện → Kiểu chữ web. Chỉ chọn trong danh sách font có đủ dấu tiếng Việt; plugin nạp font đó từ
+ * Google Fonts (web vốn nạp Be Vietnam Pro, Noto Serif Display ở đó) và ghi vào mau.css. Font gốc là font owner đã chốt
+ * (CLAUDE.md "Font"); cỡ chữ 100 là cỡ đã duyệt. Đổi font thì chữ có thể dài / ngắn hơn, tiêu đề xuống dòng khác.
+ */
+const FONT_CHU = ['Be Vietnam Pro', 'Inter', 'Roboto', 'Noto Sans', 'Montserrat', 'Nunito Sans', 'Lexend', 'Mulish'] as const
+const FONT_TIEU_DE = ['Noto Serif Display', 'Playfair Display', 'Lora', 'Noto Serif', 'Cormorant Garamond', 'Be Vietnam Pro', 'Montserrat'] as const
+const CO_CHU = ['90', '95', '100', '105', '110', '115'] as const
+
+export const FONT_SET: EditableSet = {
+  khoa: 'kieu-chu-web',
+  nhom: 'Giao diện',
+  ten: 'Kiểu chữ web',
+  moTa:
+    'Font chữ thường, font tiêu đề và cỡ chữ của cả web. Chỉ có font đủ dấu tiếng Việt. Đổi font thì tiêu đề có thể xuống dòng khác: xem lại trang chủ trên điện thoại sau khi lưu. "Trả về nội dung gốc" để về font đã chốt.',
+  kieu: 'mot',
+  goc: { fontChu: 'Be Vietnam Pro', fontTieuDe: 'Noto Serif Display', coChu: '100' },
+  truong: [
+    { khoa: 'fontChu', nhan: 'Font chữ thường (đoạn văn, nút, menu)', kieu: 'chon', batBuoc: true, luaChon: FONT_CHU },
+    { khoa: 'fontTieuDe', nhan: 'Font tiêu đề', kieu: 'chon', batBuoc: true, luaChon: FONT_TIEU_DE, goiY: 'Tiêu đề dùng độ đậm 600, chữ nghiêng độ đậm 400.' },
+    {
+      khoa: 'coChu',
+      nhan: 'Cỡ chữ cả web',
+      kieu: 'chon',
+      batBuoc: true,
+      luaChon: CO_CHU,
+      nhanLuaChon: ['90% (nhỏ hơn)', '95%', '100% (cỡ đã duyệt)', '105%', '110%', '115% (to hơn)'],
+      goiY: 'Khoảng cách, nút cũng to / nhỏ theo.',
+    },
+  ],
+  bienFont: {
+    fontChu: {
+      bien: '--font-sans',
+      duPhong: "'Be Vietnam Pro Roboto', 'Be Vietnam Pro Helvetica', 'Be Vietnam Pro Arial', ui-sans-serif, system-ui, sans-serif",
+      nap: 'wght@400;500;600;700',
+    },
+    fontTieuDe: {
+      bien: '--font-display',
+      duPhong: "'Noto Serif Display Georgia', 'Noto Serif Display Noto Serif', 'Times New Roman', serif",
+      nap: 'ital,wght@0,400;0,600;1,400',
+    },
+  },
+  oCoChu: 'coChu',
+}

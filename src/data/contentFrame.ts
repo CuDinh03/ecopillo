@@ -32,7 +32,7 @@ import { PRIVACY_SECTIONS_SET, PRIVACY_TEXT_SET } from './pageText/privacy'
 import { PRODUCTS_PAGE_TEXT_SET } from './pageText/products'
 import { RECRUIT_TEXT_SET } from './pageText/recruit'
 import { THANK_YOU_SET } from './thankYou'
-import { THEME_SET } from './theme'
+import { FONT_SET, THEME_SET } from './theme'
 import { LAYOUT_SETS } from './pageLayout'
 import { REDIRECT_SET } from './liveRedirects'
 import { SEO_SET } from './liveSeo'
@@ -88,6 +88,7 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   COMMON_TEXT_SET,
   // Màu web (owner 20/11/2026 "ecopillo cần tự làm hết được")
   THEME_SET,
+  FONT_SET,
   ...LAYOUT_SETS,
   REDIRECT_SET,
   // SEO từng trang (đợt E 24/11/2026)
