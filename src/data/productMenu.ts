@@ -10,6 +10,8 @@ import { HOTEL_PHOTOS } from './hotel'
 import { collectionPathById, hiddenPageTarget, isListingShown, LISTINGS, PATHS, singleProductPath } from './links'
 import { listingOf } from './listingProducts'
 import { liveList, type EditableField, type EditableSet } from './liveContent'
+import { anh, chu, definePageText } from './pageText/define'
+import { lienKet } from './pageText/linkField'
 import { hasPrice, PRICE_ON_CALL_LABEL, PRODUCTS, productBySlug, type Product } from './products'
 
 /**
@@ -264,75 +266,113 @@ const editableRows = (id: EditableGroupId): MenuRow[] => {
   return id === 'chan' ? [...rows, ...newChanRows(MENU_ROWS)] : rows
 }
 
+/* ---------------------------------------------------------------- Chữ, ảnh, link Ecopillo tự sửa (Nội dung web) */
+
+/** Tên, ảnh năm nhóm, tên nhóm con, dòng khách sạn, link cuối ô xổ (owner 24/11/2026: khách tự sửa mọi chi tiết, kể cả menu) */
+export const { set: PRODUCT_MENU_TEXT_SET, text: MENU_TEXT } = definePageText(
+  'o-xo-san-pham',
+  'Ô xổ "Sản phẩm": tên nhóm, ảnh, link cuối',
+  'Tên và ảnh năm nhóm của ô xổ Sản phẩm (máy tính và điện thoại), tên ba nhóm con của Bộ chăn ga, dòng Sản phẩm khách sạn, chữ "từ" trước giá, link cuối ô xổ. Các dòng của nhóm Đệm, Đồ ruột, Chăn sửa ở mục "Ô xổ Sản phẩm trên thanh đầu trang".',
+  {
+    nhomDem: chu('Nhóm 1: tên', EDITABLE_GROUPS[0].title),
+    anhDem: anh('Nhóm 1: ảnh', productImage('dem-lo-xo-tui-cao-cap-eco-luxe-2', 'Đệm Ecopillo')),
+    nhomBoChanGa: chu('Nhóm 2: tên', 'Bộ chăn ga Ecopillo'),
+    anhBoChanGa: anh('Nhóm 2: ảnh', patternImage('ED25', 'Bộ chăn ga Ecopillo')),
+    // "Bộ" đứng trước (chị Phương 18/11/2026): không có thì khách tưởng giá là của riêng một tấm ga
+    nhomGaPhu: chu('Nhóm 2: tên nhóm con ga phủ', 'Bộ ga phủ'),
+    nhomGaChunChan: chu('Nhóm 2: tên nhóm con ga phủ và chun chần', 'Bộ ga phủ và chun chần'),
+    ghiChuGaChunChan: chu('Nhóm 2: ghi chú dưới nhóm con ga phủ và chun chần', 'Chọn ga chun chần khi đặt hàng'),
+    nhomGaChun: chu('Nhóm 2: tên nhóm con ga chun', 'Bộ ga chun'),
+    nhomDoRuot: chu('Nhóm 3: tên', EDITABLE_GROUPS[1].title),
+    anhDoRuot: anh('Nhóm 3: ảnh', productImage('ruot-goi-micro-plus', 'Đồ ruột Ecopillo')),
+    nhomChan: chu('Nhóm 4: tên', EDITABLE_GROUPS[2].title),
+    anhChan: anh('Nhóm 4: ảnh', patternImage('ER09', 'Chăn đông và chăn hè')),
+    nhomKhachSan: chu('Nhóm 5: tên', 'Sản phẩm khách sạn'),
+    anhKhachSan: anh('Nhóm 5: ảnh', HOTEL_PHOTOS.sheets),
+    dongKhachSan: chu('Nhóm 5: chữ dòng duy nhất', 'Hàng trắng khách sạn'),
+    giaKhachSan: chu('Nhóm 5: chữ thay giá', 'giá liên hệ'),
+    linkKhachSan: lienKet('Nhóm 5: link', PATHS.hotel),
+    tu: chu('Chữ trước giá thấp nhất', 'từ', 'Ví dụ "từ 1.200.000đ"'),
+    xemCaNhom: chu('Điện thoại: link xem cả nhóm', 'Xem cả nhóm {nhom}', 'Giữ {nhom}: tên nhóm'),
+    xemTatCa: chu('Link cuối: xem tất cả', 'Xem tất cả sản phẩm'),
+    xemTatCaLink: lienKet('Link cuối: xem tất cả (đường dẫn)', PATHS.products),
+    quaTangDan: chu('Máy tính: chữ trước link quà tặng', 'Quà tặng doanh nghiệp, sự kiện:'),
+    quaTang: chu('Máy tính: link quà tặng', 'Quà tặng và sự kiện'),
+    quaTangLink: lienKet('Máy tính: link quà tặng (đường dẫn)', PATHS.gifts),
+  },
+)
+
 export const PRODUCT_MENU: readonly MenuGroup[] = [
   group({
     id: 'dem',
-    title: 'Đệm Ecopillo',
+    title: MENU_TEXT.nhomDem,
     to: DEM_PATH,
-    image: productImage('dem-lo-xo-tui-cao-cap-eco-luxe-2', 'Đệm Ecopillo'),
+    image: MENU_TEXT.anhDem,
     rows: editableRows('dem'),
   }),
   group({
     id: 'bo-chan-ga',
-    title: 'Bộ chăn ga Ecopillo',
+    title: MENU_TEXT.nhomBoChanGa,
     to: GA_PHU_PATH,
-    image: patternImage('ED25', 'Bộ chăn ga Ecopillo'),
+    image: MENU_TEXT.anhBoChanGa,
     rows: [],
-    // "Bộ" đứng trước (chị Phương 18/11/2026): không có thì khách tưởng giá là của riêng một tấm ga
     sections: [
       {
-        title: 'Bộ ga phủ',
+        title: MENU_TEXT.nhomGaPhu,
         rows: [...GA_PHU_ORDER.map(collectionRow), ...newSetRows(['ga-phu', 'chan-ga'])],
       },
       {
-        title: 'Bộ ga phủ và chun chần',
+        title: MENU_TEXT.nhomGaChunChan,
         // Rosa, Tera, Vera — chọn ga chun chần ở bước kích thước khi đặt
-        note: 'Chọn ga chun chần khi đặt hàng',
+        note: MENU_TEXT.ghiChuGaChunChan,
         rows: GA_CHUN_CHAN_ORDER.map(fittedRow),
       },
       {
-        title: 'Bộ ga chun',
+        title: MENU_TEXT.nhomGaChun,
         rows: [collectionRow('eco-flora'), ...newSetRows(['ga-chun'])],
       },
     ],
   }),
   group({
     id: 'do-ruot',
-    title: 'Đồ ruột',
+    title: MENU_TEXT.nhomDoRuot,
     // Không còn trang chung cho cả nhóm (Ruột chăn gối nay chỉ là ruột chăn): tiêu đề nhóm mở trang của dòng đầu
     to: editableRows('do-ruot')[0]?.to ?? RUOT_PATH,
-    image: productImage('ruot-goi-micro-plus', 'Đồ ruột Ecopillo'),
+    image: MENU_TEXT.anhDoRuot,
     rows: editableRows('do-ruot'),
   }),
   group({
     id: 'chan',
-    title: 'Chăn đông và chăn hè',
+    title: MENU_TEXT.nhomChan,
     to: CHAN_HE_PATH,
-    image: patternImage('ER09', 'Chăn đông và chăn hè'),
+    image: MENU_TEXT.anhChan,
     rows: editableRows('chan'),
   }),
   group({
     id: 'khach-san',
-    title: 'Sản phẩm khách sạn',
-    to: PATHS.hotel,
-    image: HOTEL_PHOTOS.sheets,
+    title: MENU_TEXT.nhomKhachSan,
+    to: MENU_TEXT.linkKhachSan,
+    image: MENU_TEXT.anhKhachSan,
     rows: [
       {
-        label: 'Hàng trắng khách sạn',
-        to: PATHS.hotel,
+        label: MENU_TEXT.dongKhachSan,
+        to: MENU_TEXT.linkKhachSan,
         min: 0,
         isFromPrice: false,
-        priceLabel: 'giá liên hệ',
+        priceLabel: MENU_TEXT.giaKhachSan,
       },
     ],
   }),
 ].filter((g) => g.rows.length > 0 || (g.sections?.length ?? 0) > 0)
 
 /** Dòng cuối ô xổ */
-export const PRODUCT_MENU_ALL = { label: 'Xem tất cả sản phẩm', to: PATHS.products } as const
+export const PRODUCT_MENU_ALL = { label: MENU_TEXT.xemTatCa, to: MENU_TEXT.xemTatCaLink } as const
 export const PRODUCT_MENU_GIFTS = {
-  lead: 'Quà tặng doanh nghiệp, sự kiện:',
-  label: 'Quà tặng và sự kiện',
-  to: PATHS.gifts,
+  lead: MENU_TEXT.quaTangDan,
+  label: MENU_TEXT.quaTang,
+  to: MENU_TEXT.quaTangLink,
 } as const
+
+/** Chữ trước giá, link xem cả nhóm (ProductMenu.tsx) */
+export const PRODUCT_MENU_LABELS = { from: MENU_TEXT.tu, seeGroup: MENU_TEXT.xemCaNhom } as const
 

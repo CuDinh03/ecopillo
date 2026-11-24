@@ -1,7 +1,9 @@
-import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
+import { Fragment, useEffect, useId, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, useNavigate } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
+import { chen } from '../../data/pageText/define'
+import { SEARCH_TEXT as T } from '../../data/pageText/search'
 import type { SearchEntry, SearchKind } from '../../data/searchIndex'
 import { highlightRanges, matchScore, parseQuery, type SearchQuery } from '../../lib/searchText'
 import { Icon, ZaloMark } from '../ui/Icon'
@@ -26,10 +28,13 @@ interface GroupSpec {
 }
 
 const GROUPS: readonly GroupSpec[] = [
-  { kind: 'san-pham', label: 'Sản phẩm', limit: 6 },
-  { kind: 'trang', label: 'Danh mục và trang', limit: 5 },
-  { kind: 'bai-viet', label: 'Bài viết', limit: 4 },
+  { kind: 'san-pham', label: T.nhomSanPham, limit: 6 },
+  { kind: 'trang', label: T.nhomTrang, limit: 5 },
+  { kind: 'bai-viet', label: T.nhomBaiViet, limit: 4 },
 ]
+
+/** Câu "Chưa thấy {chu} …" tách quanh chỗ chèn để in đậm chữ khách gõ; Ecopillo bỏ chỗ chèn thì không hiện chữ gõ */
+const NOT_FOUND_PARTS = T.khongThay.split('{chu}')
 
 type Results = Readonly<Record<SearchKind, readonly SearchEntry[]>>
 
@@ -205,7 +210,7 @@ export function SiteSearch({ onClose, top }: SiteSearchProps) {
             onClick={() => setExpanded((prev) => new Set([...prev, group.kind]))}
             className="mt-1 inline-flex items-center gap-1 rounded-full px-2 py-1.5 text-small font-semibold text-mist-600 hover:underline"
           >
-            Hiện thêm {all.length - shown.length} {group.label.toLowerCase()}
+            {chen(T.hienThem, { so: all.length - shown.length, nhom: group.label.toLowerCase() })}
             <Icon name="chevronDown" size={15} />
           </button>
         )}
@@ -217,18 +222,18 @@ export function SiteSearch({ onClose, top }: SiteSearchProps) {
     if (hasFailed)
       return (
         <p className="px-2 py-4 text-ink-soft">
-          Chưa tải được ô tìm. Quý khách thử lại, hoặc gọi{' '}
+          {T.loiTai}{' '}
           <a href={CONTACT.hotlineTel} className="font-semibold text-deep-900 underline">
             {CONTACT.hotlineDisplay}
           </a>
           .
         </p>
       )
-    if (!index) return <p className="px-2 py-4 text-ink-soft">Đang tải…</p>
+    if (!index) return <p className="px-2 py-4 text-ink-soft">{T.dangTai}</p>
     if (!parsed)
       return (
         <div>
-          <p className="mb-2 px-2 text-xs font-semibold tracking-[0.06em] text-ink-faint uppercase">Khách hay tìm</p>
+          <p className="mb-2 px-2 text-xs font-semibold tracking-[0.06em] text-ink-faint uppercase">{T.hayTim}</p>
           <div className="flex flex-wrap gap-2 px-2">
             {suggestions.map((s) => (
               <button
@@ -250,8 +255,12 @@ export function SiteSearch({ onClose, top }: SiteSearchProps) {
       return (
         <div className="px-2 py-4">
           <p className="text-ink-soft">
-            Chưa thấy <span className="font-semibold text-deep-900">“{query.trim()}”</span> trên web. Quý khách gọi hoặc nhắn Zalo, nhân viên
-            Ecopillo tư vấn ngay.
+            {NOT_FOUND_PARTS.map((part, i) => (
+              <Fragment key={i}>
+                {i > 0 && <span className="font-semibold text-deep-900">“{query.trim()}”</span>}
+                {part}
+              </Fragment>
+            ))}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <a href={CONTACT.hotlineTel} className="inline-flex items-center gap-2 rounded-full bg-brand-blue px-4 py-2 text-small font-medium text-ivory">
@@ -264,14 +273,14 @@ export function SiteSearch({ onClose, top }: SiteSearchProps) {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-ivory px-4 py-2 text-small font-medium text-deep-900 shadow-[var(--shadow-soft)]"
             >
-              <ZaloMark /> Nhắn Zalo
+              <ZaloMark /> {T.nhanZalo}
             </a>
           </div>
         </div>
       )
     return (
-      <div id={`${listId}-ds`} role="listbox" aria-label="Kết quả tìm" className="lg:grid lg:grid-cols-[1.5fr_1fr] lg:gap-8">
-        <div>{renderGroup(GROUPS[0], offsets[0]) ?? <p className="px-2 py-2 text-small text-ink-soft lg:py-0">Không có sản phẩm khớp.</p>}</div>
+      <div id={`${listId}-ds`} role="listbox" aria-label={T.ketQuaNhan} className="lg:grid lg:grid-cols-[1.5fr_1fr] lg:gap-8">
+        <div>{renderGroup(GROUPS[0], offsets[0]) ?? <p className="px-2 py-2 text-small text-ink-soft lg:py-0">{T.khongCoSanPham}</p>}</div>
         <div className="mt-5 lg:mt-0">
           {renderGroup(GROUPS[1], offsets[1])}
           {renderGroup(GROUPS[2], offsets[2])}
@@ -287,7 +296,7 @@ export function SiteSearch({ onClose, top }: SiteSearchProps) {
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Tìm trên web"
+        aria-label={T.oTimNhan}
         style={{ '--tim-top': `${Math.round(top)}px`, animationDuration: '200ms' } as CSSProperties}
         className="fade-in fixed inset-0 z-50 flex flex-col bg-page lg:pointer-events-none lg:top-[var(--tim-top)] lg:bottom-auto lg:block lg:bg-transparent"
       >
@@ -305,8 +314,8 @@ export function SiteSearch({ onClose, top }: SiteSearchProps) {
                   enterKeyHint="search"
                   autoComplete="off"
                   spellCheck={false}
-                  placeholder="Quý khách muốn tìm sản phẩm gì?"
-                  aria-label="Tìm trên web"
+                  placeholder={T.oTim}
+                  aria-label={T.oTimNhan}
                   role="combobox"
                   aria-expanded={visible.length > 0}
                   aria-controls={`${listId}-ds`}
@@ -316,7 +325,7 @@ export function SiteSearch({ onClose, top }: SiteSearchProps) {
                 {query && (
                   <button
                     type="button"
-                    aria-label="Xoá chữ đã gõ"
+                    aria-label={T.xoaChu}
                     onClick={() => {
                       changeQuery('')
                       inputRef.current?.focus()
@@ -329,7 +338,7 @@ export function SiteSearch({ onClose, top }: SiteSearchProps) {
               </label>
               <button
                 type="button"
-                aria-label="Đóng ô tìm"
+                aria-label={T.dongTim}
                 onClick={onClose}
                 className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-deep-900 transition-colors hover:bg-mist-100"
               >
@@ -339,7 +348,7 @@ export function SiteSearch({ onClose, top }: SiteSearchProps) {
             <div data-lenis-prevent className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 pt-4 pb-[max(2rem,env(safe-area-inset-bottom))] lg:px-4 lg:pt-1 lg:pb-5">
               {body()}
               <p className="mt-4 hidden px-2 text-xs text-ink-faint lg:block">
-                Mũi tên lên xuống để chọn, Enter để mở, Esc để đóng.
+                {T.meoPhim}
               </p>
             </div>
           </div>

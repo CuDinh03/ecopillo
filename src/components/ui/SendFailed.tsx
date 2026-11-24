@@ -1,4 +1,6 @@
 import { CONTACT } from '../../data/brand'
+import { chen } from '../../data/pageText/define'
+import { PAGE_FRAME_TEXT as T } from '../../data/pageText/pageFrame'
 import { Icon } from './Icon'
 
 interface SendFailedProps {
@@ -16,21 +18,21 @@ export function SendFailed({ what, className = '' }: SendFailedProps) {
     <div role="alert" className={`rounded-2xl bg-alert-soft px-4 py-3.5 text-body-sm text-alert ${className}`}>
       <p className="flex items-start gap-2 font-medium">
         <Icon name="info" size={17} className="mt-0.5 shrink-0" />
-        Chưa gửi được {what}. Thông tin Quý khách nhập vẫn còn, xin bấm gửi lại sau ít phút.
+        {chen(T.chuaGui, { gi: what })}
       </p>
       <p className="mt-2 pl-6 text-deep-900">
-        Cần ngay, Quý khách gọi{' '}
+        {T.canNgay}{' '}
         <a href={CONTACT.hotlineTel} className="tabular font-medium whitespace-nowrap underline underline-offset-2">
           {CONTACT.hotlineDisplay}
         </a>{' '}
-        hoặc{' '}
+        {T.hoac}{' '}
         <a
           href={CONTACT.zaloUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="font-medium underline underline-offset-2"
         >
-          nhắn Zalo
+          {T.nhanZalo}
         </a>
         .
       </p>

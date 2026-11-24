@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom'
+import { PAGE_FRAME_TEXT } from '../../data/pageText/pageFrame'
 import type { RelatedGroup } from '../../data/related'
+import { MenuLink } from '../layout/MenuLink'
 import { Icon } from './Icon'
 
 /**
@@ -12,7 +13,7 @@ export function ExploreMore({ groups, className = '' }: { groups: readonly Relat
   return (
     <nav aria-labelledby="explore-title" className={`mt-16 border-t border-line pt-10 sm:mt-20 sm:pt-12 ${className}`}>
       <h2 id="explore-title" className="font-display text-[1.6rem] leading-tight text-deep-900 sm:text-[2rem]">
-        Khám phá thêm
+        {PAGE_FRAME_TEXT.khamPha}
       </h2>
       <div className="mt-6 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(13rem,1fr))]">
         {shown.map((group) => (
@@ -21,8 +22,9 @@ export function ExploreMore({ groups, className = '' }: { groups: readonly Relat
             <ul className="mt-3 divide-y divide-line border-y border-line">
               {group.links.map((link) => (
                 <li key={link.to}>
-                  <Link
-                    to={link.to}
+                  {/* Link nhóm "Mua hàng", "Mua sắm" Ecopillo sửa được, có thể là https:// */}
+                  <MenuLink
+                    href={link.to}
                     className="group flex min-h-10 items-center justify-between gap-3 py-2.5 text-body-sm text-deep-900 transition-colors hover:text-deep-700"
                   >
                     <span className="min-w-0">
@@ -34,7 +36,7 @@ export function ExploreMore({ groups, className = '' }: { groups: readonly Relat
                       size={15}
                       className="shrink-0 text-mist-600 opacity-60 transition group-hover:translate-x-0.5 group-hover:opacity-100"
                     />
-                  </Link>
+                  </MenuLink>
                 </li>
               ))}
             </ul>

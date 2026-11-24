@@ -1,7 +1,8 @@
 import { ALL_POSTS } from './allPosts'
 import type { ImageSource } from './catalog'
 import { LISTINGS, PATHS } from './links'
-import { POLICY_NAV } from './policyNav'
+import { SEARCH_PAGES, SEARCH_TEXT } from './pageText/search'
+import { POLICY_NAV, policyPath } from './policyNav'
 import { postPath } from './posts'
 import { priceLabel, productPath, PRODUCTS, type CategoryId } from './products'
 
@@ -24,33 +25,22 @@ export interface SearchEntry {
   penalty?: number
 }
 
-/** Trang không phải danh mục. Từ khoá: chữ khách hay gõ khi tìm trang đó */
-const PAGES: readonly { title: string; to: string; keywords: string }[] = [
-  { title: 'Liên hệ mua hàng', to: PATHS.contact, keywords: 'điểm bán đại lý cửa hàng showroom địa chỉ hệ thống phân phối số điện thoại hotline' },
-  { title: 'Đặt hàng online', to: PATHS.order, keywords: 'mua online đặt mua giỏ hàng' },
-  { title: 'Giới thiệu Ecopillo', to: PATHS.about, keywords: 'về chúng tôi công ty câu chuyện thương hiệu' },
-  { title: 'Khách sạn & dự án', to: PATHS.hotel, keywords: 'khách sạn nhà nghỉ homestay resort dự án' },
-  { title: 'Đăng ký mở đại lý', to: PATHS.recruit, keywords: 'tuyển đại lý hợp tác nhượng quyền kinh doanh' },
-  { title: 'Quà tặng và sự kiện', to: PATHS.gifts, keywords: 'quà tặng doanh nghiệp quà tết quà cưới sự kiện tri ân' },
-  { title: 'Tin tức', to: PATHS.blog, keywords: 'bài viết cẩm nang' },
-  { title: 'Hỏi đáp', to: PATHS.faq, keywords: 'câu hỏi thường gặp' },
-]
-
+/** Từ khoá thêm của từng trang chính sách (theo link, để Ecopillo đổi tên trang chính sách không mất từ khoá) */
 const POLICY_KEYWORDS: Readonly<Record<string, string>> = {
-  'Hướng dẫn mua hàng': 'cách mua đặt hàng',
-  'Giao hàng': 'vận chuyển ship phí ship giao hàng miễn phí',
-  'Thanh toán': 'chuyển khoản số tài khoản đặt cọc',
-  'Kiểm hàng, đổi hàng': 'đổi trả hoàn tiền kiểm tra hàng',
-  'Bảo hành': 'đổi mới sửa chữa',
-  'Bảo vệ thông tin cá nhân': 'bảo mật quyền riêng tư',
+  [policyPath('huong-dan-mua-hang')]: SEARCH_TEXT.tuHuongDan,
+  [policyPath('chinh-sach-van-chuyen')]: SEARCH_TEXT.tuGiaoHang,
+  [policyPath('chinh-sach-thanh-toan')]: SEARCH_TEXT.tuThanhToan,
+  [policyPath('chinh-sach-doi-tra-hang-va-hoan-tien')]: SEARCH_TEXT.tuDoiHang,
+  [policyPath('chinh-sach-bao-hanh-san-pham')]: SEARCH_TEXT.tuBaoHanh,
+  [PATHS.privacy]: SEARCH_TEXT.tuBaoMat,
 }
 
 /** Chữ của nhóm để tìm (không dùng nhãn "Đệm & topper": gõ "topper" sẽ ra mọi đệm) */
 const CATEGORY_WORDS: Readonly<Record<CategoryId, string>> = {
-  'bo-chan-ga': 'bộ chăn ga gối',
-  chan: 'chăn',
-  goi: 'gối',
-  dem: 'đệm',
+  'bo-chan-ga': SEARCH_TEXT.tuNhomBoChanGa,
+  chan: SEARCH_TEXT.tuNhomChan,
+  goi: SEARCH_TEXT.tuNhomGoi,
+  dem: SEARCH_TEXT.tuNhomDem,
 }
 
 const productEntries = (): SearchEntry[] =>
@@ -66,9 +56,16 @@ const productEntries = (): SearchEntry[] =>
   }))
 
 const pageEntries = (): SearchEntry[] => [
-  ...Object.entries(LISTINGS).map(([to, listing]) => ({ kind: 'trang' as const, title: listing.title, to, meta: 'Danh mục sản phẩm' })),
-  ...PAGES.map((page) => ({ kind: 'trang' as const, ...page })),
-  ...POLICY_NAV.map((p) => ({ kind: 'trang' as const, title: p.label, to: p.to, meta: 'Chính sách', keywords: `chính sách ${POLICY_KEYWORDS[p.label] ?? ''}` })),
+  ...Object.entries(LISTINGS).map(([to, listing]) => ({ kind: 'trang' as const, title: listing.title, to, meta: SEARCH_TEXT.loaiDanhMuc })),
+  // Trang khác: Nội dung web → Giao diện → Trang tìm được trong ô tìm (src/data/pageText/search.ts)
+  ...SEARCH_PAGES.map((page) => ({ kind: 'trang' as const, title: page.ten, to: page.link, keywords: page.tuKhoa ?? '' })),
+  ...POLICY_NAV.map((p) => ({
+    kind: 'trang' as const,
+    title: p.label,
+    to: p.to,
+    meta: SEARCH_TEXT.loaiChinhSach,
+    keywords: `${SEARCH_TEXT.tuChinhSach} ${POLICY_KEYWORDS[p.to] ?? ''}`,
+  })),
 ]
 
 const postEntries = (): SearchEntry[] =>
@@ -76,5 +73,5 @@ const postEntries = (): SearchEntry[] =>
 
 export const SEARCH_INDEX: readonly SearchEntry[] = [...productEntries(), ...pageEntries(), ...postEntries()]
 
-/** Gợi ý khi ô tìm còn trống */
-export const SEARCH_SUGGESTIONS: readonly string[] = ['Đệm lò xo', 'Ruột gối', 'Chăn hè', 'Bộ chăn ga', 'Topper', 'Divan']
+/** Gợi ý khi ô tìm còn trống (Ecopillo sửa ở Nội dung web → Thanh tìm kiếm) */
+export const SEARCH_SUGGESTIONS: readonly string[] = SEARCH_TEXT.goiY

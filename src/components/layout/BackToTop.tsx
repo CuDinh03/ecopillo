@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { CONTACT_DOCK_TEXT } from '../../data/pageText/contactDock'
 import { Icon } from '../ui/Icon'
 
 const SHOW_AFTER = 900
@@ -58,7 +59,7 @@ export function BackToTop({ raised }: { raised: boolean }) {
     <button
       ref={ref}
       type="button"
-      aria-label="Lên đầu trang"
+      aria-label={CONTACT_DOCK_TEXT.lenDau}
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       tabIndex={isVisible ? 0 : -1}
       className={`fixed right-3 z-30 flex h-11 w-11 items-center justify-center rounded-full bg-ivory/95 text-deep-900 shadow-[var(--shadow-lift)] ring-1 ring-cream-200 backdrop-blur transition-[opacity,translate,background-color] duration-200 ease-[var(--ease-out-strong)] hover:-translate-y-0.5 hover:bg-white md:right-auto md:bottom-6 md:left-6 ${

@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
-import { PATHS } from '../../data/links'
+import { CONTACT_DOCK_TEXT as T } from '../../data/pageText/contactDock'
+import { chen } from '../../data/pageText/define'
 import { Icon, ZaloMark } from '../ui/Icon'
+import { MenuLink } from './MenuLink'
 
 /**
  * Thanh liên hệ luôn hiện. Nút gọi xanh lá, Zalo, Messenger nền màu hãng (anh Quang, Zalo 19/11/2026; owner chọn
@@ -23,7 +24,7 @@ export function ContactDock({ mobileBar = true }: { mobileBar?: boolean }) {
               className="flex h-12 flex-col items-center justify-center rounded-2xl bg-call text-ivory active:bg-call-dark"
             >
               <Icon name="phone" size={18} />
-              <span className="mt-0.5 text-label font-medium">Gọi ngay</span>
+              <span className="mt-0.5 text-label font-medium">{T.goiNgay}</span>
             </a>
             <a
               href={CONTACT.zaloUrl}
@@ -32,7 +33,7 @@ export function ContactDock({ mobileBar = true }: { mobileBar?: boolean }) {
               className="flex h-12 flex-col items-center justify-center rounded-2xl bg-zalo text-ivory active:brightness-90"
             >
               <ZaloMark tone="light" />
-              <span className="mt-0.5 text-label font-medium">Nhắn Zalo</span>
+              <span className="mt-0.5 text-label font-medium">{T.nhanZalo}</span>
             </a>
             <a
               href={CONTACT.messengerUrl}
@@ -41,16 +42,16 @@ export function ContactDock({ mobileBar = true }: { mobileBar?: boolean }) {
               className="flex h-12 flex-col items-center justify-center rounded-2xl bg-messenger text-ivory active:brightness-90"
             >
               <Icon name="messenger" size={18} />
-              <span className="mt-0.5 text-label font-medium">Messenger</span>
+              <span className="mt-0.5 text-label font-medium">{T.messenger}</span>
             </a>
-            <Link
-              to={PATHS.order}
+            <MenuLink
+              href={T.datHangLink}
               className="flex h-12 items-center justify-center gap-1.5 rounded-2xl bg-deep-800 text-sm font-medium whitespace-nowrap text-ivory active:bg-deep-700"
             >
-              Đặt hàng
+              {T.datHang}
               {/* Dưới 360px ô quá hẹp, chữ rớt hai dòng "Đặt / hàng": bỏ mũi tên */}
               <Icon name="arrowRight" size={16} className="max-[359px]:hidden" />
-            </Link>
+            </MenuLink>
           </div>
         </div>
       )}
@@ -70,36 +71,36 @@ const SIDE_BUTTON =
  */
 function DesktopDock() {
   return (
-    <nav aria-label="Liên hệ Ecopillo" className="fixed right-6 bottom-6 z-40 hidden flex-col items-end gap-2.5 md:flex">
+    <nav aria-label={T.nhomNhan} className="fixed right-6 bottom-6 z-40 hidden flex-col items-end gap-2.5 md:flex">
       <a
         href={CONTACT.messengerUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Nhắn Messenger Ecopillo"
-        title="Nhắn Messenger"
+        aria-label={T.messengerNhan}
+        title={T.messengerGoiY}
         className={`${SIDE_BUTTON} bg-messenger`}
       >
         <Icon name="messenger" size={20} />
         <span aria-hidden="true" className="max-[1439px]:hidden">
-          Messenger
+          {T.messengerChu}
         </span>
       </a>
       <a
         href={CONTACT.zaloUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Nhắn Zalo Ecopillo"
-        title="Nhắn Zalo"
+        aria-label={T.zaloNhan}
+        title={T.zaloGoiY}
         className={`${SIDE_BUTTON} bg-zalo`}
       >
         <ZaloMark tone="light" />
         <span aria-hidden="true" className="max-[1439px]:hidden">
-          Zalo
+          {T.zaloChu}
         </span>
       </a>
       <a
         href={CONTACT.hotlineTel}
-        aria-label={`Gọi hotline ${CONTACT.hotlineDisplay}`}
+        aria-label={chen(T.goiNhan, { so: CONTACT.hotlineDisplay })}
         className="goi-song flex h-14 items-center gap-2 rounded-full bg-call py-2 pr-5 pl-4 text-sm font-medium text-ivory shadow-[var(--shadow-lift)] transition hover:-translate-y-0.5 hover:bg-call-dark focus-visible:outline-2 focus-visible:outline-offset-2"
       >
         <Icon name="phone" size={18} className="goi-rung" />

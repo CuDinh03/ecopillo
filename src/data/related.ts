@@ -1,6 +1,9 @@
 import { COLLECTIONS } from './catalog'
 import { collectionPathById, isListingShown, LISTINGS, PATHS, productsUrl } from './links'
-import { POLICY_PAGES, policyPath } from './policyNav'
+import { chen } from './pageText/define'
+import { isMenuLink } from './pageText/linkField'
+import { PAGE_FRAME_TEXT as T } from './pageText/pageFrame'
+import { POLICY_PAGE_LINKS } from './policyNav'
 import { POSTS, postPath, type Post } from './posts'
 import { PRODUCTS, priceLabel, productPath, type CategoryId, type Product } from './products'
 
@@ -8,6 +11,7 @@ import { PRODUCTS, priceLabel, productPath, type CategoryId, type Product } from
  * Khối "Khám phá thêm" ở cuối trang: link qua lại giữa sản phẩm, danh mục, bài viết, chính sách
  * (owner duyệt 15/10/2026). Giúp khách đi tiếp, và Google thấy các trang nối với nhau như web cũ (50–68 link mỗi trang).
  * Mọi link lấy từ links.ts; thêm bài viết thì gắn `topics` cho bài trong posts.ts là tự hiện ở đúng chỗ.
+ * Tên nhóm, link nhóm "Mua hàng", "Mua sắm": Ecopillo sửa ở Nội dung web (src/data/pageText/pageFrame.ts).
  */
 
 export interface RelatedLink {
@@ -25,7 +29,7 @@ export interface RelatedGroup {
 /** Chủ đề nối bài viết với nhóm sản phẩm. Bài có chủ đề nào thì hiện ở trang sản phẩm nhóm đó, và ngược lại */
 export type Topic = CategoryId | 'chinh-sach'
 
-const postLink = (p: Post): RelatedLink => ({ label: p.title, note: `${p.readMinutes} phút đọc`, to: postPath(p) })
+const postLink = (p: Post): RelatedLink => ({ label: p.title, note: chen(T.phutDoc, { so: p.readMinutes }), to: postPath(p) })
 
 export const postsAbout = (topic: Topic, exceptSlug?: string): readonly Post[] =>
   POSTS.filter((p) => p.slug !== exceptSlug && p.topics?.includes(topic))
@@ -38,19 +42,17 @@ const listingsOf = (category: CategoryId): RelatedLink[] =>
     .map(([to, l]) => ({ label: l.title, to }))
 
 const CATEGORY_LINKS: Readonly<Record<CategoryId, RelatedLink>> = {
-  'bo-chan-ga': { label: 'Tất cả bộ chăn ga', to: productsUrl({ 'danh-muc': 'bo-chan-ga' }) },
-  chan: { label: 'Tất cả chăn', to: productsUrl({ 'danh-muc': 'chan' }) },
-  goi: { label: 'Tất cả gối', to: productsUrl({ 'danh-muc': 'goi' }) },
-  dem: { label: 'Tất cả đệm và topper', to: productsUrl({ 'danh-muc': 'dem' }) },
+  'bo-chan-ga': { label: T.tatCaBoChanGa, to: productsUrl({ 'danh-muc': 'bo-chan-ga' }) },
+  chan: { label: T.tatCaChan, to: productsUrl({ 'danh-muc': 'chan' }) },
+  goi: { label: T.tatCaGoi, to: productsUrl({ 'danh-muc': 'goi' }) },
+  dem: { label: T.tatCaDem, to: productsUrl({ 'danh-muc': 'dem' }) },
 }
 
-const BUYING_GUIDE: readonly RelatedLink[] = [
-  { label: 'Hướng dẫn mua hàng', to: policyPath('huong-dan-mua-hang') },
-  { label: 'Giao hàng, kiểm hàng khi nhận', to: policyPath('chinh-sach-van-chuyen') },
-  { label: 'Kiểm hàng, đổi hàng', to: policyPath('chinh-sach-doi-tra-hang-va-hoan-tien') },
-  { label: 'Bảo hành', to: policyPath('chinh-sach-bao-hanh-san-pham') },
-  { label: 'Tìm đại lý gần Quý khách', to: `${PATHS.contact}#diem-ban` },
-]
+/** Dòng "chữ | link" Ecopillo sửa → link; link sai (không phải /… hay https://…) thì bỏ dòng */
+const linksOf = (rows: readonly { ten: string; link: string }[]): RelatedLink[] =>
+  rows.filter((r) => isMenuLink(r.link)).map((r) => ({ label: r.ten, to: r.link }))
+
+const BUYING_GUIDE: readonly RelatedLink[] = linksOf(T.linkMuaHang)
 
 /** Các bộ sưu tập khác (trừ bộ đang xem) */
 const otherCollections = (exceptId?: string): RelatedLink[] =>
@@ -59,11 +61,11 @@ const otherCollections = (exceptId?: string): RelatedLink[] =>
 /** Cuối trang sản phẩm lẻ, trang bộ sưu tập, trang phối màu */
 export const relatedForProduct = (product: Product): readonly RelatedGroup[] => {
   const groups: RelatedGroup[] = []
-  if (product.collection) groups.push({ title: 'Bộ sưu tập khác', links: otherCollections(product.collection.id) })
+  if (product.collection) groups.push({ title: T.nhomBoSuuTapKhac, links: otherCollections(product.collection.id) })
   else {
     const siblings = PRODUCTS.filter((p) => p.category === product.category && p.slug !== product.slug && !p.collection)
     groups.push({
-      title: 'Cùng nhóm',
+      title: T.nhomCungNhom,
       links: [
         ...siblings.map((p) => ({ label: p.name, note: priceLabel(p), to: productPath(p) })),
         ...listingsOf(product.category),
@@ -72,8 +74,8 @@ export const relatedForProduct = (product: Product): readonly RelatedGroup[] => 
     })
   }
   const posts = postsAbout(product.category)
-  if (posts.length > 0) groups.push({ title: 'Cẩm nang', links: posts.map(postLink) })
-  groups.push({ title: 'Mua hàng', links: BUYING_GUIDE })
+  if (posts.length > 0) groups.push({ title: T.nhomCamNang, links: posts.map(postLink) })
+  groups.push({ title: T.nhomMuaHang, links: BUYING_GUIDE })
   return groups
 }
 
@@ -81,11 +83,11 @@ export const relatedForProduct = (product: Product): readonly RelatedGroup[] => 
 export const relatedForListing = (path: string, category?: CategoryId): readonly RelatedGroup[] => {
   const groups: RelatedGroup[] = []
   const siblings = category ? listingsOf(category).filter((l) => l.to !== path) : []
-  if (siblings.length > 0) groups.push({ title: 'Danh mục cùng nhóm', links: siblings })
-  if (category === 'bo-chan-ga' || !category) groups.push({ title: 'Bộ sưu tập', links: otherCollections() })
+  if (siblings.length > 0) groups.push({ title: T.nhomDanhMucCungNhom, links: siblings })
+  if (category === 'bo-chan-ga' || !category) groups.push({ title: T.nhomBoSuuTap, links: otherCollections() })
   const posts = category ? postsAbout(category) : []
-  if (posts.length > 0) groups.push({ title: 'Cẩm nang', links: posts.map(postLink) })
-  groups.push({ title: 'Mua hàng', links: BUYING_GUIDE })
+  if (posts.length > 0) groups.push({ title: T.nhomCamNang, links: posts.map(postLink) })
+  groups.push({ title: T.nhomMuaHang, links: BUYING_GUIDE })
   return groups
 }
 
@@ -95,27 +97,19 @@ export const relatedForPost = (post: Post): readonly RelatedGroup[] => {
   const productLinks = (post.topics ?? [])
     .filter((t): t is CategoryId => t !== 'chinh-sach')
     .flatMap((t) => [CATEGORY_LINKS[t], ...listingsOf(t)])
-  if (productLinks.length > 0) groups.push({ title: 'Sản phẩm liên quan', links: productLinks })
+  if (productLinks.length > 0) groups.push({ title: T.nhomSanPhamLienQuan, links: productLinks })
   const morePosts = POSTS.filter((p) => p.slug !== post.slug && p.topics?.some((t) => post.topics?.includes(t)))
-  if (morePosts.length > 0) groups.push({ title: 'Đọc thêm', links: morePosts.map(postLink) })
-  groups.push({ title: 'Mua hàng', links: BUYING_GUIDE })
+  if (morePosts.length > 0) groups.push({ title: T.nhomDocThem, links: morePosts.map(postLink) })
+  groups.push({ title: T.nhomMuaHang, links: BUYING_GUIDE })
   return groups
 }
 
 /** Cuối trang chính sách: các chính sách khác + cẩm nang mua hàng */
 export const relatedForPolicy = (currentPath: string): readonly RelatedGroup[] => {
-  const policies = POLICY_PAGES.map((p) => ({ label: p.label, to: policyPath(p.slug) })).filter((l) => l.to !== currentPath)
-  const groups: RelatedGroup[] = [{ title: 'Chính sách khác', links: [...policies, { label: 'Hỏi đáp', to: PATHS.faq }] }]
+  const policies = POLICY_PAGE_LINKS.map((p) => ({ label: p.label, to: p.to })).filter((l) => l.to !== currentPath)
+  const groups: RelatedGroup[] = [{ title: T.nhomChinhSachKhac, links: [...policies, { label: T.hoiDap, to: PATHS.faq }] }]
   const posts = postsAbout('chinh-sach')
-  if (posts.length > 0) groups.push({ title: 'Cẩm nang', links: posts.map(postLink) })
-  groups.push({
-    title: 'Mua sắm',
-    links: [
-      { label: 'Bộ chăn ga', to: productsUrl({ 'danh-muc': 'bo-chan-ga' }) },
-      { label: 'Ruột chăn gối', to: '/danh-muc-san-pham/san-pham/ruot-chan-goi/' },
-      { label: 'Đệm Ecopillo', to: '/danh-muc-san-pham/dem-ecopillo/' },
-      { label: 'Đặt hàng online', to: PATHS.order },
-    ],
-  })
+  if (posts.length > 0) groups.push({ title: T.nhomCamNang, links: posts.map(postLink) })
+  groups.push({ title: T.nhomMuaSam, links: linksOf(T.linkMuaSam) })
   return groups
 }

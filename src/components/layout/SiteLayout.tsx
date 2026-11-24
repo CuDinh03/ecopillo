@@ -2,6 +2,7 @@ import { Suspense, useEffect, useRef } from 'react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { hasOwnBuyBar, PATHS } from '../../data/links'
 import { liveRedirectFor } from '../../data/liveRedirects'
+import { HEADER_TEXT } from '../../data/pageText/header'
 import { trackPageView } from '../../lib/tracking'
 import { BackToTop } from './BackToTop'
 import { ContactDock } from './ContactDock'
@@ -97,7 +98,7 @@ export function SiteLayout() {
         href="#noi-dung"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-deep-800 focus:px-4 focus:py-2 focus:text-ivory"
       >
-        Bỏ qua tới nội dung
+        {HEADER_TEXT.boQua}
       </a>
       {/* Chỉ người đăng nhập WordPress có quyền mới thấy (thanh-quan-tri.php); khách không phát sinh yêu cầu nào */}
       <AdminBar />
