@@ -14,6 +14,8 @@ import { ExploreMore } from '../components/ui/ExploreMore'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 import { NotFoundPage } from './NotFoundPage'
+import { Blocks } from '../components/ui/Blocks'
+import { CATEGORY_ORDER } from '../data/pageLayout'
 import { PRODUCTS_PAGE_TEXT } from '../data/pageText/products'
 import { PRODUCT_LIST_TEXT } from '../data/pageText/productUi'
 
@@ -63,55 +65,61 @@ export function CategoryPage() {
       />
 
       <Container className="mt-10 sm:mt-14">
-        {/* Không ghi "N sản phẩm" (chị Phương 09/11/2026: "tất cả các số này bỏ hộ c nha") */}
-        <ul className="grid grid-cols-2 gap-3 sm:gap-5 xl:grid-cols-3">
-          {products.map((p, i) => (
-            <li key={p.slug} data-reveal style={revealDelay(i, 70)} className="flex">
-              <div className="flex w-full flex-col [&>article]:flex-1">
-                <ProductCard product={p} />
+        {/* Thứ tự, ẩn / hiện các khối: Ecopillo chọn ở Nội dung web → Giao diện → Bố cục trang danh mục (đợt E5) */}
+        <Blocks
+          order={CATEGORY_ORDER}
+          blocks={{
+            // Không ghi "N sản phẩm" (chị Phương 09/11/2026: "tất cả các số này bỏ hộ c nha")
+            'san-pham': (
+              <ul className="mt-16 grid grid-cols-2 gap-3 first:mt-0 sm:mt-20 sm:gap-5 sm:first:mt-0 xl:grid-cols-3">
+                {products.map((p, i) => (
+                  <li key={p.slug} data-reveal style={revealDelay(i, 70)} className="flex">
+                    <div className="flex w-full flex-col [&>article]:flex-1">
+                      <ProductCard product={p} />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ),
+            'phoi-mau': colorways.length > 0 && (
+              <section aria-labelledby="colorways-title" className="mt-16 first:mt-0 sm:mt-20 sm:first:mt-0">
+                <h2 id="colorways-title" className="font-display text-[1.6rem] leading-tight text-deep-900 sm:text-[2.2rem]">
+                  {PRODUCTS_PAGE_TEXT.phoiMau}
+                </h2>
+                <ul className="mt-6 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+                  {colorways.slice(0, COLORWAY_PREVIEW).map((colorway) => (
+                    <li key={`${colorway.collection.id}/${colorway.pattern.code}`}>
+                      <ColorwayCard colorway={colorway} />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ),
+            'chon-the-nao': guide && (
+              <section aria-labelledby="guide-title" className="mt-16 rounded-[2rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] first:mt-0 sm:mt-20 sm:p-10 sm:first:mt-0">
+                <h2 id="guide-title" className="font-display text-[1.6rem] leading-tight text-deep-900 sm:text-[2rem]">
+                  {guide.title}
+                </h2>
+                <dl className="mt-6 grid gap-x-10 gap-y-5 sm:grid-cols-2">
+                  {guide.points.map((point) => (
+                    <div key={point.title} className="border-t border-line pt-4">
+                      <dt className="font-medium text-deep-900">{point.title}</dt>
+                      <dd className="mt-1 text-body-sm leading-relaxed text-ink-soft">{point.text}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            ),
+            'xem-tat-ca': (
+              <div className="mt-12 flex justify-center first:mt-0">
+                <Link to={moreUrl} className={buttonClass('secondary', 'lg')}>
+                  {PRODUCT_LIST_TEXT.xemTatCaSanPham} <Icon name="arrowRight" size={18} />
+                </Link>
               </div>
-            </li>
-          ))}
-        </ul>
-
-        {colorways.length > 0 && (
-          <section aria-labelledby="colorways-title" className="mt-16 sm:mt-20">
-            <h2 id="colorways-title" className="font-display text-[1.6rem] leading-tight text-deep-900 sm:text-[2.2rem]">
-              {PRODUCTS_PAGE_TEXT.phoiMau}
-            </h2>
-            <ul className="mt-6 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
-              {colorways.slice(0, COLORWAY_PREVIEW).map((colorway) => (
-                <li key={`${colorway.collection.id}/${colorway.pattern.code}`}>
-                  <ColorwayCard colorway={colorway} />
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {guide && (
-          <section aria-labelledby="guide-title" className="mt-16 rounded-[2rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] sm:mt-20 sm:p-10">
-            <h2 id="guide-title" className="font-display text-[1.6rem] leading-tight text-deep-900 sm:text-[2rem]">
-              {guide.title}
-            </h2>
-            <dl className="mt-6 grid gap-x-10 gap-y-5 sm:grid-cols-2">
-              {guide.points.map((point) => (
-                <div key={point.title} className="border-t border-line pt-4">
-                  <dt className="font-medium text-deep-900">{point.title}</dt>
-                  <dd className="mt-1 text-body-sm leading-relaxed text-ink-soft">{point.text}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-        )}
-
-        <div className="mt-12 flex justify-center">
-          <Link to={moreUrl} className={buttonClass('secondary', 'lg')}>
-            {PRODUCT_LIST_TEXT.xemTatCaSanPham} <Icon name="arrowRight" size={18} />
-          </Link>
-        </div>
-
-        <ExploreMore groups={relatedForListing(withSlash(pathname), listing.category)} />
+            ),
+            'kham-pha': <ExploreMore groups={relatedForListing(withSlash(pathname), listing.category)} />,
+          }}
+        />
       </Container>
     </div>
   )

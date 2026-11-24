@@ -112,6 +112,22 @@ export const { set: CONTACT_LAYOUT_SET, order: CONTACT_ORDER } = defineLayout('l
   { ma: 'tin-nhan', ten: 'Form gửi tin nhắn' },
 ])
 
+// Đợt E5 (owner 24/11/2026 "kể cả về bố cục"): thêm bố cục các trang còn lại
+export const { set: CATEGORY_LAYOUT_SET, order: CATEGORY_ORDER } = defineLayout('danh-muc', 'trang danh mục sản phẩm (mọi danh mục)', [
+  { ma: 'san-pham', ten: 'Lưới sản phẩm' },
+  { ma: 'phoi-mau', ten: 'Phối màu (danh mục bộ chăn ga)' },
+  { ma: 'chon-the-nao', ten: 'Chọn thế nào' },
+  { ma: 'xem-tat-ca', ten: 'Nút Xem tất cả sản phẩm' },
+  { ma: 'kham-pha', ten: 'Khám phá thêm (link liên quan)' },
+])
+
+export const { set: PRODUCTS_LAYOUT_SET, order: PRODUCTS_ORDER } = defineLayout('san-pham', 'trang Sản phẩm (chỉ ẩn / hiện)', [
+  { ma: 'cam-ket', ten: 'Bốn cam kết đầu trang' },
+  { ma: 'o-nhom', ten: 'Ô nhóm sản phẩm (mục Tất cả)' },
+  { ma: 'ke', ten: 'Các kệ sản phẩm (mục Tất cả)' },
+  { ma: 'tim-theo-bo', ten: 'Hàng tìm theo bộ sưu tập' },
+])
+
 export const LAYOUT_SETS: readonly EditableSet[] = [
   HOME_DESKTOP_LAYOUT_SET,
   HOME_MOBILE_LAYOUT_SET,
@@ -119,4 +135,6 @@ export const LAYOUT_SETS: readonly EditableSet[] = [
   GIFTS_LAYOUT_SET,
   RECRUIT_LAYOUT_SET,
   CONTACT_LAYOUT_SET,
+  CATEGORY_LAYOUT_SET,
+  PRODUCTS_LAYOUT_SET,
 ]

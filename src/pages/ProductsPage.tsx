@@ -1,4 +1,5 @@
 import { useMemo, useRef, type CSSProperties, type ReactNode } from 'react'
+import { PRODUCTS_ORDER } from '../data/pageLayout'
 import { Link } from 'react-router-dom'
 import { ColorwayCard } from '../components/products/ColorwayCard'
 import { FilterPanel, SORTS, type FilterPanelProps, type SortId } from '../components/products/FilterPanel'
@@ -32,6 +33,9 @@ import { useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
 import { PRODUCTS_PAGE_TEXT } from '../data/pageText/products'
 import { chen } from '../data/pageText/define'
 import { PRODUCT_LIST_TEXT as T } from '../data/pageText/productUi'
+
+/** Khối Ecopillo đang cho hiện ở trang Sản phẩm (Nội dung web → Giao diện → Bố cục trang Sản phẩm) */
+const PRODUCTS_SHOWN: ReadonlySet<string> = new Set(PRODUCTS_ORDER)
 
 const CATEGORY_PARAM = 'danh-muc'
 const COLLECTION_PARAM = 'bo-suu-tap'
@@ -195,15 +199,15 @@ export function ProductsPage() {
           </h1>
           <div className="mt-4 grid gap-6 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
             <p className="max-w-2xl text-ink-soft">{PRODUCTS_INTRO}</p>
-            {/* Điện thoại: bốn cam kết gộp trong một khối trắng cho đầu trang ngắn lại */}
-            <ul aria-label={T.ariaCamKet} className="grid gap-x-2 gap-y-2.5 rounded-2xl bg-ivory p-4 shadow-[var(--shadow-soft)] sm:grid-cols-2 sm:gap-y-2 sm:bg-transparent sm:p-0 sm:shadow-none">
+            {/* Điện thoại: bốn cam kết gộp trong một khối trắng cho đầu trang ngắn lại. Ẩn / hiện: Bố cục trang Sản phẩm (đợt E5) */}
+            {PRODUCTS_SHOWN.has('cam-ket') && <ul aria-label={T.ariaCamKet} className="grid gap-x-2 gap-y-2.5 rounded-2xl bg-ivory p-4 shadow-[var(--shadow-soft)] sm:grid-cols-2 sm:gap-y-2 sm:bg-transparent sm:p-0 sm:shadow-none">
               {PRODUCTS_PROMISES.map((promise) => (
                 <li key={promise} className="flex gap-2 text-small leading-snug text-ink-soft sm:rounded-2xl sm:bg-ivory sm:px-3.5 sm:py-3 sm:shadow-[var(--shadow-soft)]">
                   <Icon name="check" size={16} className="mt-0.5 shrink-0 text-mist-600" />
                   {promise}
                 </li>
               ))}
-            </ul>
+            </ul>}
           </div>
         </Container>
       </section>
@@ -257,7 +261,7 @@ export function ProductsPage() {
           />
 
           {/* Hàng chọn bộ sưu tập: lưới ô đều nhau, chia cột cố định nên không rớt dòng */}
-          {!isShelfMode && canBrowseByCollection && (
+          {!isShelfMode && canBrowseByCollection && PRODUCTS_SHOWN.has('tim-theo-bo') && (
             <section aria-labelledby="browse-title" className="mt-7 sm:mt-9">
               <h2 id="browse-title" className="font-display text-[1.45rem] leading-tight text-deep-900 sm:text-[1.8rem]">
                 {PRODUCTS_PAGE_TEXT.timTheoBo}
@@ -298,8 +302,8 @@ export function ProductsPage() {
                 <p ref={gridRef} className="sr-only scroll-mt-[5.5rem]" aria-live="polite">
                   {T.tatCaSanPham}
                 </p>
-                <GroupTiles />
-                <ProductShelves onPick={pickCategory} reveal={isFirstGrid} />
+                {PRODUCTS_SHOWN.has('o-nhom') && <GroupTiles />}
+                {PRODUCTS_SHOWN.has('ke') && <ProductShelves onPick={pickCategory} reveal={isFirstGrid} />}
               </>
             ) : (
               <>
