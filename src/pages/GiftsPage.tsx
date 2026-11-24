@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { HomeLink } from '../components/home/HomeLink'
 import { CorporateGifts } from '../components/gifts/CorporateGifts'
 import { EventsStrip } from '../components/home/EventsStrip'
 import { ThankYouLetters } from '../components/home/ThankYouLetters'
@@ -6,7 +7,8 @@ import { Icon } from '../components/ui/Icon'
 import { PageHero } from '../components/ui/PageHero'
 import { Placeholder } from '../components/ui/Placeholder'
 import { buttonClass, ContactButtons, Container, SectionHeading } from '../components/ui/primitives'
-import { collectionById, COLLECTIONS, coverOf } from '../data/catalog'
+import { collectionById, coverOf } from '../data/catalog'
+import { GIFT_OCCASIONS } from '../data/giftOccasions'
 import { collectionPathById } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
@@ -21,18 +23,10 @@ import { GIFTS_ORDER } from '../data/pageLayout'
  * sự kiện đồng hành, gợi ý chọn chăn ga làm quà theo dịp.
  */
 
-/** Bộ sưu tập gợi ý cho từng dịp (theo thứ tự dòng); chữ các dịp, dịch vụ Ecopillo sửa ở Nội dung web (GIFTS_TEXT) */
-const OCCASION_IDS: readonly (readonly string[])[] = [
-  ['eco-doris', 'eco-sweet'],
-  ['eco-rosa', 'eco-vera'],
-  ['eco-tera', 'eco-liora'],
-]
-// Bộ Ecopillo đã gỡ trong WordPress (đợt E2) thì bỏ khỏi dịp; dịp không còn bộ nào thì bỏ dịp
-const OCCASIONS = GIFTS_TEXT.dip
-  .slice(0, OCCASION_IDS.length)
-  .map((o, i) => ({ ...o, ids: OCCASION_IDS[i].filter((id) => COLLECTIONS.some((c) => c.id === id)) }))
-  .filter((o) => o.ids.length > 0)
+/** Các dịp (tên, câu, bộ gợi ý): Ecopillo thêm, xoá, đổi thứ tự ở Nội dung web (src/data/giftOccasions.ts); bộ đã gỡ tự bỏ */
+const OCCASIONS = GIFT_OCCASIONS
 
+/** Ô dịch vụ: bao nhiêu dòng Ecopillo lưu thì bấy nhiêu ô, biểu tượng lặp lại theo vòng */
 const SERVICE_ICONS = ['box', 'truck', 'ruler'] as const
 const SERVICES = GIFTS_TEXT.dichVu.map((item, i) => ({ ...item, icon: SERVICE_ICONS[i % SERVICE_ICONS.length] }))
 
@@ -47,10 +41,10 @@ export function GiftsPage() {
         title={<Lines text={GIFTS_TEXT.tieuDe} breakClassName="max-sm:hidden" />}
         lead={GIFTS_TEXT.danDat}
       >
-        <a href="#qua-tang" className={buttonClass('primary', 'md', 'mt-8')}>
+        <HomeLink to={GIFTS_TEXT.linkNutDau} className={buttonClass('primary', 'md', 'mt-8')}>
           {GIFTS_TEXT.nutDau}
           <Icon name="chevronDown" size={17} />
-        </a>
+        </HomeLink>
       </PageHero>
 
       {/* Thứ tự khối: Ecopillo đổi ở Nội dung web → Bố cục trang Quà tặng và sự kiện (src/data/pageLayout.ts).
@@ -81,7 +75,7 @@ export function GiftsPage() {
                 />
                 <ul className="m-rail mt-10 grid gap-5 sm:mt-12 lg:grid-cols-3">
                   {OCCASIONS.map((o, i) => {
-                    const cover = coverOf(collectionById(o.ids[0])!)
+                    const cover = coverOf(collectionById(o.bo[0])!)
                     return (
                       <li key={o.title} data-reveal style={revealDelay(i)} className="flex flex-col overflow-hidden rounded-[1.75rem] bg-ivory shadow-[var(--shadow-soft)]">
                         <div className="aspect-[4/3]">
@@ -91,7 +85,7 @@ export function GiftsPage() {
                           <h3 className="font-display text-[1.5rem] leading-tight text-deep-900">{o.title}</h3>
                           <p className="mt-2 text-body-sm leading-relaxed text-ink-soft">{o.text}</p>
                           <div className="mt-auto flex flex-wrap gap-2 pt-5">
-                            {o.ids.map((id) => (
+                            {o.bo.map((id) => (
                               <Link
                                 key={id}
                                 to={collectionPathById(id)}
