@@ -86,6 +86,8 @@ const PREFERENCE_FIELDS: readonly EditableField[] = [
     batBuoc: true,
     luaChon: DEM_CHOICES.map((p) => p.slug),
     nhanLuaChon: DEM_CHOICES.map((p) => p.name),
+    // Đệm Ecopillo đăng mới trong Woo sau lần dựng cũng chọn được (đợt G)
+    luaChonThem: [{ nguon: 'san-pham' }],
   },
   {
     khoa: 'link',
@@ -218,13 +220,16 @@ export const { set: MATTRESS_TEXT_SET, text: MATTRESS_TEXT } = definePageText(
       'Lò xo, cao su thiên nhiên, foam, bông ép và topper, bảo hành tới 15 năm. Nằm thử tại hệ thống phân phối và showroom Ecopillo trên toàn quốc.',
     ),
     noiBatNhan: chu('Nhãn trên ảnh mẫu nổi bật', 'Nổi bật'),
-    noiBatSanPham: chon(
-      'Mẫu nổi bật: sản phẩm (tên, giá, link)',
-      DEM_CHOICES.map((p) => p.slug),
-      DEM_CHOICES.map((p) => p.name),
-      ecoLuxe.slug,
-      'Sản phẩm này bị gỡ trong WooCommerce thì web lấy đệm đầu tiên còn hiện',
-    ),
+    noiBatSanPham: {
+      ...chon(
+        'Mẫu nổi bật: sản phẩm (tên, giá, link)',
+        DEM_CHOICES.map((p) => p.slug),
+        DEM_CHOICES.map((p) => p.name),
+        ecoLuxe.slug,
+        'Sản phẩm này bị gỡ trong WooCommerce thì web lấy đệm đầu tiên còn hiện',
+      ),
+      luaChonThem: [{ nguon: 'san-pham' }],
+    },
     noiBatChu: doan('Câu giới thiệu mẫu nổi bật', 'Lõi lò xo túi 16 cm, thêm lớp topper foam 4 cm ôm vai, hông, eo. Bảo hành 10 năm.'),
     anhNoiBat: anh('Ảnh mẫu nổi bật', ECO_LUXE_IMAGE, 'Ảnh ngang (16:10). Giữ ảnh gốc mà đổi sản phẩm nổi bật thì web dùng ảnh của sản phẩm đó'),
     nutXemTatCa: chu('Chữ nút Xem tất cả đệm', 'Xem tất cả đệm'),

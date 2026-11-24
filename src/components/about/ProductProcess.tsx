@@ -18,7 +18,7 @@ export function ProductProcess() {
         {PRODUCT_PROCESS_TITLE}
       </h3>
       {PRODUCT_PROCESS.map((stage, stageIndex) => (
-        <div key={stage.name} className="mt-6">
+        <div key={`${stageIndex}-${stage.name}`} className="mt-6">
           <p data-reveal className={`${STORY_LABEL} text-deep-700`}>
             {chen(ABOUT_PAGE_TEXT.changNhan, { so: stageIndex + 1 })}
             <span className="font-display ml-2 text-[1rem] font-normal tracking-normal text-ink-faint normal-case italic">{stage.name}</span>
@@ -27,7 +27,8 @@ export function ProductProcess() {
           <ol className="relative mt-3 before:absolute before:top-5 before:bottom-5 before:left-[15px] before:w-0.5 before:rounded-full before:bg-gradient-to-b before:from-deep-900 before:to-deep-900/20 sm:before:left-[19px]">
             {stage.steps.map((step) => {
               stepNumber += 1
-              return <ProcessRow key={step.title} step={step} number={stepNumber} />
+              // Ecopillo có thể ghi trùng tên bước / chặng (đợt G): khoá theo số thứ tự
+              return <ProcessRow key={`${stepNumber}-${step.title}`} step={step} number={stepNumber} />
             })}
           </ol>
         </div>

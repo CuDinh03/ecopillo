@@ -317,7 +317,8 @@ const SET_ROW_FIELDS: readonly EditableField[] = [
     nhanLuaChon: SET_SECTIONS.map((s) => s.label),
     goiY: 'Nhóm con "ga phủ và chun chần" ghi giá thấp nhất của ga chun chần',
   },
-  { khoa: 'bo', nhan: 'Bộ sưu tập', kieu: 'chon', batBuoc: true, luaChon: SET_CHOICES.map((c) => c.id), nhanLuaChon: SET_CHOICES.map((c) => c.name) },
+  // Bộ Ecopillo tạo trong Woo sau lần dựng cũng chọn được (đợt G)
+  { khoa: 'bo', nhan: 'Bộ sưu tập', kieu: 'chon', batBuoc: true, luaChon: SET_CHOICES.map((c) => c.id), nhanLuaChon: SET_CHOICES.map((c) => c.name), luaChonThem: [{ nguon: 'bo-suu-tap' }] },
 ]
 
 export const PRODUCT_MENU_SETS_SET: EditableSet = {

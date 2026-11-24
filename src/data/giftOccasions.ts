@@ -53,6 +53,8 @@ const FIELDS: readonly EditableField[] = [
     batBuoc: true,
     luaChon: CHOICE_IDS,
     nhanLuaChon: CHOICE_IDS.map(nameOf),
+    // Bộ Ecopillo tạo trong Woo sau lần dựng cũng chọn được (đợt G)
+    luaChonThem: [{ nguon: 'bo-suu-tap' }],
     goiY: 'Bộ hiện theo thứ tự danh sách lựa chọn; ảnh thẻ là ảnh bìa của bộ đầu tiên. Bộ đã gỡ trong WooCommerce tự bỏ; dịp không còn bộ nào thì không hiện.',
   },
 ]

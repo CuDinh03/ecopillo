@@ -293,13 +293,17 @@ export const { set: HOTEL_PAGE_SET, text: HOTEL_PAGE } = definePageText(
     theGiaLienHe: chu('Sản phẩm, Hàng trắng: chữ giá', 'Giá liên hệ'),
     theNhanBaoGia: chu('Sản phẩm: chữ trên thẻ món chưa có trang', 'Nhận báo giá'),
     theXemSanPham: chu('Sản phẩm: chữ trên thẻ có trang sản phẩm', 'Xem sản phẩm'),
-    sanPham: chonNhieu(
-      'Sản phẩm: các thẻ sản phẩm có trang riêng',
-      PRODUCT_CHOICES.map((p) => p.slug),
-      PRODUCT_CHOICES.map((p) => p.name),
-      BASE_HOTEL_PRODUCT_SLUGS,
-      'Thứ tự theo danh sách tích. Món chưa có trang riêng (bấm là điền form báo giá) sửa ở mục "Khách sạn: món chưa có trang riêng"',
-    ),
+    sanPham: {
+      ...chonNhieu(
+        'Sản phẩm: các thẻ sản phẩm có trang riêng',
+        PRODUCT_CHOICES.map((p) => p.slug),
+        PRODUCT_CHOICES.map((p) => p.name),
+        BASE_HOTEL_PRODUCT_SLUGS,
+        'Thứ tự theo danh sách tích. Món chưa có trang riêng (bấm là điền form báo giá) sửa ở mục "Khách sạn: món chưa có trang riêng"',
+      ),
+      // Sản phẩm Ecopillo đăng mới trong Woo sau lần dựng cũng tích được (đợt G)
+      luaChonThem: [{ nguon: 'san-pham' }],
+    },
     canBaoGia: chu('Form báo giá: chữ điền sẵn khi bấm một món', 'Cần báo giá: {ten}', '{ten} là tên món Quý khách bấm'),
     hangTrangNhan: chu('Hàng trắng: nhãn nhỏ', 'Hàng trắng khách sạn'),
     hangTrangTieuDe: chu('Hàng trắng: tiêu đề', 'Hàng trắng cho phòng lưu trú'),

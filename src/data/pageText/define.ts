@@ -21,6 +21,8 @@ export interface TextField<T> {
   /** Ô chọn: các giá trị và chữ hiện cho từng giá trị */
   luaChon?: readonly string[]
   nhanLuaChon?: readonly string[]
+  /** Lựa chọn thêm lấy lúc chạy (sản phẩm, bộ Ecopillo tạo trong Woo sau lần dựng): EditableField.luaChonThem */
+  luaChonThem?: EditableField['luaChonThem']
 }
 
 /** Ô một dòng chữ */
@@ -99,6 +101,7 @@ export function definePageText<F extends Fields>(khoa: string, ten: string, moTa
     ...(f.goiY ? { goiY: f.goiY } : {}),
     ...(f.cap ? { cap: f.cap, nhanCap: f.nhanCap } : {}),
     ...(f.luaChon ? { luaChon: f.luaChon, nhanLuaChon: f.nhanLuaChon } : {}),
+    ...(f.luaChonThem ? { luaChonThem: f.luaChonThem } : {}),
   }))
   const set: EditableSet = { khoa: `chu-trang-${khoa}`, nhom: PAGE_TEXT_GROUP, ten, moTa, kieu: 'mot', goc, truong }
   return { set, text: liveObject(set.khoa, goc, truong) }

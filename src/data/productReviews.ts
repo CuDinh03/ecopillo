@@ -65,6 +65,8 @@ const FIELDS: readonly EditableField[] = [
     batBuoc: true,
     luaChon: ALL_PRODUCTS.map((p) => p.slug),
     nhanLuaChon: ALL_PRODUCTS.map((p) => p.name),
+    // Sản phẩm lẻ, bộ Ecopillo tạo trong Woo sau lần dựng cũng chọn được (đợt G)
+    luaChonThem: [{ nguon: 'san-pham' }, { nguon: 'bo-suu-tap' }],
   },
   { khoa: 'ten', nhan: 'Tên khách', kieu: 'chu', batBuoc: true, goiY: 'Ví dụ Chị Minh Anh. Chỉ đăng khi khách đồng ý.' },
   { khoa: 'noiO', nhan: 'Nơi ở', kieu: 'chu', goiY: 'Ví dụ Cầu Giấy, Hà Nội' },

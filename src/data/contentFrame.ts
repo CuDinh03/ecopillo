@@ -39,6 +39,11 @@ import { FONT_SET, THEME_SET } from './theme'
 import { LAYOUT_SETS } from './pageLayout'
 import { REDIRECT_SET } from './liveRedirects'
 import { SEO_SET } from './liveSeo'
+import { GIFT_OCCASIONS_SET } from './giftOccasions'
+import { PRODUCT_PROCESS_SET } from './about'
+import { HOTEL_QUOTES_SET, HOTEL_WHITE_GOODS_SET } from './hotel'
+import { MATTRESS_CHIPS_SET, MATTRESS_ROWS_SET } from './mattressPicker'
+import { PRODUCT_MENU_SETS_SET } from './productMenu'
 import { PRODUCT_REVIEW_TEXT_SET, PRODUCT_REVIEWS_SET } from './productReviews'
 import { GIFTS_SET } from './catalog'
 import { PRODUCT_UNIT_SET } from './productUnits'
@@ -93,6 +98,7 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   PRIVACY_SECTIONS_SET,
   PRODUCT_COMMON_SET,
   PRODUCT_MENU_SET,
+  PRODUCT_MENU_SETS_SET,
   LISTING_PRODUCTS_SET,
   LISTING_ORDER_SET,
   PRODUCT_REVIEWS_SET,
@@ -106,14 +112,20 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   // Chữ từng trang (owner 20/11/2026: "đảm bảo tất cả mọi thứ trên web, khách đều tự chỉnh sửa được")
   HOME_TEXT_SET,
   MATTRESS_TEXT_SET,
+  MATTRESS_ROWS_SET,
+  MATTRESS_CHIPS_SET,
   COLLECTION_SHOWCASE_SET,
   HOME_COLLECTIONS_SET,
   THANK_YOU_SET,
   BRAND_VIDEO_SET,
   ABOUT_PAGE_TEXT_SET,
   ABOUT_MORE_SET,
+  PRODUCT_PROCESS_SET,
   HOTEL_PAGE_SET,
+  HOTEL_WHITE_GOODS_SET,
+  HOTEL_QUOTES_SET,
   GIFTS_TEXT_SET,
+  GIFT_OCCASIONS_SET,
   RECRUIT_TEXT_SET,
   CONTACT_PAGE_TEXT_SET,
   DEALER_TEXT_SET,
