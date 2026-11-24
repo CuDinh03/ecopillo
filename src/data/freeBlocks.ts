@@ -26,6 +26,14 @@ export interface FreeBlockRow {
   the?: readonly { tieuDe: string; moTa: string }[]
   nut?: readonly { chu: string; link: string }[]
   neo?: string
+  /** Đợt I: chỉ hiện ở các link này (trống: mọi trang của chỗ đã chọn), đã chuẩn hoá "/duong-dan/" */
+  chiTrang?: readonly string[]
+  /** Đợt I, kiểu dáng: khoảng cách trên dưới, bề rộng, tỉ lệ ảnh, số cột, cỡ tiêu đề */
+  khoangCach?: 'nho' | 'vua' | 'lon'
+  beRong?: 'hep' | 'vua' | 'rong'
+  tiLeAnh?: 'goc' | 'vuong' | '4-3' | '16-9' | '3-4'
+  soCot?: '2' | '3' | '4'
+  coTieuDe?: 'nho' | 'vua' | 'lon'
 }
 
 /** Một chỗ đặt khối: `<mã bố cục>@dau` (đầu phần đổi được của trang) hoặc `<mã bố cục>@<mã khối>` (ngay sau khối đó) */
@@ -95,6 +103,49 @@ const fieldsFor = (places: readonly FreePlace[]): readonly EditableField[] => [
     goiY: 'Nút đầu tiên nổi nhất. Link: /duong-dan/ trong web, https://… ngoài web, tel:…, hoặc #ma-khoi để cuộn tới khối trong trang.',
   },
   {
+    khoa: 'chiTrang',
+    nhan: 'Chỉ hiện ở các trang này',
+    kieu: 'ds-dong',
+    goiY: 'Không bắt buộc. Mỗi dòng một link trang, ví dụ /san-pham/goi-cao-su/ hoặc /cach-chon-kich-thuoc-ga-giuong/. Để trống: hiện ở mọi trang của chỗ đã chọn (ví dụ chọn "Trang từng bài viết: sau Thân bài" mà để trống thì mọi bài đều có khối này).',
+  },
+  {
+    khoa: 'khoangCach',
+    nhan: 'Khoảng cách trên dưới',
+    kieu: 'chon',
+    luaChon: ['vua', 'nho', 'lon'],
+    nhanLuaChon: ['Vừa (như các khối khác)', 'Nhỏ (sát khối bên cạnh)', 'Lớn (thoáng)'],
+  },
+  {
+    khoa: 'beRong',
+    nhan: 'Bề rộng khối',
+    kieu: 'chon',
+    luaChon: ['vua', 'hep', 'rong'],
+    nhanLuaChon: ['Vừa (hết khung trang)', 'Hẹp (giữa trang, dễ đọc chữ dài)', 'Rộng (sát mép màn hình)'],
+  },
+  {
+    khoa: 'tiLeAnh',
+    nhan: 'Khung ảnh',
+    kieu: 'chon',
+    luaChon: ['4-3', 'goc', 'vuong', '16-9', '3-4'],
+    nhanLuaChon: ['Ngang 4:3', 'Giữ nguyên ảnh (không cắt)', 'Vuông', 'Ngang rộng 16:9', 'Dọc 3:4'],
+    goiY: 'Áp cho ảnh của kiểu chữ và ảnh, ảnh lớn, lưới ảnh. Ảnh lớn mặc định giữ nguyên, lưới ảnh mặc định vuông khi chưa chọn.',
+  },
+  {
+    khoa: 'soCot',
+    nhan: 'Số cột trên máy tính (lưới ảnh, thẻ ý)',
+    kieu: 'chon',
+    luaChon: ['3', '2', '4'],
+    nhanLuaChon: ['3 cột', '2 cột', '4 cột'],
+    goiY: 'Điện thoại luôn 1–2 cột cho dễ xem.',
+  },
+  {
+    khoa: 'coTieuDe',
+    nhan: 'Cỡ tiêu đề',
+    kieu: 'chon',
+    luaChon: ['vua', 'nho', 'lon'],
+    nhanLuaChon: ['Vừa', 'Nhỏ', 'Lớn'],
+  },
+  {
     khoa: 'neo',
     nhan: 'Mã khối (để nút khác cuộn tới bằng #ma-khoi)',
     kieu: 'chu',
@@ -120,11 +171,20 @@ export function defineFreeBlocks(places: readonly FreePlace[]): { set: EditableS
     ({
       ...row,
       neo: row.neo ? rowKey(row.neo) || undefined : undefined,
+      chiTrang: row.chiTrang?.map(pagePath).filter((p): p is string => !!p),
       // ô cặp không tự kiểm link: bỏ nút có link lạ (javascript:…), ảnh lưới đã kiểm ở ds-anh
       nut: row.nut?.filter((b) => isLink(b.link.trim())).map((b) => ({ chu: b.chu, link: b.link.trim() })),
     }),
   )
   return { set, rows }
+}
+
+/** Link trang Ecopillo dán (có thể kèm tên miền, thiếu "/" cuối) → "/duong-dan/"; link lạ thì bỏ */
+export const pagePath = (raw: string): string | undefined => {
+  const path = raw.trim().replace(/^https?:\/\/[^/]+/i, '').split(/[?#]/)[0]
+  if (!path.startsWith('/')) return undefined
+  const withSlash = path.endsWith('/') ? path : `${path}/`
+  return /^\/[a-z0-9/_-]*$/i.test(withSlash) ? withSlash.toLowerCase() : undefined
 }
 
 /** Mã của khối tự do thứ i trong thứ tự trang */

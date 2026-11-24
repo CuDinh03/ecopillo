@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
+import { useLocation } from 'react-router-dom'
 import { FREE_BLOCKS } from '../../data/pageLayout'
-import { freeIndex, type FreeBlockRow } from '../../data/freeBlocks'
+import { freeIndex, pagePath, type FreeBlockRow } from '../../data/freeBlocks'
 import { HomeLink } from '../home/HomeLink'
 import { Lines } from './Highlight'
 import { buttonClass, Container } from './primitives'
@@ -9,24 +10,38 @@ import { buttonClass, Container } from './primitives'
  * Khối tự do Ecopillo thêm ở Nội dung web → Giao diện → Khối tự do (src/data/freeBlocks.ts).
  * `khung`: "trang" = khối nằm thẳng trong trang (tự có khung bề ngang và khoảng trên dưới);
  * "cot" = khối nằm trong khung có sẵn của trang (danh mục, sản phẩm, chính sách…): chỉ chừa khoảng trên.
- * Khối không có chữ, ảnh, thẻ hay nút nào thì không vẽ.
+ * Khối không có chữ, ảnh, thẻ hay nút nào thì không vẽ; khối có "Chỉ hiện ở các trang này" thì chỉ vẽ ở các link đó.
+ * Kiểu dáng Ecopillo chọn (đợt I): khoảng cách, bề rộng, khung ảnh, số cột, cỡ tiêu đề; lớp CSS viết đủ chữ để Tailwind giữ lại.
  */
 export type FreeFrame = 'trang' | 'cot'
 
+const SPACE_PAGE = { nho: 'py-6 sm:py-8', vua: 'py-12 sm:py-16', lon: 'py-16 sm:py-24' } as const
+const SPACE_COLUMN = { nho: 'mt-8 first:mt-0', vua: 'mt-16 first:mt-0 sm:mt-20', lon: 'mt-20 first:mt-0 sm:mt-28' } as const
+const WIDTH = { hep: 'mx-auto max-w-3xl', vua: '', rong: '' } as const
+const RATIO = { goc: '', vuong: 'aspect-square', '4-3': 'aspect-[4/3]', '16-9': 'aspect-[16/9]', '3-4': 'aspect-[3/4]' } as const
+const COLUMNS = { '2': 'lg:grid-cols-2', '3': 'lg:grid-cols-3', '4': 'lg:grid-cols-4' } as const
+const TITLE = {
+  nho: 'text-[1.5rem] sm:text-[1.9rem]',
+  vua: 'text-[1.9rem] sm:text-[2.5rem]',
+  lon: 'text-[2.3rem] sm:text-[3.3rem]',
+} as const
+
 export function FreeBlock({ id, khung = 'trang' }: { id: string; khung?: FreeFrame }) {
+  const { pathname } = useLocation()
   const index = freeIndex(id)
   const row = index === undefined ? undefined : FREE_BLOCKS[index]
   if (!row || !hasContent(row)) return null
+  if (row.chiTrang?.length && !row.chiTrang.includes(pagePath(pathname) ?? pathname)) return null
   const dark = row.kieu === 'dai-cham'
   const body = (
-    <div id={row.neo} className={`scroll-mt-[5.5rem] ${boxClass(row)}`}>
+    <div id={row.neo} className={`scroll-mt-[5.5rem] ${WIDTH[row.beRong ?? 'vua']} ${boxClass(row)}`}>
       <Body row={row} dark={dark} />
     </div>
   )
-  if (khung === 'cot') return <section className="mt-16 first:mt-0 sm:mt-20">{body}</section>
+  if (khung === 'cot') return <section className={SPACE_COLUMN[row.khoangCach ?? 'vua']}>{body}</section>
   return (
-    <section className="py-12 sm:py-16">
-      <Container>{body}</Container>
+    <section className={SPACE_PAGE[row.khoangCach ?? 'vua']}>
+      {row.beRong === 'rong' ? <div className="px-3 sm:px-5">{body}</div> : <Container>{body}</Container>}
     </section>
   )
 }
@@ -42,9 +57,13 @@ function boxClass(row: FreeBlockRow): string {
   return ''
 }
 
+/** Lớp khung ảnh: Ecopillo chọn, chưa chọn thì theo kiểu khối */
+const ratioOf = (row: FreeBlockRow, fallback: keyof typeof RATIO): string => RATIO[row.tiLeAnh ?? fallback]
+
 function Body({ row, dark }: { row: FreeBlockRow; dark: boolean }) {
   const centered = row.canGiua === 'giua' || (row.kieu === 'dai-cham' && row.canGiua !== 'trai')
   const text = <TextPart row={row} dark={dark} centered={centered && row.kieu !== 'chu-anh'} />
+  const columns = COLUMNS[row.soCot ?? '3']
   switch (row.kieu) {
     case 'chu-anh':
       if (!row.anh?.src) return text
@@ -59,7 +78,7 @@ function Body({ row, dark }: { row: FreeBlockRow; dark: boolean }) {
             alt={row.anh.alt}
             loading="lazy"
             decoding="async"
-            className={`aspect-[4/3] w-full rounded-[1.75rem] bg-mist-100 object-cover max-lg:order-first ${row.anhBen === 'trai' ? 'lg:order-1' : ''}`}
+            className={`${ratioOf(row, '4-3')} w-full rounded-[1.75rem] bg-mist-100 object-cover max-lg:order-first ${row.anhBen === 'trai' ? 'lg:order-1' : ''}`}
           />
         </div>
       )
@@ -76,7 +95,7 @@ function Body({ row, dark }: { row: FreeBlockRow; dark: boolean }) {
               alt={row.anh.alt}
               loading="lazy"
               decoding="async"
-              className={`w-full rounded-[1.75rem] bg-mist-100 object-cover ${row.tieuDe || row.nhan ? 'mt-8' : ''}`}
+              className={`${ratioOf(row, 'goc')} w-full rounded-[1.75rem] bg-mist-100 object-cover ${row.tieuDe || row.nhan ? 'mt-8' : ''}`}
             />
           )}
           {row.doan?.length ? (
@@ -90,10 +109,16 @@ function Body({ row, dark }: { row: FreeBlockRow; dark: boolean }) {
         <>
           {text}
           {row.dsAnh?.length ? (
-            <ul className={`grid grid-cols-2 gap-3 sm:gap-4 ${row.dsAnh.length >= 3 ? 'lg:grid-cols-3' : ''} ${hasText(row) ? 'mt-8' : ''}`}>
+            <ul className={`grid grid-cols-2 gap-3 sm:gap-4 ${row.dsAnh.length >= 3 ? columns : ''} ${hasText(row) ? 'mt-8' : ''}`}>
               {row.dsAnh.map((src, i) => (
                 <li key={`${i}-${src}`} data-reveal>
-                  <img src={src} alt={row.tieuDe ? row.tieuDe.replace(/\|/g, ' ') : ''} loading="lazy" decoding="async" className="aspect-square w-full rounded-2xl bg-mist-100 object-cover" />
+                  <img
+                    src={src}
+                    alt={row.tieuDe ? row.tieuDe.replace(/\|/g, ' ') : ''}
+                    loading="lazy"
+                    decoding="async"
+                    className={`${ratioOf(row, 'vuong')} w-full rounded-2xl bg-mist-100 object-cover`}
+                  />
                 </li>
               ))}
             </ul>
@@ -105,7 +130,7 @@ function Body({ row, dark }: { row: FreeBlockRow; dark: boolean }) {
         <>
           {text}
           {row.the?.length ? (
-            <ul className={`grid gap-3 sm:grid-cols-2 sm:gap-4 ${row.the.length >= 3 ? 'lg:grid-cols-3' : ''} ${hasText(row) ? 'mt-8' : ''}`}>
+            <ul className={`grid gap-3 sm:grid-cols-2 sm:gap-4 ${row.the.length >= 3 ? columns : ''} ${hasText(row) ? 'mt-8' : ''}`}>
               {row.the.map((card, i) => (
                 <li
                   key={`${i}-${card.tieuDe}`}
@@ -152,7 +177,9 @@ function Heading({ row, dark, centered }: { row: FreeBlockRow; dark: boolean; ce
     <header data-reveal className={centered ? 'mx-auto max-w-2xl text-center' : ''}>
       {row.nhan && <p className={`eyebrow ${dark ? '!text-mist-300' : ''}`}>{row.nhan}</p>}
       {row.tieuDe && (
-        <h2 className={`font-display text-[1.9rem] leading-[1.12] text-balance sm:text-[2.5rem] ${row.nhan ? 'mt-4' : ''} ${dark ? 'text-ivory' : 'text-deep-900'}`}>
+        <h2
+          className={`font-display leading-[1.12] text-balance ${TITLE[row.coTieuDe ?? 'vua']} ${row.nhan ? 'mt-4' : ''} ${dark ? 'text-ivory' : 'text-deep-900'}`}
+        >
           <Lines text={row.tieuDe} />
         </h2>
       )}

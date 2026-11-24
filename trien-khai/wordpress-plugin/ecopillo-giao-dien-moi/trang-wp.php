@@ -358,11 +358,21 @@ function eco_tw_free_blocks()
         if (!is_array($row) || (isset($row['hien']) && $row['hien'] === 'khong') || empty($row['viTri']) || !is_array($row['viTri'])) {
             continue;
         }
+        // "Chỉ hiện ở các trang này" (đợt I): chuẩn hoá như pagePath ở src/data/freeBlocks.ts
+        $only = array();
+        foreach (isset($row['chiTrang']) && is_array($row['chiTrang']) ? $row['chiTrang'] : array() as $raw) {
+            $path = strtolower((string) preg_replace('#^https?://[^/]+#i', '', trim((string) $raw)));
+            $path = (string) preg_replace('/[?#].*$/', '', $path);
+            $path = substr($path, -1) === '/' ? $path : $path . '/';
+            if (eco_tw_is_path($path)) {
+                $only[$path] = true;
+            }
+        }
         $paths = array();
         foreach ($row['viTri'] as $place) {
             $key = strstr((string) $place, '@', true);
             foreach ($key !== false && isset($layouts[$key]) && is_array($layouts[$key]) ? $layouts[$key] : array() as $path) {
-                if (eco_tw_is_path($path)) {
+                if (eco_tw_is_path($path) && (!$only || isset($only[$path]))) {
                     $paths[$path] = true;
                 }
             }

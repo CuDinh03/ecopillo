@@ -30,7 +30,8 @@ import { useHydrated, useHydratedSearchParams } from '../hooks/useHydratedSearch
 import { ORDER_TEXT } from '../data/pageText/order'
 import { ORDER_STEPS_TEXT as T, ORDER_SUMMARY_TEXT } from '../data/pageText/orderFlow'
 import { chen } from '../data/pageText/define'
-import { ORDER_SHOWN } from '../data/pageLayout'
+import { ORDER_FREE_END, ORDER_FREE_START, ORDER_SHOWN } from '../data/pageLayout'
+import { Blocks } from '../components/ui/Blocks'
 
 const COLLECTION_PARAM = 'bo-suu-tap'
 const MOBILE_QUERY = '(max-width: 1023px)'
@@ -242,8 +243,10 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
           )}
         </div>
 
+        {/* Khối tự do Ecopillo đặt "đầu trang" (Nội dung web → Giao diện → Khối tự do) */}
+        <Blocks order={ORDER_FREE_START} blocks={{}} khung="cot" />
         <div className="mt-8 sm:mt-10">
-          <Stepper current={view} onGoTo={setView} />
+          {ORDER_SHOWN.has('thanh-buoc') && <Stepper current={view} onGoTo={setView} />}
         </div>
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_340px] lg:gap-12 xl:grid-cols-[1fr_380px]">
@@ -307,6 +310,7 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
             <OrderAssurances deliveryTime={view === 3 ? summary.deliveryTime : undefined} />
           </aside>
         </div>
+        <Blocks order={ORDER_FREE_END} blocks={{}} khung="cot" />
       </Container>
 
       <MobileOrderBar

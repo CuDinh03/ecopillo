@@ -1,3 +1,4 @@
+import { Blocks } from '../ui/Blocks'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
@@ -28,7 +29,7 @@ import { ORDER_STEPS_TEXT as T, ORDER_SUMMARY_TEXT } from '../../data/pageText/o
 import { chen } from '../../data/pageText/define'
 import { STOCK_TEXT } from '../../data/pageText/stock'
 import { isChoiceSoldOut, isFullySoldOut, isVariantOptionSoldOut } from '../../lib/stock'
-import { ORDER_SHOWN } from '../../data/pageLayout'
+import { ORDER_FREE_END, ORDER_FREE_START, ORDER_SHOWN } from '../../data/pageLayout'
 
 interface SingleOrderProps {
   product: Product
@@ -139,6 +140,8 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
             </>
           )}
         </p>
+        {/* Khối tự do Ecopillo đặt "đầu trang" Đặt hàng (Nội dung web → Giao diện → Khối tự do) */}
+        <Blocks order={ORDER_FREE_START} blocks={{}} khung="cot" />
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_340px] lg:gap-12 xl:grid-cols-[1fr_380px]">
           <div className="min-w-0 space-y-12">
@@ -219,6 +222,7 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
             <OrderAssurances deliveryTime={summary.deliveryTime} />
           </aside>
         </div>
+        <Blocks order={ORDER_FREE_END} blocks={{}} khung="cot" />
       </Container>
 
       <MobileOrderBar

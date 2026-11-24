@@ -88,6 +88,24 @@ function eco_form_arr($value)
 }
 
 /** @return array{0: array, 1: string[]} dữ liệu sạch và danh sách ô thiếu */
+/**
+ * Ô thông tin Ecopillo đã ẩn ở Nội dung web → Bố cục trang Đặt hàng (src/data/pageLayout.ts, đợt I): ô ẩn thì không đòi.
+ * Mã khối trên web → khoá ô trong đơn. @return array<string, true> khoá ô đang ẩn
+ */
+function eco_form_hidden_fields()
+{
+    $map = array('o-ten' => 'ten', 'o-sdt' => 'sdt', 'o-tinh' => 'tinh', 'o-dia-chi' => 'diaChi');
+    $saved = function_exists('eco_nd_saved') ? eco_nd_saved('bo-cuc-dat-hang') : null;
+    $hidden = array();
+    foreach ($saved && is_array($saved['giaTri']) ? $saved['giaTri'] : array() as $row) {
+        $code = is_array($row) && isset($row['ma']) ? (string) $row['ma'] : '';
+        if (isset($map[$code]) && isset($row['hien']) && $row['hien'] === 'khong') {
+            $hidden[$map[$code]] = true;
+        }
+    }
+    return $hidden;
+}
+
 function eco_form_clean_order($in)
 {
     $k = eco_form_arr(isset($in['khach']) ? $in['khach'] : null);
@@ -124,16 +142,18 @@ function eco_form_clean_order($in)
         ),
     );
     $errors = array();
-    if (mb_strlen($order['khach']['ten'], 'UTF-8') < 2) {
+    $hidden = eco_form_hidden_fields();
+    if (!isset($hidden['ten']) && mb_strlen($order['khach']['ten'], 'UTF-8') < 2) {
         $errors[] = 'ten';
     }
-    if (!preg_match(ECO_FORM_PHONE, $order['khach']['sdt'])) {
+    // Ô số điện thoại ẩn: khách không nhập được, chỉ nhận số hợp lệ nếu có
+    if (isset($hidden['sdt']) ? ($order['khach']['sdt'] !== '' && !preg_match(ECO_FORM_PHONE, $order['khach']['sdt'])) : !preg_match(ECO_FORM_PHONE, $order['khach']['sdt'])) {
         $errors[] = 'sdt';
     }
-    if ($order['khach']['tinh'] === '') {
+    if (!isset($hidden['tinh']) && $order['khach']['tinh'] === '') {
         $errors[] = 'tinh';
     }
-    if (mb_strlen($order['khach']['diaChi'], 'UTF-8') < 6) {
+    if (!isset($hidden['diaChi']) && mb_strlen($order['khach']['diaChi'], 'UTF-8') < 6) {
         $errors[] = 'diaChi';
     }
     if ($order['hang']['ten'] === '' || !$order['hang']['soLuong']) {

@@ -10,7 +10,7 @@ import { faqLd } from '../lib/structuredData'
 import { PATHS } from '../data/links'
 import { FAQ_PAGE_TEXT } from '../data/pageText/faq'
 import { Lines } from '../components/ui/Highlight'
-import { FAQ_FREE_END, FAQ_ORDER } from '../data/pageLayout'
+import { FAQ_FREE_END, FAQ_FREE_START, FAQ_ORDER } from '../data/pageLayout'
 import { Blocks } from '../components/ui/Blocks'
 
 /** Ẩn / hiện các khối: Ecopillo chọn ở Nội dung web → Giao diện → Bố cục trang Hỏi đáp (đợt E6; chỉ hai khối nên không đổi chỗ) */
@@ -44,6 +44,8 @@ export function FaqPage() {
           </ul>
         )}
       </PageHero>
+      {/* Khối tự do Ecopillo đặt "đầu trang" (Nội dung web → Giao diện → Khối tự do) */}
+      <Blocks order={FAQ_FREE_START} blocks={{}} />
       {/* Ẩn câu hỏi thì bỏ luôn dữ liệu có cấu trúc (Google chỉ nhận câu hỏi có trên trang) */}
       {FAQ_SHOWN.has('cau-hoi') && (
         <>

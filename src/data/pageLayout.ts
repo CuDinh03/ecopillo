@@ -2,6 +2,8 @@ import { defineFreeBlocks, freeId, type FreeBlockRow, type FreePlace } from './f
 import { liveList, rowKey, type EditableField, type EditableSet } from './liveContent'
 
 const capitalize = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1)
+/** Tên trang bỏ phần chú thích trong ngoặc ở cuối ("trang Sản phẩm (chỉ ẩn / hiện)" → "trang Sản phẩm") */
+const shortName = (text: string): string => text.replace(/\s*\([^)]*\)$/, '')
 
 /**
  * Bố cục từng trang Ecopillo tự đổi (owner 20/11/2026: "ecopillo cần tự làm hết được", chọn "bật/tắt, đổi thứ tự khối").
@@ -32,27 +34,34 @@ interface LayoutDef {
   ten: string
   blocks: readonly LayoutBlock[]
   /**
-   * Khối tự do: true = chèn được sau từng khối (trang vẽ thứ tự bằng <Blocks>, trang Giới thiệu); "cuoi" = chỉ cuối trang
-   * (trang chỉ ẩn / hiện khối, vẽ khối tự do bằng FREE_AT_END); false = không có
+   * Khối tự do: true = chèn được sau từng khối (trang vẽ thứ tự bằng <Blocks>, trang Giới thiệu); "dau-cuoi" = chỉ đầu và cuối
+   * trang (trang chỉ ẩn / hiện khối: Sản phẩm, Hỏi đáp, Đặt hàng, 404; vẽ bằng mảng `dau` / `cuoi`); false = không có
    */
-  tuDo: boolean | 'cuoi'
+  tuDo: boolean | 'dau-cuoi'
 }
 
-const def = (khoa: string, ten: string, blocks: readonly LayoutBlock[], tuDo: boolean | 'cuoi' = true): LayoutDef => ({ khoa, ten, blocks, tuDo })
+const def = (khoa: string, ten: string, blocks: readonly LayoutBlock[], tuDo: boolean | 'dau-cuoi' = true): LayoutDef => ({ khoa, ten, blocks, tuDo })
 
 /** Khai bố cục một trang: trả bộ để sửa và thứ tự các khối đang hiện (mã khối, cả khối tự do "tu-do-N") */
-/** Thứ tự (mảng order / cuoi) → mã bố cục: <Blocks> báo cho bước dựng biết trang dùng bố cục nào (layoutKeyOf) */
+/** Thứ tự (mảng order / dau / cuoi) → mã bố cục: <Blocks> báo cho bước dựng biết trang dùng bố cục nào (layoutKeyOf) */
 const LAYOUT_KEYS = new WeakMap<readonly string[], string>()
 export const layoutKeyOf = (order: readonly string[]): string | undefined => LAYOUT_KEYS.get(order)
 
-function defineLayout(layout: LayoutDef): { set: EditableSet; order: readonly string[]; cuoi: readonly string[] } {
+interface BuiltLayout {
+  set: EditableSet
+  order: readonly string[]
+  /** Khối tự do đầu / cuối trang (trang "dau-cuoi") */
+  dau: readonly string[]
+  cuoi: readonly string[]
+}
+
+function defineLayout(layout: LayoutDef): BuiltLayout {
   const result = buildLayout(layout)
-  LAYOUT_KEYS.set(result.order, layout.khoa)
-  LAYOUT_KEYS.set(result.cuoi, layout.khoa)
+  for (const list of [result.order, result.dau, result.cuoi]) LAYOUT_KEYS.set(list, layout.khoa)
   return result
 }
 
-function buildLayout({ khoa, ten, blocks, tuDo }: LayoutDef): { set: EditableSet; order: readonly string[]; cuoi: readonly string[] } {
+function buildLayout({ khoa, ten, blocks, tuDo }: LayoutDef): BuiltLayout {
   const goc: readonly LayoutRow[] = blocks.map((b) => ({ ma: b.ma, ten: b.ten, hien: 'co' }))
   const set: EditableSet = {
     khoa: `bo-cuc-${khoa}`,
@@ -83,9 +92,9 @@ function buildLayout({ khoa, ten, blocks, tuDo }: LayoutDef): { set: EditableSet
   // Khối tự do: ngay sau khối đã chọn (kể cả khối đang ẩn), đầu trang hoặc cuối trang; cùng chỗ thì theo thứ tự trong bộ Khối tự do
   const freeAt = (place: string): string[] =>
     tuDo ? FREE.rows.flatMap((row, i) => (row.hien !== 'khong' && row.viTri.includes(`${khoa}@${place}`) ? [freeId(i)] : [])) : []
-  if (tuDo !== true) return { set, order: full.filter((b) => b.hien).map((b) => b.ma), cuoi: freeAt('cuoi') }
+  if (tuDo !== true) return { set, order: full.filter((b) => b.hien).map((b) => b.ma), dau: freeAt('dau'), cuoi: freeAt('cuoi') }
   const order = [...freeAt('dau'), ...full.flatMap((b) => [...(b.hien ? [b.ma] : []), ...freeAt(b.ma)])]
-  return { set, order, cuoi: [] }
+  return { set, order, dau: [], cuoi: [] }
 }
 
 /* ---------------------------------------------------------------- Các trang */
@@ -160,7 +169,7 @@ const DEF_PRODUCTS_LAYOUT_SET = def('san-pham', 'trang Sản phẩm (chỉ ẩn 
   { ma: 'o-nhom', ten: 'Ô nhóm sản phẩm (mục Tất cả)' },
   { ma: 'ke', ten: 'Các kệ sản phẩm (mục Tất cả)' },
   { ma: 'tim-theo-bo', ten: 'Hàng tìm theo bộ sưu tập' },
-], 'cuoi')
+], 'dau-cuoi')
 
 const DEF_PRODUCT_DETAIL_LAYOUT_SET = def('san-pham-le', 'trang sản phẩm lẻ (phần dưới ảnh và giá)', [
   { ma: 'hieu-ky', ten: 'Hiểu kỹ trước khi chọn' },
@@ -211,7 +220,7 @@ const DEF_ARTICLE_LAYOUT_SET = def('bai-viet', 'trang từng bài viết (dướ
 const DEF_FAQ_LAYOUT_SET = def('hoi-dap', 'trang Hỏi đáp (chỉ ẩn / hiện)', [
   { ma: 'loi-tat', ten: 'Nút sang các trang chính sách (đầu trang)' },
   { ma: 'cau-hoi', ten: 'Câu hỏi thường gặp' },
-], 'cuoi')
+], 'dau-cuoi')
 
 const DEF_POLICY_LAYOUT_SET = def('chinh-sach', 'các trang chính sách (khung chung)', [
   // Menu luôn nằm cột trái (điện thoại: trên cùng), Lên / Xuống không đổi chỗ, chỉ Ẩn được
@@ -239,19 +248,26 @@ const DEF_PRIVACY_LAYOUT_SET = def('bao-ve-thong-tin', 'nội dung trang Bảo v
 const DEF_ORDER_LAYOUT_SET = def('dat-hang', 'trang Đặt hàng và lời cảm ơn (chỉ ẩn / hiện)', [
   { ma: 'hotline', ten: 'Dòng Cần tư vấn? hotline (dưới tiêu đề)' },
   { ma: 'cam-ket', ten: 'Cam kết dưới tóm tắt đơn' },
-  // Owner 24/11/2026 (sau đợt G): phần không bắt buộc của form cũng ẩn được; các bước và ô bắt buộc thì luôn hiện
+  // Owner 24/11/2026 (sau đợt G): phần không bắt buộc của form cũng ẩn được.
+  // Đợt I (owner đồng ý "làm hết mục 1 và 2"): cả thanh các bước và ô bắt buộc cũng ẩn được; ô ẩn thì web và plugin
+  // nhận đơn (nhan-form.php) không đòi ô đó nữa. Mã ô "o-…" khớp với plugin
+  { ma: 'thanh-buoc', ten: 'Thanh các bước (1 · 2 · 3 đầu form)' },
+  { ma: 'o-ten', ten: 'Bước thông tin: ô Họ tên (ẩn thì đơn không có tên khách)' },
+  { ma: 'o-sdt', ten: 'Bước thông tin: ô Số điện thoại (ẩn thì Ecopillo không gọi xác nhận được)' },
+  { ma: 'o-tinh', ten: 'Bước thông tin: ô Tỉnh / thành (ẩn thì web không tính phí giao)' },
+  { ma: 'o-dia-chi', ten: 'Bước thông tin: ô Địa chỉ nhận hàng (ẩn thì phải gọi hỏi địa chỉ)' },
   { ma: 'qua-kem', ten: 'Bước chọn cỡ: khung quà tặng kèm (khi bộ có quà)' },
   { ma: 'ghi-chu', ten: 'Bước thông tin: ô Ghi chú (không bắt buộc)' },
   { ma: 'thanh-toan', ten: 'Bước thông tin: khung thanh toán, phí giao, tài khoản nhận cọc' },
   { ma: 'cam-on-buoc', ten: 'Lời cảm ơn: ba bước tiếp theo' },
   { ma: 'cam-on-chi-tiet', ten: 'Lời cảm ơn: chi tiết đơn' },
   { ma: 'cam-on-lien-he', ten: 'Lời cảm ơn: cần đổi gì thì gọi (nút gọi, Zalo)' },
-], false)
+], 'dau-cuoi')
 
 const DEF_NOT_FOUND_LAYOUT_SET = def('khong-tim-thay', 'trang không tìm thấy (404)', [
   { ma: 'goi-y', ten: 'Link gợi ý' },
   { ma: 'trang-chu', ten: 'Nút về trang chủ' },
-], false)
+], 'dau-cuoi')
 
 /* ---------------------------------------------------------------- Khối tự do và thứ tự cuối */
 
@@ -279,8 +295,11 @@ const DEFS: readonly LayoutDef[] = [
 
 /** Mọi chỗ đặt khối tự do: đầu phần đổi được của trang, hoặc ngay sau từng khối có sẵn */
 const PLACES: readonly FreePlace[] = DEFS.flatMap((d) =>
-  d.tuDo === 'cuoi'
-    ? [{ value: `${d.khoa}@cuoi`, label: `${capitalize(d.ten.replace(/ \(chỉ ẩn \/ hiện\)$/, ''))}: cuối trang` }]
+  d.tuDo === 'dau-cuoi'
+    ? [
+        { value: `${d.khoa}@dau`, label: `${capitalize(shortName(d.ten))}: đầu trang` },
+        { value: `${d.khoa}@cuoi`, label: `${capitalize(shortName(d.ten))}: cuối trang` },
+      ]
     : !d.tuDo
       ? []
       : [
@@ -301,18 +320,18 @@ export const { set: GIFTS_LAYOUT_SET, order: GIFTS_ORDER } = defineLayout(DEF_GI
 export const { set: RECRUIT_LAYOUT_SET, order: RECRUIT_ORDER } = defineLayout(DEF_RECRUIT_LAYOUT_SET)
 export const { set: CONTACT_LAYOUT_SET, order: CONTACT_ORDER } = defineLayout(DEF_CONTACT_LAYOUT_SET)
 export const { set: CATEGORY_LAYOUT_SET, order: CATEGORY_ORDER } = defineLayout(DEF_CATEGORY_LAYOUT_SET)
-export const { set: PRODUCTS_LAYOUT_SET, order: PRODUCTS_ORDER, cuoi: PRODUCTS_FREE_END } = defineLayout(DEF_PRODUCTS_LAYOUT_SET)
+export const { set: PRODUCTS_LAYOUT_SET, order: PRODUCTS_ORDER, dau: PRODUCTS_FREE_START, cuoi: PRODUCTS_FREE_END } = defineLayout(DEF_PRODUCTS_LAYOUT_SET)
 export const { set: PRODUCT_DETAIL_LAYOUT_SET, order: PRODUCT_DETAIL_ORDER } = defineLayout(DEF_PRODUCT_DETAIL_LAYOUT_SET)
 export const { set: COLLECTION_DETAIL_LAYOUT_SET, order: COLLECTION_DETAIL_ORDER } = defineLayout(DEF_COLLECTION_DETAIL_LAYOUT_SET)
 export const { set: ABOUT_LAYOUT_SET, order: ABOUT_ORDER } = defineLayout(DEF_ABOUT_LAYOUT_SET)
 export const { set: BLOG_LAYOUT_SET, order: BLOG_ORDER } = defineLayout(DEF_BLOG_LAYOUT_SET)
 export const { set: ARTICLE_LAYOUT_SET, order: ARTICLE_ORDER } = defineLayout(DEF_ARTICLE_LAYOUT_SET)
-export const { set: FAQ_LAYOUT_SET, order: FAQ_ORDER, cuoi: FAQ_FREE_END } = defineLayout(DEF_FAQ_LAYOUT_SET)
+export const { set: FAQ_LAYOUT_SET, order: FAQ_ORDER, dau: FAQ_FREE_START, cuoi: FAQ_FREE_END } = defineLayout(DEF_FAQ_LAYOUT_SET)
 export const { set: POLICY_LAYOUT_SET, order: POLICY_ORDER } = defineLayout(DEF_POLICY_LAYOUT_SET)
 export const { set: POLICY_CONTENT_LAYOUT_SET, order: POLICY_CONTENT_ORDER } = defineLayout(DEF_POLICY_CONTENT_LAYOUT_SET)
 export const { set: PRIVACY_LAYOUT_SET, order: PRIVACY_ORDER } = defineLayout(DEF_PRIVACY_LAYOUT_SET)
-export const { set: ORDER_LAYOUT_SET, order: ORDER_LAYOUT_ORDER } = defineLayout(DEF_ORDER_LAYOUT_SET)
-export const { set: NOT_FOUND_LAYOUT_SET, order: NOT_FOUND_ORDER } = defineLayout(DEF_NOT_FOUND_LAYOUT_SET)
+export const { set: ORDER_LAYOUT_SET, order: ORDER_LAYOUT_ORDER, dau: ORDER_FREE_START, cuoi: ORDER_FREE_END } = defineLayout(DEF_ORDER_LAYOUT_SET)
+export const { set: NOT_FOUND_LAYOUT_SET, order: NOT_FOUND_ORDER, dau: NOT_FOUND_FREE_START, cuoi: NOT_FOUND_FREE_END } = defineLayout(DEF_NOT_FOUND_LAYOUT_SET)
 
 /** Khối tuỳ chọn đang hiện ở trang Đặt hàng (form các bước không bao giờ ẩn) */
 export const ORDER_SHOWN: ReadonlySet<string> = new Set(ORDER_LAYOUT_ORDER)

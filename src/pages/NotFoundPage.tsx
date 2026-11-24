@@ -6,7 +6,7 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import { COMMON_TEXT } from '../data/pageText/common'
 import { NOT_FOUND_TEXT } from '../data/pageText/notFound'
 import { Blocks } from '../components/ui/Blocks'
-import { NOT_FOUND_ORDER } from '../data/pageLayout'
+import { NOT_FOUND_FREE_END, NOT_FOUND_FREE_START, NOT_FOUND_ORDER } from '../data/pageLayout'
 
 /**
  * Lối đi tiếp gần nhất cho khách bấm phải đường link cũ (biên bản mục 07: không để khách kẹt ở trang lỗi).
@@ -25,6 +25,10 @@ export function NotFoundPage() {
       <p className="eyebrow">{NOT_FOUND_TEXT.nhan}</p>
       <h1 className="font-display mt-4 text-[2.2rem] text-deep-900">{COMMON_TEXT.loi404TieuDe}</h1>
       <p className="mt-4 text-ink-soft">{COMMON_TEXT.loi404Chu}</p>
+      {/* Khối tự do Ecopillo đặt "đầu trang" (Nội dung web → Giao diện → Khối tự do) */}
+      <div className="text-left">
+        <Blocks order={NOT_FOUND_FREE_START} blocks={{}} khung="cot" />
+      </div>
       {/* Thứ tự, ẩn / hiện: Nội dung web → Giao diện → Bố cục trang không tìm thấy (đợt E6) */}
       <Blocks
         order={NOT_FOUND_ORDER}
@@ -51,6 +55,9 @@ export function NotFoundPage() {
           ),
         }}
       />
+      <div className="text-left">
+        <Blocks order={NOT_FOUND_FREE_END} blocks={{}} khung="cot" />
+      </div>
     </Container>
   )
 }

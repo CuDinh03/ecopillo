@@ -1,3 +1,4 @@
+import { ORDER_SHOWN } from '../data/pageLayout'
 import {
   collectionById,
   GIFTS,
@@ -245,11 +246,13 @@ export const isValidPhone = (phone: string) => PHONE_PATTERN.test(normalizePhone
 export const validateCustomer = (c: CustomerInfo): CustomerErrors => {
   const errors: CustomerErrors = {}
   const t = ORDER_CUSTOMER_TEXT
-  if (c.name.trim().length < 2) errors.name = t.loiTen
+  // Ô Ecopillo ẩn ở Bố cục trang Đặt hàng (pageLayout.ts, đợt I) thì không đòi
+  const shown = (ma: string) => ORDER_SHOWN.has(ma)
+  if (shown('o-ten') && c.name.trim().length < 2) errors.name = t.loiTen
   // Số ví dụ là hotline chính (Thông tin liên hệ), không viết cứng: đổi hotline thì câu báo lỗi đổi theo
-  if (!PHONE_PATTERN.test(normalizePhone(c.phone))) errors.phone = chen(t.loiSdt, { so: CONTACT.hotlineDisplay })
-  if (!provinceById(c.provinceId)) errors.provinceId = t.loiTinh
-  if (c.address.trim().length < 6) errors.address = t.loiDiaChi
+  if (shown('o-sdt') && !PHONE_PATTERN.test(normalizePhone(c.phone))) errors.phone = chen(t.loiSdt, { so: CONTACT.hotlineDisplay })
+  if (shown('o-tinh') && !provinceById(c.provinceId)) errors.provinceId = t.loiTinh
+  if (shown('o-dia-chi') && c.address.trim().length < 6) errors.address = t.loiDiaChi
   return errors
 }
 

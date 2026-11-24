@@ -1,5 +1,5 @@
 import { useMemo, useRef, type CSSProperties, type ReactNode } from 'react'
-import { PRODUCTS_FREE_END, PRODUCTS_ORDER } from '../data/pageLayout'
+import { PRODUCTS_FREE_END, PRODUCTS_FREE_START, PRODUCTS_ORDER } from '../data/pageLayout'
 import { Blocks } from '../components/ui/Blocks'
 import { Link } from 'react-router-dom'
 import { ColorwayCard } from '../components/products/ColorwayCard'
@@ -222,6 +222,9 @@ export function ProductsPage() {
           </div>
         </Container>
       </section>
+
+      {/* Khối tự do Ecopillo đặt "đầu trang" (Nội dung web → Giao diện → Khối tự do) */}
+      <Blocks order={PRODUCTS_FREE_START} blocks={{}} />
 
       <Container className="pt-2 sm:pt-8">
         {/* Điện thoại: thanh lọc dính dưới thanh đầu trang (cách A). Mục "Tất cả" dạng kệ: thay hàng nút loại bằng dòng tóm tắt, tránh trùng ô nhóm */}

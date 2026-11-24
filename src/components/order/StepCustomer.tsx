@@ -65,56 +65,64 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
       <fieldset>
         <legend className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">{T.tieuDe}</legend>
         <div className="mt-6 grid gap-5 sm:grid-cols-2">
-          <Field id="name" label={T.oTen} error={errors.name}>
-            <input
-              id="f-name"
-              autoComplete="name"
-              value={customer.name}
-              onChange={(e) => onChange({ name: e.target.value })}
-              aria-invalid={Boolean(errors.name)}
-              aria-describedby={describedBy('name')}
-              placeholder={T.oTenMau}
-              className={inputClass(Boolean(errors.name))}
-            />
-          </Field>
-          <Field id="phone" label={T.oSdt} error={errors.phone} hint={T.oSdtGoiY}>
-            <input
-              id="f-phone"
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              value={customer.phone}
-              onChange={(e) => onChange({ phone: e.target.value })}
-              aria-invalid={Boolean(errors.phone)}
-              aria-describedby={describedBy('phone')}
-              placeholder={T.oSdtMau}
-              className={inputClass(Boolean(errors.phone))}
-            />
-          </Field>
-          <Field id="provinceId" label={T.oTinh} error={errors.provinceId} className="sm:col-span-2">
-            <Select
-              id="f-provinceId"
-              variant="field"
-              value={customer.provinceId}
-              onChange={(provinceId) => onChange({ provinceId })}
-              placeholder={T.oTinhMau}
-              options={PROVINCE_OPTIONS}
-              ariaInvalid={Boolean(errors.provinceId)}
-              ariaDescribedBy={describedBy('provinceId')}
-            />
-          </Field>
-          <Field id="address" label={T.oDiaChi} error={errors.address} className="sm:col-span-2">
-            <input
-              id="f-address"
-              autoComplete="street-address"
-              value={customer.address}
-              onChange={(e) => onChange({ address: e.target.value })}
-              aria-invalid={Boolean(errors.address)}
-              aria-describedby={describedBy('address')}
-              placeholder={T.oDiaChiMau}
-              className={inputClass(Boolean(errors.address))}
-            />
-          </Field>
+          {ORDER_SHOWN.has('o-ten') && (
+            <Field id="name" label={T.oTen} error={errors.name}>
+              <input
+                id="f-name"
+                autoComplete="name"
+                value={customer.name}
+                onChange={(e) => onChange({ name: e.target.value })}
+                aria-invalid={Boolean(errors.name)}
+                aria-describedby={describedBy('name')}
+                placeholder={T.oTenMau}
+                className={inputClass(Boolean(errors.name))}
+              />
+            </Field>
+          )}
+          {ORDER_SHOWN.has('o-sdt') && (
+            <Field id="phone" label={T.oSdt} error={errors.phone} hint={T.oSdtGoiY}>
+              <input
+                id="f-phone"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                value={customer.phone}
+                onChange={(e) => onChange({ phone: e.target.value })}
+                aria-invalid={Boolean(errors.phone)}
+                aria-describedby={describedBy('phone')}
+                placeholder={T.oSdtMau}
+                className={inputClass(Boolean(errors.phone))}
+              />
+            </Field>
+          )}
+          {ORDER_SHOWN.has('o-tinh') && (
+            <Field id="provinceId" label={T.oTinh} error={errors.provinceId} className="sm:col-span-2">
+              <Select
+                id="f-provinceId"
+                variant="field"
+                value={customer.provinceId}
+                onChange={(provinceId) => onChange({ provinceId })}
+                placeholder={T.oTinhMau}
+                options={PROVINCE_OPTIONS}
+                ariaInvalid={Boolean(errors.provinceId)}
+                ariaDescribedBy={describedBy('provinceId')}
+              />
+            </Field>
+          )}
+          {ORDER_SHOWN.has('o-dia-chi') && (
+            <Field id="address" label={T.oDiaChi} error={errors.address} className="sm:col-span-2">
+              <input
+                id="f-address"
+                autoComplete="street-address"
+                value={customer.address}
+                onChange={(e) => onChange({ address: e.target.value })}
+                aria-invalid={Boolean(errors.address)}
+                aria-describedby={describedBy('address')}
+                placeholder={T.oDiaChiMau}
+                className={inputClass(Boolean(errors.address))}
+              />
+            </Field>
+          )}
           {ORDER_SHOWN.has('ghi-chu') && <Field id="note" label={T.oGhiChu} optional className="sm:col-span-2">
             <textarea
               id="f-note"
