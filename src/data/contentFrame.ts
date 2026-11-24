@@ -31,6 +31,8 @@ import { ORDER_TEXT_SET } from './pageText/order'
 import { ORDER_CUSTOMER_TEXT_SET, ORDER_STEPS_TEXT_SET, ORDER_SUMMARY_TEXT_SET } from './pageText/orderFlow'
 import { PRIVACY_SECTIONS_SET, PRIVACY_TEXT_SET } from './pageText/privacy'
 import { PRODUCTS_PAGE_TEXT_SET } from './pageText/products'
+import { PRODUCT_LABELS_SET } from './pageText/productLabels'
+import { COLLECTION_PAGE_TEXT_SET, PRODUCT_DETAIL_TEXT_SET, PRODUCT_LIST_TEXT_SET } from './pageText/productUi'
 import { RECRUIT_TEXT_SET } from './pageText/recruit'
 import { THANK_YOU_SET } from './thankYou'
 import { FONT_SET, THEME_SET } from './theme'
@@ -80,6 +82,10 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   RECRUIT_TEXT_SET,
   CONTACT_PAGE_TEXT_SET,
   PRODUCTS_PAGE_TEXT_SET,
+  PRODUCT_LIST_TEXT_SET,
+  PRODUCT_LABELS_SET,
+  PRODUCT_DETAIL_TEXT_SET,
+  COLLECTION_PAGE_TEXT_SET,
   LISTING_HEAD_SET,
   LISTING_GUIDES_SET,
   ORDER_TEXT_SET,
