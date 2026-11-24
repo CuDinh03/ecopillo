@@ -15,9 +15,10 @@ import {
   CATEGORIES,
   hasPrice,
   inPriceBand,
+  isCategoryShown,
   LEGACY_CATEGORY,
+  LISTED_PRODUCTS,
   priceBandsOf,
-  PRODUCTS,
   PRODUCTS_INTRO,
   PRODUCTS_PROMISES,
   type CategoryId,
@@ -54,7 +55,17 @@ const PAGE_SIZE = 24
 /** Số chấm màu nhỏ trên ô bộ sưu tập */
 const TILE_DOTS = 5
 
-const isCategory = (v: string | null): v is CategoryId => CATEGORIES.some((c) => c.id === v)
+/**
+ * Nhóm trên link: nhóm đang hiện, hoặc mã cũ (?danh-muc=ruot-goi) của nhóm đang hiện. Nhóm Ecopillo đã ẩn / xoá, mã lạ: mục Tất cả
+ * (bộ Nhóm sản phẩm, productGroups.ts)
+ */
+const categoryOf = (raw: string | null): CategoryId | null => {
+  const id = raw && !isCategoryShown(raw) ? LEGACY_CATEGORY[raw] : raw
+  return isCategoryShown(id) ? (id as CategoryId) : null
+}
+
+/** Nhóm có phối màu (chọn theo bộ, gam): bộ chăn ga, chăn hè nằm trong nhóm Chăn; Tất cả cũng có */
+const hasColorwaysIn = (category: CategoryId | null): boolean => category === null || category === 'bo-chan-ga' || category === 'chan'
 
 /** Sắp theo giá; giá 0 (chưa có giá, báo khi gọi) luôn xếp cuối dù tăng hay giảm */
 const bySort = <T,>(items: readonly T[], sort: SortId, priceOf: (item: T) => number): readonly T[] => {
@@ -71,14 +82,13 @@ const bySort = <T,>(items: readonly T[], sort: SortId, priceOf: (item: T) => num
 export function ProductsPage() {
   usePageMeta(T.duongDanSanPham, PRODUCTS_PAGE_TEXT.moTaGoogle)
   const [params, setParams] = useHydratedSearchParams()
-  const rawCategory = params.get(CATEGORY_PARAM)
-  const category = isCategory(rawCategory) ? rawCategory : rawCategory ? (LEGACY_CATEGORY[rawCategory] ?? null) : null
+  const category = categoryOf(params.get(CATEGORY_PARAM))
   const sort: SortId = SORTS.some((s) => s.id === params.get(SORT_PARAM)) ? (params.get(SORT_PARAM) as SortId) : 'noi-bat'
   const bands = priceBandsOf(category)
   const band = bands.find((b) => b.id === params.get(PRICE_PARAM))
 
   // Chỉ bộ chăn ga và chăn hè mới có phối màu; chăn hè là một bộ duy nhất nên không có hàng chọn bộ sưu tập
-  const hasColorways = category === null || category === 'bo-chan-ga' || category === 'chan'
+  const hasColorways = hasColorwaysIn(category)
   const canBrowseByCollection = hasColorways && category !== 'chan'
   const tone = hasColorways ? toneById(params.get(TONE_PARAM)) : undefined
   const collection = canBrowseByCollection ? BEDDING_SETS.find((c) => c.id === params.get(COLLECTION_PARAM)) : undefined
@@ -141,7 +151,7 @@ export function ProductsPage() {
       [CATEGORY_PARAM]: id,
       [COLLECTION_PARAM]: null,
       [PRICE_PARAM]: null,
-      ...(id === 'goi' || id === 'dem' ? { [TONE_PARAM]: null } : {}),
+      ...(!hasColorwaysIn(id) ? { [TONE_PARAM]: null } : {}),
     })
   // Sang trang khác: giữ lịch sử để nút quay lại về trang trước, cuộn lên đầu lưới
   const goToPage = (n: number) => {
@@ -232,11 +242,11 @@ export function ProductsPage() {
                 aria-label={T.ariaDanhMuc}
                 className="-mx-5 flex min-w-0 flex-1 gap-6 overflow-x-auto border-b border-line px-5 [scrollbar-width:none] sm:mx-0 sm:px-0"
               >
-                {[{ id: null, label: T.tatCa } as const, ...CATEGORIES].map((c) => {
+                {[{ id: null, label: T.tatCa }, ...CATEGORIES].map((c) => {
                   const active = category === c.id
                   return (
                     <button
-                      key={c.label}
+                      key={c.id ?? 'tat-ca'}
                       type="button"
                       aria-pressed={active}
                       onClick={() => pickCategory(c.id)}
@@ -426,7 +436,8 @@ const isInBand = (item: GridItem, b: PriceBand): boolean =>
  * ("k mình nó 1 kiểu", thẻ phối màu "hiện nhỏ quá"). Chỉ khi chọn một bộ sưu tập hoặc gam màu mới ra từng phối màu.
  */
 const gridItems = (category: CategoryId | null, tone: Tone | undefined, collection: Collection | undefined): GridItem[] =>
-  PRODUCTS.filter((p) => !category || p.category === category).flatMap((p): GridItem[] =>
+  // Sản phẩm của nhóm Ecopillo đã ẩn không hiện ở đây (trang riêng của chúng vẫn còn)
+  LISTED_PRODUCTS.filter((p) => !category || p.category === category).flatMap((p): GridItem[] =>
     p.collection && !tone && !collection
       ? [{ kind: 'product', product: p }]
       : p.collection

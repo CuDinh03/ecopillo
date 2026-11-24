@@ -90,8 +90,8 @@ export function MobileFilterBar({ panel, activeCount, onClose, summary }: Mobile
           <p className="tabular min-w-0 flex-1 truncate text-small text-ink-soft">{summary}</p>
         ) : (
           <div role="group" aria-label={T.loaiSanPham} className="flex min-w-0 flex-1 gap-1.5 overflow-x-auto py-0.5 [scrollbar-width:none]">
-            {[{ id: null, label: T.tatCa } as const, ...CATEGORIES].map((c) => (
-              <CategoryPill key={c.label} id={c.id} label={c.label} isActive={panel.category === c.id} onPick={panel.onCategory} />
+            {[{ id: null, label: T.tatCa }, ...CATEGORIES].map((c) => (
+              <CategoryPill key={c.id ?? 'tat-ca'} id={c.id} label={c.label} isActive={panel.category === c.id} onPick={panel.onCategory} />
             ))}
           </div>
         )}

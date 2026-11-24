@@ -1,5 +1,5 @@
 import { liveObject, type EditableField, type EditableSet } from './liveContent'
-import { ALL_PRODUCTS } from './products'
+import { ALL_PRODUCTS, productKind } from './products'
 
 /**
  * Đơn vị đếm của nhóm Đệm & topper khi đặt hàng (owner 24/11/2026: "khách tự sửa mọi chi tiết").
@@ -9,7 +9,7 @@ import { ALL_PRODUCTS } from './products'
  * Chữ "tấm", "chiếc" sửa ở bộ "Đặt hàng: tóm tắt đơn".
  */
 
-const MATTRESS_GROUP = ALL_PRODUCTS.filter((p) => p.category === 'dem')
+const MATTRESS_GROUP = ALL_PRODUCTS.filter((p) => productKind(p) === 'dem')
 
 const FIELDS: readonly EditableField[] = [
   {
@@ -37,6 +37,6 @@ export const PRODUCT_UNIT_SET: EditableSet = {
 const LIVE: { tinhChiec?: readonly string[] } = liveObject(PRODUCT_UNIT_SET.khoa, BASE, FIELDS)
 const BY_PIECE = new Set(LIVE.tinhChiec ?? [])
 
-/** Sản phẩm lẻ nhóm Đệm & topper tính "tấm" (đệm); mọi sản phẩm khác tính "chiếc" */
-export const countsBySheet = (product: { slug: string; category: string }): boolean =>
-  product.category === 'dem' && !BY_PIECE.has(product.slug)
+/** Sản phẩm lẻ nhóm Đệm & topper tính "tấm" (đệm); mọi sản phẩm khác tính "chiếc". Theo nhóm gốc (Ecopillo chuyển nhóm không đổi đơn vị) */
+export const countsBySheet = (product: { slug: string; category: string; baseCategory?: string }): boolean =>
+  (product.baseCategory ?? product.category) === 'dem' && !BY_PIECE.has(product.slug)

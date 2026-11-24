@@ -1,7 +1,7 @@
 import { formatRange, formatVND } from '../lib/format'
 import { liveHidden, liveNewProducts, liveProduct, liveProductContent, liveSoldOut, markLiveDiffers, mergePrices, type LiveNewProduct, type LiveProductContent } from './liveData'
 import { slugify } from '../lib/slug'
-import { collectionPath, LISTINGS, PATHS, singleProductPath, WOO_CATEGORY_LISTINGS } from './links'
+import { collectionPath, LISTINGS, PATHS, productsUrl, singleProductPath, WOO_CATEGORY_LISTINGS } from './links'
 import {
   ALL_COLLECTIONS,
   COLLECTIONS,
@@ -19,7 +19,8 @@ import {
 import { chen } from './pageText/define'
 import { extraPhotoAlt } from './pageText/catalogText'
 import { PRODUCT_LABELS } from './pageText/productLabels'
-import { PRICE_BANDS, type PriceBand } from './priceBands'
+import { PRICE_BANDS, type PriceBand, type PriceBandGroup } from './priceBands'
+import { assignedGroup, isBuiltinCategory, productGroupSet, readProductGroups, type BuiltinCategoryId, type ProductGroup } from './productGroups'
 import { PRODUCTS_PAGE_TEXT } from './pageText/products'
 import { PRODUCT_COPY } from './pageText/productCopy'
 import type { InfoSection } from './productInfo'
@@ -31,25 +32,21 @@ import { textToInfo } from './productInfoText'
  * Biên bản mục 47: mọi sản phẩm đều đặt được trên web; cửa hàng gọi xác nhận trước khi giao.
  */
 
-export type CategoryId = 'bo-chan-ga' | 'chan' | 'goi' | 'dem'
+/**
+ * Mã nhóm (trên link ?danh-muc=…): bốn nhóm có sẵn (BuiltinCategoryId) hoặc nhóm Ecopillo thêm ở Nội dung web → Sản phẩm →
+ * "Nhóm sản phẩm" (productGroups.ts). Danh sách nhóm (CATEGORIES) khai ở cuối file, sau khi có đủ sản phẩm.
+ */
+export type CategoryId = string
 
-/** Tên và câu ngắn của nhóm: Ecopillo sửa ở Nội dung web → Chữ từng trang (pageText/productLabels.ts); mã nhóm giữ nguyên */
-export const CATEGORIES: readonly { id: CategoryId; label: string; hint: string }[] = [
-  { id: 'bo-chan-ga', label: PRODUCT_LABELS.nhomBoChanGa, hint: PRODUCT_LABELS.nhomBoChanGaCau },
-  { id: 'chan', label: PRODUCT_LABELS.nhomChan, hint: PRODUCT_LABELS.nhomChanCau },
-  { id: 'goi', label: PRODUCT_LABELS.nhomGoi, hint: PRODUCT_LABELS.nhomGoiCau },
-  { id: 'dem', label: PRODUCT_LABELS.nhomDem, hint: PRODUCT_LABELS.nhomDemCau },
-]
+export type { BuiltinCategoryId } from './productGroups'
 
 /** Đường dẫn cũ (?danh-muc=ruot-goi…) vẫn mở đúng nhóm mới */
-export const LEGACY_CATEGORY: Readonly<Record<string, CategoryId>> = {
+export const LEGACY_CATEGORY: Readonly<Record<string, BuiltinCategoryId>> = {
   'chan-he': 'chan',
   'ruot-chan': 'chan',
   'ruot-goi': 'goi',
   topper: 'dem',
 }
-
-export const categoryLabel = (id: CategoryId): string => CATEGORIES.find((c) => c.id === id)?.label ?? ''
 
 /**
  * Đầu trang Sản phẩm: đoạn giới thiệu và 4 cam kết của web cũ (ecopillo.com.vn/danh-muc-san-pham/san-pham/),
@@ -78,7 +75,13 @@ export interface Product {
   optionsFromWoo?: boolean
   slug: string
   name: string
+  /** Nhóm trên trang Sản phẩm (bộ Nhóm sản phẩm có thể chuyển sản phẩm lẻ sang nhóm khác) */
   category: CategoryId
+  /**
+   * Nhóm gốc khi Ecopillo đã chuyển sản phẩm sang nhóm khác (productGroups.ts): loại hàng (đệm tính theo chiếc, bảo hành,
+   * khối chọn đệm…) vẫn theo nhóm gốc. Đọc qua productKind()
+   */
+  baseCategory?: BuiltinCategoryId
   /** Có với bộ chăn ga, chăn hè: dùng cho chọn mẫu, kích thước và đặt online */
   collection?: Collection
   summary: string
@@ -152,7 +155,7 @@ const collectionProduct = (c: Collection): Product => {
   }
 }
 
-const ESSENTIAL_CATEGORY: Readonly<Record<string, CategoryId>> = {
+const ESSENTIAL_CATEGORY: Readonly<Record<string, BuiltinCategoryId>> = {
   'ruot-goi': 'goi',
   'ruot-chan': 'chan',
   'chan-topper': 'dem',
@@ -1014,8 +1017,25 @@ const NEW_PRODUCTS: readonly Product[] = liveNewProducts()
 // Trang dựng sẵn không có sản phẩm mới: vẽ lại thay vì gắn vào HTML cũ (main.tsx)
 if (NEW_PRODUCTS.length) markLiveDiffers()
 
+/* ——— Nhóm sản phẩm Ecopillo sửa ở Nội dung web → Sản phẩm → "Nhóm sản phẩm" (owner 24/11/2026; productGroups.ts) ——— */
+
+/** Bộ sửa được (đăng ký ở contentFrame.ts). Lựa chọn ô "Sản phẩm": mọi sản phẩm lẻ trong code; sản phẩm mới đăng trong Woo thêm lúc chạy */
+export const PRODUCT_GROUPS_SET = productGroupSet(BASE_PRODUCTS.filter((p) => !p.collection).map((p) => ({ slug: p.slug, name: p.name })))
+
+/** Mọi nhóm theo thứ tự Ecopillo xếp, cả nhóm ẩn (để tra tên nhóm của sản phẩm) */
+const ALL_GROUPS: readonly ProductGroup[] = readProductGroups(PRODUCT_GROUPS_SET)
+
+/** Sản phẩm Ecopillo đưa sang nhóm khác (ô Sản phẩm, Trang danh mục của một nhóm); không thì giữ nhóm gốc */
+const withGroup = (p: Product): Product => {
+  const id = assignedGroup({ slug: p.slug, category: p.category, listings: p.listings, isCollection: !!p.collection }, ALL_GROUPS)
+  return id && id !== p.category ? { ...p, category: id, baseCategory: p.category as BuiltinCategoryId } : p
+}
+
+/** Loại hàng của sản phẩm (nhóm gốc), không đổi khi Ecopillo chuyển sản phẩm sang nhóm khác */
+export const productKind = (p: Product): BuiltinCategoryId => p.baseCategory ?? (p.category as BuiltinCategoryId)
+
 /** Mọi sản phẩm, kể cả sản phẩm Ecopillo đã gỡ trong Woo: chỉ để tra cứu (productBySlug), không để liệt kê */
-export const ALL_PRODUCTS: readonly Product[] = [...BASE_PRODUCTS, ...NEW_PRODUCTS]
+export const ALL_PRODUCTS: readonly Product[] = [...BASE_PRODUCTS, ...NEW_PRODUCTS].map(withGroup)
 
 /**
  * Sản phẩm đang hiện (đợt E2): bỏ sản phẩm lẻ Ecopillo đã gỡ trong Woo (nháp, thùng rác, xoá), bỏ bộ chăn ga của bộ đã gỡ;
@@ -1090,7 +1110,35 @@ export const orderUrl = (collection: Collection, pattern?: Pattern, size?: SizeI
 /** Mốc giá theo từng loại: mốc gốc và phần Ecopillo sửa ở Nội dung web nằm ở priceBands.ts */
 export { PRICE_BANDS, type PriceBand } from './priceBands'
 
-export const priceBandsOf = (category: CategoryId | null): readonly PriceBand[] => PRICE_BANDS[category ?? 'tat-ca']
+/** Nhóm mới (không có bộ mốc riêng) dùng mốc "khi xem Tất cả" */
+export const priceBandsOf = (category: CategoryId | null): readonly PriceBand[] =>
+  category && isBuiltinCategory(category) ? PRICE_BANDS[category as PriceBandGroup] : PRICE_BANDS['tat-ca']
+
+/* ——— Danh sách nhóm (nút lọc, ô nhóm, kệ) ——— */
+
+/** Nhóm đang hiện và có sản phẩm, theo thứ tự Ecopillo xếp. Ẩn hết thì về bốn nhóm có sẵn (trang Sản phẩm không bao giờ trống) */
+const SHOWN_GROUPS: readonly ProductGroup[] = (() => {
+  const shown = ALL_GROUPS.filter((g) => !g.hidden && PRODUCTS.some((p) => p.category === g.id))
+  return shown.length ? shown : ALL_GROUPS.filter((g) => g.builtin)
+})()
+
+/** Mọi nhóm, cả nhóm đã ẩn */
+export const ALL_CATEGORIES: readonly ProductGroup[] = ALL_GROUPS
+
+/** Nhóm hiện trên trang Sản phẩm: nút lọc, ô nhóm, kệ */
+export const CATEGORIES: readonly ProductGroup[] = SHOWN_GROUPS
+
+/** Nhóm đang hiện (link ?danh-muc=… của nhóm ẩn mở trang Sản phẩm, mục Tất cả) */
+export const isCategoryShown = (id: string | null | undefined): boolean => !!id && CATEGORIES.some((c) => c.id === id)
+
+/** Tên nhóm, cả nhóm đã ẩn (nhãn trên thẻ, đường dẫn trang sản phẩm) */
+export const categoryLabel = (id: CategoryId): string => ALL_GROUPS.find((c) => c.id === id)?.label ?? ''
+
+/** Link trang Sản phẩm lọc theo nhóm; nhóm đã ẩn thì trang Sản phẩm không lọc */
+export const categoryUrl = (id: CategoryId): string => (isCategoryShown(id) ? productsUrl({ 'danh-muc': id }) : PATHS.products)
+
+/** Sản phẩm hiện ở trang Sản phẩm (bỏ sản phẩm của nhóm Ecopillo đã ẩn; trang riêng của chúng vẫn còn) */
+export const LISTED_PRODUCTS: readonly Product[] = PRODUCTS.filter((p) => isCategoryShown(p.category))
 
 /** Thuộc mốc khi có ít nhất một cỡ có giá trong mốc, nên một sản phẩm có thể ở hai mốc (đệm Eco Foam 7,19 – 18,44 triệu) */
 export const inPriceBand = (range: { min: number; max: number }, b: PriceBand): boolean => range.min < b.to && range.max >= b.from

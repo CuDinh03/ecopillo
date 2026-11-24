@@ -1,11 +1,12 @@
 import { COLLECTIONS } from './catalog'
-import { collectionPathById, isListingShown, LISTINGS, PATHS, productsUrl } from './links'
+import { collectionPathById, isListingShown, LISTINGS, PATHS } from './links'
 import { chen } from './pageText/define'
 import { isMenuLink } from './pageText/linkField'
 import { PAGE_FRAME_TEXT as T } from './pageText/pageFrame'
 import { POLICY_PAGE_LINKS } from './policyNav'
 import { POSTS, postPath, type Post } from './posts'
-import { PRODUCTS, priceLabel, productPath, type CategoryId, type Product } from './products'
+import { ALL_CATEGORIES, categoryUrl, isCategoryShown, PRODUCTS, priceLabel, productPath, type CategoryId, type Product } from './products'
+import type { BuiltinCategoryId } from './productGroups'
 
 /**
  * Khối "Khám phá thêm" ở cuối trang: link qua lại giữa sản phẩm, danh mục, bài viết, chính sách
@@ -32,20 +33,30 @@ export type Topic = CategoryId | 'chinh-sach'
 const postLink = (p: Post): RelatedLink => ({ label: p.title, note: chen(T.phutDoc, { so: p.readMinutes }), to: postPath(p) })
 
 export const postsAbout = (topic: Topic, exceptSlug?: string): readonly Post[] =>
-  POSTS.filter((p) => p.slug !== exceptSlug && p.topics?.includes(topic))
+  POSTS.filter((p) => p.slug !== exceptSlug && (p.topics as readonly string[] | undefined)?.includes(topic))
 
-/** Danh mục nhỏ của cùng nhóm (đệm lò xo, đệm cao su…) */
-const listingsOf = (category: CategoryId): RelatedLink[] =>
-  Object.entries(LISTINGS)
+/** Danh mục nhỏ của cùng nhóm (đệm lò xo, đệm cao su…; nhóm Ecopillo thêm: các trang danh mục Ecopillo chọn cho nhóm) */
+const listingsOf = (category: CategoryId): RelatedLink[] => {
+  const picked = ALL_CATEGORIES.find((g) => g.id === category)?.listings ?? []
+  return Object.entries(LISTINGS)
     .filter(([path]) => isListingShown(path))
-    .filter(([, l]) => l.category === category || (category === 'chan' && l.products?.some((s) => s.startsWith('chan-'))))
+    .filter(([path, l]) => l.category === category || picked.includes(path) || (category === 'chan' && l.products?.some((s) => s.startsWith('chan-'))))
     .map(([to, l]) => ({ label: l.title, to }))
+}
 
-const CATEGORY_LINKS: Readonly<Record<CategoryId, RelatedLink>> = {
-  'bo-chan-ga': { label: T.tatCaBoChanGa, to: productsUrl({ 'danh-muc': 'bo-chan-ga' }) },
-  chan: { label: T.tatCaChan, to: productsUrl({ 'danh-muc': 'chan' }) },
-  goi: { label: T.tatCaGoi, to: productsUrl({ 'danh-muc': 'goi' }) },
-  dem: { label: T.tatCaDem, to: productsUrl({ 'danh-muc': 'dem' }) },
+const BUILTIN_LINK_LABELS: Readonly<Record<BuiltinCategoryId, string>> = {
+  'bo-chan-ga': T.tatCaBoChanGa,
+  chan: T.tatCaChan,
+  goi: T.tatCaGoi,
+  dem: T.tatCaDem,
+}
+
+/** Link "Tất cả …" của một nhóm; nhóm Ecopillo đã ẩn thì không có link */
+const categoryLink = (category: CategoryId): RelatedLink[] => {
+  const group = ALL_CATEGORIES.find((g) => g.id === category)
+  if (!group || !isCategoryShown(category)) return []
+  const label = (BUILTIN_LINK_LABELS as Readonly<Record<string, string>>)[category] ?? chen(T.tatCaNhom, { ten: group.shortLabel })
+  return [{ label, to: categoryUrl(category) }]
 }
 
 /** Dòng "chữ | link" Ecopillo sửa → link; link sai (không phải /… hay https://…) thì bỏ dòng */
@@ -69,7 +80,7 @@ export const relatedForProduct = (product: Product): readonly RelatedGroup[] => 
       links: [
         ...siblings.map((p) => ({ label: p.name, note: priceLabel(p), to: productPath(p) })),
         ...listingsOf(product.category),
-        CATEGORY_LINKS[product.category],
+        ...categoryLink(product.category),
       ],
     })
   }
@@ -103,8 +114,8 @@ const MORE_POSTS_LIMIT = 6
 export const relatedForPost = (post: Post, pool: readonly Post[] = POSTS): readonly RelatedGroup[] => {
   const groups: RelatedGroup[] = []
   const productLinks = (post.topics ?? [])
-    .filter((t): t is CategoryId => t !== 'chinh-sach')
-    .flatMap((t) => [CATEGORY_LINKS[t], ...listingsOf(t)])
+    .filter((t) => t !== 'chinh-sach')
+    .flatMap((t) => [...categoryLink(t), ...listingsOf(t)])
   if (productLinks.length > 0) groups.push({ title: T.nhomSanPhamLienQuan, links: productLinks })
   const others = pool.filter((p) => p.slug !== post.slug)
   const sameTopic = others.filter((p) => p.topics?.some((t) => post.topics?.includes(t)))

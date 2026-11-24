@@ -3,7 +3,7 @@ import { hiddenPageTarget, LISTINGS, singleProductPath } from './links'
 import { LISTING_GUIDES } from './listingGuides'
 import { listingOf } from './listingProducts'
 import { liveList, type EditableField, type EditableSet } from './liveContent'
-import { ALL_PRODUCTS, hasPrice, isProductShown, PRODUCTS, productBySlug, type Product } from './products'
+import { ALL_PRODUCTS, hasPrice, isProductShown, PRODUCTS, productBySlug, productKind, type Product } from './products'
 import { anh, chon, chu, definePageText, doan, dsDong, legacyPageText, link } from './pageText/define'
 
 /**
@@ -49,7 +49,7 @@ const productOf = (slug: string): Product => {
 }
 
 /** Lựa chọn đệm đại diện, mẫu nổi bật: mọi sản phẩm nhóm Đệm (cả topper, divan) */
-const DEM_CHOICES: readonly Product[] = ALL_PRODUCTS.filter((p) => p.category === 'dem' && !p.collection)
+const DEM_CHOICES: readonly Product[] = ALL_PRODUCTS.filter((p) => productKind(p) === 'dem' && !p.collection)
 
 /* ——— Dòng cách nằm ——— */
 
@@ -247,7 +247,7 @@ const featuredOf = (): MattressFeatured => {
   const isImageChanged = MATTRESS_TEXT.anhNoiBat.src !== ECO_LUXE_IMAGE.src
   const chosen = productBySlug(MATTRESS_TEXT.noiBatSanPham)
   const product =
-    chosen && isProductShown(chosen.slug) ? chosen : (PRODUCTS.find((p) => p.category === 'dem' && p.image && !p.collection) ?? ecoLuxe)
+    chosen && isProductShown(chosen.slug) ? chosen : (PRODUCTS.find((p) => productKind(p) === 'dem' && p.image && !p.collection) ?? ecoLuxe)
   const image =
     isImageChanged || product.slug === ecoLuxe.slug
       ? MATTRESS_TEXT.anhNoiBat

@@ -58,8 +58,8 @@ export function FilterPanel(props: FilterPanelProps) {
 
       {!hideCategory && (
         <FilterGroup id={id('loai')} label={T.loaiSanPham} isFirst>
-          {[{ id: null, label: T.tatCa } as const, ...CATEGORIES].map((c) => (
-            <ChoiceRow key={c.label} isActive={category === c.id} onPick={() => onCategory(c.id)}>
+          {[{ id: null, label: T.tatCa }, ...CATEGORIES].map((c) => (
+            <ChoiceRow key={c.id ?? 'tat-ca'} isActive={category === c.id} onPick={() => onCategory(c.id)}>
               {c.label}
             </ChoiceRow>
           ))}

@@ -8,12 +8,12 @@ import {
   type ImageSource,
 } from './catalog'
 import { HOTEL_PHOTOS } from './hotel'
-import { collectionPathById, hiddenPageTarget, isListingShown, LISTINGS, PATHS, singleProductPath } from './links'
+import { collectionPathById, hiddenPageTarget, isListingShown, LISTINGS, PATHS, productsUrl, singleProductPath } from './links'
 import { listingOf } from './listingProducts'
 import { liveList, type EditableField, type EditableSet } from './liveContent'
 import { anh, chu, definePageText } from './pageText/define'
 import { lienKet } from './pageText/linkField'
-import { hasPrice, PRICE_ON_CALL_LABEL, PRODUCTS, productBySlug, type Product } from './products'
+import { ALL_CATEGORIES, hasPrice, isCategoryShown, PRICE_ON_CALL_LABEL, PRODUCTS, productBySlug, productKind, type Product } from './products'
 
 /**
  * Ô xổ "Sản phẩm" trên thanh đầu trang.
@@ -165,7 +165,7 @@ const EDITABLE_GROUPS = [
 
 type EditableGroupId = (typeof EDITABLE_GROUPS)[number]['id']
 
-/** Một dòng như lưu trong WordPress: trang là "danh-muc:<link>" hoặc "san-pham:<khoá>" */
+/** Một dòng như lưu trong WordPress: trang là "danh-muc:<link>", "san-pham:<khoá>" hoặc "nhom:<mã nhóm>" (bộ Nhóm sản phẩm) */
 interface MenuRowInput {
   nhom: EditableGroupId
   ten: string
@@ -174,11 +174,16 @@ interface MenuRowInput {
 
 const listingTarget = (path: string): string => `danh-muc:${path}`
 const productTarget = (slug: string): string => `san-pham:${slug}`
+const groupTarget = (id: string): string => `nhom:${id}`
 
-/** Trang mở khi bấm: mọi trang danh mục nhỏ, mọi sản phẩm lẻ (cả chăn hè Lyocell) */
+/**
+ * Trang mở khi bấm: mọi trang danh mục nhỏ, mọi sản phẩm lẻ (cả chăn hè Lyocell), trang Sản phẩm lọc theo một nhóm
+ * (nhóm Ecopillo thêm sau lần dựng: luaChonThem nguồn "nhom")
+ */
 const TARGETS: readonly { value: string; label: string }[] = [
   ...Object.entries(LISTINGS).map(([path, l]) => ({ value: listingTarget(path), label: `Trang danh mục: ${l.title}` })),
-  ...PRODUCTS.filter((p) => p.category !== 'bo-chan-ga').map((p) => ({ value: productTarget(p.slug), label: `Sản phẩm: ${p.name}` })),
+  ...PRODUCTS.filter((p) => productKind(p) !== 'bo-chan-ga').map((p) => ({ value: productTarget(p.slug), label: `Sản phẩm: ${p.name}` })),
+  ...ALL_CATEGORIES.map((g) => ({ value: groupTarget(g.id), label: `Nhóm sản phẩm: ${g.label}` })),
 ]
 
 const MENU_ROW_FIELDS: readonly EditableField[] = [
@@ -202,6 +207,7 @@ const MENU_ROW_FIELDS: readonly EditableField[] = [
     luaChonThem: [
       { nguon: 'san-pham', tienTo: 'san-pham:' },
       { nguon: 'danh-muc', tienTo: 'danh-muc:' },
+      { nguon: 'nhom', tienTo: 'nhom:' },
     ],
     goiY: 'Giá "từ …" tự tính theo sản phẩm của trang đó. Sản phẩm trong trang danh mục chọn ở mục "Sản phẩm trong trang danh mục".',
   },
@@ -256,15 +262,20 @@ const menuRowOf = (input: MenuRowInput): MenuRow | undefined => {
     return products.length ? rowOf(input.ten, key, products) : undefined
   }
   if (kind === 'san-pham' && productBySlug(key)) return productRow(key, input.ten)
+  // Nhóm sản phẩm (bộ Nhóm sản phẩm): mở trang Sản phẩm lọc theo nhóm; nhóm đã ẩn, không còn sản phẩm thì bỏ dòng
+  if (kind === 'nhom' && isCategoryShown(key)) {
+    const products = PRODUCTS.filter((p) => p.category === key)
+    return products.length ? rowOf(input.ten, productsUrl({ 'danh-muc': key }), products) : undefined
+  }
   return undefined
 }
 
 /** Chăn Ecopillo đăng mới trong Woo, chưa có dòng nào trỏ tới: thêm cuối nhóm Chăn đông và chăn hè */
 const newChanRows = (rows: readonly MenuRowInput[]): MenuRow[] =>
-  PRODUCTS.filter((p) => p.listings && p.category === 'chan' && !rows.some((r) => r.trang === productTarget(p.slug))).map((p) => productRow(p.slug))
+  PRODUCTS.filter((p) => p.listings && productKind(p) === 'chan' && !rows.some((r) => r.trang === productTarget(p.slug))).map((p) => productRow(p.slug))
 
 /** Nhóm của sản phẩm mới đăng trong Woo theo loại (chăn đã có newChanRows) */
-const NEW_PRODUCT_GROUP: Partial<Record<Product['category'], EditableGroupId>> = { dem: 'dem', goi: 'do-ruot' }
+const NEW_PRODUCT_GROUP: Partial<Record<string, EditableGroupId>> = { dem: 'dem', goi: 'do-ruot' }
 
 /**
  * Đệm, ruột gối Ecopillo đăng mới trong Woo: thêm cuối nhóm Đệm / Đồ ruột như chăn mới, trừ khi đã có dòng trỏ tới chính nó
@@ -274,7 +285,7 @@ const newProductRows = (id: EditableGroupId, rows: readonly MenuRowInput[]): Men
   PRODUCTS.filter(
     (p) =>
       p.listings &&
-      NEW_PRODUCT_GROUP[p.category] === id &&
+      NEW_PRODUCT_GROUP[productKind(p)] === id &&
       !rows.some((r) => r.trang === productTarget(p.slug) || p.listings?.some((path) => r.trang === listingTarget(path))),
   ).map((p) => productRow(p.slug))
 

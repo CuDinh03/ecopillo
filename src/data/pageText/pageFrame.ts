@@ -29,6 +29,7 @@ export const { set: PAGE_FRAME_TEXT_SET, text: PAGE_FRAME_TEXT } = definePageTex
     tatCaChan: chu('Link "Tất cả chăn"', 'Tất cả chăn'),
     tatCaGoi: chu('Link "Tất cả gối"', 'Tất cả gối'),
     tatCaDem: chu('Link "Tất cả đệm và topper"', 'Tất cả đệm và topper'),
+    tatCaNhom: chu('Link "Tất cả …" của nhóm Ecopillo thêm (bộ Nhóm sản phẩm)', 'Tất cả {ten}', 'Giữ {ten}: tên ngắn của nhóm'),
     hoiDap: chu('Link "Hỏi đáp" trong nhóm Chính sách khác', 'Hỏi đáp'),
     linkMuaHang: dsCap(
       'Các link nhóm "Mua hàng"',

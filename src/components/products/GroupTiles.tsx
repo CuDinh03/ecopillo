@@ -1,15 +1,18 @@
 import type { MouseEvent } from 'react'
 import { scrollToElement } from '../../lib/scroll'
 import { SHELVES, type Shelf } from '../../data/productShelves'
-import { fromPriceLabel } from '../../data/products'
+import { fromPriceLabel, PRICE_ON_CALL_LABEL } from '../../data/products'
 import { PRODUCT_LIST_TEXT as T } from '../../data/pageText/productUi'
 import { Placeholder } from '../ui/Placeholder'
 
-/** Dòng phụ ô nhóm: chỉ giá khởi điểm, không ghi số mẫu (khách 05/11/2026: "đừng cho số lượng vào") */
-const tileNote = (shelf: Shelf): string => fromPriceLabel(shelf.min)
+/**
+ * Dòng phụ ô nhóm: dòng Ecopillo ghi ở bộ Nhóm sản phẩm, không có thì giá khởi điểm (nhóm chưa có giá: chữ thay giá).
+ * Không ghi số mẫu (khách 05/11/2026: "đừng cho số lượng vào")
+ */
+const tileNote = (shelf: Shelf): string => shelf.note ?? (shelf.min > 0 ? fromPriceLabel(shelf.min) : PRICE_ON_CALL_LABEL)
 
 /**
- * Bốn ô ảnh nhóm đầu mục "Tất cả" (phương án 1 + 2, owner chốt 02/11/2026): bấm ô thì cuộn tới kệ của nhóm đó.
+ * Các ô ảnh nhóm đầu mục "Tất cả" (phương án 1 + 2, owner chốt 02/11/2026; nhóm, thứ tự, ảnh: bộ Nhóm sản phẩm): bấm ô thì cuộn tới kệ của nhóm đó.
  * Ô Đệm có viền trắng cho nổi hơn (khách: "phần đệm tìm mãi mới thấy"). Điện thoại 2×2, từ 640px một hàng 4 ô.
  */
 export function GroupTiles() {
@@ -35,7 +38,7 @@ export function GroupTiles() {
                 className="absolute inset-0 h-full w-full !rounded-none border-0 transition-transform duration-700 ease-[var(--ease-soft)] group-hover:scale-[1.03]"
                 tone="mist"
                 note={shelf.label}
-                image={{ ...shelf.tileImage, alt: '' }}
+                image={shelf.tileImage ? { ...shelf.tileImage, alt: '' } : undefined}
                 sizes="(min-width: 640px) 240px, 50vw"
               />
               <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-deep-950/0 from-40% to-deep-950/80" />

@@ -1,6 +1,6 @@
 import { slugify } from '../lib/slug'
 import { liveList, type EditableField, type EditableSet } from './liveContent'
-import type { CategoryId } from './products'
+import type { BuiltinCategoryId } from './productGroups'
 
 /**
  * Mốc giá của bộ lọc "Mức giá" ở trang Sản phẩm (mẫu 1 "Mốc giá theo từng loại", owner chọn 15/10/2026; mẫu: docs/de-xuat-bo-loc-gia.html).
@@ -18,7 +18,8 @@ export interface PriceBand {
   to: number
 }
 
-export type PriceBandGroup = CategoryId | 'tat-ca'
+/** Bốn nhóm có sẵn có mốc riêng; nhóm Ecopillo thêm (productGroups.ts) dùng mốc 'tat-ca' */
+export type PriceBandGroup = BuiltinCategoryId | 'tat-ca'
 
 const MILLION = 1_000_000
 

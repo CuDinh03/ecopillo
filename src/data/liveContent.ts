@@ -1,3 +1,4 @@
+import { slugify } from '../lib/slug'
 import { liveCategories, liveNewCollections, liveNewProducts, markLiveDiffers } from './liveData'
 
 /**
@@ -54,9 +55,10 @@ export interface EditableField {
   nhanLuaChon?: readonly string[]
   /**
    * chon / chon-nhieu: lựa chọn thêm lấy lúc chạy (đợt G), để thứ Ecopillo tạo sau lần dựng chọn được: sản phẩm lẻ mới, bộ sưu tập
-   * mới, trang danh mục mới (Woo), tỉnh / thành (bộ Giao hàng). `tienTo` ghép trước giá trị (ví dụ "san-pham:")
+   * mới, trang danh mục mới (Woo), tỉnh / thành (bộ Giao hàng), nhóm sản phẩm mới (bộ Nhóm sản phẩm, productGroups.ts).
+   * `tienTo` ghép trước giá trị (ví dụ "san-pham:")
    */
-  luaChonThem?: readonly { nguon: 'san-pham' | 'bo-suu-tap' | 'danh-muc' | 'tinh'; tienTo?: string }[]
+  luaChonThem?: readonly { nguon: 'san-pham' | 'bo-suu-tap' | 'danh-muc' | 'tinh' | 'nhom'; tienTo?: string }[]
   /** ds-cap: tên hai khoá của mỗi cặp và nhãn của chúng */
   cap?: readonly [string, string]
   nhanCap?: readonly [string, string]
@@ -79,6 +81,11 @@ export interface EditableSet {
   tieuDeDong?: string
   /** Danh sách: ô mã ẩn giữ nguyên qua các lần sửa (ảnh, lựa chọn đã lưu bám theo mã) */
   khoaDong?: string
+  /**
+   * Dòng mới chưa có mã: plugin lấy mã theo ô tiêu đề (sanitize_title, không trùng mã dòng khác) lúc lưu, rồi giữ nguyên khi đổi tên
+   * (nhóm sản phẩm: mã nằm trên link ?danh-muc=…)
+   */
+  khoaDongTheoTieuDe?: boolean
   /**
    * Bộ màu (theme.ts): ô màu → biến CSS. Plugin ghi các biến vào mau.css; `alpha` là độ trong (đường kẻ, chữ phụ pha từ màu chàm)
    */
@@ -133,6 +140,17 @@ const savedProvinces = (): string[] => {
   )
 }
 
+/** Mã các nhóm sản phẩm Ecopillo đã lưu (productGroups.ts), đọc thẳng bản đã lưu để không vòng import. Cùng cách lấy mã với groupIdOf */
+const savedGroupIds = (): string[] => {
+  const raw = read()['nhom-san-pham']
+  if (!Array.isArray(raw)) return []
+  return raw.flatMap((row: unknown, i) => {
+    if (!row || typeof row !== 'object') return []
+    const { ma, ten } = row as { ma?: unknown; ten?: unknown }
+    return [rowKey(ma) || slugify(typeof ten === 'string' ? ten : '') || `nhom-${i + 1}`]
+  })
+}
+
 /** Mọi lựa chọn hợp lệ của một ô chon / chon-nhieu: danh sách lúc dựng + lựa chọn lấy lúc chạy */
 export function optionsOf(field: EditableField): readonly string[] {
   if (!field.luaChonThem?.length) return field.luaChon ?? []
@@ -144,7 +162,9 @@ export function optionsOf(field: EditableField): readonly string[] {
           ? liveNewCollections().map((c) => c.id)
           : nguon === 'danh-muc'
             ? liveCategories().moi.map((c) => c.duongDan)
-            : savedProvinces()
+            : nguon === 'nhom'
+              ? savedGroupIds()
+              : savedProvinces()
     return values.map((v) => tienTo + v)
   })
   return [...new Set([...(field.luaChon ?? []), ...extra])]
