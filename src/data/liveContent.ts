@@ -18,7 +18,7 @@ export type FieldKind =
   | 'chu'
   /** Đoạn chữ nhiều dòng */
   | 'doan'
-  /** Đường link: https://…, /duong-dan/, tel:, mailto: */
+  /** Đường link: https://…, /duong-dan/, tel:, mailto:, #khoi-trong-trang */
   | 'link'
   | 'so'
   /** Ảnh từ Thư viện WordPress: { src, srcSet, alt } */
@@ -116,7 +116,8 @@ export const rowKey = (value: unknown): string =>
         .replace(/^-|-$/g, '')
     : ''
 
-const isLink = (v: string): boolean => /^(https:\/\/|http:\/\/|\/(?!\/)|tel:|mailto:)/.test(v) && !/[\s<>"]/.test(v)
+// "#bo-suu-tap": nút cuộn tới một khối trong cùng trang (đợt G)
+const isLink = (v: string): boolean => (/^(https:\/\/|http:\/\/|\/(?!\/)|tel:|mailto:)/.test(v) || /^#[a-z0-9-]{1,80}$/.test(v)) && !/[\s<>"]/.test(v)
 
 /** Giá trị một ô sau khi kiểm; undefined = ô sai hoặc trống */
 export function cleanField(field: EditableField, value: unknown): unknown {

@@ -58,7 +58,8 @@ function eco_nd_current($set)
 
 function eco_nd_is_link($value)
 {
-    return is_string($value) && preg_match('#^(https?://|/(?!/)|tel:|mailto:)#', $value) && !preg_match('/[\s<>"]/', $value);
+    // "#bo-suu-tap": nút cuộn tới một khối trong cùng trang (đợt G)
+    return is_string($value) && (preg_match('#^(https?://|/(?!/)|tel:|mailto:)#', $value) || preg_match('/^#[a-z0-9-]{1,80}$/', $value)) && !preg_match('/[\s<>"]/', $value);
 }
 
 /** @return mixed|null null = ô trống hoặc sai */
@@ -76,8 +77,8 @@ function eco_nd_clean_field($field, $value)
             if (!eco_nd_is_link($link)) {
                 return null;
             }
-            if (strpos($link, '/') === 0) {
-                return $link; // đường dẫn trong web
+            if (strpos($link, '/') === 0 || strpos($link, '#') === 0) {
+                return $link; // đường dẫn trong web, hoặc khối trong cùng trang
             }
             $clean = esc_url_raw($link, array('http', 'https', 'tel', 'mailto'));
             return $clean === '' ? null : $clean;
