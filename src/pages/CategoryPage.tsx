@@ -37,7 +37,9 @@ export function CategoryPage() {
       p.listings?.includes(path) ||
       // Trang có ghi danh sách sản phẩm: đúng danh sách đó (Ecopillo có thể tích sản phẩm khác nhóm, ví dụ ruột chăn ở trang gối)
       (listing.products
-        ? listing.products.includes(p.slug)
+        ? listing.products.includes(p.slug) ||
+          // Trang danh mục Ecopillo tạo trong Woo có cả mẫu chăn ga: hiện bộ chăn ga của các mẫu đó (đợt E)
+          !!(listing.collections && p.collection && listing.collections.includes(p.collection.id))
         : (!listing.category || p.category === listing.category) &&
           (!listing.collections || (p.collection && listing.collections.includes(p.collection.id)))),
   )

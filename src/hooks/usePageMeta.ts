@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { SITE_ORIGIN, withSlash } from '../data/links'
+import { pageSeoFor } from '../data/liveSeo'
 import type { ShareImage } from '../lib/structuredData'
 
 const SITE = 'Ecopillo'
@@ -57,14 +58,20 @@ export function usePageMeta(title: string | null, description?: string, options:
 
   useEffect(() => setCanonical(pathname), [pathname])
 
+  // SEO Ecopillo điền ở Nội dung web → "SEO từng trang" hoặc ở danh mục Woo (liveSeo.ts): đứng trên chữ của trang.
+  // Máy chủ đã ghi sẵn các thẻ này vào HTML (plugin trang-wp.php); ở đây giữ đúng khi chuyển trang trong trình duyệt
+  const seo = pageSeoFor(pathname)
+  const tabTitle = seo?.tieuDe ?? fullTitle(title)
+  const metaDescription = seo?.moTa ?? description
+
   useEffect(() => {
-    document.title = fullTitle(title)
-    if (!description) return
+    document.title = tabTitle
+    if (!metaDescription) return
     const meta = document.querySelector<HTMLMetaElement>('meta[name="description"]')
     const previous = meta?.content
-    if (meta) meta.content = description
+    if (meta) meta.content = metaDescription
     return () => {
       if (meta && previous !== undefined) meta.content = previous
     }
-  }, [title, description])
+  }, [tabTitle, metaDescription])
 }

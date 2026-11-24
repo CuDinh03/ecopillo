@@ -3,7 +3,7 @@ import { lazy, useContext, type ComponentType, type ReactNode } from 'react'
 import { Navigate, Route, useLocation, useParams } from 'react-router-dom'
 import { SiteLayout } from './components/layout/SiteLayout'
 import { COLLECTIONS } from './data/catalog'
-import { COLLECTION_BY_PATH, LISTINGS, PATHS, redirectFor } from './data/links'
+import { COLLECTION_BY_PATH, isListingShown, LISTINGS, PATHS, redirectFor } from './data/links'
 import { POLICY_ALIASES, POLICY_PAGES } from './data/policyNav'
 import { PageMetaContext } from './hooks/usePageMeta'
 import { HomePage } from './pages/HomePage'
@@ -109,7 +109,8 @@ export const appRoutes = (
       {[...COLLECTION_BY_PATH.keys()].map((path) => (
         <Route key={path} path={route(path)} element={<RedirectOr page={<ProductDetailPage />} />} />
       ))}
-      {Object.keys(LISTINGS).map((path) => (
+      {/* Trang danh mục Ecopillo ẩn / xoá trong Woo không có route: link chuyển theo redirectFor (đợt E) */}
+      {Object.keys(LISTINGS).filter(isListingShown).map((path) => (
         <Route key={path} path={route(path)} element={<CategoryPage />} />
       ))}
       <Route path="san-pham/:slug" element={<RedirectOr page={<ProductDetailPage />} />} />

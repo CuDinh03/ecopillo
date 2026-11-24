@@ -138,6 +138,40 @@ export interface LivePatternContent {
   cauChuyen?: LiveStory
 }
 
+/**
+ * Danh mục sản phẩm Ecopillo sửa trong WooCommerce (Sản phẩm → Danh mục; plugin danh-muc.php, đợt E 24/11/2026:
+ * "danh mục sản phẩm chưa thêm được, chưa sửa được, chưa xoá được", khách muốn thêm SEO cho danh mục).
+ * - `chu`: tên, mô tả của trang danh mục có sẵn (khi Ecopillo tích "Giao diện mới dùng tên, mô tả ở đây")
+ * - `moi`: danh mục Ecopillo tạo và tích "Hiện thành trang danh mục" → trang mới ở đúng link danh mục Woo
+ * - `an`: trang danh mục đã ẩn hoặc đã xoá trong Woo → link chuyển (301) tới trang ghi ở đây
+ */
+export interface LiveCategoryText {
+  ten?: string
+  moTa?: string
+}
+export interface LiveNewCategory {
+  /** Link trang (link danh mục Woo), có "/" hai đầu */
+  duongDan: string
+  /** Tên danh mục Woo (slug), để sản phẩm lẻ mới trong danh mục này vào trang */
+  woo: string
+  ten: string
+  moTa: string
+  /** Sản phẩm lẻ trên web (khoá products.ts hoặc tên link sản phẩm mới), theo thứ tự trong Woo */
+  sanPham: readonly string[]
+  /** Bộ sưu tập (mã trên web) có mẫu nằm trong danh mục này */
+  boSuuTap: readonly string[]
+}
+export interface LiveCategories {
+  chu: Readonly<Record<string, LiveCategoryText>>
+  moi: readonly LiveNewCategory[]
+  an: Readonly<Record<string, string>>
+}
+/** Tiêu đề, mô tả trên Google của một trang (link → SEO) Ecopillo điền ở danh mục Woo (ô của plugin hoặc khung Yoast SEO) */
+export interface LiveSeo {
+  tieuDe?: string
+  moTa?: string
+}
+
 interface LiveData {
   mau: Readonly<Record<string, LivePattern>>
   sanPham: Readonly<Record<string, LiveProduct>>
@@ -147,6 +181,8 @@ interface LiveData {
   noiDungMau: Readonly<Record<string, LivePatternContent>>
   boSuuTapMoi: readonly LiveNewCollection[]
   boSuuTapChu: Readonly<Record<string, LiveCollectionText>>
+  danhMuc: LiveCategories
+  seo: Readonly<Record<string, LiveSeo>>
 }
 
 const isPrice = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v > 0 && v < 1e10
@@ -373,12 +409,56 @@ const cleanContentMap = <T extends object>(input: unknown, clean: (v: unknown) =
       .filter(([, value]) => Object.keys(value).length > 0),
   )
 
+/** Link trong web dạng /a/b/: chữ thường không dấu, số, gạch; có "/" cuối */
+export const isPagePath = (v: unknown): v is string =>
+  typeof v === 'string' && v.length <= 200 && /^\/[a-z0-9_-]+(?:\/[a-z0-9_-]+)*\/$/.test(v)
+
+const cleanSlugs = (v: unknown, count: number): string[] =>
+  Array.isArray(v) ? [...new Set(v.filter((x): x is string => typeof x === 'string' && /^[a-z0-9-]{1,200}$/.test(x)))].slice(0, count) : []
+
+function cleanCategories(input: unknown): LiveCategories {
+  const raw = (input && typeof input === 'object' ? input : {}) as { chu?: unknown; moi?: unknown; an?: unknown }
+  const chu: Record<string, LiveCategoryText> = {}
+  for (const [path, value] of Object.entries(raw.chu && typeof raw.chu === 'object' ? raw.chu : {}).slice(0, 200)) {
+    const v = (value ?? {}) as Record<string, unknown>
+    const text = { ten: cleanText(v.ten, 120), moTa: cleanText(v.moTa, 600) }
+    if (isPagePath(path) && (text.ten || text.moTa)) chu[path] = Object.fromEntries(Object.entries(text).filter(([, x]) => x))
+  }
+  const moi = (Array.isArray(raw.moi) ? raw.moi : [])
+    .slice(0, 100)
+    .map((value): LiveNewCategory | undefined => {
+      const v = (value ?? {}) as Record<string, unknown>
+      const ten = cleanText(v.ten, 120)
+      if (!isPagePath(v.duongDan) || typeof v.woo !== 'string' || !/^[a-z0-9-]{1,200}$/.test(v.woo) || !ten) return undefined
+      const sanPham = cleanSlugs(v.sanPham, 120)
+      const boSuuTap = cleanSlugs(v.boSuuTap, 30)
+      if (!sanPham.length && !boSuuTap.length) return undefined
+      return { duongDan: v.duongDan, woo: v.woo, ten, moTa: cleanText(v.moTa, 600), sanPham, boSuuTap }
+    })
+    .filter((x): x is LiveNewCategory => !!x)
+  const an: Record<string, string> = {}
+  for (const [path, to] of Object.entries(raw.an && typeof raw.an === 'object' ? raw.an : {}).slice(0, 200)) {
+    if (isPagePath(path) && (to === '/' || isPagePath(to)) && to !== path) an[path] = to
+  }
+  return { chu, moi, an }
+}
+
+function cleanSeo(input: unknown): Record<string, LiveSeo> {
+  const seo: Record<string, LiveSeo> = {}
+  for (const [path, value] of Object.entries(input && typeof input === 'object' ? input : {}).slice(0, 400)) {
+    const v = (value ?? {}) as Record<string, unknown>
+    const item = { tieuDe: cleanText(v.tieuDe, 200), moTa: cleanText(v.moTa, 400) }
+    if ((path === '/' || isPagePath(path)) && (item.tieuDe || item.moTa)) seo[path] = Object.fromEntries(Object.entries(item).filter(([, x]) => x))
+  }
+  return seo
+}
+
 function read(): LiveData {
-  const empty: LiveData = { mau: {}, sanPham: {}, mauMoi: [], sanPhamMoi: [], noiDungSanPham: {}, noiDungMau: {}, boSuuTapMoi: [], boSuuTapChu: {} }
+  const empty: LiveData = { mau: {}, sanPham: {}, mauMoi: [], sanPhamMoi: [], noiDungSanPham: {}, noiDungMau: {}, boSuuTapMoi: [], boSuuTapChu: {}, danhMuc: { chu: {}, moi: [], an: {} }, seo: {} }
   if (typeof window === 'undefined') return empty
   const raw = (window as { __ECO_GIA__?: unknown }).__ECO_GIA__
   if (!raw || typeof raw !== 'object') return empty
-  const { mau, sanPham, mauMoi, sanPhamMoi, noiDungWoo, boSuuTapMoi, boSuuTapChu } = raw as {
+  const { mau, sanPham, mauMoi, sanPhamMoi, noiDungWoo, boSuuTapMoi, boSuuTapChu, danhMucWoo, seo } = raw as {
     mau?: unknown
     sanPham?: unknown
     mauMoi?: unknown
@@ -386,6 +466,8 @@ function read(): LiveData {
     noiDungWoo?: { sanPham?: unknown; mau?: unknown }
     boSuuTapMoi?: unknown
     boSuuTapChu?: unknown
+    danhMucWoo?: unknown
+    seo?: unknown
   }
   const patterns: Record<string, LivePattern> = {}
   for (const [key, value] of Object.entries(mau && typeof mau === 'object' ? mau : {})) {
@@ -410,6 +492,8 @@ function read(): LiveData {
       ? boSuuTapMoi.slice(0, 30).map(cleanNewCollection).filter((x): x is LiveNewCollection => !!x)
       : [],
     boSuuTapChu: cleanContentMap(boSuuTapChu, cleanCollectionText),
+    danhMuc: cleanCategories(danhMucWoo),
+    seo: cleanSeo(seo),
   }
 }
 
@@ -443,6 +527,12 @@ export const liveNewProducts = (): readonly LiveNewProduct[] => LIVE.sanPhamMoi
 
 /** Sản phẩm lẻ mới theo tên trên link (trang /san-pham/<tên>/) */
 export const liveNewProductBySlug = (slug: string): LiveNewProduct | undefined => LIVE.sanPhamMoi.find((p) => p.duongDan === slug)
+
+/** Danh mục sản phẩm Ecopillo sửa trong Woo (đợt E): chữ trang có sẵn, trang mới, trang đã ẩn / xoá */
+export const liveCategories = (): LiveCategories => LIVE.danhMuc
+
+/** Tiêu đề, mô tả trên Google Ecopillo điền ở danh mục Woo, theo link trang */
+export const liveCategorySeo = (): Readonly<Record<string, LiveSeo>> => LIVE.seo
 
 /** Có ô giá / hết hàng nào khác bản dựng sẵn không (main.tsx dùng để chọn vẽ lại hay gắn vào HTML có sẵn) */
 let differs = false

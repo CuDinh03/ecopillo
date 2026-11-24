@@ -59,7 +59,8 @@ const productsOf = (path: string, base: readonly string[]): readonly string[] =>
 /** Trang danh mục (LISTINGS) với danh sách sản phẩm Ecopillo đã chọn */
 export const listingOf = (path: string): ListingPreset | undefined => {
   const listing = LISTINGS[path]
-  if (!listing?.products) return listing
+  // Trang danh mục Ecopillo tạo trong Woo (đợt E): sản phẩm theo danh mục Woo, không theo ô tích ở đây
+  if (!listing?.products || !EDITABLE_PATHS.includes(path)) return listing
   const products = productsOf(path, listing.products)
   return products === listing.products ? listing : { ...listing, products }
 }

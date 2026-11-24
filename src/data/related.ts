@@ -1,5 +1,5 @@
 import { COLLECTIONS } from './catalog'
-import { collectionPathById, LISTINGS, PATHS, productsUrl } from './links'
+import { collectionPathById, isListingShown, LISTINGS, PATHS, productsUrl } from './links'
 import { POLICY_PAGES, policyPath } from './policyNav'
 import { POSTS, postPath, type Post } from './posts'
 import { PRODUCTS, priceLabel, productPath, type CategoryId, type Product } from './products'
@@ -33,6 +33,7 @@ export const postsAbout = (topic: Topic, exceptSlug?: string): readonly Post[] =
 /** Danh mục nhỏ của cùng nhóm (đệm lò xo, đệm cao su…) */
 const listingsOf = (category: CategoryId): RelatedLink[] =>
   Object.entries(LISTINGS)
+    .filter(([path]) => isListingShown(path))
     .filter(([, l]) => l.category === category || (category === 'chan' && l.products?.some((s) => s.startsWith('chan-'))))
     .map(([to, l]) => ({ label: l.title, to }))
 

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Ecopillo giao diện mới
  * Description: Thay giao diện ecopillo.com.vn bằng giao diện mới (trang dựng sẵn trong thư mục site/ của plugin). WordPress giữ nguyên làm nơi quản trị. Cài đặt → Giao diện mới. Đơn hàng, tin nhắn khách gửi: mục Đơn web.
- * Version: 2.1.1
+ * Version: 2.2.0
  * Requires PHP: 7.4
  * Author: Ecopillo
  * Text Domain: ecopillo-giao-dien-moi
@@ -31,6 +31,7 @@ require_once __DIR__ . '/nhan-form.php';
 require_once __DIR__ . '/gia-woo.php';
 require_once __DIR__ . '/noi-dung.php';
 require_once __DIR__ . '/thanh-quan-tri.php';
+require_once __DIR__ . '/trang-wp.php';
 
 const ECO_GDM_OPTION = 'ecopillo_giao_dien_moi_che_do';
 const ECO_GDM_MARKER = 'Ecopillo giao dien moi';
@@ -64,7 +65,11 @@ function eco_gdm_rules($mode)
     if (!is_readable($file)) {
         return array();
     }
-    $text = str_replace('{SITE}', eco_gdm_site_url_path(), (string) file_get_contents($file));
+    $text = str_replace(
+        array('{SITE}', '{QUA_WP}'),
+        array(eco_gdm_site_url_path(), eco_tw_marker_url_path()),
+        (string) file_get_contents($file)
+    );
     return explode("\n", rtrim($text, "\n"));
 }
 
@@ -143,6 +148,26 @@ register_activation_hook(__FILE__, function () {
 register_deactivation_hook(__FILE__, function () {
     eco_gdm_write_htaccess('tat');
     eco_gdm_purge_cache();
+});
+
+/**
+ * Sau khi cài bản plugin mới mà quy tắc .htaccess đã đổi (ví dụ 2.2.0 thêm thư mục đánh dấu cho SEO, ẩn trang): ghi lại
+ * đoạn quy tắc ngay ở lần mở trang quản trị kế tiếp, theo chế độ đang chọn. Không cần nhớ bấm "Lưu chế độ".
+ */
+add_action('admin_init', function () {
+    $mode = eco_gdm_mode();
+    $file = __DIR__ . '/quy-tac/' . $mode . '.htaccess';
+    if ($mode === 'tat' || !is_readable($file) || !current_user_can('manage_options')) {
+        return;
+    }
+    $stamp = md5((string) file_get_contents($file) . eco_gdm_site_url_path() . eco_tw_marker_url_path());
+    if (get_option('ecopillo_gdm_quy_tac_ban') === $stamp) {
+        return;
+    }
+    if (eco_gdm_write_htaccess($mode)) {
+        update_option('ecopillo_gdm_quy_tac_ban', $stamp, false);
+        eco_gdm_purge_cache();
+    }
 });
 
 /** Công tắc thử: /?giao-dien-moi=1 bật cookie thử 12 giờ, =0 bỏ; rồi về lại link không có tham số */

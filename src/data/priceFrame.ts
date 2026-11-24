@@ -1,5 +1,5 @@
 import { COLLECTIONS, SIZES, sizeById } from './catalog'
-import { collectionPath, HOST_REDIRECTS, LISTINGS, patternPath, singleProductPath, withSlash, WOO_CATEGORY_LISTINGS } from './links'
+import { collectionPath, HOST_REDIRECTS, LISTINGS, PATHS, patternPath, singleProductPath, withSlash, WOO_CATEGORY_LISTINGS } from './links'
 import { ALL_POSTS } from './allPosts'
 import { PRODUCTS } from './products'
 import { TONES } from './stories'
@@ -97,6 +97,15 @@ export interface PriceFrame {
   khungBai: string
   /** Tên sản phẩm Woo của mọi link cũ /san-pham/… đã 301 (sản phẩm gộp, đổi tên): không bao giờ coi là mẫu mới */
   slugCu: string[]
+  /**
+   * Trang danh mục có sẵn (plugin danh-muc.php, đợt E): danh mục Woo cùng link là trang này. `boSuuTap`: trang bộ sưu tập
+   * (chữ sửa ở khung bộ sưu tập, chỉ có SEO ở khung danh mục). `ten`, `moTa`: chữ đang hiện, để Ecopillo đối chiếu.
+   */
+  trangDanhMuc: { trang: string; ten: string; moTa: string; boSuuTap: boolean }[]
+  /** Trang khung cho trang danh mục mới Ecopillo tạo trong Woo: một trang danh mục nhỏ có sẵn */
+  khungDanhMuc: string
+  /** Trang Sản phẩm: nơi chuyển tới mặc định khi Ecopillo ẩn / xoá một danh mục */
+  trangSanPham: string
 }
 
 const slugOf = (path: string): string => path.replace(/\/$/, '').split('/').pop() ?? ''
@@ -185,5 +194,15 @@ export function buildPriceFrame(): PriceFrame {
     },
     gam: TONES.map((t) => ({ id: t.id, ten: t.label })),
   }
-  return { mau, sanPham, noiDung, boMoi, boSuuTap, danhMuc, baiViet, baiTrongCode, khungBai, slugCu }
+  const trangDanhMuc = [
+    ...Object.entries(LISTINGS).map(([trang, l]) => ({ trang, ten: l.title, moTa: l.description, boSuuTap: false })),
+    ...COLLECTIONS.filter((c) => collectionPath(c).startsWith('/danh-muc-san-pham/')).map((c) => ({
+      trang: collectionPath(c),
+      ten: c.name,
+      moTa: c.metaDescription ?? '',
+      boSuuTap: true,
+    })),
+  ]
+  const khungDanhMuc = Object.keys(LISTINGS).find((path) => LISTINGS[path]?.products?.length) ?? ''
+  return { mau, sanPham, noiDung, boMoi, boSuuTap, danhMuc, baiViet, baiTrongCode, khungBai, slugCu, trangDanhMuc, khungDanhMuc, trangSanPham: PATHS.products }
 }

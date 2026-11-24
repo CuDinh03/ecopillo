@@ -175,6 +175,16 @@ function eco_sp_compute()
             $cats[(string) $c['woo']] = $c;
         }
     }
+    // Danh mục Ecopillo tạo và tích "Hiện thành trang danh mục" (danh-muc.php, đợt E): sản phẩm lẻ mới đăng ở đó cũng hiện;
+    // trang khung của sản phẩm: khung của danh mục có sẵn đầu tiên (mọi trang sản phẩm lẻ cùng bố cục)
+    $first = reset($cats);
+    if ($first && function_exists('eco_dm_compute')) {
+        foreach (eco_dm_compute()['moi'] as $c) {
+            if (!isset($cats[$c['woo']])) {
+                $cats[$c['woo']] = array('woo' => $c['woo'], 'trang' => $c['duongDan'], 'khung' => $first['khung']);
+            }
+        }
+    }
     if (!$cats || !function_exists('wc_get_products')) {
         return $result;
     }

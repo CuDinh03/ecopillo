@@ -7,7 +7,7 @@ import {
   type ImageSource,
 } from './catalog'
 import { HOTEL_PHOTOS } from './hotel'
-import { collectionPathById, LISTINGS, PATHS, singleProductPath } from './links'
+import { collectionPathById, isListingShown, LISTINGS, PATHS, singleProductPath } from './links'
 import { listingOf } from './listingProducts'
 import { liveList, type EditableField, type EditableSet } from './liveContent'
 import { hasPrice, PRICE_ON_CALL_LABEL, PRODUCTS, productBySlug, type Product } from './products'
@@ -237,7 +237,8 @@ const MENU_ROWS = liveList<MenuRowInput>(PRODUCT_MENU_SET.khoa, BASE_MENU_ROWS, 
 /** Một dòng đã lưu → dòng menu; trang không còn (sản phẩm đã bỏ) thì bỏ dòng, không làm hỏng menu */
 const menuRowOf = (input: MenuRowInput): MenuRow | undefined => {
   const [kind, key] = [input.trang.slice(0, input.trang.indexOf(':')), input.trang.slice(input.trang.indexOf(':') + 1)]
-  if (kind === 'danh-muc' && LISTINGS[key]) {
+  // Trang danh mục Ecopillo đã ẩn / xoá trong Woo: bỏ dòng (đợt E)
+  if (kind === 'danh-muc' && LISTINGS[key] && isListingShown(key)) {
     const products = listingProducts(key)
     return products.length ? rowOf(input.ten, key, products) : undefined
   }

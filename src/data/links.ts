@@ -1,6 +1,6 @@
 import type { Collection, Pattern } from './catalog'
 import { liveList, rowKey, type EditableField, type EditableSet } from './liveContent'
-import { liveNewCollections, liveNewPatternBySlug, liveNewProductBySlug } from './liveData'
+import { liveCategories, liveNewCollections, liveNewPatternBySlug, liveNewProductBySlug, markLiveDiffers } from './liveData'
 import { liveRedirectFor } from './liveRedirects'
 
 /**
@@ -372,15 +372,58 @@ export const LISTING_HEAD_SET: EditableSet = {
 }
 const LIVE_LISTING_ROWS = liveList(LISTING_HEAD_SET.khoa, LISTING_ROWS, LISTING_FIELDS, (i, row) => LISTING_ROWS.find((r) => rowKey(r.path) === rowKey(row.path)) ?? LISTING_ROWS[i] ?? LISTING_ROWS[0])
 
-export const LISTINGS: Readonly<Record<string, ListingPreset>> = Object.fromEntries(
-  Object.entries(BASE_LISTINGS).map(([path, listing]) => {
-    const row = LIVE_LISTING_ROWS.find((r) => rowKey(r.path) === rowKey(path))
-    const withText = row ? { ...listing, title: row.title, description: row.description } : listing
-    // Bộ ga phủ Ecopillo tạo trong Woo (đợt C) vào trang danh mục Bộ ga phủ
-    const addGaPhu = path === '/danh-muc-san-pham/san-pham/bo-ga-phu/' && withText.collections
-    return [path, addGaPhu ? { ...withText, collections: [...(withText.collections ?? []), ...LIVE_GA_PHU_IDS] } : withText]
-  }),
+/**
+ * Danh mục sản phẩm Ecopillo sửa trong WooCommerce (đợt E, plugin danh-muc.php): tên, mô tả trang có sẵn (khi tích "dùng tên,
+ * mô tả ở đây"; đứng trên bản sửa ở Nội dung web), trang danh mục mới Ecopillo tạo, trang đã ẩn / xoá (chuyển link).
+ */
+const LIVE_CATEGORIES = liveCategories()
+
+/** Trang danh mục mới Ecopillo tạo trong Woo: bỏ trang trùng link với một trang có sẵn của web */
+const LIVE_NEW_LISTINGS: Readonly<Record<string, ListingPreset>> = Object.fromEntries(
+  LIVE_CATEGORIES.moi
+    .filter((c) => !BASE_LISTINGS[c.duongDan] && !Object.values(COLLECTION_PATHS).includes(c.duongDan) && !(Object.values(PATHS) as string[]).includes(c.duongDan))
+    .map((c) => [
+      c.duongDan,
+      {
+        title: c.ten,
+        description: c.moTa || c.ten,
+        ...(c.sanPham.length ? { products: c.sanPham } : {}),
+        ...(c.boSuuTap.length ? { collections: c.boSuuTap } : {}),
+      } satisfies ListingPreset,
+    ]),
 )
+
+/**
+ * Mọi trang danh mục nhỏ: trang có sẵn (giữ link web cũ) + trang Ecopillo tạo trong Woo. Trang Ecopillo đã ẩn / xoá vẫn nằm đây
+ * (khung giá, menu dựng lúc build cần đủ), nhưng không có route: link chuyển theo `hiddenListingTarget`.
+ */
+export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
+  ...Object.fromEntries(
+    Object.entries(BASE_LISTINGS).map(([path, listing]) => {
+      const row = LIVE_LISTING_ROWS.find((r) => rowKey(r.path) === rowKey(path))
+      const withText = row ? { ...listing, title: row.title, description: row.description } : listing
+      const woo = LIVE_CATEGORIES.chu[path]
+      const withWoo = woo ? { ...withText, title: woo.ten ?? withText.title, description: woo.moTa ?? withText.description } : withText
+      // HTML dựng sẵn mang tên, mô tả cũ: vẽ lại thay vì gắn vào (main.tsx)
+      if (woo && (withWoo.title !== listing.title || withWoo.description !== listing.description)) markLiveDiffers()
+      // Bộ ga phủ Ecopillo tạo trong Woo (đợt C) vào trang danh mục Bộ ga phủ
+      const addGaPhu = path === '/danh-muc-san-pham/san-pham/bo-ga-phu/' && withWoo.collections
+      return [path, addGaPhu ? { ...withWoo, collections: [...(withWoo.collections ?? []), ...LIVE_GA_PHU_IDS] } : withWoo]
+    }),
+  ),
+  ...LIVE_NEW_LISTINGS,
+}
+
+/** Trang danh mục Ecopillo đã ẩn hoặc đã xoá trong Woo → link chuyển tới (không có thì trang còn hiện) */
+export const hiddenListingTarget = (path: string): string | undefined =>
+  // Không dùng withSlash: hàm này chạy ngay lúc nạp module, withSlash khai ở cuối file
+  LIVE_CATEGORIES.an[path.endsWith('/') ? path : `${path}/`]
+
+// Mở thẳng link một trang danh mục đã ẩn (máy chủ chưa kịp 301): HTML dựng sẵn không khớp, vẽ lại để chuyển trang
+if (typeof window !== 'undefined' && hiddenListingTarget(window.location.pathname)) markLiveDiffers()
+
+/** Trang danh mục đang hiện (có route, được đặt link tới) */
+export const isListingShown = (path: string): boolean => !!LISTINGS[path] && !hiddenListingTarget(path)
 
 /**
  * Danh mục WooCommerce → trang danh mục của web mới (giai đoạn 4b, docs/ke-hoach-khach-tu-sua-du-lieu.md).
@@ -397,6 +440,8 @@ export const WOO_CATEGORY_LISTINGS: Readonly<Record<string, string>> = {
   'ruot-chan-goi': '/danh-muc-san-pham/san-pham/ruot-chan-goi/',
   'ruot-goi-nam-cao-cap': '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/',
   'chan-he': '/danh-muc-san-pham/san-pham/chan-topper-phu-kien/',
+  // Danh mục Ecopillo tạo trong Woo và tích "Hiện thành trang danh mục" (đợt E): sản phẩm lẻ mới đăng ở đó vào trang đó
+  ...Object.fromEntries(Object.entries(LIVE_NEW_LISTINGS).map(([path]) => [LIVE_CATEGORIES.moi.find((c) => c.duongDan === path)?.woo ?? '', path])),
 }
 
 /**
@@ -550,6 +595,9 @@ export const redirectFor = (rawPath: string, collections: readonly Collection[])
   // Chuyển hướng Ecopillo tự thêm ở Nội dung web (liveRedirects.ts) đứng trước bảng trong code
   const live = liveRedirectFor(path)
   if (live) return live
+  // Trang danh mục Ecopillo ẩn / xoá trong Woo (đợt E)
+  const hidden = hiddenListingTarget(path)
+  if (hidden) return hidden
   if (REDIRECTS[path]) return REDIRECTS[path]
   const paged = path.match(/^(.*\/)page\/\d+\/$/)
   if (paged) return paged[1] === '/' ? PATHS.blog : (REDIRECTS[paged[1]] ?? paged[1])

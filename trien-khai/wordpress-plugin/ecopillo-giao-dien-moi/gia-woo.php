@@ -322,7 +322,10 @@ function eco_dl_write()
     $has_content_woo = (array) $content_woo['sanPham'] || (array) $content_woo['mau'];
     // Bộ sưu tập mới, chữ bộ có sẵn Ecopillo tạo / tích ở trang danh mục Woo (bo-suu-tap-moi.php)
     $collections = $woo && function_exists('eco_bst_compute') ? eco_bst_compute() : array('live' => array(), 'chu' => array(), 'pagesBo' => array(), 'pagesMau' => array());
-    if ($prices === null && ($patterns['live'] || $items['live'] || $has_content_woo || $collections['live'] || $collections['chu'])) {
+    // Danh mục sản phẩm Ecopillo thêm / sửa / ẩn / xoá, SEO danh mục (danh-muc.php, đợt E)
+    $categories = $woo && function_exists('eco_dm_compute') ? eco_dm_compute(true) : array('chu' => array(), 'moi' => array(), 'an' => array(), 'seo' => array(), 'pages' => array());
+    $has_categories = $categories['chu'] || $categories['moi'] || $categories['an'] || $categories['seo'];
+    if ($prices === null && ($patterns['live'] || $items['live'] || $has_content_woo || $collections['live'] || $collections['chu'] || $has_categories)) {
         $prices = array('mau' => new stdClass(), 'sanPham' => new stdClass());
     }
     if ($prices !== null) {
@@ -331,6 +334,15 @@ function eco_dl_write()
         $prices['noiDungWoo'] = $content_woo;
         $prices['boSuuTapMoi'] = $collections['live'];
         $prices['boSuuTapChu'] = $collections['chu'] ? $collections['chu'] : new stdClass();
+        $prices['danhMucWoo'] = array(
+            'chu' => $categories['chu'] ? $categories['chu'] : new stdClass(),
+            'moi' => $categories['moi'],
+            'an' => $categories['an'] ? $categories['an'] : new stdClass(),
+        );
+        $prices['seo'] = $categories['seo'] ? $categories['seo'] : new stdClass();
+    }
+    if (function_exists('eco_dm_after_write')) {
+        eco_dm_after_write($categories);
     }
     update_option(ECO_MM_OPT_TRANG, array_merge($items['pages'], $patterns['pages'], $collections['pagesMau']), false);
     update_option(ECO_BST_OPT_TRANG, $collections['pagesBo'], false);
@@ -353,6 +365,10 @@ function eco_dl_write()
         if (file_put_contents($css_tmp, eco_nd_theme_css()) !== false) {
             rename($css_tmp, $dir . '/mau.css');
         }
+    }
+    // Trang có sẵn cần WordPress trả (SEO, ẩn, chuyển link): file đánh dấu cho .htaccess (trang-wp.php)
+    if (function_exists('eco_tw_sync_markers')) {
+        eco_tw_sync_markers();
     }
     update_option(ECO_GIA_OPT_GHI_LUC, current_time('mysql'), false);
     return true;
@@ -409,5 +425,6 @@ require_once __DIR__ . '/mau-moi.php';
 require_once __DIR__ . '/san-pham-moi.php';
 require_once __DIR__ . '/noi-dung-woo.php';
 require_once __DIR__ . '/bo-suu-tap-moi.php';
+require_once __DIR__ . '/danh-muc.php';
 require_once __DIR__ . '/bai-viet-moi.php';
 require_once __DIR__ . '/gia-woo-quan-tri.php';

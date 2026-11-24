@@ -63,11 +63,14 @@ export function buildRules(mode, redirects) {
   }
   // 2. File của giao diện mới (JS, CSS, ảnh, favicon, sitemap…): có file trong site/ thì trả file đó
   lines.push(...gate, ...skip, 'RewriteCond %{DOCUMENT_ROOT}{SITE}%{REQUEST_URI} -f', 'RewriteRule ^ {SITE}%{REQUEST_URI} [L]')
-  // 3. Trang: /duong-dan/ → site/duong-dan/index.html (trang chủ: site/index.html)
+  // 3. Trang: /duong-dan/ → site/duong-dan/index.html (trang chủ: site/index.html).
+  // Trang có file đánh dấu {QUA_WP}/duong-dan/index.html (plugin trang-wp.php tạo khi Ecopillo đổi SEO, ẩn trang, chuyển link một
+  // trang có sẵn) thì để WordPress trả: plugin ghi thẻ SEO mới vào HTML dựng sẵn hoặc trả 301
   lines.push(
     ...gate,
     ...skip,
     'RewriteCond %{REQUEST_URI} /$',
+    'RewriteCond %{DOCUMENT_ROOT}{QUA_WP}%{REQUEST_URI}index.html !-f',
     'RewriteCond %{DOCUMENT_ROOT}{SITE}%{REQUEST_URI}index.html -f',
     'RewriteRule ^ {SITE}%{REQUEST_URI}index.html [L]',
   )
