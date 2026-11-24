@@ -114,6 +114,10 @@ function eco_tw_seo_map($fresh = false)
         return $map;
     }
     $map = function_exists('eco_dm_compute') ? eco_dm_compute()['seo'] : array();
+    // Bài viết dựng sẵn Ecopillo đổi tiêu đề, mô tả, ảnh bìa; dòng "SEO từng trang" bên dưới vẫn đứng trên
+    foreach (eco_tw_code_posts()['seo'] as $path => $item) {
+        $map[$path] = array_merge(isset($map[$path]) ? $map[$path] : array(), $item);
+    }
     $saved = function_exists('eco_nd_saved') ? eco_nd_saved('seo-tung-trang') : null;
     foreach ($saved && is_array($saved['giaTri']) ? $saved['giaTri'] : array() as $row) {
         $path = isset($row['duongDan']) ? strtolower(trailingslashit(trim((string) $row['duongDan']))) : '';
@@ -162,14 +166,77 @@ function eco_tw_head($html, $title, $desc, $image = '')
     return $html;
 }
 
-/** Trang đã gỡ → trang chuyển tới: danh mục ẩn / xoá (danh-muc.php), sản phẩm, mẫu, bài có sẵn đã gỡ (an-xoa.php) */
+/**
+ * Bài viết dựng sẵn trong code (src/data/posts.ts, 3 bài không nằm trong mục Bài viết) Ecopillo sửa ở Nội dung web →
+ * "Bài viết dựng sẵn": bộ khoá "bai-dung-san-<tên bài>" (src/data/codePostKeys.ts).
+ * - Chọn "Ẩn": link bài chuyển (301) về trang Tin tức, bỏ khỏi sitemap;
+ * - Đổi tiêu đề, giới thiệu / mô tả Google, ảnh bìa: ghi vào HTML dựng sẵn trả về (như "SEO từng trang").
+ * @return array{an: array<string, string>, seo: array<string, array{tieuDe?: string, moTa?: string, anh?: string}>}
+ */
+function eco_tw_code_posts()
+{
+    $result = array('an' => array(), 'seo' => array());
+    if (!function_exists('eco_nd_sets') || !function_exists('eco_nd_saved')) {
+        return $result;
+    }
+    $frame = function_exists('eco_gia_frame') ? eco_gia_frame() : array();
+    $blog = isset($frame['trangTinTuc']) && eco_tw_is_path((string) $frame['trangTinTuc']) ? (string) $frame['trangTinTuc'] : '/category/tin-tuc/';
+    foreach (eco_nd_sets() as $key => $set) {
+        if (!preg_match('/^bai-dung-san-([a-z0-9-]{1,120})$/', (string) $key, $m)) {
+            continue;
+        }
+        $saved = eco_nd_saved($key);
+        if (!$saved || !is_array($saved['giaTri'])) {
+            continue;
+        }
+        $path = '/' . $m[1] . '/';
+        $value = $saved['giaTri'];
+        $goc = is_array($set['goc']) ? $set['goc'] : array();
+        if (isset($value['hien']) && $value['hien'] === 'khong') {
+            $result['an'][$path] = $blog;
+            continue;
+        }
+        $pick = function ($source, $field, $max) {
+            return isset($source[$field]) && is_string($source[$field]) && function_exists('eco_sp_text') ? eco_sp_text($source[$field], $max) : '';
+        };
+        $item = array();
+        // Tiêu đề tab như usePageMeta: "<tiêu đề bài> · Ecopillo"
+        $title = $pick($value, 'tieuDe', 200);
+        if ($title !== '' && $title !== $pick($goc, 'tieuDe', 200)) {
+            $item['tieuDe'] = $title . ' · Ecopillo';
+        }
+        // Mô tả Google: ô "Mô tả trên Google", trống thì đoạn giới thiệu (như ArticlePage.tsx)
+        $desc = $pick($value, 'moTaGoogle', 400);
+        $desc = $desc !== '' ? $desc : $pick($value, 'gioiThieu', 400);
+        $goc_desc = $pick($goc, 'moTaGoogle', 400);
+        $goc_desc = $goc_desc !== '' ? $goc_desc : $pick($goc, 'gioiThieu', 400);
+        if ($desc !== '' && $desc !== $goc_desc) {
+            $item['moTa'] = $desc;
+        }
+        // Ảnh bìa mới từ Thư viện (link đầy đủ): ảnh chia sẻ
+        $image = isset($value['anhBia']['src']) ? trim((string) $value['anhBia']['src']) : '';
+        $goc_image = isset($goc['anhBia']['src']) ? (string) $goc['anhBia']['src'] : '';
+        if ($image !== $goc_image && preg_match('#^https?://#', $image) && eco_nd_is_link($image)) {
+            $item['anh'] = $image;
+        }
+        if ($item) {
+            $result['seo'][$path] = $item;
+        }
+    }
+    return $result;
+}
+
+/**
+ * Trang đã gỡ → trang chuyển tới: danh mục ẩn / xoá (danh-muc.php), sản phẩm, mẫu, bài có sẵn đã gỡ (an-xoa.php),
+ * bài viết dựng sẵn Ecopillo chọn "Ẩn" ở Nội dung web (eco_tw_code_posts)
+ */
 function eco_tw_hidden_map()
 {
     $map = function_exists('eco_dm_compute') ? eco_dm_compute()['an'] : array();
     if (function_exists('eco_ax_compute')) {
         $map = array_merge(eco_ax_compute()['trang'], $map);
     }
-    return $map;
+    return array_merge(eco_tw_code_posts()['an'], $map);
 }
 
 /** Các trang cần WordPress trả (trang có sẵn đã đổi SEO, đã ẩn, có chuyển link Ecopillo thêm) */

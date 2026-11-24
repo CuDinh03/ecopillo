@@ -2,7 +2,7 @@ import { chu, definePageText, doan, dsDong } from './define'
 
 /**
  * Chữ trang Đặt hàng và màn hình cảm ơn. Câu đặt cọc, tài khoản lấy từ paymentPolicy.ts / Thông tin liên hệ;
- * mức miễn phí giao tính trong src/lib/shipping.ts (đổi mức thì báo bên làm web, sửa chữ ở đây cho khớp).
+ * mức miễn phí giao, phí giao Ecopillo sửa ở bộ "Giao hàng: tỉnh, phí" (src/lib/shipping.ts); đổi mức thì sửa chữ ở đây cho khớp.
  */
 export const { set: ORDER_TEXT_SET, text: ORDER_TEXT } = definePageText(
   'dat-hang',
