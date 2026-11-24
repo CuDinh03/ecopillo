@@ -245,7 +245,8 @@ export const AGENT_SET: EditableSet = {
   truong: [
     { khoa: 'ten', nhan: 'Tên hiện trên web', kieu: 'chu', batBuoc: true, goiY: 'Đặt theo địa phương, ví dụ Ecopillo Hải Dương' },
     { khoa: 'dia_chi', nhan: 'Địa chỉ', kieu: 'chu', batBuoc: true, goiY: 'Nút "Chỉ đường" đi theo địa chỉ này' },
-    { khoa: 'tinh', nhan: 'Tỉnh/thành', kieu: 'chon', batBuoc: true, luaChon: PROVINCES.map((p) => p.name) },
+    // Tỉnh Ecopillo thêm ở bộ Giao hàng cũng chọn được (đợt G)
+    { khoa: 'tinh', nhan: 'Tỉnh/thành', kieu: 'chon', batBuoc: true, luaChon: PROVINCES.map((p) => p.name), luaChonThem: [{ nguon: 'tinh' }] },
     { khoa: 'lat', nhan: 'Vĩ độ', kieu: 'so', batBuoc: true, goiY: 'Lấy từ ghim Google Maps (số sau !3d trong link)' },
     { khoa: 'lng', nhan: 'Kinh độ', kieu: 'so', batBuoc: true, goiY: 'Số sau !4d trong link Google Maps' },
     { khoa: 'dien_thoai', nhan: 'Điện thoại', kieu: 'chu', batBuoc: true, goiY: 'Ví dụ 0988 832 072' },

@@ -217,19 +217,19 @@ function eco_nd_input($field, $name, $value, $in_form_set = false)
         case 'doan':
             return $label . '<textarea id="' . esc_attr($id) . '" name="' . esc_attr($name) . '" rows="3" class="large-text">' . esc_textarea((string) $value) . '</textarea>' . $hint;
         case 'chon':
-            $labels = isset($field['nhanLuaChon']) ? array_values((array) $field['nhanLuaChon']) : array();
+            list($options, $labels) = eco_nd_field_options($field);
             $html = $label . '<select id="' . esc_attr($id) . '" name="' . esc_attr($name) . '">';
-            foreach (array_values((array) $field['luaChon']) as $i => $option) {
+            foreach ($options as $i => $option) {
                 $text = isset($labels[$i]) ? $labels[$i] : $option;
                 $html .= '<option value="' . esc_attr($option) . '"' . selected($value, $option, false) . '>' . esc_html($text) . '</option>';
             }
             return $html . '</select>' . $hint;
         case 'chon-nhieu':
             // Ô tích nhiều lựa chọn, chia cột cho danh sách dài (sản phẩm)
-            $labels = isset($field['nhanLuaChon']) ? array_values((array) $field['nhanLuaChon']) : array();
+            list($options, $labels) = eco_nd_field_options($field);
             $html = '<strong>' . esc_html($field['nhan']) . '</strong>' . (!empty($field['batBuoc']) ? ' <span style="color:#b32d2e">*</span>' : '') . '<br>'
                 . '<div style="columns:3 220px;column-gap:24px;margin:6px 0">';
-            foreach (array_values((array) $field['luaChon']) as $i => $option) {
+            foreach ($options as $i => $option) {
                 $text = isset($labels[$i]) ? $labels[$i] : $option;
                 $html .= '<label style="display:block;break-inside:avoid;padding:2px 0"><input type="checkbox" name="' . esc_attr($name) . '[]" value="' . esc_attr($option) . '"'
                     . (in_array($option, (array) $value, true) ? ' checked' : '') . '> ' . esc_html($text) . '</label>';

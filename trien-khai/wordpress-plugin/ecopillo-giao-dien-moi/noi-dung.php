@@ -54,6 +54,66 @@ function eco_nd_current($set)
     return $saved['giaTri'];
 }
 
+/**
+ * Lựa chọn của ô chon / chon-nhieu: danh sách lúc dựng + `luaChonThem` lấy lúc chạy (đợt G; optionsOf trong liveContent.ts):
+ * sản phẩm lẻ mới, bộ sưu tập mới, trang danh mục mới Ecopillo tạo trong Woo, tỉnh / thành ở bộ Giao hàng.
+ * @return array{0: string[], 1: string[]} giá trị, nhãn
+ */
+function eco_nd_field_options($field)
+{
+    $values = isset($field['luaChon']) ? array_map('strval', array_values((array) $field['luaChon'])) : array();
+    $labels = isset($field['nhanLuaChon']) ? array_map('strval', array_values((array) $field['nhanLuaChon'])) : array();
+    $labels = array_pad(array_slice($labels, 0, count($values)), count($values), '');
+    foreach ($values as $i => $v) {
+        $labels[$i] = $labels[$i] !== '' ? $labels[$i] : $v;
+    }
+    foreach (isset($field['luaChonThem']) ? (array) $field['luaChonThem'] : array() as $source) {
+        $prefix = isset($source['tienTo']) ? (string) $source['tienTo'] : '';
+        foreach (eco_nd_live_options(isset($source['nguon']) ? (string) $source['nguon'] : '') as $value => $label) {
+            if (!in_array($prefix . $value, $values, true)) {
+                $values[] = $prefix . $value;
+                $labels[] = $label;
+            }
+        }
+    }
+    return array($values, $labels);
+}
+
+/** Giá trị → nhãn của một nguồn lựa chọn lúc chạy */
+function eco_nd_live_options($source)
+{
+    static $cache = array();
+    if (isset($cache[$source])) {
+        return $cache[$source];
+    }
+    $out = array();
+    if ($source === 'san-pham' && function_exists('eco_sp_compute')) {
+        foreach (eco_sp_compute()['live'] as $p) {
+            $out[(string) $p['duongDan']] = 'Sản phẩm mới: ' . $p['ten'];
+        }
+    } elseif ($source === 'bo-suu-tap' && function_exists('eco_bst_compute')) {
+        foreach (eco_bst_compute()['live'] as $c) {
+            $out[(string) $c['id']] = 'Bộ mới: ' . $c['ten'];
+        }
+    } elseif ($source === 'danh-muc' && function_exists('eco_dm_compute')) {
+        foreach (eco_dm_compute()['moi'] as $c) {
+            $out[(string) $c['duongDan']] = 'Trang danh mục mới: ' . $c['ten'];
+        }
+    } elseif ($source === 'tinh') {
+        $saved = eco_nd_saved('giao-hang-tinh-phi');
+        foreach (array('tinhTrongNgay', 'tinhPhiaBac', 'tinhPhiaNam') as $key) {
+            foreach ($saved && isset($saved['giaTri'][$key]) ? (array) $saved['giaTri'][$key] : array() as $name) {
+                $name = trim((string) $name);
+                if ($name !== '') {
+                    $out[$name] = $name;
+                }
+            }
+        }
+    }
+    $cache[$source] = $out;
+    return $out;
+}
+
 /* ---------------------------------------------------------------- Kiểm từng ô (giống cleanField trong liveContent.ts) */
 
 function eco_nd_is_link($value)
@@ -89,11 +149,11 @@ function eco_nd_clean_field($field, $value)
             $text = is_string($value) ? str_replace(',', '.', trim($value)) : '';
             return is_numeric($text) ? (float) $text : null;
         case 'chon':
-            $options = isset($field['luaChon']) ? (array) $field['luaChon'] : array();
+            $options = eco_nd_field_options($field)[0];
             return in_array($value, $options, true) ? $value : null;
         case 'chon-nhieu':
-            // Giữ thứ tự luaChon, chỉ nhận giá trị có trong danh sách
-            $options = isset($field['luaChon']) ? array_values((array) $field['luaChon']) : array();
+            // Giữ thứ tự luaChon, chỉ nhận giá trị có trong danh sách (cả lựa chọn lấy lúc chạy)
+            $options = eco_nd_field_options($field)[0];
             $picked = array_map('strval', (array) $value);
             return array_values(array_filter($options, function ($option) use ($picked) {
                 return in_array($option, $picked, true);

@@ -1,4 +1,4 @@
-import { markLiveDiffers } from './liveData'
+import { liveCategories, liveNewCollections, liveNewProducts, markLiveDiffers } from './liveData'
 
 /**
  * Nội dung Ecopillo tự sửa trong WordPress (owner 18/11/2026: "giao diện là khung, khách cần tự chỉnh dữ liệu";
@@ -52,6 +52,11 @@ export interface EditableField {
   luaChon?: readonly string[]
   /** Chữ hiện cho từng lựa chọn (cùng thứ tự `luaChon`); không có thì hiện chính giá trị */
   nhanLuaChon?: readonly string[]
+  /**
+   * chon / chon-nhieu: lựa chọn thêm lấy lúc chạy (đợt G), để thứ Ecopillo tạo sau lần dựng chọn được: sản phẩm lẻ mới, bộ sưu tập
+   * mới, trang danh mục mới (Woo), tỉnh / thành (bộ Giao hàng). `tienTo` ghép trước giá trị (ví dụ "san-pham:")
+   */
+  luaChonThem?: readonly { nguon: 'san-pham' | 'bo-suu-tap' | 'danh-muc' | 'tinh'; tienTo?: string }[]
   /** ds-cap: tên hai khoá của mỗi cặp và nhãn của chúng */
   cap?: readonly [string, string]
   nhanCap?: readonly [string, string]
@@ -119,6 +124,32 @@ export const rowKey = (value: unknown): string =>
 // "#bo-suu-tap": nút cuộn tới một khối trong cùng trang (đợt G)
 const isLink = (v: string): boolean => (/^(https:\/\/|http:\/\/|\/(?!\/)|tel:|mailto:)/.test(v) || /^#[a-z0-9-]{1,80}$/.test(v)) && !/[\s<>"]/.test(v)
 
+/** Tỉnh / thành Ecopillo ghi ở bộ Giao hàng (lib/shipping.ts), đọc thẳng bản đã lưu để không vòng import */
+const savedProvinces = (): string[] => {
+  const raw = read()['giao-hang-tinh-phi'] as Record<string, unknown> | undefined
+  if (!raw || typeof raw !== 'object') return []
+  return ['tinhTrongNgay', 'tinhPhiaBac', 'tinhPhiaNam'].flatMap((k) =>
+    Array.isArray(raw[k]) ? (raw[k] as unknown[]).filter((v): v is string => typeof v === 'string').map((v) => v.trim()) : [],
+  )
+}
+
+/** Mọi lựa chọn hợp lệ của một ô chon / chon-nhieu: danh sách lúc dựng + lựa chọn lấy lúc chạy */
+export function optionsOf(field: EditableField): readonly string[] {
+  if (!field.luaChonThem?.length) return field.luaChon ?? []
+  const extra = field.luaChonThem.flatMap(({ nguon, tienTo = '' }) => {
+    const values =
+      nguon === 'san-pham'
+        ? liveNewProducts().map((p) => p.duongDan)
+        : nguon === 'bo-suu-tap'
+          ? liveNewCollections().map((c) => c.id)
+          : nguon === 'danh-muc'
+            ? liveCategories().moi.map((c) => c.duongDan)
+            : savedProvinces()
+    return values.map((v) => tienTo + v)
+  })
+  return [...new Set([...(field.luaChon ?? []), ...extra])]
+}
+
 /** Giá trị một ô sau khi kiểm; undefined = ô sai hoặc trống */
 export function cleanField(field: EditableField, value: unknown): unknown {
   switch (field.kieu) {
@@ -133,11 +164,12 @@ export function cleanField(field: EditableField, value: unknown): unknown {
     case 'so':
       return typeof value === 'number' && Number.isFinite(value) ? value : undefined
     case 'chon':
-      return typeof value === 'string' && field.luaChon?.includes(value) ? value : undefined
+      return typeof value === 'string' && optionsOf(field).includes(value) ? value : undefined
     case 'chon-nhieu': {
       if (!Array.isArray(value)) return undefined
-      const picked = new Set(value.filter((v): v is string => typeof v === 'string'))
-      const items = (field.luaChon ?? []).filter((option) => picked.has(option))
+      // Giữ thứ tự Ecopillo đã lưu (lựa chọn mới lấy lúc chạy không có chỗ trong danh sách lúc dựng)
+      const options = new Set(optionsOf(field))
+      const items = [...new Set(value.filter((v): v is string => typeof v === 'string' && options.has(v)))]
       return items.length ? items : undefined
     }
     case 'gio':

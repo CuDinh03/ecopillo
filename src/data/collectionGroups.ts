@@ -117,7 +117,8 @@ export const HOME_COLLECTIONS_SET: EditableSet = {
   goc: BASE_ROWS,
   tieuDeDong: 'id',
   truong: [
-    { khoa: 'id', nhan: 'Bộ sưu tập', kieu: 'chon', batBuoc: true, luaChon: CHOICES.map((c) => c.id), nhanLuaChon: CHOICES.map((c) => c.name) },
+    // Bộ Ecopillo tạo trong Woo sau lần dựng cũng chọn được (đợt G)
+    { khoa: 'id', nhan: 'Bộ sưu tập', kieu: 'chon', batBuoc: true, luaChon: CHOICES.map((c) => c.id), nhanLuaChon: CHOICES.map((c) => c.name), luaChonThem: [{ nguon: 'bo-suu-tap' }] },
     { khoa: 'nhom', nhan: 'Nằm ở', kieu: 'chon', batBuoc: true, luaChon: ['loi', 'them'], nhanLuaChon: ['Hàng bộ lõi (ô đầu)', 'Thêm lựa chọn'] },
     { khoa: 'fabric', nhan: 'Loại vải (chữ nhỏ dưới tên bộ)', kieu: 'chu', batBuoc: true },
   ] satisfies EditableField[],

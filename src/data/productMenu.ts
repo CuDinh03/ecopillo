@@ -201,6 +201,11 @@ const MENU_ROW_FIELDS: readonly EditableField[] = [
     batBuoc: true,
     luaChon: TARGETS.map((t) => t.value),
     nhanLuaChon: TARGETS.map((t) => t.label),
+    // Sản phẩm lẻ, trang danh mục Ecopillo tạo trong Woo sau lần dựng cũng chọn được (đợt G)
+    luaChonThem: [
+      { nguon: 'san-pham', tienTo: 'san-pham:' },
+      { nguon: 'danh-muc', tienTo: 'danh-muc:' },
+    ],
     goiY: 'Giá "từ …" tự tính theo sản phẩm của trang đó. Sản phẩm trong trang danh mục chọn ở mục "Sản phẩm trong trang danh mục".',
   },
 ]

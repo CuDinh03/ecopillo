@@ -27,6 +27,8 @@ const FIELDS: readonly EditableField[] = EDITABLE_PATHS.map((path) => ({
   batBuoc: true,
   luaChon: CHOICES.map((p) => p.slug),
   nhanLuaChon: CHOICES.map((p) => p.name),
+  // Sản phẩm lẻ Ecopillo đăng mới trong Woo cũng tích được vào trang khác (đợt G)
+  luaChonThem: [{ nguon: 'san-pham' }],
   goiY: `Link ${path}. Thứ tự trên trang theo thứ tự có sẵn của web; sản phẩm mới tích thêm xếp sau.`,
 }))
 
