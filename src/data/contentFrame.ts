@@ -39,6 +39,8 @@ import { FONT_SET, THEME_SET } from './theme'
 import { LAYOUT_SETS } from './pageLayout'
 import { REDIRECT_SET } from './liveRedirects'
 import { SEO_SET } from './liveSeo'
+import { CODE_POST_SETS } from './posts'
+import { SHIPPING_SET } from '../lib/shipping'
 import { SITE_ICONS_SET } from './siteIcons'
 import { STOCK_TEXT_SET } from './pageText/stock'
 import { POLICY_NAV_TEXT_SET } from './policyNav'
@@ -107,7 +109,9 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   ORDER_STEPS_TEXT_SET,
   ORDER_CUSTOMER_TEXT_SET,
   ORDER_SUMMARY_TEXT_SET,
+  SHIPPING_SET,
   BLOG_TEXT_SET,
+  ...CODE_POST_SETS,
   FAQ_PAGE_TEXT_SET,
   HEADER_TEXT_SET,
   PRODUCT_MENU_TEXT_SET,
