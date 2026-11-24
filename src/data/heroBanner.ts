@@ -14,8 +14,11 @@ import { liveList, liveObject, type EditableField, type EditableSet } from './li
 /** Câu chữ của dòng tiêu đề trong ảnh (đọc cho Google và trình đọc màn hình) */
 const BASE_HEADLINE = '“Chốn Yên” bắt đầu từ giấc ngủ ngon'
 
-/** Phần đầu tiêu đề cấp 1, chỉ dành cho Google và trình đọc màn hình (ảnh không có tên hãng) */
-export const HERO_HEADLINE_PREFIX = 'Chăn ga gối đệm cao cấp Ecopillo: '
+/**
+ * Phần đầu tiêu đề cấp 1, chỉ dành cho Google và trình đọc màn hình (ảnh không có tên hãng).
+ * Ô sửa không giữ dấu cách cuối (liveContent cắt), nên dấu cách nối với câu tiêu đề thêm ở đây.
+ */
+const BASE_HEADLINE_PREFIX = 'Chăn ga gối đệm cao cấp Ecopillo:'
 
 export interface HeroCategory {
   /** Chữ đậm dưới biểu tượng, đúng chữ trong banner */
@@ -23,15 +26,17 @@ export interface HeroCategory {
   /** Dòng nhỏ dưới tên, đúng chữ trong banner */
   text: string
   to: string
-  /** Nét vẽ của biểu tượng (nền trong suốt); vòng tròn vẽ bằng CSS */
-  icon: string
+  /** Nét vẽ của biểu tượng (nền trong suốt, alt rỗng vì tên nằm ngay dưới); vòng tròn vẽ bằng CSS */
+  icon: { src: string; srcSet: string; alt: string }
 }
 
+const icon = (key: string) => ({ src: `/images/hero/chon-yen-bieu-tuong-${key}.webp`, srcSet: '', alt: '' })
+
 const BASE_CATEGORIES: readonly HeroCategory[] = [
-  { name: 'Chăn', text: 'Mềm mại', to: productsUrl({ 'danh-muc': 'chan' }), icon: '/images/hero/chon-yen-bieu-tuong-chan.webp' },
-  { name: 'Ga', text: 'Êm ái', to: productsUrl({ 'danh-muc': 'bo-chan-ga' }), icon: '/images/hero/chon-yen-bieu-tuong-ga.webp' },
-  { name: 'Gối', text: 'Nâng niu', to: productsUrl({ 'danh-muc': 'goi' }), icon: '/images/hero/chon-yen-bieu-tuong-goi.webp' },
-  { name: 'Đệm', text: 'Nâng đỡ chuẩn', to: productsUrl({ 'danh-muc': 'dem' }), icon: '/images/hero/chon-yen-bieu-tuong-dem.webp' },
+  { name: 'Chăn', text: 'Mềm mại', to: productsUrl({ 'danh-muc': 'chan' }), icon: icon('chan') },
+  { name: 'Ga', text: 'Êm ái', to: productsUrl({ 'danh-muc': 'bo-chan-ga' }), icon: icon('ga') },
+  { name: 'Gối', text: 'Nâng niu', to: productsUrl({ 'danh-muc': 'goi' }), icon: icon('goi') },
+  { name: 'Đệm', text: 'Nâng đỡ chuẩn', to: productsUrl({ 'danh-muc': 'dem' }), icon: icon('dem') },
 ]
 
 /**
@@ -53,6 +58,7 @@ const BASE_HERO_IMAGES = {
 
 const BASE_BANNER = {
   tieuDe: BASE_HEADLINE,
+  tienTo: BASE_HEADLINE_PREFIX,
   anhMayTinh: { src: '/images/hero/chon-yen-desktop-1600.webp', srcSet: BASE_HERO_IMAGES.desktopSrcSet, alt: '' },
   anhDienThoai: { src: BASE_HERO_IMAGES.mobileSrc, srcSet: BASE_HERO_IMAGES.mobileSrcSet, alt: '' },
   anhChu: { src: BASE_HERO_IMAGES.headlineSrc, srcSet: BASE_HERO_IMAGES.headlineSrcSet, alt: '' },
@@ -62,11 +68,18 @@ export const BANNER_SET: EditableSet = {
   khoa: 'banner',
   nhom: 'Trang chủ',
   ten: 'Banner đầu trang chủ',
-  moTa: 'Ảnh nền (máy tính, điện thoại), ảnh dòng chữ tiêu đề, và câu tiêu đề (cho Google, trình đọc màn hình). Ảnh nền máy tính không có chữ; ảnh điện thoại dọc, trời phía trên.',
+  moTa: 'Ảnh nền (máy tính, điện thoại), ảnh dòng chữ tiêu đề, và câu tiêu đề (cho Google, trình đọc màn hình). Ảnh nền máy tính không có chữ; ảnh điện thoại dọc, trời phía trên. Chữ hai nút dưới banner sửa ở Chữ từng trang → Trang chủ.',
   kieu: 'mot',
   goc: BASE_BANNER,
   truong: [
     { khoa: 'tieuDe', nhan: 'Câu tiêu đề (đúng chữ trong ảnh dòng chữ)', kieu: 'chu', batBuoc: true },
+    {
+      khoa: 'tienTo',
+      nhan: 'Phần đầu tiêu đề, chỉ Google và trình đọc màn hình thấy',
+      kieu: 'chu',
+      batBuoc: true,
+      goiY: 'Đọc liền trước câu tiêu đề, để tiêu đề trang chủ có tên hãng (ảnh dòng chữ không có)',
+    },
     { khoa: 'anhMayTinh', nhan: 'Ảnh nền máy tính (ngang, rộng từ 2400 px)', kieu: 'anh', batBuoc: true },
     { khoa: 'anhDienThoai', nhan: 'Ảnh nền điện thoại (dọc)', kieu: 'anh', batBuoc: true },
     { khoa: 'anhChu', nhan: 'Ảnh dòng chữ tiêu đề (nền trong suốt)', kieu: 'anh', batBuoc: true },
@@ -77,6 +90,9 @@ const BANNER = liveObject(BANNER_SET.khoa, BASE_BANNER, BANNER_SET.truong)
 
 /** Câu chữ của dòng tiêu đề trong ảnh (đọc cho Google và trình đọc màn hình) */
 export const HERO_HEADLINE: string = BANNER.tieuDe
+
+/** Phần đầu tiêu đề cấp 1 (kèm dấu cách nối với câu tiêu đề) */
+export const HERO_HEADLINE_PREFIX: string = `${BANNER.tienTo} `
 
 export const HERO_IMAGES = {
   mobileSrc: BANNER.anhDienThoai.src,
@@ -92,17 +108,19 @@ export const BANNER_GROUPS_SET: EditableSet = {
   khongDoiThuTu: true,
   nhom: 'Trang chủ',
   ten: 'Bốn nhóm dưới banner',
-  moTa: 'Chữ dưới 4 biểu tượng Chăn · Ga · Gối · Đệm trên banner (biểu tượng và link giữ nguyên).',
+  moTa: 'Chữ, biểu tượng và link của 4 nhóm Chăn · Ga · Gối · Đệm trên banner. Biểu tượng là ảnh vuông nền trong suốt (vòng tròn xanh web tự vẽ).',
   kieu: 'nhieu',
   goc: BASE_CATEGORIES,
   tieuDeDong: 'name',
   truong: [
     { khoa: 'name', nhan: 'Tên', kieu: 'chu', batBuoc: true },
     { khoa: 'text', nhan: 'Dòng nhỏ', kieu: 'chu', batBuoc: true },
+    { khoa: 'icon', nhan: 'Biểu tượng (ảnh vuông, nền trong suốt)', kieu: 'anh', batBuoc: true },
+    { khoa: 'to', nhan: 'Bấm vào thì mở', kieu: 'link', batBuoc: true, goiY: 'Đường trong web, ví dụ /san-pham/?danh-muc=chan' },
   ] satisfies EditableField[],
 }
 
-/** Chỉ sửa chữ, giữ đủ 4 nhóm với biểu tượng và link gốc */
+/** Giữ đủ 4 nhóm; dòng đã lưu trước khi có ô biểu tượng, link thì dùng biểu tượng và link gốc */
 export const HERO_CATEGORIES: readonly HeroCategory[] = liveList(BANNER_GROUPS_SET.khoa, BASE_CATEGORIES, BANNER_GROUPS_SET.truong, (i) => ({
   ...BASE_CATEGORIES[Math.min(i, BASE_CATEGORIES.length - 1)],
 })).slice(0, BASE_CATEGORIES.length)

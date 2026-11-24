@@ -2,7 +2,7 @@ import { productImage, type ImageSource } from './catalog'
 import { hiddenPageTarget, LISTINGS, singleProductPath } from './links'
 import { LISTING_GUIDES } from './listingGuides'
 import { isProductShown, PRODUCTS, productBySlug } from './products'
-import { chu, definePageText, doan, dsDong } from './pageText/define'
+import { anh, chu, definePageText, doan, dsDong, type TextField } from './pageText/define'
 
 /**
  * Khối "Chọn đệm theo cách Quý khách thích nằm" trên trang chủ (C3, owner chốt 02/11/2026).
@@ -86,22 +86,10 @@ const bongEpPreference = (): MattressPreference => {
 }
 
 const ecoLuxe = productOf('dem-lo-xo-tui-cao-cap-eco-luxe')
+const ECO_LUXE_IMAGE = productImage('dem-lo-xo-tui-cao-cap-eco-luxe-2', ecoLuxe.name)
 
-/** Đệm nổi bật: Eco Luxe; Ecopillo gỡ Eco Luxe trong Woo (đợt E2) thì lấy đệm đầu tiên còn hiện */
-const featuredOf = (): MattressFeatured => {
-  if (isProductShown(ecoLuxe.slug)) {
-    return {
-      name: ecoLuxe.name,
-      min: ecoLuxe.min,
-      to: singleProductPath(ecoLuxe.slug),
-      image: productImage('dem-lo-xo-tui-cao-cap-eco-luxe-2', ecoLuxe.name),
-    }
-  }
-  const other = PRODUCTS.find((p) => p.category === 'dem' && p.image && !p.collection) ?? ecoLuxe
-  return { name: other.name, min: other.min, to: singleProductPath(other.slug), image: other.image ?? productImage('dem-lo-xo-tui-cao-cap-eco-luxe-2', other.name) }
-}
-
-export const MATTRESS_FEATURED: MattressFeatured = featuredOf()
+/** Ô đường link (/duong-dan/, https://…): web kiểm đúng dạng link, sai thì dùng link gốc */
+const link = (nhan: string, goc: string, goiY?: string): TextField<string> => ({ nhan, kieu: 'link', goc, goiY })
 
 /** Bốn dòng cách nằm, khớp thứ tự points[0..3] của danh mục đệm (bỏ dòng topper — topper nằm ở chip); bỏ dòng trỏ tới trang đã gỡ */
 export const MATTRESS_PREFERENCES: readonly MattressPreference[] = [
@@ -124,8 +112,6 @@ const BASE_CHIPS: readonly MattressChip[] = [
   { label: 'Topper', to: singleProductPath('topper-micro-fiber') },
 ]
 
-export const MATTRESS_ALL_PATH = DEM_PATH
-
 /**
  * Chữ khối đệm Ecopillo tự sửa (Nội dung web → Chữ từng trang). Tiêu đề: khách 09/11/2026 ("bộ sưu tập đệm - bộ sưu tập chăn ga
  * nó bằng chữ nhau"); đoạn dẫn: chị Phương 09/11/2026 ("hệ thống phân phối và showroom Ecopillo trên toàn quốc").
@@ -133,7 +119,7 @@ export const MATTRESS_ALL_PATH = DEM_PATH
 export const { set: MATTRESS_TEXT_SET, text: MATTRESS_TEXT } = definePageText(
   'dem-trang-chu',
   'Trang chủ: khối Bộ sưu tập đệm',
-  'Tiêu đề, đoạn dẫn, câu mẫu nổi bật, chữ các nút nhóm đệm của khối đệm trang chủ. Chữ 4 dòng cách nằm sửa ở mục Phần "Chọn thế nào" của danh mục (phần của Đệm Ecopillo).',
+  'Tiêu đề, đoạn dẫn, câu và ảnh mẫu nổi bật, chữ các nút nhóm đệm, nút Xem tất cả đệm của khối đệm trang chủ. Chữ 4 dòng cách nằm sửa ở mục Phần "Chọn thế nào" của danh mục (phần của Đệm Ecopillo).',
   {
     tieuDe: chu('Tiêu đề', 'Bộ sưu tập đệm'),
     danDat: doan(
@@ -142,10 +128,31 @@ export const { set: MATTRESS_TEXT_SET, text: MATTRESS_TEXT } = definePageText(
     ),
     noiBatNhan: chu('Nhãn trên ảnh mẫu nổi bật', 'Nổi bật'),
     noiBatChu: doan('Câu giới thiệu mẫu nổi bật (Eco Luxe)', 'Lõi lò xo túi 16 cm, thêm lớp topper foam 4 cm ôm vai, hông, eo. Bảo hành 10 năm.'),
+    anhNoiBat: anh('Ảnh mẫu nổi bật', ECO_LUXE_IMAGE, 'Ảnh ngang (16:10); tên, giá, link theo sản phẩm Eco Luxe'),
+    nutXemTatCa: chu('Chữ nút Xem tất cả đệm', 'Xem tất cả đệm'),
+    linkXemTatCa: link('Link nút Xem tất cả đệm', DEM_PATH),
     cauHoi: chu('Câu hỏi trên 4 dòng cách nằm', 'Quý khách thích nằm thế nào?'),
     nutNhom: dsDong('Chữ 5 nút nhóm đệm', BASE_CHIPS.map((chip) => chip.label), 'Đúng 5 dòng theo thứ tự: lò xo, cao su, foam, bông ép, topper'),
   },
 )
+
+/**
+ * Đệm nổi bật: Eco Luxe; Ecopillo gỡ Eco Luxe trong Woo (đợt E2) thì lấy đệm đầu tiên còn hiện.
+ * Ảnh: ảnh Ecopillo chọn ở Nội dung web; chưa đổi ảnh thì ảnh của chính đệm đang hiện.
+ */
+const featuredOf = (): MattressFeatured => {
+  const isImageChanged = MATTRESS_TEXT.anhNoiBat.src !== ECO_LUXE_IMAGE.src
+  if (isProductShown(ecoLuxe.slug)) {
+    return { name: ecoLuxe.name, min: ecoLuxe.min, to: singleProductPath(ecoLuxe.slug), image: MATTRESS_TEXT.anhNoiBat }
+  }
+  const other = PRODUCTS.find((p) => p.category === 'dem' && p.image && !p.collection) ?? ecoLuxe
+  const image = isImageChanged ? MATTRESS_TEXT.anhNoiBat : (other.image ?? productImage('dem-lo-xo-tui-cao-cap-eco-luxe-2', other.name))
+  return { name: other.name, min: other.min, to: singleProductPath(other.slug), image }
+}
+
+export const MATTRESS_FEATURED: MattressFeatured = featuredOf()
+
+export const MATTRESS_ALL_PATH: string = MATTRESS_TEXT.linkXemTatCa
 
 export const MATTRESS_PICKER_TITLE: string = MATTRESS_TEXT.tieuDe
 export const MATTRESS_PICKER_LEAD: string = MATTRESS_TEXT.danDat

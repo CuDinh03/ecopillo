@@ -1,8 +1,7 @@
 import { useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { THANK_YOU, THANK_YOU_CARDS } from '../../data/thankYou'
 import type { ImageSource } from '../../data/catalog'
-import { productsUrl } from '../../data/links'
+import { HomeLink } from './HomeLink'
 import { buttonClass, Container } from '../ui/primitives'
 import { Icon } from '../ui/Icon'
 
@@ -99,10 +98,10 @@ export function ThankYouLetters({ standalone = false }: ThankYouLettersProps) {
                 {THANK_YOU.viewLabel}
               </button>
               {standalone ? (
-                <Link to={productsUrl({ 'danh-muc': 'bo-chan-ga' })} className={buttonClass('secondary', 'md', 'justify-center')}>
-                  Xem bộ chăn ga
+                <HomeLink to={THANK_YOU.setsTo} className={buttonClass('secondary', 'md', 'justify-center')}>
+                  {THANK_YOU.setsLabel}
                   <Icon name="arrowRight" size={17} />
-                </Link>
+                </HomeLink>
               ) : (
                 <a href="#bo-suu-tap" className={buttonClass('secondary', 'md', 'justify-center')}>
                   {THANK_YOU.chooseLabel}
@@ -112,9 +111,9 @@ export function ThankYouLetters({ standalone = false }: ThankYouLettersProps) {
             </div>
             {standalone && (
               <p className="mt-4 text-meta text-ink-faint">
-                Quà tặng doanh nghiệp, sự kiện vẫn ở phần trên trang này ·{' '}
+                {THANK_YOU.giftsNote} ·{' '}
                 <a href="#qua-tang-doanh-nghiep" className="underline underline-offset-4 hover:text-deep-800">
-                  xem lại
+                  {THANK_YOU.giftsBack}
                 </a>
                 .
               </p>

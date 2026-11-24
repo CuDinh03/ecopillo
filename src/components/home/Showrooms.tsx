@@ -3,13 +3,18 @@ import { Link } from 'react-router-dom'
 import { CONTACT, OPENING_HOURS, SHOWROOMS } from '../../data/brand'
 import { FAQS } from '../../data/content'
 import { PATHS } from '../../data/links'
-import { DEALERS, dealerCountLabel, NEAR_ME_URL } from '../../data/dealers'
+import { DEALERS, NEAR_ME_URL } from '../../data/dealers'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { buttonClass, ContactButtons, Container, FillIn, SectionHeading } from '../ui/primitives'
 import { HOME_TEXT } from '../../data/pageText/home'
 import { FAQ_PAGE_TEXT } from '../../data/pageText/faq'
+import { chen } from '../../data/pageText/define'
+
+/** Số điểm bán: từ 20 điểm thì làm tròn xuống hàng chục ("Hơn 30 điểm…"), như dealerCountLabel trong dealers.ts; chữ Ecopillo sửa (HOME_TEXT) */
+const dealerCountText = (count: number): string =>
+  count >= 20 ? chen(HOME_TEXT.phanPhoiSoDiemHon, { so: Math.floor(count / 10) * 10 }) : chen(HOME_TEXT.phanPhoiSoDiem, { so: count })
 
 const isFillIn = (text: string) => text.startsWith('[') && text.endsWith(']')
 
@@ -37,9 +42,9 @@ export function Showrooms() {
           <div className="flex shrink-0 flex-col items-start gap-2 sm:items-end">
             <Link to={NEAR_ME_URL} className={buttonClass('primary', 'md')}>
               <Icon name="locate" size={17} />
-              Tìm đại lý gần tôi
+              {HOME_TEXT.phanPhoiNutTim}
             </Link>
-            <span className="text-sm text-ink-soft">{dealerCountLabel(DEALERS.length)}</span>
+            <span className="text-sm text-ink-soft">{dealerCountText(DEALERS.length)}</span>
           </div>
         </div>
 
@@ -68,7 +73,7 @@ export function Showrooms() {
                     </li>
                     <li className="flex gap-3">
                       <Icon name="clock" size={18} className="mt-0.5 shrink-0 text-mist-600" />
-                      <span className="text-deep-900">Mở cửa {OPENING_HOURS}</span>
+                      <span className="text-deep-900">{chen(HOME_TEXT.phanPhoiMoCua, { gio: OPENING_HOURS })}</span>
                     </li>
                     <li className="flex gap-3">
                       <Icon name="phone" size={18} className="mt-0.5 shrink-0 text-mist-600" />
@@ -80,7 +85,7 @@ export function Showrooms() {
                   <div className="mt-auto flex flex-wrap gap-2 pt-7">
                     <a href={s.mapsUrl} target="_blank" rel="noopener noreferrer" className={buttonClass('primary', 'sm')}>
                       <Icon name="pin" size={16} />
-                      Chỉ đường
+                      {HOME_TEXT.phanPhoiChiDuong}
                     </a>
                     <a href={s.hotline ? `tel:${s.hotline.replace(/\D/g, '')}` : CONTACT.hotlineTel} className={buttonClass('secondary', 'sm')}>
                       {HOME_TEXT.phanPhoiNutGoi}
@@ -121,7 +126,7 @@ export function Faq({ standalone = false, compact = false }: { standalone?: bool
             <ContactButtons size="md" stretch className="mt-7" />
             {!standalone && (
               <Link to={PATHS.faq} className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-deep-800 hover:underline">
-                Xem chính sách giao hàng, đổi hàng, bảo hành <Icon name="arrowRight" size={14} />
+                {HOME_TEXT.hoiDapChinhSach} <Icon name="arrowRight" size={14} />
               </Link>
             )}
           </div>
@@ -156,7 +161,7 @@ export function Faq({ standalone = false, compact = false }: { standalone?: bool
               onClick={() => setShowAll(true)}
               className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-deep-800 sm:hidden"
             >
-              Xem thêm {FAQS.length - FAQ_COMPACT} câu hỏi <Icon name="chevronDown" size={15} />
+              {chen(HOME_TEXT.hoiDapXemThem, { so: FAQS.length - FAQ_COMPACT })} <Icon name="chevronDown" size={15} />
             </button>
           )}
         </div>

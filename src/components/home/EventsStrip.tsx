@@ -92,7 +92,7 @@ function FeaturedCard({ event, sizes = '(min-width: 1024px) 620px, 100vw' }: Fea
             to={postPath(post)}
             className="mt-4 -mb-2 inline-flex items-center gap-1.5 py-2 text-body-sm font-medium text-deep-800 underline-offset-4 hover:underline"
           >
-            Đọc bài viết <Icon name="arrowRight" size={16} />
+            {HOME_TEXT.suKienDocBai} <Icon name="arrowRight" size={16} />
           </Link>
         )}
       </div>

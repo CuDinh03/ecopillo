@@ -52,7 +52,7 @@ export function Hospitality() {
             to={PATHS.hotel}
             className="mt-4 -mb-2 inline-flex items-center gap-1.5 py-2 text-body-sm font-medium text-mist-200 underline-offset-4 hover:text-ivory hover:underline"
           >
-            Xem giải pháp cho khách sạn <Icon name="arrowRight" size={16} />
+            {HOME_TEXT.khachSanXemThem} <Icon name="arrowRight" size={16} />
           </Link>
         </div>
 

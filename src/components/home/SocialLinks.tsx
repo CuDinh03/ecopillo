@@ -1,5 +1,6 @@
 import { SOCIAL_LINKS } from '../../data/brand'
 import { Icon } from '../ui/Icon'
+import { HOME_TEXT } from '../../data/pageText/home'
 
 /**
  * Nền mỗi vòng theo màu hãng (anh Quang, Zalo 19/11/2026: "Youtube màu đỏ"; owner chọn phương án A 20/11/2026).
@@ -28,7 +29,7 @@ export function SocialIcons() {
               BRAND_BG[s.id] ?? 'bg-deep-800'
             }`}
           >
-            {s.id === 'zalo' ? <span className="text-label font-medium">Zalo</span> : <Icon name={s.id} size={17} />}
+            {s.id === 'zalo' ? <span className="text-label font-medium">{HOME_TEXT.zaloChu}</span> : <Icon name={s.id} size={17} />}
           </a>
         </li>
       ))}

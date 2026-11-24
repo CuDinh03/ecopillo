@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { HomeLink } from './HomeLink'
 import { CONTACT } from '../../data/brand'
 import { collectionById, coverOf, ESSENTIALS, type EssentialItem, type ImageSource } from '../../data/catalog'
 import { collectionPath, hiddenPageTarget, PATHS } from '../../data/links'
@@ -10,6 +11,7 @@ import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { Container, SectionHeading } from '../ui/primitives'
 import { HOME_TEXT } from '../../data/pageText/home'
+import { chen } from '../../data/pageText/define'
 
 /**
  * Ruột chăn, ruột gối và phụ kiện ở trang chủ. Chị Phương (Zalo 09/11/2026 15:30): "phần này e cho hiển thị như đệm và chăn ga
@@ -18,14 +20,18 @@ import { HOME_TEXT } from '../../data/pageText/home'
  * Máy tính thấy 4 ô một lúc (ruột gối 5 món thì vuốt sang), điện thoại vuốt ngang gần 2 ô. Bấm ô sang trang sản phẩm.
  */
 
-const SUMMER_QUILT_NAME = HOME_TEXT.chanHeTen
+/** Dòng chăn hè trong ESSENTIALS (catalog.ts) tra theo tên gốc; tên hiện trên ô Ecopillo sửa (HOME_TEXT.chanHeTen) */
+const SUMMER_QUILT_ITEM = 'Chăn hè Lyocell'
 const SUMMER_QUILT = collectionById('chan-he-lyocell')
 
-/** "Xem tất cả" của từng nhóm: trang danh mục nhỏ (LISTINGS trong links.ts) có đúng các sản phẩm của nhóm */
-const GROUP_LINKS: Readonly<Record<string, string>> = {
-  'ruot-goi': '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/',
-  'ruot-chan': '/danh-muc-san-pham/san-pham/ruot-chan-goi/',
-  'chan-topper': '/danh-muc-san-pham/san-pham/chan-topper-phu-kien/',
+/**
+ * Chữ, link từng nhóm Ecopillo sửa (HOME_TEXT): tên, câu dưới tên theo thứ tự nhóm; câu nhỏ từng ô theo thứ tự ô.
+ * "Xem tất cả" mặc định là trang danh mục nhỏ (LISTINGS trong links.ts) có đúng các sản phẩm của nhóm.
+ */
+const GROUP_TEXT: Readonly<Record<string, { to: string; notes: readonly string[] }>> = {
+  'ruot-goi': { to: HOME_TEXT.ruotGoiLink, notes: HOME_TEXT.ruotGoiGhiChu },
+  'ruot-chan': { to: HOME_TEXT.ruotChanLink, notes: HOME_TEXT.ruotChanGhiChu },
+  'chan-topper': { to: HOME_TEXT.phuKienLink, notes: HOME_TEXT.phuKienGhiChu },
 }
 
 interface EssentialTile {
@@ -38,13 +44,14 @@ interface EssentialTile {
 }
 
 /** Một khoảng giá thì ghi "từ" giá thấp nhất (chi tiết từng cỡ ở trang sản phẩm) */
-const priceText = (item: { min: number; max: number }): string => (item.min === item.max ? formatVND(item.min) : `từ ${formatVND(item.min)}`)
+const priceText = (item: { min: number; max: number }): string =>
+  item.min === item.max ? formatVND(item.min) : chen(HOME_TEXT.giaTu, { gia: formatVND(item.min) })
 
 /** Chăn hè là bộ sưu tập có phối màu, không phải sản phẩm lẻ: ảnh bìa và trang của bộ đó */
-const toTile = (item: EssentialItem): EssentialTile => {
-  const base = { name: item.name, note: item.note, price: priceText(item) }
-  if (item.name === SUMMER_QUILT_NAME && SUMMER_QUILT) {
-    return { ...base, to: collectionPath(SUMMER_QUILT), image: coverOf(SUMMER_QUILT), imageNote: item.name }
+const toTile = (item: EssentialItem, note: string): EssentialTile => {
+  const base = { name: item.name, note, price: priceText(item) }
+  if (item.name === SUMMER_QUILT_ITEM && SUMMER_QUILT) {
+    return { ...base, name: HOME_TEXT.chanHeTen, to: collectionPath(SUMMER_QUILT), image: coverOf(SUMMER_QUILT), imageNote: HOME_TEXT.chanHeTen }
   }
   const product = productForEssential(item.name)
   // Tên trong ESSENTIALS ngắn ("Micro Fiber"), tên ô dùng tên đầy đủ của trang sản phẩm ("Ruột gối Micro Fiber")
@@ -54,14 +61,18 @@ const toTile = (item: EssentialItem): EssentialTile => {
     : { ...base, to: PATHS.products, imageNote: item.name }
 }
 
-const GROUPS = ESSENTIALS.map((g) => ({
-  id: g.id,
-  title: g.title,
-  subtitle: g.subtitle,
-  to: GROUP_LINKS[g.id] ?? PATHS.products,
-  // Ô trỏ tới sản phẩm / trang Ecopillo đã gỡ trong WordPress (đợt E2) thì bỏ
-  tiles: g.items.map(toTile).filter((tile) => !hiddenPageTarget(tile.to)),
-}))
+const GROUPS = ESSENTIALS.map((g, i) => {
+  const text = GROUP_TEXT[g.id]
+  const label = HOME_TEXT.ruotNhom[i]
+  return {
+    id: g.id,
+    title: label?.title ?? g.title,
+    subtitle: label?.subtitle ?? g.subtitle,
+    to: text?.to ?? PATHS.products,
+    // Ô trỏ tới sản phẩm / trang Ecopillo đã gỡ trong WordPress (đợt E2) thì bỏ
+    tiles: g.items.map((item, j) => toTile(item, text?.notes[j] ?? item.note)).filter((tile) => !hiddenPageTarget(tile.to)),
+  }
+})
 
 export function Essentials() {
   return (
@@ -147,13 +158,13 @@ function EssentialRow({ group }: { group: Group }) {
           <p className="mt-1 text-sm text-ink-soft">{group.subtitle}</p>
         </div>
         <div className="flex shrink-0 items-center gap-3">
-          <Link
+          <HomeLink
             to={group.to}
-            aria-label={`Xem tất cả ${group.title.toLowerCase()}`}
+            aria-label={`${HOME_TEXT.ruotXemTatCa} ${group.title.toLowerCase()}`}
             className="-my-2 inline-flex items-center gap-1 py-2 text-sm font-medium whitespace-nowrap text-deep-700 underline-offset-4 hover:underline"
           >
-            Xem tất cả <Icon name="arrowRight" size={15} />
-          </Link>
+            {HOME_TEXT.ruotXemTatCa} <Icon name="arrowRight" size={15} />
+          </HomeLink>
           {hasArrows && (
             <span className="hidden gap-2 sm:flex">
               <button type="button" onClick={() => step(-1)} disabled={!edge.canPrev} aria-label={`${group.title}: xem ô trước`} className={RAIL_BUTTON}>
