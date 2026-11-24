@@ -1,5 +1,9 @@
 import type { ImageSource } from './catalog'
-import { anh, chu, definePageText, doan } from './pageText/define'
+import { productsUrl } from './links'
+import { anh, chu, definePageText, doan, type TextField } from './pageText/define'
+
+/** Ô đường link (/duong-dan/, https://…): web kiểm đúng dạng link, sai thì dùng link gốc */
+const link = (nhan: string, goc: string, goiY?: string): TextField<string> => ({ nhan, kieu: 'link', goc, goiY })
 
 /**
  * Thư cảm ơn kèm ưu đãi 5% cho đơn tiếp theo (khách gửi 05/11/2026, mục 11).
@@ -35,7 +39,7 @@ const BASE_CARDS = {
 const { set: THANK_YOU_SET_, text: TEXT } = definePageText(
   'thu-cam-on',
   'Trang chủ: khối Thư cảm ơn (ưu đãi 5%)',
-  'Chữ và hai ảnh thư cảm ơn ở trang chủ.',
+  'Chữ và hai ảnh thư cảm ơn ở trang chủ và trang Quà tặng và sự kiện.',
   {
     nhan: chu('Nhãn nhỏ', 'Ưu đãi 5%'),
     tieuDe: chu('Tiêu đề', 'Thư cảm ơn từ Ecopillo'),
@@ -47,6 +51,10 @@ const { set: THANK_YOU_SET_, text: TEXT } = definePageText(
     cachDung: doan('Cách dùng ưu đãi', 'Cách dùng ưu đãi: liên hệ hotline để được hướng dẫn.'),
     nutXem: chu('Chữ nút xem thư', 'Xem thư cảm ơn'),
     nutChon: chu('Chữ nút chọn bộ sưu tập', 'Chọn bộ sưu tập'),
+    nutXemBo: chu('Trang Quà tặng: chữ nút sang bộ chăn ga', 'Xem bộ chăn ga'),
+    linkXemBo: link('Trang Quà tặng: link nút sang bộ chăn ga', productsUrl({ 'danh-muc': 'bo-chan-ga' })),
+    ghiChuQuaTang: chu('Trang Quà tặng: dòng nhỏ dưới hai nút', 'Quà tặng doanh nghiệp, sự kiện vẫn ở phần trên trang này'),
+    xemLai: chu('Trang Quà tặng: chữ link cuối dòng nhỏ (cuộn lên phần quà doanh nghiệp)', 'xem lại'),
     anhMatTruoc: anh('Ảnh mặt trước thư', BASE_CARDS.front),
     anhMatTrong: anh('Ảnh mặt trong thư', BASE_CARDS.inside),
   },
@@ -62,5 +70,9 @@ export const THANK_YOU = {
   howToUseLead: TEXT.cachDung,
   viewLabel: TEXT.nutXem,
   chooseLabel: TEXT.nutChon,
+  setsLabel: TEXT.nutXemBo,
+  setsTo: TEXT.linkXemBo,
+  giftsNote: TEXT.ghiChuQuaTang,
+  giftsBack: TEXT.xemLai,
   cards: THANK_YOU_CARDS,
 }

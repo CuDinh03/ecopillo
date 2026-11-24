@@ -1,7 +1,14 @@
-import { anh, chu, definePageText, doan, dsCap } from './define'
+import { productsUrl } from '../links'
+import { anh, chu, definePageText, doan, dsCap, dsDong, type TextField } from './define'
 
 /** Ảnh tĩnh không có bản nhỏ (srcSet rỗng như staticImage trong catalog.ts) */
 const img = (src: string, alt: string) => ({ src, srcSet: '', alt })
+
+/** Ô đường link (/duong-dan/, https://…, tel:): web kiểm đúng dạng link, sai thì dùng link gốc */
+const link = (nhan: string, goc: string, goiY?: string): TextField<string> => ({ nhan, kieu: 'link', goc, goiY })
+
+/** Ruột chăn gối trang chủ: câu nhỏ dưới tên từng ô, theo thứ tự ô (ESSENTIALS trong catalog.ts) */
+const NOTE_HINT = 'Mỗi dòng một ô, đúng thứ tự ô trên web; thiếu dòng thì các ô cuối dùng câu gốc'
 
 /**
  * Chữ, ảnh trang chủ (trừ banner, đã có bộ riêng; chữ dùng chung với trang Giới thiệu, Khách sạn nằm ở bộ của trang đó).
@@ -10,8 +17,12 @@ const img = (src: string, alt: string) => ({ src, srcSet: '', alt })
 export const { set: HOME_TEXT_SET, text: HOME_TEXT } = definePageText(
   'trang-chu',
   'Trang chủ',
-  'Tiêu đề, đoạn dẫn, ảnh các khối trang chủ: dải cam kết, chất liệu, về chúng tôi, ruột chăn gối, sự kiện, khách sạn, hệ thống phân phối, hỏi đáp, nhận xét. Banner sửa ở bộ Banner, phim ở bộ Phim thương hiệu.',
+  'Tiêu đề, đoạn dẫn, ảnh, link, chữ nút các khối trang chủ: hai nút dưới banner, dải Hệ sinh thái, dải cam kết, chất liệu, về chúng tôi, ruột chăn gối, sự kiện, khách sạn, hệ thống phân phối, hỏi đáp, nhận xét. Banner sửa ở bộ Banner, phim ở bộ Phim thương hiệu, khối đệm, bộ sưu tập, thư cảm ơn ở bộ riêng.',
   {
+    nutXemBoSuuTap: chu('Banner: chữ nút Xem bộ sưu tập', 'Xem bộ sưu tập'),
+    nutGoiDienThoai: chu('Banner: chữ nút gọi (điện thoại, ngắn để hai nút một hàng)', 'Gọi ngay'),
+    nutGoiMayTinh: chu('Banner: chữ nút gọi (máy tính)', 'Gọi ngay cho chúng tôi'),
+    giaTu: chu('Chữ giá thấp nhất trên các ô (bộ sưu tập chăn ga, đệm, ruột chăn gối)', 'từ {gia}', 'Giữ {gia} là chỗ hiện giá'),
     moTaGoogle: doan(
       'Mô tả trang chủ trên Google, Zalo, Facebook',
       'Chăn ga gối đệm Ecopillo mang giấc ngủ chất lượng cùng trải nghiệm tuyệt vời đến hàng triệu gia đình Việt một cách nhanh chóng và dễ dàng nhất.',
@@ -31,6 +42,14 @@ export const { set: HOME_TEXT_SET, text: HOME_TEXT } = definePageText(
       ],
       'Đúng 4 dòng, theo thứ tự Chăn, Ga, Gối, Đệm (mỗi ô dẫn tới nhóm sản phẩm đó)',
     ),
+    heSinhThaiAnh1: anh('Dải dưới banner: ảnh ô thứ nhất (Chăn)', img('/images/products/chan-long-vu-tu-nhien-sm.webp', '')),
+    heSinhThaiLink1: link('Dải dưới banner: link ô thứ nhất (Chăn)', productsUrl({ 'danh-muc': 'chan' })),
+    heSinhThaiAnh2: anh('Dải dưới banner: ảnh ô thứ hai (Ga)', img('/images/details/hero-ed25-sm.webp', '')),
+    heSinhThaiLink2: link('Dải dưới banner: link ô thứ hai (Ga)', productsUrl({ 'danh-muc': 'bo-chan-ga' })),
+    heSinhThaiAnh3: anh('Dải dưới banner: ảnh ô thứ ba (Gối)', img('/images/products/ruot-goi-micro-plus-sm.webp', '')),
+    heSinhThaiLink3: link('Dải dưới banner: link ô thứ ba (Gối)', productsUrl({ 'danh-muc': 'goi' })),
+    heSinhThaiAnh4: anh('Dải dưới banner: ảnh ô thứ tư (Đệm)', img('/images/products/dem-lo-xo-tui-doc-lap-sm.webp', '')),
+    heSinhThaiLink4: link('Dải dưới banner: link ô thứ tư (Đệm)', productsUrl({ 'danh-muc': 'dem' })),
     giaTriTieuDe: chu('Dải dưới banner: tiêu đề ô Tốt · Thật · Thiện', 'Vì một giấc ngủ chất lượng hơn'),
     giaTri: dsCap(
       'Dải dưới banner: 3 ô Tốt · Thật · Thiện',
@@ -82,6 +101,10 @@ export const { set: HOME_TEXT_SET, text: HOME_TEXT } = definePageText(
       'Người đặt nền móng cho thương hiệu là chị Phạm Thị Phương, hơn 15 năm trong nghề chăn ga, từ sản xuất đến bán lẻ. Chị luôn trăn trở làm sao để mỗi sản phẩm giúp khách hàng tạo dựng một “Chốn Yên”: nơi giấc ngủ lành mạnh được vun đắp và cơ thể được phục hồi trọn vẹn.',
       'Tên "chị Phạm Thị Phương" tự in đậm',
     ),
+    nutDocTiep: chu('Về chúng tôi (điện thoại): chữ nút đọc tiếp', 'Đọc tiếp câu chuyện'),
+    nutGioiThieu: chu('Về chúng tôi: chữ link sang trang Giới thiệu', 'Xem trang Giới thiệu đầy đủ'),
+    nutSuMenh: chu('Về chúng tôi (điện thoại): chữ nút mở bốn thẻ', 'Sứ mệnh, tầm nhìn, giá trị cốt lõi'),
+    danhHieuNhan: chu('Về chúng tôi: nhãn thẻ Danh hiệu (nhãn ba thẻ kia sửa ở bộ Trang Giới thiệu, chương V)', 'Danh hiệu'),
     anhChungNhan1: anh('Về chúng tôi: logo chứng nhận thứ nhất (ô Danh hiệu)', img('/images/partners/iso-9001.webp', 'Chứng nhận ISO 9001:2015')),
     anhChungNhan2: anh('Về chúng tôi: logo chứng nhận thứ hai (ô Danh hiệu)', img('/images/partners/tqc.webp', 'Chứng nhận TQC')),
     ruotTieuDe: chu('Ruột chăn gối: tiêu đề', 'Ruột chăn, ruột gối và phụ kiện'),
@@ -93,12 +116,44 @@ export const { set: HOME_TEXT_SET, text: HOME_TEXT } = definePageText(
       'Ruột chăn gối: dòng ghi chú cuối khối (số Zalo tự thêm sau)',
       'Ruột gối, ruột chăn, topper và phụ kiện đều đặt online được; nhân viên gọi xác nhận trước khi giao. Cần tư vấn độ êm? Gọi hoặc nhắn Zalo',
     ),
-    chanHeTen: chu('Ruột chăn gối: tên nhóm chăn hè', 'Chăn hè Lyocell'),
+    chanHeTen: chu('Ruột chăn gối: tên ô chăn hè Lyocell', 'Chăn hè Lyocell'),
+    ruotNhom: dsCap(
+      'Ruột chăn gối: tên và câu dưới tên của 3 nhóm',
+      ['title', 'subtitle'],
+      ['Tên nhóm', 'Câu dưới tên'],
+      [
+        { title: 'Ruột gối', subtitle: 'Từ bông PE giá mềm đến lông vũ bồng bềnh như mây' },
+        { title: 'Ruột chăn', subtitle: 'Giữ ấm vừa đủ, nhẹ trên người' },
+        { title: 'Chăn, topper và phụ kiện khác', subtitle: 'Thêm một lớp êm, giữ đệm sạch, đổi mùa cho phòng ngủ' },
+      ],
+      'Đúng 3 dòng theo thứ tự: ruột gối, ruột chăn, chăn và phụ kiện',
+    ),
+    ruotGoiGhiChu: dsDong(
+      'Ruột chăn gối: câu nhỏ dưới tên các ô nhóm Ruột gối',
+      ['Nhẹ, thoáng, không hút ẩm', 'Sợi siêu mảnh, êm vừa, dễ giặt', 'Bông cao cấp, đàn hồi tốt', 'Mềm mượt, điều hoà nhiệt', 'Nâng đỡ cổ, thoáng khí', 'Bồng bềnh, chuẩn khách sạn 5 sao'],
+      `${NOTE_HINT}: bông PE, Micro Fiber, Micro Plus, tơ tằm, cao su, lông vũ`,
+    ),
+    ruotChanGhiChu: dsDong(
+      'Ruột chăn gối: câu nhỏ dưới tên các ô nhóm Ruột chăn',
+      ['Ấm, nhẹ, giặt máy được', 'Mỏng nhẹ, thoáng, ít bám bụi', 'Ấm sâu, siêu nhẹ cho mùa đông'],
+      `${NOTE_HINT}: chăn đông Micro Fiber, chăn tơ tằm, chăn lông vũ`,
+    ),
+    phuKienGhiChu: dsDong(
+      'Ruột chăn gối: câu nhỏ dưới tên các ô nhóm Chăn, topper và phụ kiện',
+      ['Chần bông mỏng, mát cho mùa hè', 'Vải mát E-Cool, bông siêu nhẹ', 'Làm mềm mặt đệm cứng', 'Chống thấm, chống bụi, dễ tháo giặt', 'Kệ giường khung gỗ thông, cao 30 cm'],
+      `${NOTE_HINT}: chăn hè Lyocell, chăn hè E-Cool, topper, bảo vệ đệm, divan`,
+    ),
+    ruotXemTatCa: chu('Ruột chăn gối: chữ link Xem tất cả của từng nhóm', 'Xem tất cả'),
+    ruotGoiLink: link('Ruột chăn gối: link Xem tất cả của nhóm Ruột gối', '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/'),
+    ruotChanLink: link('Ruột chăn gối: link Xem tất cả của nhóm Ruột chăn', '/danh-muc-san-pham/san-pham/ruot-chan-goi/'),
+    phuKienLink: link('Ruột chăn gối: link Xem tất cả của nhóm Chăn, topper và phụ kiện', '/danh-muc-san-pham/san-pham/chan-topper-phu-kien/'),
     suKienTieuDe: chu('Sự kiện: tiêu đề', 'Ecopillo đồng hành'),
     suKienDanDat: doan('Sự kiện: đoạn dẫn', 'Những chương trình, sự kiện Ecopillo góp mặt cùng cộng đồng và các đơn vị bạn.'),
+    suKienDocBai: chu('Sự kiện: chữ link đọc bài viết của sự kiện nổi bật', 'Đọc bài viết'),
     khachSanTieuDe: chu('Khách sạn: tiêu đề', 'Giấc ngủ năm sao cho khách lưu trú'),
     khachSanNutGoi: chu('Khách sạn: chữ nút gọi', 'Gọi nhận báo giá'),
     khachSanNutZalo: chu('Khách sạn: chữ nút Zalo', 'Gửi yêu cầu qua Zalo'),
+    khachSanXemThem: chu('Khách sạn: chữ link sang trang Khách sạn và dự án', 'Xem giải pháp cho khách sạn'),
     doiTacNhan: chu('Khách sạn: nhãn hàng logo đối tác', 'Đối tác'),
     phanPhoiTieuDe: chu('Hệ thống phân phối: tiêu đề', 'Hệ thống phân phối'),
     phanPhoiDanDat: doan(
@@ -106,10 +161,23 @@ export const { set: HOME_TEXT_SET, text: HOME_TEXT } = definePageText(
       'Chạm tay vào chất vải tại Ecopillo: cảm nhận độ mềm mát của vải Lyocell, nằm thử gối và đệm, được tư vấn mẫu hợp với phòng ngủ của Quý khách.',
     ),
     phanPhoiNutGoi: chu('Hệ thống phân phối: chữ nút gọi', 'Gọi đặt lịch xem hàng'),
+    phanPhoiNutTim: chu('Hệ thống phân phối: chữ nút tìm đại lý', 'Tìm đại lý gần tôi'),
+    phanPhoiSoDiem: chu('Hệ thống phân phối: dòng số điểm bán (dưới 20 điểm)', '{so} điểm trên toàn quốc', 'Giữ {so} là chỗ hiện số điểm bán'),
+    phanPhoiSoDiemHon: chu(
+      'Hệ thống phân phối: dòng số điểm bán (từ 20 điểm)',
+      'Hơn {so} điểm trên toàn quốc',
+      'Giữ {so} là chỗ hiện số điểm bán làm tròn xuống hàng chục (35 điểm hiện "Hơn 30")',
+    ),
+    phanPhoiMoCua: chu('Hệ thống phân phối: dòng giờ mở cửa', 'Mở cửa {gio}', 'Giữ {gio} là chỗ hiện giờ mở cửa (sửa ở Thông tin liên hệ)'),
+    phanPhoiChiDuong: chu('Hệ thống phân phối: chữ nút chỉ đường', 'Chỉ đường'),
     hoiDapTieuDe: chu('Hỏi đáp: tiêu đề', 'Câu hỏi thường gặp'),
     hoiDapDanDat: doan('Hỏi đáp: đoạn dẫn', 'Mua sắm an tâm với Ecopillo. Chưa thấy câu trả lời Quý khách cần? Gọi hoặc nhắn Zalo, Ecopillo phản hồi ngay.'),
+    hoiDapChinhSach: chu('Hỏi đáp: chữ link sang trang Hỏi đáp', 'Xem chính sách giao hàng, đổi hàng, bảo hành'),
+    hoiDapXemThem: chu('Hỏi đáp (điện thoại): chữ nút xem các câu còn lại', 'Xem thêm {so} câu hỏi', 'Giữ {so} là chỗ hiện số câu còn lại'),
     nhanXetTieuDe: chu('Nhận xét: tiêu đề', 'Nhận xét của khách'),
     nhanXetDanDat: doan('Nhận xét: đoạn dẫn', 'Những giấc ngủ được nâng niu, kể bằng lời của chính Quý khách.'),
     veEcopillo: chu('Điện thoại: tiêu đề phần Về Ecopillo (có thẻ chuyển)', 'Về Ecopillo'),
+    veEcopilloThe: dsDong('Điện thoại: chữ 3 thẻ chuyển của phần Về Ecopillo', ['Câu chuyện', 'Phim', 'Khách sạn'], 'Đúng 3 dòng theo thứ tự: câu chuyện, phim, khách sạn'),
+    zaloChu: chu('Vòng mạng xã hội (chân trang, Liên hệ, menu điện thoại): chữ trong vòng Zalo', 'Zalo', 'Vòng nhỏ, nên giữ chữ ngắn'),
   },
 )

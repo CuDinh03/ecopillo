@@ -10,6 +10,9 @@ import {
   MATTRESS_PREFERENCES,
 } from '../../data/mattressPicker'
 import { formatVND } from '../../lib/format'
+import { chen } from '../../data/pageText/define'
+import { HOME_TEXT } from '../../data/pageText/home'
+import { HomeLink } from './HomeLink'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
@@ -30,11 +33,11 @@ export function MattressPicker() {
             title={MATTRESS_PICKER_TITLE}
             lead={MATTRESS_PICKER_LEAD}
           />
-          <Link to={MATTRESS_ALL_PATH} className={buttonClass('primary', 'md', 'shrink-0 self-start max-sm:hidden')}>
+          <HomeLink to={MATTRESS_ALL_PATH} className={buttonClass('primary', 'md', 'shrink-0 self-start max-sm:hidden')}>
             {/* max-sm:hidden chứ không phải hidden: BTN_BASE có inline-flex đè lên hidden, điện thoại hiện hai nút */}
-            Xem tất cả đệm
+            {MATTRESS_TEXT.nutXemTatCa}
             <Icon name="arrowRight" size={17} />
-          </Link>
+          </HomeLink>
         </div>
 
         <div className="mt-8 grid gap-5 lg:mt-10 lg:grid-cols-[1.05fr_1fr] lg:gap-6">
@@ -60,7 +63,7 @@ export function MattressPicker() {
             </div>
             <div className="flex flex-col gap-2 p-5 sm:p-6">
               <p className="text-body-sm leading-relaxed text-ink-soft">{MATTRESS_FEATURED_TEXT}</p>
-              <p className="tabular text-body-sm font-semibold text-deep-900">từ {formatVND(MATTRESS_FEATURED.min)}</p>
+              <p className="tabular text-body-sm font-semibold text-deep-900">{chen(HOME_TEXT.giaTu, { gia: formatVND(MATTRESS_FEATURED.min) })}</p>
             </div>
           </Link>
 
@@ -85,7 +88,7 @@ export function MattressPicker() {
                     <span className="min-w-0 flex-1">
                       <span className="block font-medium text-deep-900 group-hover:text-mist-600">{row.title}</span>
                       <span className="mt-0.5 line-clamp-2 text-meta leading-snug text-ink-soft">{row.text}</span>
-                      <span className="tabular mt-1.5 block text-label font-semibold text-deep-900">từ {formatVND(row.min)}</span>
+                      <span className="tabular mt-1.5 block text-label font-semibold text-deep-900">{chen(HOME_TEXT.giaTu, { gia: formatVND(row.min) })}</span>
                     </span>
                   </Link>
                 </li>
@@ -111,10 +114,10 @@ export function MattressPicker() {
               </li>
             ))}
           </ul>
-          <Link to={MATTRESS_ALL_PATH} className={buttonClass('primary', 'md', 'w-full justify-center sm:hidden')}>
-            Xem tất cả đệm
+          <HomeLink to={MATTRESS_ALL_PATH} className={buttonClass('primary', 'md', 'w-full justify-center sm:hidden')}>
+            {MATTRESS_TEXT.nutXemTatCa}
             <Icon name="arrowRight" size={17} />
-          </Link>
+          </HomeLink>
         </div>
       </Container>
     </section>

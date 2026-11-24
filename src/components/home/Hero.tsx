@@ -1,9 +1,8 @@
 import type { CSSProperties } from 'react'
-import { Link } from 'react-router-dom'
 import { Icon } from '../ui/Icon'
 import { buttonClass, Container } from '../ui/primitives'
 import { CONTACT } from '../../data/brand'
-import { productsUrl } from '../../data/links'
+import { HomeLink } from './HomeLink'
 import { HERO_CATEGORIES, HERO_HEADLINE, HERO_HEADLINE_PREFIX, HERO_IMAGES } from '../../data/heroBanner'
 import { HOME_TEXT } from '../../data/pageText/home'
 
@@ -19,12 +18,12 @@ import { HOME_TEXT } from '../../data/pageText/home'
  * MỘT dải trắng ngay dưới ảnh.
  */
 
-/** "Hệ sinh thái sản phẩm" lấy ý từ Bảng EC; dòng mô tả chỉ hiện khi rê chuột (title). Link, ảnh cố định; tên, câu Ecopillo sửa (HOME_TEXT) */
+/** "Hệ sinh thái sản phẩm" lấy ý từ Bảng EC; dòng mô tả chỉ hiện khi rê chuột (title). Tên, câu, ảnh, link Ecopillo sửa (HOME_TEXT) */
 const ECOSYSTEM_LINKS: readonly { to: string; thumb: string }[] = [
-  { to: productsUrl({ 'danh-muc': 'chan' }), thumb: '/images/products/chan-long-vu-tu-nhien-sm.webp' },
-  { to: productsUrl({ 'danh-muc': 'bo-chan-ga' }), thumb: '/images/details/hero-ed25-sm.webp' },
-  { to: productsUrl({ 'danh-muc': 'goi' }), thumb: '/images/products/ruot-goi-micro-plus-sm.webp' },
-  { to: productsUrl({ 'danh-muc': 'dem' }), thumb: '/images/products/dem-lo-xo-tui-doc-lap-sm.webp' },
+  { to: HOME_TEXT.heSinhThaiLink1, thumb: HOME_TEXT.heSinhThaiAnh1.src },
+  { to: HOME_TEXT.heSinhThaiLink2, thumb: HOME_TEXT.heSinhThaiAnh2.src },
+  { to: HOME_TEXT.heSinhThaiLink3, thumb: HOME_TEXT.heSinhThaiAnh3.src },
+  { to: HOME_TEXT.heSinhThaiLink4, thumb: HOME_TEXT.heSinhThaiAnh4.src },
 ]
 const ECOSYSTEM = ECOSYSTEM_LINKS.map((link, i) => ({ ...link, ...(HOME_TEXT.heSinhThaiO[i] ?? { name: '', text: '' }) })).filter((item) => item.name)
 
@@ -122,18 +121,18 @@ function CategoryRow({ size }: { size: CategoryRowSize }) {
     <ul style={delay(80)} className={`hero-in ${size.row}`}>
       {HERO_CATEGORIES.map((c) => (
         <li key={c.name}>
-          <Link
+          <HomeLink
             to={c.to}
             className="group flex flex-col items-center rounded-2xl text-center text-deep-900 outline-offset-4"
           >
             <span
               className={`relative block rounded-full bg-[linear-gradient(153deg,var(--color-page),var(--color-mist-100)_52%,var(--color-page))] shadow-[0_6px_16px_-10px_rgb(45_46_141/0.45)] ring-1 ring-deep-900/15 transition duration-300 ease-[var(--ease-soft)] group-hover:-translate-y-1 group-hover:ring-deep-900/35 group-active:scale-95 ${size.circle}`}
             >
-              <img src={c.icon} alt="" width={200} height={200} decoding="async" className="absolute inset-0 size-full" />
+              <img src={c.icon.src} alt={c.icon.alt} width={200} height={200} decoding="async" className="absolute inset-0 size-full" />
             </span>
             <span className={`font-medium leading-tight ${size.name}`}>{c.name}</span>
             <span className={`leading-snug text-ink-soft ${size.text}`}>{c.text}</span>
-          </Link>
+          </HomeLink>
         </li>
       ))}
     </ul>
@@ -184,7 +183,7 @@ function BangEcBar() {
         <ul className="grid flex-1 grid-cols-4 gap-2 bg-brand-gold/10 p-2 sm:gap-2.5 sm:p-2.5">
           {ECOSYSTEM.map((item) => (
             <li key={item.name}>
-              <Link
+              <HomeLink
                 to={item.to}
                 title={item.text}
                 className={`group flex flex-col items-center gap-1.5 p-1.5 pb-2 text-center text-body-sm font-medium text-deep-900 transition hover:-translate-y-0.5 hover:text-deep-700 ${GOLD_CELL}`}
@@ -199,7 +198,7 @@ function BangEcBar() {
                   className="h-14 w-full rounded-lg object-cover"
                 />
                 {item.name}
-              </Link>
+              </HomeLink>
             </li>
           ))}
         </ul>
@@ -240,12 +239,12 @@ function MobileTop() {
         <CategoryRow size={MOBILE_ROW} />
         <div style={delay(160)} className="hero-in mt-5 grid w-full grid-cols-2 gap-2.5">
           <a href="#bo-suu-tap" className={buttonClass('primary', 'md', 'px-3')}>
-            Xem bộ sưu tập
+            {HOME_TEXT.nutXemBoSuuTap}
           </a>
           {/* Mục 3: thay "Đặt hàng online"; điện thoại rút còn "Gọi ngay" để hai nút vẫn một hàng (owner chốt 17/10/2026) */}
           <a href={CONTACT.hotlineTel} className={buttonClass('light', 'md', 'px-3')}>
             <Icon name="phone" size={16} />
-            Gọi ngay
+            {HOME_TEXT.nutGoiDienThoai}
           </a>
         </div>
       </div>
@@ -274,12 +273,12 @@ export function Hero() {
             <CategoryRow size={DESKTOP_ROW} />
             <div style={delay(160)} className="hero-in mt-[clamp(1.25rem,2.4cqi,2.5rem)] flex gap-3">
               <a href="#bo-suu-tap" className={buttonClass('primary', 'md', 'xl:h-14 xl:px-7 xl:text-base')}>
-                Xem bộ sưu tập
+                {HOME_TEXT.nutXemBoSuuTap}
                 <Icon name="arrowRight" size={18} />
               </a>
               <a href={CONTACT.hotlineTel} className={buttonClass('secondary', 'md', 'xl:h-14 xl:px-7 xl:text-base')}>
                 <Icon name="phone" size={18} />
-                Gọi ngay cho chúng tôi
+                {HOME_TEXT.nutGoiMayTinh}
               </a>
             </div>
           </div>

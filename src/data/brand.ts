@@ -118,7 +118,7 @@ export const SOCIAL_LINKS: readonly SocialLink[] = liveList(SOCIAL_SET.khoa, BAS
 const { set: BRAND_VIDEO_SET_, text: VIDEO } = definePageText(
   'phim',
   'Phim thương hiệu',
-  'Khối phim YouTube ở trang chủ và trang Giới thiệu: tiêu đề, câu dẫn, mã phim, ảnh bìa.',
+  'Khối phim YouTube ở trang chủ và trang Giới thiệu: tiêu đề, câu dẫn, mã phim, ảnh bìa, chữ nút.',
   {
     tieuDe: chu('Tiêu đề khối', 'Một giấc ngủ được nâng niu'),
     danDat: doan('Câu dẫn', 'Xem video để hiểu hơn về chúng tôi.'),
@@ -126,6 +126,7 @@ const { set: BRAND_VIDEO_SET_, text: VIDEO } = definePageText(
     tenPhim: chu('Tên phim (hiện trên ảnh bìa)', 'Chăn ga gối đệm Ecopillo – Nâng niu giấc mơ xanh'),
     kenh: chu('Dòng nhỏ trên ảnh bìa', 'YouTube · Ecopillo Việt Nam'),
     nutKenh: chu('Chữ link sang kênh YouTube', 'Xem thêm trên kênh YouTube Ecopillo'),
+    nutBatTieng: chu('Chữ nút bật tiếng (hiện khi phim tự phát không tiếng)', 'Bật tiếng'),
     anhBia: anh('Ảnh bìa', {
       src: '/images/video/bia-phim.webp',
       srcSet: '/images/video/bia-phim-sm.webp 800w, /images/video/bia-phim.webp 1280w',
@@ -138,7 +139,7 @@ export const BRAND_VIDEO_SET = BRAND_VIDEO_SET_
 const VIDEO_ID = /^[\w-]{6,20}$/.test(VIDEO.maPhim) ? VIDEO.maPhim : 'MLo9LwZdmVQ'
 
 export const BRAND_VIDEO_LEAD: string = VIDEO.danDat
-export const BRAND_VIDEO = { id: VIDEO_ID, title: VIDEO.tenPhim, heading: VIDEO.tieuDe, channel: VIDEO.kenh, channelLink: VIDEO.nutKenh, cover: VIDEO.anhBia }
+export const BRAND_VIDEO = { id: VIDEO_ID, title: VIDEO.tenPhim, heading: VIDEO.tieuDe, channel: VIDEO.kenh, channelLink: VIDEO.nutKenh, unmuteLabel: VIDEO.nutBatTieng, cover: VIDEO.anhBia }
 
 export const OPENING_HOURS: string = CONTACT.gioMoCua
 

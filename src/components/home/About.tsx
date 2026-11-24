@@ -25,6 +25,7 @@ import { MobileMore } from '../ui/MobileMore'
 import { Placeholder } from '../ui/Placeholder'
 import { Container, SectionHeading } from '../ui/primitives'
 import { HOME_TEXT } from '../../data/pageText/home'
+import { ABOUT_PAGE_TEXT } from '../../data/pageText/aboutPage'
 import { Highlight } from '../ui/Highlight'
 
 /* Chữ, ảnh dùng chung với trang Giới thiệu: data/about.ts */
@@ -76,7 +77,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
                   onClick={() => setIsExpanded(true)}
                   className="-my-2.5 inline-flex items-center gap-1 py-2.5 text-sm font-medium text-deep-800 sm:hidden"
                 >
-                  Đọc tiếp câu chuyện <Icon name="chevronDown" size={15} />
+                  {HOME_TEXT.nutDocTiep} <Icon name="chevronDown" size={15} />
                 </button>
               )}
             </div>
@@ -87,32 +88,33 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
                 to={PATHS.about}
                 className="mt-6 -mb-2 inline-flex items-center gap-1.5 py-2 text-body-sm font-medium text-deep-800 underline-offset-4 hover:underline"
               >
-                Xem trang Giới thiệu đầy đủ <Icon name="arrowRight" size={16} />
+                {HOME_TEXT.nutGioiThieu} <Icon name="arrowRight" size={16} />
               </Link>
             )}
           </div>
         </div>
 
         {/* Điện thoại: sứ mệnh, tầm nhìn, giá trị cốt lõi nằm sau nút (vẫn có trong trang) */}
-        <MobileMore label="Sứ mệnh, tầm nhìn, giá trị cốt lõi" buttonClassName="mt-6">
+        <MobileMore label={HOME_TEXT.nutSuMenh} buttonClassName="mt-6">
         {/* Mục 12 (owner chọn kiểu A 17/10/2026): bốn thẻ cùng một khuôn, lưới 2×2. Mẫu: docs/de-xuat-bon-khoi-ve-chung-toi.html */}
         <div
           tabIndex={0}
           role="group"
-          aria-label="Sứ mệnh, tầm nhìn, giá trị cốt lõi, danh hiệu"
+          aria-label={[ABOUT_PAGE_TEXT.suMenhNhan, ABOUT_PAGE_TEXT.tamNhinNhan, ABOUT_PAGE_TEXT.giaTriNhan, HOME_TEXT.danhHieuNhan].join(', ')}
           className="m-rail mt-12 grid gap-5 focus-visible:outline-2 focus-visible:outline-deep-700 sm:mt-20 lg:grid-cols-2"
         >
-          <MissionCard label="Sứ mệnh" image={MISSION_IMAGE}>
+          {/* Nhãn ba thẻ dùng chung với trang Giới thiệu (ABOUT_PAGE_TEXT, chương V) */}
+          <MissionCard label={ABOUT_PAGE_TEXT.suMenhNhan} image={MISSION_IMAGE}>
             {MISSION.map((para) => (
               <MissionText key={para} isLong>
                 {para}
               </MissionText>
             ))}
           </MissionCard>
-          <MissionCard label="Tầm nhìn" image={VISION_IMAGE}>
+          <MissionCard label={ABOUT_PAGE_TEXT.tamNhinNhan} image={VISION_IMAGE}>
             <MissionText isLong={isLongText(VISION)}>{VISION}</MissionText>
           </MissionCard>
-          <MissionCard label="Giá trị cốt lõi" image={VALUES_IMAGE} position={VALUES_IMAGE_POSITION}>
+          <MissionCard label={ABOUT_PAGE_TEXT.giaTriNhan} image={VALUES_IMAGE} position={VALUES_IMAGE_POSITION}>
             <ul className="mt-4 grid grid-cols-1 gap-x-6 gap-y-3.5 sm:grid-cols-2">
               {CORE_VALUES.map((v) => (
                 <li key={v.title} className="flex gap-3">
@@ -127,7 +129,7 @@ export function About({ moreLink = false }: { moreLink?: boolean }) {
               ))}
             </ul>
           </MissionCard>
-          <MissionCard label="Danh hiệu" image={AWARD_IMAGE}>
+          <MissionCard label={HOME_TEXT.danhHieuNhan} image={AWARD_IMAGE}>
             <MissionText>{AWARD_NAME}</MissionText>
             <span className="mt-5 flex items-center gap-2">
               <img

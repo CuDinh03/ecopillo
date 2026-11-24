@@ -4,6 +4,9 @@ import { COLLECTION_SHOWCASE_TEXT, CORE_COLLECTIONS, MORE_COLLECTIONS, SEE_ALL_I
 import type { ImageSource } from '../../data/catalog'
 import { collectionPath, PATHS } from '../../data/links'
 import { formatVND } from '../../lib/format'
+import { chen } from '../../data/pageText/define'
+import { HOME_TEXT } from '../../data/pageText/home'
+import { HomeLink } from './HomeLink'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
@@ -43,7 +46,7 @@ function CollectionTile({ item, index }: { item: ShowcaseItem; index: number }) 
           <span className="font-display text-[1.15rem] leading-tight text-deep-900 sm:text-[1.6rem]">{collection.name}</span>
           {/* Loại vải và giá hai dòng riêng: chung một dòng thì 390px rớt dòng ở Vera, Rosa, ô cao thấp lệch nhau */}
           <span className="mt-0.5 text-label text-ink-soft sm:mt-1 sm:text-meta">{fabric}</span>
-          <span className="tabular mt-1 text-small font-medium text-deep-900 sm:mt-1.5">từ {formatVND(min)}</span>
+          <span className="tabular mt-1 text-small font-medium text-deep-900 sm:mt-1.5">{chen(HOME_TEXT.giaTu, { gia: formatVND(min) })}</span>
           <span className="mt-2 hidden text-small text-ink-soft italic sm:block">{collection.tagline}</span>
         </span>
       </Link>
@@ -59,8 +62,8 @@ function CollectionTile({ item, index }: { item: ShowcaseItem; index: number }) 
 function SeeAllTile({ index, image }: { index: number; image: ImageSource }) {
   return (
     <li data-reveal style={revealDelay(index)} className="min-w-0">
-      <Link
-        to={PATHS.products}
+      <HomeLink
+        to={COLLECTION_SHOWCASE_TEXT.seeAllTo}
         className="group relative isolate flex h-full min-h-40 flex-col justify-between overflow-hidden rounded-[1.25rem] bg-deep-900 p-4 text-white shadow-[var(--shadow-soft)] transition duration-500 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] focus-visible:outline-2 focus-visible:outline-offset-2 sm:rounded-[1.75rem] sm:p-6"
       >
         <span aria-hidden="true" className="absolute inset-0 -z-10 transition-transform duration-700 ease-[var(--ease-soft)] group-hover:scale-[1.04]">
@@ -84,7 +87,7 @@ function SeeAllTile({ index, image }: { index: number; image: ImageSource }) {
         <span className="mt-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-deep-900 transition-transform duration-300 group-hover:translate-x-1 sm:h-12 sm:w-12">
           <Icon name="arrowRight" size={20} />
         </span>
-      </Link>
+      </HomeLink>
     </li>
   )
 }

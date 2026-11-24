@@ -150,7 +150,7 @@ export function BrandVideoPlayer({ className = 'rounded-[1.75rem] shadow-[var(--
               onClick={unmute}
               className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-ivory/95 px-4 py-2 text-sm font-medium text-deep-900 shadow-[var(--shadow-soft)] transition hover:bg-ivory"
             >
-              <Icon name="volume" size={16} /> Bật tiếng
+              <Icon name="volume" size={16} /> {BRAND_VIDEO.unmuteLabel}
             </button>
           )}
         </>

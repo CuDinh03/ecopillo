@@ -6,13 +6,12 @@ import { Hospitality } from './Hospitality'
 import { MobileTabBar } from './MobileTabBar'
 import { HOME_TEXT } from '../../data/pageText/home'
 
-const TABS = [
-  { id: 'cau-chuyen', label: 'Câu chuyện' },
-  { id: 'phim', label: 'Phim' },
-  { id: 'khach-san', label: 'Khách sạn' },
-] as const
+const TAB_IDS = ['cau-chuyen', 'phim', 'khach-san'] as const
+type TabId = (typeof TAB_IDS)[number]
 
-type TabId = (typeof TABS)[number]['id']
+/** Chữ thẻ Ecopillo sửa (HOME_TEXT.veEcopilloThe, theo thứ tự); thiếu dòng thì dùng chữ gốc */
+const BASE_TAB_LABELS: Readonly<Record<TabId, string>> = { 'cau-chuyen': 'Câu chuyện', phim: 'Phim', 'khach-san': 'Khách sạn' }
+const TABS: readonly { id: TabId; label: string }[] = TAB_IDS.map((id, i) => ({ id, label: HOME_TEXT.veEcopilloThe[i] ?? BASE_TAB_LABELS[id] }))
 
 /**
  * Trang chủ điện thoại: ba khối thương hiệu (Về chúng tôi, Phim, Khách sạn) gộp thành một dải có tab,
