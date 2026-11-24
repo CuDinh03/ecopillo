@@ -1,5 +1,5 @@
 import { formatRange, formatVND } from '../lib/format'
-import { liveHidden, liveNewProducts, liveProduct, liveProductContent, liveSoldOut, markLiveDiffers, mergePrices, type LiveNewProduct } from './liveData'
+import { liveHidden, liveNewProducts, liveProduct, liveProductContent, liveSoldOut, markLiveDiffers, mergePrices, type LiveNewProduct, type LiveProductContent } from './liveData'
 import { slugify } from '../lib/slug'
 import { collectionPath, LISTINGS, PATHS, singleProductPath, WOO_CATEGORY_LISTINGS } from './links'
 import {
@@ -72,6 +72,8 @@ export interface Product {
    * một giá). Không có thì còn hàng. Hàm đọc: src/lib/stock.ts
    */
   soldOut?: readonly string[]
+  /** Ô chọn, giá, hết hàng lấy thẳng từ biến thể Woo (đợt G) */
+  optionsFromWoo?: boolean
   slug: string
   name: string
   category: CategoryId
@@ -880,12 +882,39 @@ const withLivePrice = (p: Product): Product => {
  * Tên, ảnh, mô tả, thông số Ecopillo đã soát trong WooCommerce (đợt B, plugin noi-dung-woo.php): chỉ sản phẩm lẻ có sẵn
  * mà Ecopillo đã tích "Giao diện mới dùng tên, ảnh, mô tả"; ô Woo trống thì giữ nội dung trong code.
  */
+/**
+ * Lựa chọn, giá, hết hàng lấy thẳng từ biến thể Woo (đợt G, Ecopillo tích "dùng các lựa chọn và giá"): thay hẳn ô chọn,
+ * bảng giá trong code; thêm, đổi tên, tắt biến thể trong Woo là web đổi theo
+ */
+const withWooOptions = (p: Product, o: NonNullable<LiveProductContent['luaChon']>): Product => {
+  const prices = o.bienThe ? Object.values(o.bienThe.gia) : o.chon ? o.chon.map((c) => c.gia) : o.motGia ? [o.motGia] : []
+  if (!prices.length) return p
+  const { choices: _choices, variants: _variants, choiceLabel: _label, ...rest } = p
+  void _choices
+  void _variants
+  void _label
+  return {
+    ...rest,
+    min: Math.min(...prices),
+    max: Math.max(...prices),
+    isPriceOnCall: false,
+    optionsFromWoo: true,
+    ...(o.het.length ? { soldOut: o.het } : {}),
+    ...(o.bienThe
+      ? { variants: { sizes: o.bienThe.co, thicknesses: o.bienThe.doDay, prices: o.bienThe.gia } }
+      : o.chon
+        ? { choices: o.chon.map((c) => ({ id: c.id, label: c.nhan, price: c.gia })), choiceLabel: o.nhanChon }
+        : {}),
+  }
+}
+
 const withLiveContent = (p: Product): Product => {
   const live = p.collection ? undefined : liveProductContent(p.slug)
   if (!live) return p
   markLiveDiffers()
+  const base = live.luaChon ? withWooOptions(p, live.luaChon) : p
   return {
-    ...p,
+    ...base,
     ...(live.ten ? { name: live.ten } : {}),
     ...(live.anh ? { image: { ...live.anh, alt: live.anh.alt || live.ten || p.name } } : {}),
     ...(live.anhPhu ? { gallery: live.anhPhu.map((img, i) => ({ ...img, alt: img.alt || `${live.ten ?? p.name} · ảnh ${i + 2}` })) } : {}),
@@ -940,7 +969,8 @@ function newProductOf(v: LiveNewProduct): Product | undefined {
 /** Ảnh, giá, nội dung Woo cho một sản phẩm có sẵn */
 /** Hết hàng Ecopillo báo trong Woo (đợt F): HTML dựng sẵn ghi còn hàng, nên báo vẽ lại */
 const withStock = (p: Product): Product => {
-  const soldOut = p.collection ? undefined : liveSoldOut(p.slug)
+  // Lựa chọn lấy từ biến thể Woo đã mang sẵn hết hàng của chính nó
+  const soldOut = p.collection || p.optionsFromWoo ? undefined : liveSoldOut(p.slug)
   if (!soldOut?.length) return p
   markLiveDiffers()
   return { ...p, soldOut }

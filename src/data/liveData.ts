@@ -132,6 +132,11 @@ export interface LiveProductContent {
   thongSo?: readonly { nhan: string; giaTri: string }[]
   /** Phần "Hiểu kỹ trước khi chọn" Ecopillo sửa trong Woo (đợt D), dạng chữ của productInfoText.ts */
   hieuKy?: string
+  /**
+   * Lựa chọn, giá, hết hàng lấy thẳng từ biến thể Woo khi Ecopillo tích "dùng các lựa chọn và giá" (đợt G): cùng dạng giá của
+   * sản phẩm lẻ mới; `het` là các lựa chọn đang hết (id, "cỡ|độ dày", "mac-dinh")
+   */
+  luaChon?: Pick<LiveNewProduct, 'motGia' | 'nhanChon' | 'chon' | 'bienThe'> & { het: readonly string[] }
 }
 
 /** Ảnh, ảnh phụ, tên màu của một mẫu chăn ga có sẵn (khoá `${collectionId}/${code}`) */
@@ -397,6 +402,18 @@ const cleanSpecs = (v: unknown): { nhan: string; giaTri: string }[] =>
     : []
 
 /** Chỉ giữ ô có giá trị đúng kiểu; đối tượng rỗng = không có gì để ghép */
+/** Lựa chọn lấy từ biến thể Woo của sản phẩm có sẵn (đợt G): một giá, một chiều, hoặc cỡ × độ dày */
+function cleanOptions(input: unknown): LiveProductContent['luaChon'] {
+  if (!input || typeof input !== 'object') return undefined
+  const v = input as Record<string, unknown>
+  const het = Array.isArray(v.het) ? v.het.filter((x): x is string => typeof x === 'string' && x.length <= 120).slice(0, 80) : []
+  const bienThe = cleanVariantTable(v.bienThe)
+  if (bienThe) return { bienThe, het }
+  const chon = cleanChoices(v.chon)
+  if (chon.length) return { chon, nhanChon: cleanText(v.nhanChon, 40) || undefined, het }
+  return isPrice(v.motGia) ? { motGia: v.motGia, het } : undefined
+}
+
 function cleanProductContent(input: unknown): LiveProductContent {
   const v = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>
   const ten = cleanText(v.ten, 120)
@@ -406,7 +423,9 @@ function cleanProductContent(input: unknown): LiveProductContent {
   const chiTiet = cleanTexts(v.chiTiet, 600, 16)
   const thongSo = cleanSpecs(v.thongSo)
   const hieuKy = cleanText(v.hieuKy, 12000)
+  const luaChon = cleanOptions(v.luaChon)
   return {
+    ...(luaChon ? { luaChon } : {}),
     ...(hieuKy ? { hieuKy } : {}),
     ...(ten ? { ten } : {}),
     ...(anh ? { anh } : {}),

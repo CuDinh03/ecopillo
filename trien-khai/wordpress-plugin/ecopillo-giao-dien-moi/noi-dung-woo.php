@@ -18,6 +18,8 @@ if (!defined('ABSPATH')) {
 }
 
 define('ECO_NW_META', '_eco_giao_dien_dung_woo');
+/** Sản phẩm lẻ có sẵn: web dùng các lựa chọn (kích thước, độ dày…), giá, tình trạng kho của biến thể Woo (đợt G) */
+define('ECO_NW_META_LUA_CHON', '_eco_giao_dien_dung_lua_chon_woo');
 define('ECO_NW_META_HIEU_KY', '_eco_hieu_ky');
 
 /** Mục sản phẩm lẻ trong khung giá (khung-gia.json `noiDung`) ứng với sản phẩm Woo này (theo link), không có thì null */
@@ -62,6 +64,14 @@ function eco_nw_box($post)
     if (!$item) {
         return;
     }
+    $choices_on = get_post_meta($post->ID, ECO_NW_META_LUA_CHON, true) === '1';
+    ?>
+    <hr>
+    <p><label><input type="checkbox" name="eco_nw_lua_chon" value="1" <?php checked($choices_on); ?>>
+        <strong>Giao diện mới dùng các lựa chọn và giá của sản phẩm này</strong></label></p>
+    <p style="color:#555;margin:0">Tích khi đã soát biến thể: web lấy đúng các biến thể đang bật (thuộc tính Kích thước, Độ dày… làm ô chọn), giá, tình trạng kho
+        ở đây; thêm, đổi tên, tắt một biến thể là web đổi theo. Không cần bật lấy giá Woo cho cả web. Không tích: web giữ các ô chọn đang có.</p>
+    <?php
     $saved = (string) get_post_meta($post->ID, ECO_NW_META_HIEU_KY, true);
     $text = $saved !== '' ? $saved : (string) $item['hieuKy'];
     ?>
@@ -106,6 +116,19 @@ function eco_nw_save($post_id, $post)
     }
     if ($on || $was) {
         eco_gia_mark_dirty();
+    }
+    // Ô "dùng các lựa chọn và giá" chỉ có ở sản phẩm lẻ có sẵn; trang sửa không có ô đó thì không đổi
+    if (isset($_POST['eco_nw_nonce']) && wc_get_product($post_id) && eco_nw_frame_item(wc_get_product($post_id))) {
+        $choices_was = get_post_meta($post_id, ECO_NW_META_LUA_CHON, true) === '1';
+        $choices_on = isset($_POST['eco_nw_lua_chon']) && $_POST['eco_nw_lua_chon'] === '1';
+        if ($choices_on) {
+            update_post_meta($post_id, ECO_NW_META_LUA_CHON, '1');
+        } else {
+            delete_post_meta($post_id, ECO_NW_META_LUA_CHON);
+        }
+        if ($choices_on || $choices_was) {
+            eco_gia_mark_dirty();
+        }
     }
 }
 
@@ -184,6 +207,13 @@ function eco_nw_compute()
             $product = eco_gia_find_product(isset($item['woo']) ? $item['woo'] : array());
             $on = $product && get_post_meta($product->get_id(), ECO_NW_META, true) === '1';
             $entry = $on ? call_user_func($reader, $product) : array();
+            // Lựa chọn, giá, kho lấy thẳng từ biến thể Woo (đợt G): khi Ecopillo tích ô riêng, không cần tích ô nội dung
+            if ($product && $key === 'sanPham' && get_post_meta($product->get_id(), ECO_NW_META_LUA_CHON, true) === '1' && function_exists('eco_sp_prices')) {
+                $choices = eco_sp_prices($product, true);
+                if ($choices) {
+                    $entry['luaChon'] = $choices;
+                }
+            }
             // "Hiểu kỹ trước khi chọn" của sản phẩm lẻ: dùng khi Ecopillo đã sửa, không cần tích ("-" là đã xoá trắng)
             $hk = $product && $key === 'sanPham' ? (string) get_post_meta($product->get_id(), ECO_NW_META_HIEU_KY, true) : '';
             if ($hk !== '') {

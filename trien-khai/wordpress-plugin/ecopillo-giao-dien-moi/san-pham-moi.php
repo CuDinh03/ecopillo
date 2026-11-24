@@ -91,24 +91,29 @@ function eco_sp_attr_label($key, $value)
  * Giá của sản phẩm: sản phẩm đơn → motGia; biến thể có cả Kích thước và Độ dày → bienThe; còn lại → chon (một chiều).
  * Biến thể hết hàng, tắt, chưa có giá thì bỏ. @return array|null null khi không có giá nào
  */
-function eco_sp_prices($product)
+function eco_sp_prices($product, $keep_sold_out = false)
 {
+    // $keep_sold_out (đợt G, sản phẩm có sẵn dùng lựa chọn Woo): giữ biến thể hết hàng, ghi vào 'het' để web hiện "Tạm hết hàng"
+    $sold = array();
     if (!$product->is_type('variable')) {
         $price = eco_gia_price_of($product);
+        if ($keep_sold_out && $price) {
+            return $product->is_in_stock() ? array('motGia' => $price) : array('motGia' => $price, 'het' => array('mac-dinh'));
+        }
         return ($price && $product->is_in_stock()) ? array('motGia' => $price) : null;
     }
     $rows = array();
     $names = array();
     foreach ($product->get_children() as $child_id) {
         $v = wc_get_product($child_id);
-        if (!$v || get_post_status($child_id) !== 'publish' || !$v->is_in_stock()) {
+        if (!$v || get_post_status($child_id) !== 'publish' || (!$keep_sold_out && !$v->is_in_stock())) {
             continue;
         }
         $price = eco_gia_price_of($v);
         if (!$price) {
             continue;
         }
-        $row = array('gia' => $price, 'co' => '', 'doDay' => '', 'nhan' => array());
+        $row = array('gia' => $price, 'co' => '', 'doDay' => '', 'nhan' => array(), 'het' => !$v->is_in_stock());
         foreach ($v->get_attributes() as $key => $value) {
             $label = eco_sp_attr_label($key, $value);
             if ($label === '') {
@@ -142,8 +147,12 @@ function eco_sp_prices($product)
             $sizes[$r['co']] = true;
             $thick[$r['doDay']] = true;
             $table[$r['co'] . '|' . $r['doDay']] = $r['gia'];
+            if ($r['het']) {
+                $sold[] = $r['co'] . '|' . $r['doDay'];
+            }
         }
-        return array('bienThe' => array('co' => array_keys($sizes), 'doDay' => array_keys($thick), 'gia' => $table));
+        $out = array('bienThe' => array('co' => array_keys($sizes), 'doDay' => array_keys($thick), 'gia' => $table));
+        return $sold ? array_merge($out, array('het' => $sold)) : $out;
     }
     $choices = array();
     $seen = array();
@@ -157,8 +166,12 @@ function eco_sp_prices($product)
         }
         $seen[$id] = true;
         $choices[] = array('id' => $id, 'nhan' => $label, 'gia' => $r['gia']);
+        if ($r['het']) {
+            $sold[] = $id;
+        }
     }
-    return array('chon' => array_slice($choices, 0, 40), 'nhanChon' => count($names) === 1 ? (string) reset($names) : 'Lựa chọn');
+    $out = array('chon' => array_slice($choices, 0, 40), 'nhanChon' => count($names) === 1 ? (string) reset($names) : 'Lựa chọn');
+    return $sold ? array_merge($out, array('het' => $sold)) : $out;
 }
 
 /**
