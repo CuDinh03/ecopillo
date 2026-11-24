@@ -6,7 +6,7 @@ import { chu, definePageText, doan } from './define'
  * các bước chọn mẫu / kích thước, form nhận hàng và lời báo lỗi, tóm tắt đơn, màn hình cảm ơn.
  * Tiêu đề, cam kết, quà kèm và lời cảm ơn chính vẫn ở bộ "Trang Đặt hàng" (order.ts, giữ nguyên khoá).
  * Chữ có {…} là chỗ web tự chèn số / tên: giữ nguyên chỗ chèn khi sửa (hàm chen trong define.ts).
- * Không thuộc các bộ này: tên tỉnh và mức phí giao (src/lib/shipping.ts), tên kiểu ga, đơn vị, quà của bộ sưu tập (catalog.ts),
+ * Không thuộc các bộ này: tên tỉnh và mức phí giao (bộ "Giao hàng: tỉnh, phí", src/lib/shipping.ts), tên kiểu ga, đơn vị, quà của bộ sưu tập (catalog.ts),
  * số tài khoản, hotline, giờ làm việc (Thông tin liên hệ).
  */
 

@@ -25,8 +25,8 @@ function Block({ block }: { block: PostBlock }) {
     case 'list':
       return (
         <ul className="mt-5 space-y-3 text-left">
-          {block.items.map((item) => (
-            <li key={item} className="flex gap-3">
+          {block.items.map((item, i) => (
+            <li key={`${i}-${item}`} className="flex gap-3">
               <span aria-hidden className="mt-[0.7rem] h-1.5 w-1.5 shrink-0 rounded-full bg-mist-600" />
               <span>{item}</span>
             </li>
@@ -39,6 +39,28 @@ function Block({ block }: { block: PostBlock }) {
           <Icon name="lightbulb" size={22} className="mt-0.5 shrink-0 text-mist-600" />
           <p className="text-deep-900">{block.text}</p>
         </aside>
+      )
+    case 'img':
+      // Ảnh Ecopillo thêm vào bài dựng sẵn ở Nội dung web
+      return (
+        <figure className="mt-8">
+          <img
+            src={block.image.src}
+            srcSet={block.image.srcSet || undefined}
+            sizes="(min-width: 1024px) 832px, 100vw"
+            alt={block.image.alt}
+            loading="lazy"
+            decoding="async"
+            className="h-auto w-full rounded-[1.5rem]"
+          />
+          {block.caption && <figcaption className="mt-2 text-body-sm text-ink-faint">{block.caption}</figcaption>}
+        </figure>
+      )
+    case 'quote':
+      return (
+        <blockquote className="font-display mt-8 border-l-2 border-mist-600 pl-5 text-[1.25rem] leading-snug text-deep-900 italic">
+          {block.text}
+        </blockquote>
       )
     default:
       return <p className="mt-5">{block.text}</p>
@@ -54,10 +76,12 @@ export function ArticlePage() {
   const { slug } = useParams()
   const post = anyPostBySlug(slug)
   const { pathname } = useLocation()
-  const share = post?.wp && post.cover.src.startsWith('https://') ? { path: post.cover.src, alt: post.cover.alt } : post && shareImageOf(post.cover)
+  // Ảnh bìa từ Thư viện WordPress (bài WordPress, hoặc bài dựng sẵn Ecopillo đổi ảnh bìa): dùng thẳng làm ảnh chia sẻ
+  const share = post && post.cover.src.startsWith('https://') ? { path: post.cover.src, alt: post.cover.alt } : post && shareImageOf(post.cover)
+  const description = post && (post.wp?.description ?? post.seoDescription ?? post.excerpt)
   usePageMeta(
     post ? (post.wp?.metaTitle ?? post.title) : 'Không tìm thấy trang',
-    post ? (post.wp?.description ?? post.excerpt) : undefined,
+    description,
     post ? { image: share, type: 'article' } : { notFound: true },
   )
   if (!post) return <NotFoundPage />
@@ -76,7 +100,7 @@ export function ArticlePage() {
           <JsonLd
             data={articleLd({
               title: post.title,
-              description: post.wp?.description ?? post.excerpt,
+              description: description ?? post.excerpt,
               path: pathname,
               image: post.cover,
               published: post.wp?.date,
@@ -124,8 +148,8 @@ export function ArticlePage() {
             <div className="mt-12 border-t border-line pt-8">
               <p className="eyebrow">{BLOG_TEXT.quanTam}</p>
               <ul className="mt-4 flex flex-wrap gap-2">
-                {post.related.map((r) => (
-                  <li key={r.to}>
+                {post.related.map((r, i) => (
+                  <li key={`${i}-${r.to}`}>
                     <Link
                       to={r.to}
                       className="inline-flex items-center gap-1.5 rounded-full bg-cream-100 px-4 py-2 text-body-sm text-deep-800 transition-colors hover:bg-mist-200"

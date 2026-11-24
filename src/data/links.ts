@@ -1,4 +1,5 @@
 import type { Collection, Pattern } from './catalog'
+import { isCodePostHidden } from './codePostKeys'
 import { liveList, rowKey, type EditableField, type EditableSet } from './liveContent'
 import { liveCategories, liveHidden, liveNewCollections, liveNewPatternBySlug, liveNewProductBySlug, markLiveDiffers } from './liveData'
 import { liveRedirectFor } from './liveRedirects'
@@ -424,7 +425,11 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
 export const hiddenPageTarget = (rawPath: string): string | undefined => {
   const path = rawPath.split(/[?#]/)[0]
   const key = path.endsWith('/') ? path : `${path}/`
-  return LIVE_CATEGORIES.an[key] ?? liveHidden().trang[key]
+  const hidden = LIVE_CATEGORIES.an[key] ?? liveHidden().trang[key]
+  if (hidden) return hidden
+  // Bài viết dựng sẵn Ecopillo chọn "Ẩn" ở Nội dung web → "Bài viết dựng sẵn" (posts.ts): về trang Tin tức
+  const slug = key.match(/^\/([a-z0-9-]+)\/$/)?.[1]
+  return slug && isCodePostHidden(slug) ? PATHS.blog : undefined
 }
 
 /** Trang danh mục đang hiện (có route, được đặt link tới) */

@@ -1,7 +1,7 @@
 import { liveHidden } from './liveData'
 import wordpressIndex from './bai-viet-wp/danh-sach.json'
 import { LIVE_POSTS, type LivePost } from './livePosts'
-import { POSTS, type Post } from './posts'
+import { CODE_POST_SLUGS, POSTS, type Post } from './posts'
 import { POST_SECTIONS, SECTION_LABELS, type PostLabel } from './postSections'
 
 /**
@@ -56,7 +56,8 @@ const livePost = (entry: LivePost): Post => ({
   wp: { date: entry.date, modified: entry.modified, metaTitle: entry.title, description: entry.description, live: true },
 })
 
-const CODE_SLUGS = new Set(POSTS.map((p) => p.slug))
+// Cả bài dựng sẵn đã ẩn: bài WordPress trùng tên không hiện thay
+const CODE_SLUGS = new Set(CODE_POST_SLUGS)
 const LIVE = LIVE_POSTS.filter((p) => !CODE_SLUGS.has(p.slug)).map(livePost)
 const LIVE_SLUGS = new Set(LIVE.map((p) => p.slug))
 
@@ -69,10 +70,11 @@ const MERGED_WORDPRESS: readonly Post[] = [
 /**
  * Bài trong code đứng đầu (bài chọn lọc), sau đó bài WordPress mới nhất trước. Bài có sẵn Ecopillo đã gỡ trong WordPress
  * (nháp, riêng tư, thùng rác, xoá hẳn: đợt E2, plugin an-xoa.php) thì bỏ; link bài chuyển về trang Tin tức (máy chủ trả 301).
+ * Bài dựng sẵn: POSTS đã bỏ bài Ecopillo ẩn ở Nội dung web, mục của bài lấy từ ô "Mục trên web" ở đó (gốc theo bảng postSections.ts).
  */
 const HIDDEN_POSTS = liveHidden().bai
 export const ALL_POSTS: readonly Post[] = [
-  ...POSTS.map((p) => ({ ...p, category: labelOf(p.slug, p.category) })),
+  ...POSTS,
   ...MERGED_WORDPRESS,
 ].filter((p) => !HIDDEN_POSTS.has(p.slug))
 
