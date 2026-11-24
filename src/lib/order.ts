@@ -20,6 +20,7 @@ import { CONTACT } from '../data/brand'
 import { ORDER_CUSTOMER_TEXT, ORDER_SUMMARY_TEXT } from '../data/pageText/orderFlow'
 import { chen } from '../data/pageText/define'
 import { categoryLabel, isValidSingleChoice, singleUnitPrice, type Product } from '../data/products'
+import { countsBySheet } from '../data/productUnits'
 import { DELIVERY_TIME, provinceById, shippingFee, type Province } from './shipping'
 
 export const MAX_QUANTITY = 10
@@ -220,8 +221,8 @@ export const summarizeSingle = (draft: SingleDraft): OrderSummaryData => {
     imageNote: product.imageNote,
     sizeLabel,
     quantity,
-    // Đệm tính "tấm"; topper, bảo vệ đệm, divan cùng nhóm nhưng tính "chiếc"
-    unit: product.category === 'dem' && product.name.startsWith('Đệm') ? ORDER_SUMMARY_TEXT.donViTam : ORDER_SUMMARY_TEXT.donViChiec,
+    // Đệm tính "tấm"; topper, bảo vệ đệm, divan cùng nhóm nhưng tính "chiếc" (theo mã sản phẩm, Ecopillo tích ở Nội dung web: productUnits.ts)
+    unit: countsBySheet(product) ? ORDER_SUMMARY_TEXT.donViTam : ORDER_SUMMARY_TEXT.donViChiec,
     unitPrice: price ?? null,
     giftCount: 0,
   }

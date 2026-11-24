@@ -277,7 +277,7 @@ export function MessageForm({
 
       {failed && (
         <div id={errorId} className="scroll-mt-[5.5rem] scroll-mb-24">
-          <SendFailed what="tin nhắn" />
+          <SendFailed what={CONTACT_PAGE_TEXT.chuaGuiGi} />
         </div>
       )}
 

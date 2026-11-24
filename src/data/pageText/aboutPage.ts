@@ -55,7 +55,17 @@ export const { set: ABOUT_PAGE_TEXT_SET, text: ABOUT_PAGE_TEXT } = definePageTex
     nguoiSangLap: doan(
       'Chương I: đoạn về người sáng lập',
       'Người đặt nền móng cho thương hiệu là chị Phạm Thị Phương, hơn 15 năm trong nghề chăn ga, từ sản xuất đến bán lẻ. Chị luôn trăn trở làm sao để mỗi sản phẩm giúp khách hàng tạo dựng một “Chốn Yên”.',
-      'Tên "chị Phạm Thị Phương" tự in đậm',
+      'Cụm chữ in đậm, in nghiêng ghi ở hai ô ngay dưới',
+    ),
+    nguoiSangLapDam: chu(
+      'Chương I: cụm chữ in đậm trong đoạn người sáng lập',
+      'chị Phạm Thị Phương',
+      'Chép đúng cụm chữ có trong đoạn. Ghi một dấu - để không in đậm chữ nào.',
+    ),
+    nguoiSangLapNghieng: chu(
+      'Chương I: cụm chữ in nghiêng trong đoạn người sáng lập',
+      '“Chốn Yên”',
+      'Chép đúng cụm chữ có trong đoạn (kể cả dấu ngoặc kép). Ghi một dấu - để không in nghiêng chữ nào.',
     ),
     chonYen: doan('Chương II: câu định nghĩa Chốn Yên', '“Chốn Yên”: nơi giấc ngủ lành mạnh được vun đắp và cơ thể được phục hồi trọn vẹn.'),
     anhChonYen: anh('Chương II: ảnh', {
@@ -95,6 +105,7 @@ export const { set: ABOUT_PAGE_TEXT_SET, text: ABOUT_PAGE_TEXT } = definePageTex
     }),
     xemGiayDoc: chu('Chứng nhận: nút mở giấy (trình đọc màn hình)', 'Xem giấy {ten}', '{ten} là tên giấy chứng nhận'),
     banChupGiay: chu('Chứng nhận: chữ thay ảnh bản chụp giấy', 'Bản chụp giấy {ten}', '{ten} là tên giấy chứng nhận'),
+    giayDoc: chu('Chứng nhận: tên hộp xem giấy (trình đọc màn hình)', 'Giấy {ten}', '{ten} là tên giấy chứng nhận'),
     cauTrichDoc: chu('Báo chí: nút logo báo (trình đọc màn hình)', 'Câu trích của {bao}', '{bao} là tên báo'),
   },
 )

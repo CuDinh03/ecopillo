@@ -26,7 +26,8 @@ import {
   type LiveNewPattern,
   type LiveStory,
 } from './liveData'
-import { badgeText, CATALOG_TEXT } from './pageText/catalogText'
+import { badgeText, CATALOG_TEXT, extraPhotoAlt } from './pageText/catalogText'
+import { liveObject, type EditableField, type EditableSet } from './liveContent'
 
 export type SizeId = '160x200' | '180x200' | '200x220'
 
@@ -59,30 +60,103 @@ export interface Gift {
   item: string
 }
 
+/**
+ * Quà kèm khi mua bộ chăn ga: Ecopillo sửa ở Nội dung web → Sản phẩm → Quà kèm bộ chăn ga (owner 24/11/2026: "khách tự sửa
+ * mọi chi tiết"). Ba loại quà (chữ, số món mỗi bộ, đơn vị, tên món) và bộ nào tặng loại nào. Từ 05/11/2026 mọi bộ không tặng quà
+ * (thay bằng thư cảm ơn + ưu đãi 5%, xem thankYou.ts). Chỗ hiện quà đọc GIFTS[collection.gift]: trang bộ sưu tập, thẻ sản phẩm,
+ * bước đặt hàng, tóm tắt đơn, màn hình cảm ơn, đơn gửi đi. Chữ sau tên quà ở trang bộ: bộ "Chữ chung nhiều trang".
+ */
+const GIFT_TIER_FIELDS = [
+  { tier: 'om', khoa: 'om', so: 1, goc: { nhan: 'Tặng vỏ gối ôm cao cấp', so: 1, donVi: 'vỏ', mon: 'gối ôm cao cấp' } },
+  { tier: 'one-plus', khoa: 'mot', so: 2, goc: { nhan: 'Tặng 1 ruột gối Micro Plus', so: 1, donVi: 'ruột gối', mon: 'Micro Plus' } },
+  { tier: 'two-plus', khoa: 'hai', so: 3, goc: { nhan: 'Tặng 2 ruột gối Micro Plus', so: 2, donVi: 'ruột gối', mon: 'Micro Plus' } },
+] as const
+
+/** Bộ có sẵn trong code (mã bộ, tên trên màn hình sửa); bộ Ecopillo tạo mới trong WooCommerce dùng chung ô "Bộ mới" */
+const GIFT_COLLECTIONS = [
+  ['eco-flora', 'Eco Flora'],
+  ['eco-rosa', 'Eco Rosa'],
+  ['eco-tera', 'Eco Tera'],
+  ['eco-vera', 'Eco Vera'],
+  ['eco-sweet', 'Eco Sweet'],
+  ['eco-liora', 'Eco Liora'],
+  ['eco-doris', 'Eco Doris'],
+  ['chan-he-lyocell', 'Chăn hè Lyocell'],
+] as const
+const NEW_COLLECTION_GIFT_KEY = 'quaBoMoi'
+const giftKey = (id: string): string => `qua_${id.replace(/-/g, '_')}`
+
+const GIFT_CHOICES: readonly GiftTier[] = ['none', ...GIFT_TIER_FIELDS.map((t) => t.tier)]
+const GIFT_CHOICE_LABELS = ['Không tặng quà', ...GIFT_TIER_FIELDS.map((t) => `Quà loại ${t.so}`)]
+
+const GIFT_FIELDS: readonly EditableField[] = [
+  ...GIFT_TIER_FIELDS.flatMap(({ khoa, so, goc }) => [
+    { khoa: `${khoa}Nhan`, nhan: `Quà loại ${so}: chữ hiện trên trang bộ`, kieu: 'chu', batBuoc: true, goiY: `Gốc: ${goc.nhan}` } as const,
+    { khoa: `${khoa}So`, nhan: `Quà loại ${so}: số món mỗi bộ`, kieu: 'so', batBuoc: true, goiY: 'Nhân theo số bộ khách đặt' } as const,
+    { khoa: `${khoa}DonVi`, nhan: `Quà loại ${so}: đơn vị`, kieu: 'chu', batBuoc: true, goiY: `Ví dụ "${goc.donVi}" trong "2 ${goc.donVi} ${goc.mon}"` } as const,
+    { khoa: `${khoa}Mon`, nhan: `Quà loại ${so}: tên món`, kieu: 'chu', batBuoc: true, goiY: 'Hiện ở bước đặt hàng, tóm tắt đơn, đơn gửi đi' } as const,
+  ]),
+  ...[...GIFT_COLLECTIONS, [NEW_COLLECTION_GIFT_KEY, 'Bộ mới tạo trong WooCommerce'] as const].map(
+    ([id, name]): EditableField => ({
+      khoa: id === NEW_COLLECTION_GIFT_KEY ? id : giftKey(id),
+      nhan: `${name}: quà kèm`,
+      kieu: 'chon',
+      batBuoc: true,
+      luaChon: GIFT_CHOICES,
+      nhanLuaChon: GIFT_CHOICE_LABELS,
+    }),
+  ),
+]
+
+const BASE_GIFTS: Readonly<Record<string, string | number>> = {
+  ...Object.fromEntries(
+    GIFT_TIER_FIELDS.flatMap(({ khoa, goc }) => [
+      [`${khoa}Nhan`, goc.nhan],
+      [`${khoa}So`, goc.so],
+      [`${khoa}DonVi`, goc.donVi],
+      [`${khoa}Mon`, goc.mon],
+    ]),
+  ),
+  // Mọi bộ không tặng quà từ 05/11/2026
+  ...Object.fromEntries(GIFT_COLLECTIONS.map(([id]) => [giftKey(id), 'none'])),
+  [NEW_COLLECTION_GIFT_KEY]: 'none',
+}
+
+export const GIFTS_SET: EditableSet = {
+  khoa: 'qua-kem-bo-chan-ga',
+  nhom: 'Sản phẩm',
+  ten: 'Quà kèm bộ chăn ga',
+  moTa: 'Ba loại quà kèm khi mua bộ chăn ga (chữ, số món, đơn vị, tên món) và bộ nào tặng loại quà nào. Chọn "Không tặng quà" thì trang bộ, thẻ sản phẩm, đặt hàng không nhắc quà.',
+  kieu: 'mot',
+  goc: BASE_GIFTS,
+  truong: GIFT_FIELDS,
+}
+
+const LIVE_GIFTS = liveObject(GIFTS_SET.khoa, BASE_GIFTS, GIFT_FIELDS)
+
+const liveTier = (tier: GiftTier, khoa: string): Gift => ({
+  tier,
+  label: String(LIVE_GIFTS[`${khoa}Nhan`]),
+  // Bộ đã chọn loại quà thì ít nhất một món
+  perSet: Math.max(1, Math.round(Number(LIVE_GIFTS[`${khoa}So`]) || 1)),
+  unit: String(LIVE_GIFTS[`${khoa}DonVi`]),
+  item: String(LIVE_GIFTS[`${khoa}Mon`]),
+})
+
 export const GIFTS: Readonly<Record<GiftTier, Gift>> = {
-  om: { tier: 'om', label: 'Tặng vỏ gối ôm cao cấp', perSet: 1, unit: 'vỏ', item: 'gối ôm cao cấp' },
-  'one-plus': {
-    tier: 'one-plus',
-    label: 'Tặng 1 ruột gối Micro Plus',
-    perSet: 1,
-    unit: 'ruột gối',
-    item: 'Micro Plus',
-  },
-  'two-plus': {
-    tier: 'two-plus',
-    label: 'Tặng 2 ruột gối Micro Plus',
-    perSet: 2,
-    unit: 'ruột gối',
-    item: 'Micro Plus',
-  },
+  om: liveTier('om', 'om'),
+  'one-plus': liveTier('one-plus', 'mot'),
+  'two-plus': liveTier('two-plus', 'hai'),
   none: { tier: 'none', label: '', perSet: 0, unit: '', item: '' },
 }
 
-/**
- * Bậc quà kèm khi mua bộ chăn ga. Từ 05/11/2026 mọi bộ để `gift: 'none'`
- * (thay bằng thư cảm ơn + ưu đãi 5%, xem thankYou.ts). Giữ bảng này để chỗ đọc
- * `GIFTS[collection.gift]` (thẻ sản phẩm, đặt hàng) vẫn chạy khi `perSet === 0`.
- */
+const asTier = (value: unknown): GiftTier => (GIFT_CHOICES.includes(value as GiftTier) ? (value as GiftTier) : 'none')
+
+/** Loại quà Ecopillo chọn cho một bộ có sẵn */
+const giftOf = (id: (typeof GIFT_COLLECTIONS)[number][0]): GiftTier => asTier(LIVE_GIFTS[giftKey(id)])
+
+/** Loại quà của bộ Ecopillo tạo mới trong WooCommerce */
+const NEW_COLLECTION_GIFT: GiftTier = asTier(LIVE_GIFTS[NEW_COLLECTION_GIFT_KEY])
 
 export interface Pattern {
   code: string
@@ -205,7 +279,7 @@ const BASE_COLLECTIONS: readonly Collection[] = [
       'Bộ ga chun Lyocell chần thủ công từng đường, họa tiết cánh hoa và vân đá nhẹ nhàng. Lựa chọn khởi đầu cho phòng ngủ thanh lịch.',
     prices: price(3_500_000, 3_600_000, 3_800_000),
     // Mục 11 phản hồi 05/11/2026: bỏ quà kèm (ruột gối / vỏ gối ôm), thay bằng thư cảm ơn + ưu đãi 5%
-    gift: 'none',
+    gift: giftOf('eco-flora'),
     contents: SET_CHUN_CONTENTS,
     imageNote: 'Ảnh phòng ngủ trải bộ Eco Flora EF06',
     cover: 'EF06',
@@ -236,7 +310,7 @@ const BASE_COLLECTIONS: readonly Collection[] = [
       'Bộ chăn ga Lyocell Eco Rosa in hoạt tính: hoa lá, hình học, họa tiết cho bé, màu tươi và bền. Mẫu mới ER45–ER49, đặt online.',
     ...badgeText(CATALOG_TEXT.nhanRosa),
     prices: price(4_950_000, 5_320_000, 5_690_000),
-    gift: 'none',
+    gift: giftOf('eco-rosa'),
     contents: SET_PHU_OR_CHUN_CONTENTS,
     hasFittedOption: true,
     imageNote: 'Ảnh phòng ngủ trải bộ Eco Rosa ER48',
@@ -286,7 +360,7 @@ const BASE_COLLECTIONS: readonly Collection[] = [
     description:
       'Lyocell trơn một màu với ánh lụa nhẹ, viền chần nổi quanh ga phủ. Sáu gam màu từ xanh da trời, hồng phấn đến kem và xám.',
     prices: price(5_040_000, 5_380_000, 5_720_000),
-    gift: 'none',
+    gift: giftOf('eco-tera'),
     contents: SET_PHU_OR_CHUN_CONTENTS,
     hasFittedOption: true,
     imageNote: 'Ảnh bộ Eco Tera ET04',
@@ -309,7 +383,7 @@ const BASE_COLLECTIONS: readonly Collection[] = [
     description:
       'Họa tiết hoa lá và hình học mềm mại trên nền Lyocell pastel, hợp phòng ngủ sáng màu và nhiều ánh nắng.',
     prices: price(5_600_000, 5_600_000, 5_790_000),
-    gift: 'none',
+    gift: giftOf('eco-vera'),
     contents: SET_PHU_OR_CHUN_CONTENTS,
     hasFittedOption: true,
     imageNote: 'Ảnh bộ Eco Vera EV02',
@@ -332,7 +406,7 @@ const BASE_COLLECTIONS: readonly Collection[] = [
     description:
       'Hoa văn được dệt thẳng vào sợi Lyocell bằng kỹ thuật Jacquard, nổi khối tinh tế dưới ánh sáng. Bền màu, càng dùng càng mềm.',
     prices: price(7_890_000, 8_780_000, 9_660_000),
-    gift: 'none',
+    gift: giftOf('eco-sweet'),
     contents: SET_PHU_CONTENTS,
     imageNote: 'Ảnh bộ Eco Sweet ES06',
     cover: 'ES06',
@@ -353,7 +427,7 @@ const BASE_COLLECTIONS: readonly Collection[] = [
     description:
       'Vải dệt kim sa độc quyền, từng sợi kim tuyến lấp lánh nhẹ trên nền hồng đào, xám, vàng ánh kim. Hợp làm quà cưới, quà tân gia cho những người thân yêu.',
     prices: price(8_020_000, 8_020_000, 8_280_000),
-    gift: 'none',
+    gift: giftOf('eco-liora'),
     contents: SET_PHU_CONTENTS,
     imageNote: 'Ảnh bộ Eco Liora EL10',
     cover: 'EL10',
@@ -375,7 +449,7 @@ const BASE_COLLECTIONS: readonly Collection[] = [
       'Tuyển chọn sợi Lyocell đẹp nhất, chần thêu dày và đều, đường may 4 mũi/cm chắc chắn. Tinh hoa của hơn 15 năm làm nghề.',
     ...badgeText(CATALOG_TEXT.nhanDoris),
     prices: price(10_000_000, 10_000_000, 10_360_000),
-    gift: 'none',
+    gift: giftOf('eco-doris'),
     contents: DORIS_CONTENTS,
     imageNote: 'Ảnh bộ Eco Doris ED25',
     cover: 'ED25',
@@ -405,7 +479,7 @@ const BASE_COLLECTIONS: readonly Collection[] = [
     description: 'Vỏ Lyocell chần bông mỏng, đắp mát mùa hè, dùng riêng hoặc phối cùng bộ ga.',
     // Bảng giá 2026 chỉ có một cỡ chăn 200×220 (1.380.000đ), đắp được cho cả ba cỡ giường
     prices: price(1_380_000, 1_380_000, 1_380_000),
-    gift: 'none',
+    gift: giftOf('chan-he-lyocell'),
     contents: ['1 chăn hè Lyocell chần bông mỏng'],
     imageNote: 'Ảnh chăn hè Lyocell ER38',
     // Ảnh đại diện trước đây là ER12 (ảnh 01 in chữ chất liệu cũ, đã bỏ); giữ ER38
@@ -437,7 +511,7 @@ const withPatternContent = (collection: Collection, pattern: Pattern): Pattern =
     colorName,
     ...(live.mauNen ? { swatch: live.mauNen } : {}),
     ...(live.anh ? { hasImage: true, image: { ...live.anh, alt: live.anh.alt || alt } } : {}),
-    ...(live.anhPhu ? { hasImage: true, gallery: live.anhPhu.map((img, i) => ({ ...img, alt: img.alt || `${alt} · ảnh ${i + 2}` })) } : {}),
+    ...(live.anhPhu ? { hasImage: true, gallery: live.anhPhu.map((img, i) => ({ ...img, alt: img.alt || extraPhotoAlt(alt, i + 2) })) } : {}),
     ...(live.cauChuyen ? { liveStory: storyOf(live.cauChuyen) } : {}),
   }
 }
@@ -476,7 +550,7 @@ const newPattern = (collection: Collection, p: LiveNewPattern): Pattern => {
     hasImage: true,
     slug: p.duongDan,
     image: { ...p.anh, alt: p.anh.alt || `${collection.name} ${p.ma} · ${p.ten}` },
-    gallery: p.anhPhu.map((img, i) => ({ ...img, alt: img.alt || `${collection.name} ${p.ma} · ${p.ten} · ảnh ${i + 2}` })),
+    gallery: p.anhPhu.map((img, i) => ({ ...img, alt: img.alt || extraPhotoAlt(`${collection.name} ${p.ma} · ${p.ten}`, i + 2) })),
     prices,
     ...(chun && collection.hasFittedOption ? { fittedPrices: chun } : {}),
     ...(soldOut.length ? { soldOut } : {}),
@@ -513,7 +587,7 @@ const KIND_OF_NEW: Readonly<Record<LiveNewCollection['kieu'], Pick<Collection, '
   'ga-phu': { kind: 'ga-phu', kindLabel: CATALOG_TEXT.loaiMoiGaPhu, contents: SET_PHU_CONTENTS },
   'ga-chun': { kind: 'ga-chun', kindLabel: CATALOG_TEXT.loaiMoiGaChun, contents: SET_CHUN_CONTENTS },
   'chan-ga': { kind: 'chan-ga', kindLabel: CATALOG_TEXT.loaiMoiChanGa, contents: SET_PHU_CONTENTS },
-  'chan-he': { kind: 'chan-he', kindLabel: CATALOG_TEXT.loaiMoiChanHe, contents: ['1 chăn hè chần bông mỏng'] },
+  'chan-he': { kind: 'chan-he', kindLabel: CATALOG_TEXT.loaiMoiChanHe, contents: CATALOG_TEXT.trongBoChanHeMoi },
 }
 
 /**
@@ -530,7 +604,7 @@ const newCollection = (live: LiveNewCollection): Collection => {
     tagline: live.khauHieu,
     description: live.moTa || live.khauHieu,
     prices,
-    gift: 'none',
+    gift: NEW_COLLECTION_GIFT,
     imageNote: '',
     patterns: [],
     cover: live.mau[0].ma,
@@ -788,7 +862,7 @@ export const patternGallery = (collection: Collection, pattern: Pattern | undefi
   const baseAlt = `${collection.name} ${pattern.code} · ${pattern.colorName}`
   return Array.from({ length: n }, (_, i) => {
     const idx = i + 2
-    return patternImage(`${key}-${idx}`, `${baseAlt} · ảnh ${idx}`)
+    return patternImage(`${key}-${idx}`, extraPhotoAlt(baseAlt, idx))
   })
 }
 

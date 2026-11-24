@@ -102,5 +102,7 @@ export const { set: PRIVACY_TEXT_SET, text: PRIVACY_TEXT } = definePageText(
       'Theo Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân. Ecopillo chỉ dùng thông tin Quý khách cung cấp để giao hàng và chăm sóc khách hàng.',
     ),
     lienHeTieuDe: chu('Tiêu đề phần Liên hệ', '8. Liên hệ về thông tin cá nhân'),
+    lienHeHotline: chu('Phần Liên hệ: chữ trước số hotline', 'Hotline/Zalo:', 'Số hotline lấy ở bộ Thông tin liên hệ'),
+    lienHeEmail: chu('Phần Liên hệ: chữ trước email', 'Email:', 'Email lấy ở bộ Thông tin liên hệ'),
   },
 )

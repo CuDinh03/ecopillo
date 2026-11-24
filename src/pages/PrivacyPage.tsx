@@ -44,13 +44,13 @@ export function PrivacyPage() {
                 <h2 className="font-display text-[1.6rem] leading-tight text-deep-900 sm:text-[1.85rem]">{PRIVACY_TEXT.lienHeTieuDe}</h2>
                 <ul className="mt-4 space-y-2 leading-relaxed text-ink-soft">
                   <li>
-                    Hotline/Zalo:{' '}
+                    {PRIVACY_TEXT.lienHeHotline}{' '}
                     <a href={CONTACT.hotlineTel} className="-my-2 inline-flex min-h-11 items-center tabular text-deep-900 underline underline-offset-2">
                       {CONTACT.hotlineDisplay}
                     </a>
                   </li>
                   <li>
-                    Email:{' '}
+                    {PRIVACY_TEXT.lienHeEmail}{' '}
                     <a href={`mailto:${CONTACT.email}`} className="-my-2 inline-flex min-h-11 items-center text-deep-900 underline underline-offset-2">
                       {CONTACT.email}
                     </a>

@@ -39,6 +39,9 @@ import { FONT_SET, THEME_SET } from './theme'
 import { LAYOUT_SETS } from './pageLayout'
 import { REDIRECT_SET } from './liveRedirects'
 import { SEO_SET } from './liveSeo'
+import { PRODUCT_REVIEW_TEXT_SET, PRODUCT_REVIEWS_SET } from './productReviews'
+import { GIFTS_SET } from './catalog'
+import { PRODUCT_UNIT_SET } from './productUnits'
 import { PRICE_BAND_SETS } from './priceBands'
 import { SHELF_SET } from './productShelves'
 import { LISTING_ORDER_SET } from './listingProducts'
@@ -92,6 +95,10 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   PRODUCT_MENU_SET,
   LISTING_PRODUCTS_SET,
   LISTING_ORDER_SET,
+  PRODUCT_REVIEWS_SET,
+  PRODUCT_REVIEW_TEXT_SET,
+  GIFTS_SET,
+  PRODUCT_UNIT_SET,
   SHELF_SET,
   ...PRICE_BAND_SETS,
   TONE_SET,

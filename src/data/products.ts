@@ -17,6 +17,7 @@ import {
   type SizeId,
 } from './catalog'
 import { chen } from './pageText/define'
+import { extraPhotoAlt } from './pageText/catalogText'
 import { PRODUCT_LABELS } from './pageText/productLabels'
 import { PRICE_BANDS, type PriceBand } from './priceBands'
 import { PRODUCTS_PAGE_TEXT } from './pageText/products'
@@ -918,7 +919,7 @@ const withLiveContent = (p: Product): Product => {
     ...base,
     ...(live.ten ? { name: live.ten } : {}),
     ...(live.anh ? { image: { ...live.anh, alt: live.anh.alt || live.ten || p.name } } : {}),
-    ...(live.anhPhu ? { gallery: live.anhPhu.map((img, i) => ({ ...img, alt: img.alt || `${live.ten ?? p.name} · ảnh ${i + 2}` })) } : {}),
+    ...(live.anhPhu ? { gallery: live.anhPhu.map((img, i) => ({ ...img, alt: img.alt || extraPhotoAlt(live.ten ?? p.name, i + 2) })) } : {}),
     ...(live.tomTat ? { summary: live.tomTat } : {}),
     ...(live.chiTiet ? { details: live.chiTiet } : {}),
     ...(live.thongSo ? { specs: live.thongSo.map((s) => ({ label: s.nhan, value: s.giaTri })), specsFromWoo: true } : {}),

@@ -91,6 +91,11 @@ export const { set: PRODUCT_DETAIL_TEXT_SET, text: PRODUCT_DETAIL_TEXT } = defin
     chatLieu: chu('Thẻ thông tin: tiêu đề chất liệu', 'Chất liệu & đặc điểm'),
     giaoHang: chu('Thẻ thông tin: tiêu đề giao hàng', 'Giao hàng, đổi trả & bảo hành'),
     baoHanhTu: chu('Thẻ giao hàng: chữ trước thời hạn bảo hành', 'Bảo hành tính từ ngày mua:'),
+    thongSoBaoHanh: chu(
+      'Thẻ giao hàng: tên thông số dùng làm thời hạn bảo hành',
+      'Bảo hành',
+      'Thông số sản phẩm (WooCommerce → thuộc tính) mang tên này thì web lấy giá trị làm thời hạn bảo hành. Không có thì lấy theo nhóm sản phẩm.',
+    ),
     xemTatCa: chu('Phần sản phẩm gợi ý: link "Xem tất cả"', 'Xem tất cả'),
     ariaGoiHotline: chu('Thanh mua điện thoại: nút gọi (trình đọc màn hình)', 'Gọi hotline {so}', '{so} là số hotline.'),
     ariaZalo: chu('Thanh mua điện thoại: nút Zalo (trình đọc màn hình)', 'Nhắn Zalo Ecopillo'),

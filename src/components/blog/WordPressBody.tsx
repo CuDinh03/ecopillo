@@ -17,6 +17,14 @@ const BODIES = import.meta.glob<{ html: string }>('../../data/bai-viet-wp/bai/*.
 
 const cache = new Map<string, ComponentType>()
 
+/**
+ * Bài lấy về lúc dựng đã có sẵn tên bảng cho trình đọc màn hình (tools/lay-bai-viet-wordpress.mjs, chữ gốc);
+ * đổi sang chữ Ecopillo sửa ở Nội dung web (Trang Tin tức → "Bài viết: tên bảng"). Chữ không đổi thì HTML giữ nguyên.
+ */
+const BAKED_TABLE_LABEL = 'aria-label="Bảng, cuộn ngang để xem hết"'
+const escapeAttr = (text: string): string => text.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+const withTableLabel = (html: string): string => html.split(BAKED_TABLE_LABEL).join(`aria-label="${escapeAttr(BLOG_TEXT.bangCuon)}"`)
+
 /** Không nạp được thân bài Ecopillo vừa đăng (mạng chập chờn, plugin chưa ghi xong) */
 function BodyError() {
   return (
@@ -48,7 +56,8 @@ function bodyOf(slug: string, live: { title: string } | undefined): ComponentTyp
   const Body = lazy(async () => {
     if (live) return loadLive(slug, live.title)
     const { html } = load ? await load() : { html: '' }
-    return { default: () => <div className="bai-wp" dangerouslySetInnerHTML={{ __html: html }} /> }
+    const body = withTableLabel(html)
+    return { default: () => <div className="bai-wp" dangerouslySetInnerHTML={{ __html: body }} /> }
   })
   cache.set(key, Body)
   return Body

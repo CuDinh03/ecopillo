@@ -22,5 +22,6 @@ export const { set: BLOG_TEXT_SET, text: BLOG_TEXT } = definePageText(
     dangTai: chu('Bài viết: chữ khi đang tải thân bài', 'Đang tải bài viết…'),
     loiTai: doan('Bài viết: chữ khi không tải được thân bài', 'Chưa tải được nội dung bài. Quý khách tải lại trang giúp Ecopillo.'),
     chuDeDoc: chu('Hàng nút lọc: tên cho trình đọc màn hình', 'Chủ đề'),
+    bangCuon: chu('Bài viết: tên bảng cho trình đọc màn hình', 'Bảng, cuộn ngang để xem hết', 'Bảng rộng trong thân bài được cuộn ngang trên điện thoại'),
   },
 )

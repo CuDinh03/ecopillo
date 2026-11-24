@@ -47,7 +47,7 @@ export const REVIEWS_SET: EditableSet = {
   khoa: 'danh-gia',
   nhom: 'Trang chủ',
   ten: 'Cảm nhận khách hàng',
-  moTa: 'Các ô cảm nhận của khách ở trang chủ. Chỉ đưa lời khách thật, có khách đồng ý.',
+  moTa: 'Các ô cảm nhận của khách ở trang chủ. Chỉ đưa lời khách thật, có khách đồng ý. Các dòng có sẵn là mẫu: khối chỉ hiện trên web sau khi Quý vị thay bằng cảm nhận thật và bấm Lưu; "Trả về nội dung gốc" là ẩn lại.',
   kieu: 'nhieu',
   goc: BASE_REVIEWS,
   tieuDeDong: 'name',
@@ -184,78 +184,12 @@ export const FAQS_SET: EditableSet = {
 
 export const FAQS: readonly Faq[] = liveList(FAQS_SET.khoa, BASE_FAQS, FAQS_SET.truong, (): Faq => ({ q: '', a: [] }))
 
-/* ——— Nhận xét chi tiết từng sản phẩm (biên bản mục 42) ——— */
-
-export const REVIEW_CRITERIA = ['Chất liệu', 'Đường may, hoàn thiện', 'Đúng như ảnh', 'Giao hàng, đóng gói'] as const
-
-export interface ProductReview {
-  name: string
-  place: string
-  /** Mẫu / kích thước đã mua */
-  bought: string
-  stars: number
-  quote: string
-  /** Điểm theo từng tiêu chí, cùng thứ tự với REVIEW_CRITERIA */
-  scores: readonly [number, number, number, number]
-}
-
-// NỘI DUNG MẪU để dựng giao diện — thay bằng nhận xét thật Ecopillo gửi (tên, tỉnh, mẫu đã mua, đồng ý đăng).
-const SAMPLE_BY_CATEGORY: Readonly<Record<string, readonly ProductReview[]>> = {
-  'bo-chan-ga': [
-    {
-      name: 'Chị Minh Anh',
-      place: 'Cầu Giấy, Hà Nội',
-      bought: '180 × 200 cm',
-      stars: 5,
-      quote: 'Vải mát thật sự, mùa hè nằm không bí lưng. Đường chần đều, giặt mấy lần vẫn phẳng.',
-      scores: [5, 5, 5, 4],
-    },
-    {
-      name: 'Anh Quốc Huy',
-      place: 'Gò Vấp, TP. HCM',
-      bought: '160 × 200 cm',
-      stars: 5,
-      quote: 'Mua làm quà cưới, hộp đóng gói chỉn chu. Màu ngoài đời nhã hơn ảnh một chút.',
-      scores: [5, 5, 4, 5],
-    },
-  ],
-  chan: [
-    {
-      name: 'Chị Thu Hà',
-      place: 'Long Biên, Hà Nội',
-      bought: '200 × 220 cm',
-      stars: 5,
-      quote: 'Chăn nhẹ, đắp không bị nặng ngực mà vẫn đủ ấm. Con nhỏ da nhạy cảm dùng không bị mẩn.',
-      scores: [5, 5, 5, 5],
-    },
-  ],
-  goi: [
-    {
-      name: 'Anh Tuấn',
-      place: 'Hải Phòng',
-      bought: '45 × 65 cm',
-      stars: 5,
-      quote: 'Gối êm vừa phải, sáng dậy không mỏi cổ. Nhân viên gọi xác nhận rất nhanh.',
-      scores: [5, 4, 5, 5],
-    },
-  ],
-  dem: [
-    {
-      name: 'Chị Lan Phương',
-      place: 'Thủ Đức, TP. HCM',
-      bought: '180 × 200 cm',
-      stars: 4,
-      quote: 'Đệm nâng lưng tốt, nằm nghiêng không bị lún vai. Giao hơi muộn một ngày nhưng có báo trước.',
-      scores: [5, 5, 5, 4],
-    },
-  ],
-}
-
-export const reviewsForCategory = (category: string): readonly ProductReview[] => SAMPLE_BY_CATEGORY[category] ?? []
+/* ——— Nhận xét từng sản phẩm (biên bản mục 42): src/data/productReviews.ts (Ecopillo tự thêm ở Nội dung web) ——— */
 
 /**
- * Nhận xét ở trên (REVIEWS, SAMPLE_BY_CATEGORY) đều là NỘI DUNG MẪU để dựng giao diện. Owner bảo bỏ hết nhãn chờ (28/10/2026):
- * bỏ nhãn "nhận xét mẫu" mà vẫn hiện thì thành nhận xét bịa, nên khối nhận xét ẩn hẳn ở trang chủ và trang sản phẩm.
- * Có nhận xét thật Ecopillo gửi (tên, tỉnh, mẫu đã mua, đồng ý đăng) thì thay dữ liệu mẫu rồi đổi thành true.
+ * Cảm nhận khách ở trang chủ: dữ liệu trong code (BASE_REVIEWS) là NỘI DUNG MẪU để dựng giao diện, không bao giờ hiện
+ * (owner 28/10/2026 bỏ nhãn chờ: hiện mẫu là nhận xét bịa). Khối hiện khi Ecopillo đã lưu cảm nhận thật ở Nội dung web
+ * → "Cảm nhận khách" (đợt G: khách tự bật được, không cần sửa code); ẩn lại bằng Bố cục trang chủ hoặc "Trả về nội dung gốc".
+ * Nhận xét trên trang sản phẩm không theo cờ này: hiện khi Ecopillo đã thêm nhận xét cho sản phẩm đó.
  */
-export const REVIEWS_ARE_REAL = false
+export const REVIEWS_ARE_REAL: boolean = REVIEWS !== BASE_REVIEWS
