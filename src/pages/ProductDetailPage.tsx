@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { STOCK_TEXT } from '../data/pageText/stock'
+import { isChoiceSoldOut, isFullySoldOut, isVariantOptionSoldOut } from '../lib/stock'
 import { Blocks } from '../components/ui/Blocks'
 import { PRODUCT_DETAIL_ORDER } from '../data/pageLayout'
 import { Link, useLocation, useParams } from 'react-router-dom'
@@ -78,7 +80,12 @@ function ProductDetail({ product }: { product: Product }) {
   const [thickness, setThickness] = useState<string | null>(variants?.thicknesses.length === 1 ? variants.thicknesses[0] : null)
   const [choiceId, setChoiceId] = useState<string | null>(null)
   const choice = product.choices?.find((c) => c.id === choiceId)
-  const singleUrl = variants ? singleOrderUrl(product, variantSize, thickness) : singleOrderUrl(product, choiceId)
+  // Hết hàng Ecopillo báo trong Woo (đợt F): lựa chọn đang chọn đã hết, hoặc cả sản phẩm hết, thì không mở trang đặt hàng
+  const allOut = isFullySoldOut(product)
+  const selectedOut = allOut || (variants ? isChoiceSoldOut(product, variantSize, thickness) : product.choices ? isChoiceSoldOut(product, choiceId) : false)
+  const selectedLabel = variants ? [variantSize, thickness].filter(Boolean).join(' · ') : (product.choices?.find((c) => c.id === choiceId)?.label ?? '')
+  const orderUrl = variants ? singleOrderUrl(product, variantSize, thickness) : singleOrderUrl(product, choiceId)
+  const singleUrl = selectedOut ? null : orderUrl
   // Giá các tổ hợp còn hợp với lựa chọn hiện tại (chưa chọn ô nào thì là mọi giá)
   const variantPrices = (size: string | null, t: string | null): number[] =>
     variants
@@ -155,6 +162,7 @@ function ProductDetail({ product }: { product: Product }) {
             >
               {topPrice}
             </p>
+            {allOut && <p className="mt-3 text-sm font-medium text-alert">{STOCK_TEXT.caSanPhamHet}</p>}
             <p className="mt-2 text-sm text-ink-soft">{product.summary}</p>
 
             <div className="mt-8 space-y-6">
@@ -167,6 +175,7 @@ function ProductDetail({ product }: { product: Product }) {
                     value={variantSize}
                     onChange={setVariantSize}
                     priceOf={(size) => variantPrices(size, thickness)}
+                    soldOutOf={(size) => isVariantOptionSoldOut(product, size, thickness)}
                   />
                   <VariantGroup
                     label={T.doDay}
@@ -174,6 +183,7 @@ function ProductDetail({ product }: { product: Product }) {
                     value={thickness}
                     onChange={setThickness}
                     priceOf={(t) => variantPrices(variantSize, t)}
+                    soldOutOf={(t) => isVariantOptionSoldOut(product, variantSize, t)}
                   />
                 </>
               )}
@@ -186,6 +196,7 @@ function ProductDetail({ product }: { product: Product }) {
                     const price = product.choices?.find((c) => c.label === label)?.price
                     return price === undefined ? [] : [price]
                   }}
+                  soldOutOf={(label) => isChoiceSoldOut(product, product.choices?.find((c) => c.label === label)?.id ?? null)}
                   onChange={(label) => {
                     const next = product.choices?.find((c) => c.label === label)
                     setChoiceId(next?.id ?? null)
@@ -201,6 +212,9 @@ function ProductDetail({ product }: { product: Product }) {
                     ? T.baoGiaChinhXac
                     : chen(T.baoGiaCo, { co: choice.label })}
                 </p>
+              )}
+              {selectedOut && !allOut && selectedLabel && (
+                <p className="text-sm font-medium text-alert">{chen(STOCK_TEXT.luaChonHet, { chon: selectedLabel })}</p>
               )}
               {specs.length > 0 && (
                 <dl className="grid grid-cols-2 gap-3 rounded-2xl bg-cream-50 p-4 shadow-[var(--shadow-soft)]">
@@ -247,7 +261,7 @@ function ProductDetail({ product }: { product: Product }) {
         />
       </Container>
 
-      <MobileBuyBar product={product} size={null} unitPrice={singlePrice ?? null} singleUrl={singleUrl} />
+      <MobileBuyBar product={product} size={null} unitPrice={singlePrice ?? null} singleUrl={singleUrl} isSoldOut={selectedOut} />
     </div>
   )
 }
@@ -260,13 +274,15 @@ interface VariantGroupProps {
   onChange: (value: string) => void
   /** Các giá có thể của lựa chọn (một giá, hoặc khoảng khi ô bên kia chưa chọn); rỗng = chưa có giá, ghi "Báo giá khi gọi" */
   priceOf: (option: string) => readonly number[]
+  /** Lựa chọn tạm hết hàng (đợt F): ô mờ, ghi "Tạm hết hàng" thay giá, không bấm được (trừ ô đang chọn, để bỏ được) */
+  soldOutOf?: (option: string) => boolean
 }
 
 /**
  * Ô chọn kích thước, độ dày, mẫu: mỗi ô ghi giá của lựa chọn đó (owner 18/11/2026: "cho giá hiện ở ô kích thước của
  * từng sản phẩm"), cùng kiểu ô kích thước trang bộ sưu tập (ChapterBuy) và bước đặt hàng.
  */
-function VariantGroup({ label, options, value, onChange, priceOf }: VariantGroupProps) {
+function VariantGroup({ label, options, value, onChange, priceOf, soldOutOf }: VariantGroupProps) {
   return (
     <fieldset>
       <legend className="text-sm font-medium text-deep-900">
@@ -281,18 +297,22 @@ function VariantGroup({ label, options, value, onChange, priceOf }: VariantGroup
         {options.map((option) => {
           const active = option === value
           const prices = priceOf(option)
+          const soldOut = soldOutOf?.(option) ?? false
           return (
             <button
               key={option}
               type="button"
               aria-pressed={active}
+              disabled={soldOut && !active}
               onClick={() => onChange(option)}
               className={`flex min-w-0 flex-col items-start rounded-2xl px-4 py-3 text-left transition ${
                 active ? 'bg-mist-50 ring-2 ring-deep-800' : 'bg-ivory ring-1 ring-cream-200 hover:ring-deep-700'
-              }`}
+              } ${soldOut ? 'cursor-not-allowed opacity-55' : ''}`}
             >
-              <span className="text-sm font-medium text-deep-900">{option}</span>
-              <span className="tabular mt-0.5 text-meta text-ink-soft">{prices.length ? formatRange(Math.min(...prices), Math.max(...prices)) : T.baoGiaKhiGoi}</span>
+              <span className={`text-sm font-medium text-deep-900 ${soldOut ? 'line-through' : ''}`}>{option}</span>
+              <span className="tabular mt-0.5 text-meta text-ink-soft">
+                {soldOut ? STOCK_TEXT.tamHet : prices.length ? formatRange(Math.min(...prices), Math.max(...prices)) : T.baoGiaKhiGoi}
+              </span>
             </button>
           )
         })}

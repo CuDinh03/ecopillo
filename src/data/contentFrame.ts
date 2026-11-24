@@ -39,6 +39,7 @@ import { FONT_SET, THEME_SET } from './theme'
 import { LAYOUT_SETS } from './pageLayout'
 import { REDIRECT_SET } from './liveRedirects'
 import { SEO_SET } from './liveSeo'
+import { STOCK_TEXT_SET } from './pageText/stock'
 import { POLICY_NAV_TEXT_SET } from './policyNav'
 import { HOME_COLLECTIONS_SET } from './collectionGroups'
 import { PRODUCT_MENU_TEXT_SET } from './productMenu'
@@ -97,6 +98,7 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   PRODUCT_LIST_TEXT_SET,
   PRODUCT_LABELS_SET,
   PRODUCT_DETAIL_TEXT_SET,
+  STOCK_TEXT_SET,
   COLLECTION_PAGE_TEXT_SET,
   LISTING_HEAD_SET,
   LISTING_GUIDES_SET,

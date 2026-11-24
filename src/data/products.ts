@@ -1,5 +1,5 @@
 import { formatRange, formatVND } from '../lib/format'
-import { liveHidden, liveNewProducts, liveProduct, liveProductContent, markLiveDiffers, mergePrices, type LiveNewProduct } from './liveData'
+import { liveHidden, liveNewProducts, liveProduct, liveProductContent, liveSoldOut, markLiveDiffers, mergePrices, type LiveNewProduct } from './liveData'
 import { slugify } from '../lib/slug'
 import { collectionPath, LISTINGS, PATHS, singleProductPath, WOO_CATEGORY_LISTINGS } from './links'
 import {
@@ -65,6 +65,11 @@ export interface ProductChoice {
 }
 
 export interface Product {
+  /**
+   * Lựa chọn tạm hết hàng Ecopillo báo trong Woo (đợt F, ton-kho.php): id lựa chọn, "cỡ|độ dày", hoặc "mac-dinh" (sản phẩm
+   * một giá). Không có thì còn hàng. Hàm đọc: src/lib/stock.ts
+   */
+  soldOut?: readonly string[]
   slug: string
   name: string
   category: CategoryId
@@ -932,7 +937,15 @@ function newProductOf(v: LiveNewProduct): Product | undefined {
 }
 
 /** Ảnh, giá, nội dung Woo cho một sản phẩm có sẵn */
-const finishProduct = (p: Product): Product => withLiveContent(withLivePrice(withPhoto(p)))
+/** Hết hàng Ecopillo báo trong Woo (đợt F): HTML dựng sẵn ghi còn hàng, nên báo vẽ lại */
+const withStock = (p: Product): Product => {
+  const soldOut = p.collection ? undefined : liveSoldOut(p.slug)
+  if (!soldOut?.length) return p
+  markLiveDiffers()
+  return { ...p, soldOut }
+}
+
+const finishProduct = (p: Product): Product => withStock(withLiveContent(withLivePrice(withPhoto(p))))
 
 const BASE_PRODUCTS: readonly Product[] = [
   ...ALL_COLLECTIONS.map(collectionProduct),

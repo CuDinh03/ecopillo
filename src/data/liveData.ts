@@ -197,6 +197,8 @@ interface LiveData {
   danhMuc: LiveCategories
   seo: Readonly<Record<string, LiveSeo>>
   an: LiveHidden
+  /** Lựa chọn hết hàng của sản phẩm lẻ có sẵn (ton-kho.php, đợt F): khoá sản phẩm → id lựa chọn / "cỡ|độ dày" / "mac-dinh" */
+  hetSanPham: Readonly<Record<string, readonly string[]>>
 }
 
 const isPrice = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v > 0 && v < 1e10
@@ -481,11 +483,11 @@ function cleanHidden(input: unknown): LiveHidden {
 const NO_HIDDEN: LiveHidden = { sanPham: new Set(), mau: new Set(), bo: new Set(), bai: new Set(), trang: {} }
 
 function read(): LiveData {
-  const empty: LiveData = { mau: {}, sanPham: {}, mauMoi: [], sanPhamMoi: [], noiDungSanPham: {}, noiDungMau: {}, boSuuTapMoi: [], boSuuTapChu: {}, danhMuc: { chu: {}, moi: [], an: {} }, seo: {}, an: NO_HIDDEN }
+  const empty: LiveData = { mau: {}, sanPham: {}, mauMoi: [], sanPhamMoi: [], noiDungSanPham: {}, noiDungMau: {}, boSuuTapMoi: [], boSuuTapChu: {}, danhMuc: { chu: {}, moi: [], an: {} }, seo: {}, an: NO_HIDDEN, hetSanPham: {} }
   if (typeof window === 'undefined') return empty
   const raw = (window as { __ECO_GIA__?: unknown }).__ECO_GIA__
   if (!raw || typeof raw !== 'object') return empty
-  const { mau, sanPham, mauMoi, sanPhamMoi, noiDungWoo, boSuuTapMoi, boSuuTapChu, danhMucWoo, seo, an } = raw as {
+  const { mau, sanPham, mauMoi, sanPhamMoi, noiDungWoo, boSuuTapMoi, boSuuTapChu, danhMucWoo, seo, an, tonKho } = raw as {
     mau?: unknown
     sanPham?: unknown
     mauMoi?: unknown
@@ -496,11 +498,24 @@ function read(): LiveData {
     danhMucWoo?: unknown
     seo?: unknown
     an?: unknown
+    tonKho?: { sanPham?: unknown; mau?: unknown }
   }
   const patterns: Record<string, LivePattern> = {}
   for (const [key, value] of Object.entries(mau && typeof mau === 'object' ? mau : {})) {
     const v = (value ?? {}) as Record<string, unknown>
     patterns[key] = { gia: cleanPrices(v.gia), giaChun: cleanPrices(v.giaChun), het: cleanList(v.het) }
+  }
+  // Hết hàng mẫu có sẵn Ecopillo báo trong Woo khi chưa bật giá Woo (ton-kho.php): gộp vào `het` của mẫu
+  for (const [key, value] of Object.entries(tonKho?.mau && typeof tonKho.mau === 'object' ? tonKho.mau : {})) {
+    const sizes = cleanList(value)
+    if (!sizes?.length || !/^[a-z0-9-]+\/[A-Za-z0-9-]+$/.test(key)) continue
+    const current = patterns[key] ?? {}
+    patterns[key] = { ...current, het: [...new Set([...(current.het ?? []), ...sizes])] }
+  }
+  const soldOut: Record<string, readonly string[]> = {}
+  for (const [key, value] of Object.entries(tonKho?.sanPham && typeof tonKho.sanPham === 'object' ? tonKho.sanPham : {}).slice(0, 400)) {
+    const list = Array.isArray(value) ? value.filter((x): x is string => typeof x === 'string' && x.length <= 80).slice(0, 60) : []
+    if (list.length && /^[a-z0-9-]{1,200}$/.test(key)) soldOut[key] = list
   }
   const products: Record<string, LiveProduct> = {}
   for (const [key, value] of Object.entries(sanPham && typeof sanPham === 'object' ? sanPham : {})) {
@@ -523,6 +538,7 @@ function read(): LiveData {
     danhMuc: cleanCategories(danhMucWoo),
     seo: cleanSeo(seo),
     an: cleanHidden(an),
+    hetSanPham: soldOut,
   }
 }
 
@@ -562,6 +578,9 @@ export const liveCategories = (): LiveCategories => LIVE.danhMuc
 
 /** Tiêu đề, mô tả trên Google Ecopillo điền ở danh mục Woo, theo link trang */
 export const liveCategorySeo = (): Readonly<Record<string, LiveSeo>> => LIVE.seo
+
+/** Lựa chọn hết hàng của một sản phẩm lẻ có sẵn (đợt F); không có thì còn hàng */
+export const liveSoldOut = (slug: string): readonly string[] | undefined => LIVE.hetSanPham[slug]
 
 /** Sản phẩm, mẫu, bộ, bài Ecopillo đã gỡ trong WordPress (đợt E2) */
 export const liveHidden = (): LiveHidden => LIVE.an

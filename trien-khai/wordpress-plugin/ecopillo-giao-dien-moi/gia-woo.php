@@ -328,7 +328,10 @@ function eco_dl_write()
     // Sản phẩm, mẫu, bộ, bài có sẵn Ecopillo đã gỡ (an-xoa.php, đợt E2)
     $hidden = function_exists('eco_ax_compute') ? eco_ax_compute() : array('sanPham' => array(), 'mau' => array(), 'bo' => array(), 'bai' => array(), 'trang' => array());
     $has_hidden = $hidden['sanPham'] || $hidden['mau'] || $hidden['bo'] || $hidden['bai'];
-    if ($prices === null && ($patterns['live'] || $items['live'] || $has_content_woo || $collections['live'] || $collections['chu'] || $has_categories || $has_hidden)) {
+    // Hết hàng sản phẩm lẻ, mẫu có sẵn (ton-kho.php, đợt F)
+    $stock = $woo && function_exists('eco_tk_compute') ? eco_tk_compute() : array('sanPham' => array(), 'mau' => array());
+    $has_stock = $stock['sanPham'] || $stock['mau'];
+    if ($prices === null && ($patterns['live'] || $items['live'] || $has_content_woo || $collections['live'] || $collections['chu'] || $has_categories || $has_hidden || $has_stock)) {
         $prices = array('mau' => new stdClass(), 'sanPham' => new stdClass());
     }
     if ($prices !== null) {
@@ -343,6 +346,10 @@ function eco_dl_write()
             'an' => $categories['an'] ? $categories['an'] : new stdClass(),
         );
         $prices['seo'] = $categories['seo'] ? $categories['seo'] : new stdClass();
+        $prices['tonKho'] = array(
+            'sanPham' => $stock['sanPham'] ? $stock['sanPham'] : new stdClass(),
+            'mau' => $stock['mau'] ? $stock['mau'] : new stdClass(),
+        );
         $prices['an'] = array(
             'sanPham' => $hidden['sanPham'], 'mau' => $hidden['mau'], 'bo' => $hidden['bo'], 'bai' => $hidden['bai'],
             'trang' => $hidden['trang'] ? $hidden['trang'] : new stdClass(),
@@ -435,5 +442,6 @@ require_once __DIR__ . '/noi-dung-woo.php';
 require_once __DIR__ . '/bo-suu-tap-moi.php';
 require_once __DIR__ . '/danh-muc.php';
 require_once __DIR__ . '/an-xoa.php';
+require_once __DIR__ . '/ton-kho.php';
 require_once __DIR__ . '/bai-viet-moi.php';
 require_once __DIR__ . '/gia-woo-quan-tri.php';

@@ -5,6 +5,8 @@ import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { COMMON_TEXT } from '../../data/pageText/common'
 import { PRODUCT_LIST_TEXT } from '../../data/pageText/productUi'
+import { STOCK_TEXT } from '../../data/pageText/stock'
+import { isFullySoldOut } from '../../lib/stock'
 
 /** Ảnh mẫu khác trong cùng bộ sưu tập, dùng khi chưa có ảnh thư viện */
 function otherPatternImage(collection: Collection, currentSrc?: string): ImageSource | undefined {
@@ -42,6 +44,12 @@ export function ProductCard({ product }: { product: Product }) {
             loading="lazy"
             decoding="async"
           />
+        )}
+        {/* Cả sản phẩm tạm hết hàng (Ecopillo báo trong Woo, đợt F) */}
+        {isFullySoldOut(product) && (
+          <span className="absolute top-2 right-2 rounded-full bg-alert px-2.5 py-1 text-label font-medium text-white sm:top-3 sm:right-3 sm:px-3">
+            {STOCK_TEXT.tamHet}
+          </span>
         )}
         {product.collection?.badge && (
           <span className="absolute top-2 left-2 rounded-full bg-ivory/95 px-2.5 py-1 text-label sm:top-3 sm:left-3 sm:px-3 sm:text-label font-medium tracking-wide text-deep-800 uppercase">

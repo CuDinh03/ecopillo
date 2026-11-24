@@ -26,6 +26,8 @@ import { StepCustomer } from './StepCustomer'
 import { ORDER_TEXT } from '../../data/pageText/order'
 import { ORDER_STEPS_TEXT as T, ORDER_SUMMARY_TEXT } from '../../data/pageText/orderFlow'
 import { chen } from '../../data/pageText/define'
+import { STOCK_TEXT } from '../../data/pageText/stock'
+import { isChoiceSoldOut, isFullySoldOut, isVariantOptionSoldOut } from '../../lib/stock'
 
 interface SingleOrderProps {
   product: Product
@@ -48,6 +50,10 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
 
   const needsChoice = Boolean(product.choices || product.variants)
   const hasChoice = !needsChoice || Boolean(summary.line?.sizeLabel && (!product.variants || draft.thickness))
+  // Hết hàng Ecopillo báo trong Woo (đợt F): lựa chọn đang chọn hết, hoặc cả sản phẩm hết, thì không gửi đơn
+  const allOut = isFullySoldOut(product)
+  const soldOut = allOut || isChoiceSoldOut(product, draft.choiceId, draft.thickness)
+  const canOrder = hasChoice && !soldOut
 
   const update = (patch: Partial<SingleDraft>) => {
     const next = { ...draft, ...patch }
@@ -66,6 +72,7 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
   }
 
   const submit = async () => {
+    if (soldOut) return
     if (!hasChoice) {
       document.getElementById('chon-lua-chon')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       return
@@ -102,7 +109,13 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
   }
 
   const choiceLabel = product.choiceLabel ?? T.leKichThuoc
-  const hint = hasChoice ? null : chen(T.leGoiY, { luaChon: choiceLabel.toLowerCase() })
+  const hint = allOut
+    ? STOCK_TEXT.caSanPhamHet
+    : soldOut
+      ? chen(STOCK_TEXT.luaChonHet, { chon: summary.line?.sizeLabel ?? '' })
+      : hasChoice
+        ? null
+        : chen(T.leGoiY, { luaChon: choiceLabel.toLowerCase() })
 
   return (
     <div ref={topRef} className="scroll-mt-20 pb-36 lg:pb-24">
@@ -134,6 +147,7 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
                     options={product.variants.sizes.map((s) => ({ id: s, label: s }))}
                     value={draft.choiceId}
                     onChange={(id) => update({ choiceId: id, thickness: draft.thickness ?? product.variants?.thicknesses[0] ?? null })}
+                    isSoldOut={(id) => isVariantOptionSoldOut(product, id, draft.thickness)}
                   />
                   <ChoiceGroup
                     label={T.leDoDay}
@@ -144,6 +158,7 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
                     }))}
                     value={draft.thickness}
                     onChange={(t) => update({ thickness: t })}
+                    isSoldOut={(t) => isVariantOptionSoldOut(product, draft.choiceId, t)}
                   />
                 </>
               )}
@@ -154,6 +169,7 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
                   value={draft.choiceId}
                   onChange={(id) => update({ choiceId: id })}
                   priceOnCallNote
+                  isSoldOut={(id) => isChoiceSoldOut(product, id)}
                 />
               )}
 
@@ -180,7 +196,7 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
               <button
                 type="button"
                 onClick={() => void submit()}
-                disabled={!hasChoice || order.sending}
+                disabled={!canOrder || order.sending}
                 aria-busy={order.sending}
                 className={buttonClass('primary', 'lg')}
               >
@@ -202,7 +218,7 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
         amountLabel={summary.priceOnCall ? T.leGiaKhiGoi : ORDER_SUMMARY_TEXT.tongCong}
         nextLabel={order.sending ? T.nutDangGui : T.nutDatHang}
         hint={hint}
-        canContinue={hasChoice && !order.sending}
+        canContinue={canOrder && !order.sending}
         onNext={() => void submit()}
       />
     </div>
@@ -216,27 +232,33 @@ interface ChoiceGroupProps {
   onChange: (id: string) => void
   /** Lựa chọn chưa có giá: ghi "Báo giá khi gọi" */
   priceOnCallNote?: boolean
+  /** Lựa chọn tạm hết hàng (đợt F): ô mờ, ghi "Tạm hết hàng", không bấm được (trừ ô đang chọn) */
+  isSoldOut?: (id: string) => boolean
 }
 
-function ChoiceGroup({ label, options, value, onChange, priceOnCallNote }: ChoiceGroupProps) {
+function ChoiceGroup({ label, options, value, onChange, priceOnCallNote, isSoldOut }: ChoiceGroupProps) {
   return (
     <fieldset className="mt-6">
       <legend className="text-sm font-medium text-deep-900">{label}</legend>
       <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
         {options.map((o) => {
           const active = o.id === value
+          const soldOut = isSoldOut?.(o.id) ?? false
           return (
             <button
               key={o.id}
               type="button"
               aria-pressed={active}
+              disabled={soldOut && !active}
               onClick={() => onChange(o.id)}
               className={`flex flex-col items-start rounded-2xl px-4 py-3 text-left transition ${
                 active ? 'bg-mist-50 ring-2 ring-deep-800' : 'bg-ivory ring-1 ring-cream-200 hover:ring-mist-400'
-              }`}
+              } ${soldOut ? 'cursor-not-allowed opacity-55' : ''}`}
             >
-              <span className="text-sm font-medium text-deep-900">{o.label}</span>
-              {(o.price !== undefined || priceOnCallNote) && (
+              <span className={`text-sm font-medium text-deep-900 ${soldOut ? 'line-through' : ''}`}>{o.label}</span>
+              {soldOut ? (
+                <span className="mt-0.5 text-meta text-ink-soft">{STOCK_TEXT.tamHet}</span>
+              ) : (o.price !== undefined || priceOnCallNote) && (
                 <span className="tabular mt-0.5 text-meta text-ink-soft">
                   {o.price !== undefined ? formatVND(o.price) : T.leBaoGia}
                 </span>
