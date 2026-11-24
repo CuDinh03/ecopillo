@@ -74,3 +74,10 @@ export function definePageText<F extends Fields>(khoa: string, ten: string, moTa
   const set: EditableSet = { khoa: `chu-trang-${khoa}`, nhom: PAGE_TEXT_GROUP, ten, moTa, kieu: 'mot', goc, truong }
   return { set, text: liveObject(set.khoa, goc, truong) }
 }
+
+/**
+ * Chữ có chỗ chèn số / tên (đợt E4): ô ghi "Xem thêm {so} câu hỏi", code gọi chen(text, { so: 5 }).
+ * Chỗ chèn Ecopillo xoá mất thì câu vẫn hiện (thiếu số), không lỗi; chỗ chèn lạ giữ nguyên chữ. Ghi rõ các chỗ chèn trong gợi ý của ô.
+ */
+export const chen = (template: string, values: Readonly<Record<string, string | number>>): string =>
+  template.replace(/\{([a-zA-Z]+)\}/g, (whole: string, key: string) => (key in values ? String(values[key]) : whole))
