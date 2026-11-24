@@ -582,6 +582,39 @@ function eco_tw_sync_markers()
     }
 }
 
+/**
+ * Trang không tìm thấy (25/11/2026, sau khi cài 2.2.0 lên web thật thấy link không tồn tại vẫn ra trang lỗi của giao diện WordPress cũ):
+ * WordPress báo 404 mà khách đang thấy giao diện mới thì trả site/404.html của giao diện mới, giữ mã 404 (Google không lập chỉ mục).
+ * Trang này nạp du-lieu.js như mọi trang, nên chữ, bố cục trang 404 và khối tự do đặt ở 404 Ecopillo sửa đều có tác dụng.
+ * Chạy muộn (99) để plugin chuyển hướng khác (Yoast, Redirection…) và các trang khung của plugin này xử lý trước.
+ */
+add_action('template_redirect', 'eco_tw_serve_404', 99);
+function eco_tw_serve_404()
+{
+    if (!is_404() || is_admin() || wp_doing_ajax() || is_feed() || (defined('REST_REQUEST') && REST_REQUEST)) {
+        return;
+    }
+    if (!function_exists('eco_mm_visitor_sees_new') || !eco_mm_visitor_sees_new()) {
+        return;
+    }
+    foreach (array('preview', 'preview_id', 'p', 'page_id', 's', 'giao-dien-moi') as $param) {
+        if (isset($_GET[$param])) {
+            return;
+        }
+    }
+    $file = __DIR__ . '/site/404.html';
+    $html = is_readable($file) ? (string) file_get_contents($file) : '';
+    if ($html === '') {
+        return;
+    }
+    status_header(404);
+    nocache_headers();
+    header('Content-Type: text/html; charset=UTF-8');
+    header('X-Robots-Tag: noindex');
+    echo $html; // trang tĩnh của giao diện mới, không chèn chữ nào từ yêu cầu
+    exit;
+}
+
 add_action('template_redirect', 'eco_tw_serve', -5);
 function eco_tw_serve()
 {
