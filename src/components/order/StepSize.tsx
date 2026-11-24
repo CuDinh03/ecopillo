@@ -1,4 +1,5 @@
 import { CONTACT } from '../../data/brand'
+import { ORDER_SHOWN } from '../../data/pageLayout'
 import {
   isSizeSoldOut,
   setPrice,
@@ -172,7 +173,7 @@ export function StepSize({ summary, sheet, onSelectSheet, onSelectSize, onChange
         </div>
       </fieldset>
 
-      {gift && (
+      {gift && ORDER_SHOWN.has('qua-kem') && (
         <section
           aria-label={T.quaTangKem}
           className="grain relative overflow-hidden rounded-[1.5rem] bg-brass-100 p-6 sm:flex sm:items-center sm:gap-6"

@@ -121,8 +121,8 @@ export const rowKey = (value: unknown): string =>
         .replace(/^-|-$/g, '')
     : ''
 
-// "#bo-suu-tap": nút cuộn tới một khối trong cùng trang (đợt G)
-const isLink = (v: string): boolean => (/^(https:\/\/|http:\/\/|\/(?!\/)|tel:|mailto:)/.test(v) || /^#[a-z0-9-]{1,80}$/.test(v)) && !/[\s<>"]/.test(v)
+// "#bo-suu-tap": nút cuộn tới một khối trong cùng trang (đợt G). Dùng lại để kiểm link trong ô ds-cap (nút khối tự do)
+export const isLink = (v: string): boolean => (/^(https:\/\/|http:\/\/|\/(?!\/)|tel:|mailto:)/.test(v) || /^#[a-z0-9-]{1,80}$/.test(v)) && !/[\s<>"]/.test(v)
 
 /** Tỉnh / thành Ecopillo ghi ở bộ Giao hàng (lib/shipping.ts), đọc thẳng bản đã lưu để không vòng import */
 const savedProvinces = (): string[] => {

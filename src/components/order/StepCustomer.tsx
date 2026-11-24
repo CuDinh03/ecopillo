@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { ORDER_SHOWN } from '../../data/pageLayout'
 import { Link } from 'react-router-dom'
 import { PATHS } from '../../data/links'
 import { formatVND } from '../../lib/format'
@@ -114,7 +115,7 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
               className={inputClass(Boolean(errors.address))}
             />
           </Field>
-          <Field id="note" label={T.oGhiChu} optional className="sm:col-span-2">
+          {ORDER_SHOWN.has('ghi-chu') && <Field id="note" label={T.oGhiChu} optional className="sm:col-span-2">
             <textarea
               id="f-note"
               rows={2}
@@ -123,15 +124,16 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
               placeholder={T.oGhiChuMau}
               className={`${inputClass(false)} resize-none`}
             />
-          </Field>
+          </Field>}
         </div>
       </fieldset>
 
-      <section aria-labelledby="pay-title">
-        <h2 id="pay-title" className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">
+      {/* Ecopillo ẩn khung thanh toán (Bố cục trang Đặt hàng): bỏ cả tiêu đề, dòng đồng ý chính sách thì luôn còn */}
+      <section aria-labelledby={ORDER_SHOWN.has('thanh-toan') ? 'pay-title' : undefined}>
+        {ORDER_SHOWN.has('thanh-toan') && <h2 id="pay-title" className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">
           {T.thanhToan}
-        </h2>
-        <div className="mt-6 flex gap-4 rounded-2xl bg-mist-50 p-5 ring-2 ring-deep-800">
+        </h2>}
+        {ORDER_SHOWN.has('thanh-toan') && <div className="mt-6 flex gap-4 rounded-2xl bg-mist-50 p-5 ring-2 ring-deep-800">
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ivory text-deep-800 ring-1 ring-cream-200">
             <Icon name="truck" size={20} />
           </span>
@@ -148,8 +150,8 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
               {T.datCoc}
             </p>
           </div>
-        </div>
-        <p className="mt-4 text-xs leading-relaxed text-ink-soft">
+        </div>}
+        <p className={`text-xs leading-relaxed text-ink-soft ${ORDER_SHOWN.has('thanh-toan') ? 'mt-4' : ''}`}>
           {ORDER_TEXT.xemHang} {T.dongY}{' '}
           <Link to={PATHS.privacy} className="-my-2 inline-block py-2 font-medium text-deep-900 underline underline-offset-2">
             {T.linkChinhSach}

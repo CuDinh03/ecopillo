@@ -69,6 +69,7 @@ export function CategoryPage() {
         {/* Thứ tự, ẩn / hiện các khối: Ecopillo chọn ở Nội dung web → Giao diện → Bố cục trang danh mục (đợt E5) */}
         <Blocks
           order={CATEGORY_ORDER}
+          khung="cot"
           blocks={{
             // Không ghi "N sản phẩm" (chị Phương 09/11/2026: "tất cả các số này bỏ hộ c nha")
             'san-pham': (

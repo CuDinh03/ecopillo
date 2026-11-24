@@ -35,8 +35,8 @@ export function PolicyLayout({ title, intro, meta, children }: PolicyLayoutProps
             <nav aria-label={POLICY_NAV_TEXT.tieuDeMenu} className="lg:sticky lg:top-28">
               <p className="eyebrow hidden lg:block">{POLICY_NAV_TEXT.tieuDeMenu}</p>
               <ul className="m-rail -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 sm:-mx-8 sm:px-8 lg:mx-0 lg:mt-5 lg:flex-col lg:gap-1 lg:overflow-visible lg:px-0">
-                {POLICY_NAV.map((item) => (
-                  <li key={item.to} className="shrink-0">
+                {POLICY_NAV.map((item, i) => (
+                  <li key={`${i}-${item.to}`} className="shrink-0">
                     <NavLink
                       to={item.to}
                       className={({ isActive }) =>
@@ -60,6 +60,7 @@ export function PolicyLayout({ title, intro, meta, children }: PolicyLayoutProps
           {/* Thứ tự, ẩn / hiện ba khối cột phải: Ecopillo chọn ở Nội dung web → Giao diện → Bố cục các trang chính sách (đợt E6) */}
           <Blocks
             order={POLICY_ORDER}
+            khung="cot"
             blocks={{
               'noi-dung': <article className="max-w-3xl [&:not(:first-child)]:mt-14">{children}</article>,
               'lien-he': (

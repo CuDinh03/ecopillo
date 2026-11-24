@@ -59,7 +59,7 @@ import { CODE_POST_SETS } from './posts'
 import { SHIPPING_SET } from '../lib/shipping'
 import { SITE_ICONS_SET } from './siteIcons'
 import { STOCK_TEXT_SET } from './pageText/stock'
-import { POLICY_NAV_TEXT_SET } from './policyNav'
+import { POLICY_MENU_SET, POLICY_NAV_TEXT_SET } from './policyNav'
 import { HOME_COLLECTIONS_SET } from './collectionGroups'
 import { PRODUCT_MENU_TEXT_SET } from './productMenu'
 import { SEARCH_PAGES_SET, SEARCH_TEXT_SET } from './pageText/search'
@@ -155,6 +155,7 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   SEARCH_TEXT_SET,
   PAGE_FRAME_TEXT_SET,
   POLICY_NAV_TEXT_SET,
+  POLICY_MENU_SET,
   NOT_FOUND_TEXT_SET,
   COMMON_TEXT_SET,
   // Màu web (owner 20/11/2026 "ecopillo cần tự làm hết được")

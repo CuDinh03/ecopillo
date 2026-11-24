@@ -118,8 +118,8 @@ export function Footer() {
           </FooterGroup>
 
           <FooterGroup id="chinh-sach" title={FOOTER_TEXT.cotChinhSach} listClassName={LINK_LIST}>
-            {POLICY_NAV.map((item) => (
-              <li key={item.to}>
+            {POLICY_NAV.map((item, i) => (
+              <li key={`${i}-${item.to}`}>
                 <Link to={item.to} className={LIST_LINK}>
                   {item.label}
                 </Link>

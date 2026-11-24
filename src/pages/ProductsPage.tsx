@@ -1,5 +1,6 @@
 import { useMemo, useRef, type CSSProperties, type ReactNode } from 'react'
-import { PRODUCTS_ORDER } from '../data/pageLayout'
+import { PRODUCTS_FREE_END, PRODUCTS_ORDER } from '../data/pageLayout'
+import { Blocks } from '../components/ui/Blocks'
 import { Link } from 'react-router-dom'
 import { ColorwayCard } from '../components/products/ColorwayCard'
 import { FilterPanel, SORTS, type FilterPanelProps, type SortId } from '../components/products/FilterPanel'
@@ -357,6 +358,8 @@ export function ProductsPage() {
           </div>
         </div>
       </Container>
+      {/* Khối tự do Ecopillo đặt "cuối trang" (Nội dung web → Giao diện → Khối tự do) */}
+      <Blocks order={PRODUCTS_FREE_END} blocks={{}} />
     </div>
   )
 }

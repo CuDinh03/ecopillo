@@ -41,6 +41,8 @@ import { ABOUT_PAGE_TEXT, ABOUT_PAGE_TEXT_SET } from '../data/pageText/aboutPage
 import { Highlight } from '../components/ui/Highlight'
 import { chen } from '../data/pageText/define'
 import { ABOUT_ORDER } from '../data/pageLayout'
+import { FreeBlock } from '../components/ui/FreeBlock'
+import { isFreeBlockId } from '../data/freeBlocks'
 
 /**
  * Trang Giới thiệu (/gioi-thieu, giữ đường link web cũ) dạng chương sách (mẫu 1, owner chọn 16/10/2026,
@@ -301,7 +303,7 @@ export function AboutPage() {
             ))}
           </StoryRail>
         ) : (
-          <Fragment key={run.ids[0]}>{blocks[run.ids[0]]}</Fragment>
+          <Fragment key={run.ids[0]}>{isFreeBlockId(run.ids[0]) ? <FreeBlock id={run.ids[0]} /> : blocks[run.ids[0]]}</Fragment>
         ),
       )}
     </>

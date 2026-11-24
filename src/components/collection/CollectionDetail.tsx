@@ -167,6 +167,7 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
         {/* Thứ tự, ẩn / hiện các khối dưới: Nội dung web → Giao diện → Bố cục trang bộ sưu tập (đợt E5) */}
         <Blocks
           order={COLLECTION_DETAIL_ORDER}
+          khung="cot"
           blocks={{
             'cung-gam': tone ? <SameTone collection={collection} tone={tone} /> : null,
             'giao-hang': (

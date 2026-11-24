@@ -250,6 +250,7 @@ function ProductDetail({ product }: { product: Product }) {
         {/* Thứ tự, ẩn / hiện các khối dưới: Nội dung web → Giao diện → Bố cục trang sản phẩm lẻ (đợt E5) */}
         <Blocks
           order={PRODUCT_DETAIL_ORDER}
+          khung="cot"
           blocks={{
             // Phần Ecopillo sửa trong Woo (đợt D) thay phần trong productInfo.ts; sản phẩm mới thêm phần đó cũng có
             'hieu-ky': (product.infoSections ?? info?.sections)?.length ? <ProductStory sections={product.infoSections ?? info?.sections ?? []} /> : null,

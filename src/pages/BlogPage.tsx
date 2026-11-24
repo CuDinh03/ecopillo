@@ -53,6 +53,7 @@ export function BlogPage() {
         {/* Thứ tự, ẩn / hiện các khối: Ecopillo chọn ở Nội dung web → Giao diện → Bố cục trang Tin tức (đợt E6) */}
         <Blocks
           order={BLOG_ORDER}
+          khung="cot"
           blocks={{
             'chu-de': (
               <div role="group" aria-label={BLOG_TEXT.chuDeDoc} className="mt-8 flex flex-wrap gap-2 first:mt-0">
