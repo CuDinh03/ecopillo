@@ -24,11 +24,67 @@ function eco_tw_dir()
     return eco_gia_dir() . '/qua-wp';
 }
 
-/** Đường dẫn web (từ gốc tên miền) tới thư mục đánh dấu, cho quy tắc .htaccess ({QUA_WP}) */
-function eco_tw_marker_url_path()
+/** Đường dẫn web (từ gốc tên miền) tới thư mục dữ liệu plugin ghi, cho quy tắc .htaccess ({DU_LIEU}) */
+function eco_tw_data_url_path()
 {
     $uploads = wp_upload_dir(null, false);
-    return rtrim((string) wp_parse_url($uploads['baseurl'], PHP_URL_PATH), '/') . '/ecopillo-du-lieu/qua-wp';
+    return rtrim((string) wp_parse_url($uploads['baseurl'], PHP_URL_PATH), '/') . '/ecopillo-du-lieu';
+}
+
+/** Đường dẫn web tới thư mục đánh dấu ({QUA_WP}) */
+function eco_tw_marker_url_path()
+{
+    return eco_tw_data_url_path() . '/qua-wp';
+}
+
+/**
+ * Sơ đồ trang cho Google (đợt E 24/11/2026): sitemap.xml dựng sẵn, bỏ trang Ecopillo đã gỡ / ẩn, thêm trang Ecopillo tạo sau
+ * lần dựng (danh mục mới, bộ sưu tập mới, mẫu mới, sản phẩm mới, bài mới). Quy tắc .htaccess trả file này ở /sitemap.xml.
+ */
+function eco_tw_write_sitemap()
+{
+    $source = __DIR__ . '/site/sitemap.xml';
+    $xml = is_readable($source) ? (string) file_get_contents($source) : '';
+    if (!preg_match_all('#<loc>([^<]+)</loc>(?:<lastmod>([^<]+)</lastmod>)?#', $xml, $m, PREG_SET_ORDER)) {
+        return;
+    }
+    $hidden = eco_tw_hidden_map();
+    $urls = array();
+    foreach ($m as $row) {
+        $path = (string) parse_url(html_entity_decode($row[1]), PHP_URL_PATH);
+        if ($path !== '' && !isset($hidden[$path])) {
+            $urls[$path] = isset($row[2]) ? $row[2] : '';
+        }
+    }
+    $today = current_time('Y-m-d');
+    $add = array();
+    foreach ((array) get_option('ecopillo_dm_trang', array()) as $path => $page) {
+        $add[] = (string) $path; // danh mục mới
+    }
+    foreach ((array) get_option('ecopillo_bo_moi_trang', array()) as $path => $page) {
+        $add[] = (string) $path; // bộ sưu tập mới
+    }
+    foreach ((array) get_option('ecopillo_mau_moi_trang', array()) as $slug => $page) {
+        $add[] = isset($page['url']) ? (string) $page['url'] : '/san-pham/' . $slug . '/'; // mẫu mới, sản phẩm mới
+    }
+    foreach ((array) get_option(defined('ECO_BV_OPT_TRANG') ? ECO_BV_OPT_TRANG : 'ecopillo_bai_moi_trang', array()) as $slug => $page) {
+        $add[] = isset($page['url']) ? (string) $page['url'] : '/' . $slug . '/'; // bài mới
+    }
+    foreach ($add as $path) {
+        if (eco_tw_is_path($path) && !isset($hidden[$path]) && !isset($urls[$path])) {
+            $urls[$path] = $today;
+        }
+    }
+    $origin = untrailingslashit(home_url());
+    $out = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n";
+    foreach ($urls as $path => $lastmod) {
+        $out .= '  <url><loc>' . esc_url($origin . $path) . '</loc>' . ($lastmod !== '' ? '<lastmod>' . esc_html($lastmod) . '</lastmod>' : '') . "</url>\n";
+    }
+    $out .= "</urlset>\n";
+    $file = eco_gia_dir() . '/sitemap.xml';
+    if (file_put_contents($file . '.tmp', $out) !== false) {
+        rename($file . '.tmp', $file);
+    }
 }
 
 /** Link trang hợp lệ: "/" hoặc /a/b/ (chữ thường không dấu, số, gạch) */

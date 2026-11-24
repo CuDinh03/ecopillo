@@ -376,6 +376,7 @@ function eco_dl_write()
     // Trang có sẵn cần WordPress trả (SEO, ẩn, chuyển link): file đánh dấu cho .htaccess (trang-wp.php)
     if (function_exists('eco_tw_sync_markers')) {
         eco_tw_sync_markers();
+        eco_tw_write_sitemap();
     }
     update_option(ECO_GIA_OPT_GHI_LUC, current_time('mysql'), false);
     return true;

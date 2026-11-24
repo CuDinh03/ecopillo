@@ -61,6 +61,14 @@ export function buildRules(mode, redirects) {
     if (!path) continue // không bao giờ chuyển hướng trang chủ
     lines.push(...gate, ...skip, `RewriteRule ^${escapeRegex(path)}/?$ ${to} [R=301,L,NE]`)
   }
+  // 1b. Sơ đồ trang plugin ghi lại mỗi lần Ecopillo sửa (trang-wp.php: thêm trang, sản phẩm, bài mới; bỏ trang đã gỡ).
+  // Chưa có file đó (plugin chưa ghi lần nào) thì dùng sitemap.xml dựng sẵn ở bước 2
+  lines.push(
+    ...gate,
+    ...skip,
+    'RewriteCond %{DOCUMENT_ROOT}{DU_LIEU}/sitemap.xml -f',
+    'RewriteRule ^sitemap\\.xml$ {DU_LIEU}/sitemap.xml [L]',
+  )
   // 2. File của giao diện mới (JS, CSS, ảnh, favicon, sitemap…): có file trong site/ thì trả file đó
   lines.push(...gate, ...skip, 'RewriteCond %{DOCUMENT_ROOT}{SITE}%{REQUEST_URI} -f', 'RewriteRule ^ {SITE}%{REQUEST_URI} [L]')
   // 3. Trang: /duong-dan/ → site/duong-dan/index.html (trang chủ: site/index.html).

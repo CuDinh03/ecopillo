@@ -66,8 +66,8 @@ function eco_gdm_rules($mode)
         return array();
     }
     $text = str_replace(
-        array('{SITE}', '{QUA_WP}'),
-        array(eco_gdm_site_url_path(), eco_tw_marker_url_path()),
+        array('{SITE}', '{QUA_WP}', '{DU_LIEU}'),
+        array(eco_gdm_site_url_path(), eco_tw_marker_url_path(), eco_tw_data_url_path()),
         (string) file_get_contents($file)
     );
     return explode("\n", rtrim($text, "\n"));
