@@ -192,6 +192,8 @@ function eco_nw_compute()
                 $result['live'][$key][(string) $item['khoa']] = $entry;
             }
             $result['rows'][] = array(
+                'khoa' => (string) $item['khoa'],
+                'nhom' => $key,
                 'loai' => $kind,
                 'ten' => (string) $item['ten'],
                 'id' => $product ? $product->get_id() : 0,
@@ -225,8 +227,83 @@ function eco_nw_admin_section()
     <?php foreach ($rows as $r) : ?>
         <tr><td><?php if ($r['id']) : ?><a href="<?php echo esc_url(get_edit_post_link($r['id'])); ?>"><?php echo esc_html($r['ten']); ?></a><?php else : echo esc_html($r['ten']); endif; ?></td>
             <td><?php echo esc_html($r['loai']); ?></td>
-            <td style="<?php echo strpos($r['trangThai'], 'Không') === 0 ? 'color:#b32d2e' : (strpos($r['trangThai'], 'Đang') === 0 ? 'color:#1d6b30;font-weight:600' : ''); ?>"><?php echo esc_html($r['trangThai']); ?></td></tr>
+            <td style="<?php echo strpos($r['trangThai'], 'Không') === 0 ? 'color:#b32d2e' : (strpos($r['trangThai'], 'Đang') === 0 ? 'color:#1d6b30;font-weight:600' : ''); ?>"><?php echo esc_html($r['trangThai']); ?>
+            <?php if (!$r['id']) : // Chưa có sản phẩm Woo cùng link: tạo bản nháp để Ecopillo tự sửa (đợt F) ?>
+                <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="display:inline;margin-left:8px">
+                    <input type="hidden" name="action" value="eco_nw_tao">
+                    <input type="hidden" name="nhom" value="<?php echo esc_attr($r['nhom']); ?>">
+                    <input type="hidden" name="khoa" value="<?php echo esc_attr($r['khoa']); ?>">
+                    <?php wp_nonce_field('eco_nw_tao'); ?>
+                    <button type="submit" class="button button-small">Tạo sản phẩm nháp trong Woo</button>
+                </form>
+            <?php endif; ?></td></tr>
     <?php endforeach; ?>
     </tbody></table></details>
     <?php
+}
+
+/**
+ * "Tạo sản phẩm nháp trong Woo" (đợt F 24/11/2026; owner: "khách phải 100% tự sửa được"): sản phẩm, mẫu có trên web mà Woo
+ * không có sản phẩm cùng link (12 cái lúc làm đợt B) thì Ecopillo không sửa được tên, ảnh, mô tả. Nút này tạo một sản phẩm
+ * Bản nháp đúng link đó, điền sẵn tên, câu dưới giá, các ý mô tả (mẫu: mã, danh mục bộ). Ecopillo thêm ảnh, sửa chữ, tích
+ * "Giao diện mới dùng tên, ảnh, mô tả", bấm Đăng là web lấy theo. Giá vẫn theo trang "Giá trên web" (giá riêng) như trước.
+ */
+add_action('admin_post_eco_nw_tao', 'eco_nw_create_draft');
+function eco_nw_create_draft()
+{
+    if (!current_user_can('edit_products') || !class_exists('WC_Product_Simple')) {
+        wp_die('Không có quyền.');
+    }
+    check_admin_referer('eco_nw_tao');
+    $group = isset($_POST['nhom']) ? sanitize_key(wp_unslash($_POST['nhom'])) : '';
+    $key = isset($_POST['khoa']) ? sanitize_text_field(wp_unslash($_POST['khoa'])) : '';
+    $frame = eco_gia_frame();
+    $items = $group === 'mau' ? (isset($frame['mau']) ? (array) $frame['mau'] : array()) : (isset($frame['noiDung']) ? (array) $frame['noiDung'] : array());
+    $item = null;
+    foreach ($items as $candidate) {
+        if ((string) $candidate['khoa'] === $key) {
+            $item = $candidate;
+        }
+    }
+    $back = admin_url('edit.php?post_type=product&page=ecopillo-gia-web');
+    $slug = $item && !empty($item['woo']) ? (string) reset($item['woo']) : '';
+    if (!$item || !preg_match('/^[a-z0-9-]{1,200}$/', $slug) || eco_gia_find_product($item['woo'])) {
+        wp_safe_redirect($back);
+        exit;
+    }
+    // Đã có bản nháp / riêng tư cùng link: mở luôn bản đó, không tạo trùng
+    $existing = get_page_by_path($slug, OBJECT, 'product');
+    if ($existing) {
+        wp_safe_redirect(get_edit_post_link($existing->ID, 'raw'));
+        exit;
+    }
+    $product = new WC_Product_Simple();
+    $product->set_name((string) $item['ten']);
+    $product->set_slug($slug);
+    $product->set_status('draft');
+    if ($group === 'mau') {
+        list($collection, $code) = array_pad(explode('/', $key, 2), 2, '');
+        $product->set_short_description(preg_replace('/^.*·\s*/u', '', (string) $item['ten'])); // dòng đầu Mô tả ngắn = tên màu
+        foreach (isset($frame['boSuuTap']) ? (array) $frame['boSuuTap'] : array() as $col) {
+            if ((string) $col['id'] === $collection) {
+                $term = get_term_by('slug', (string) $col['danhMucWoo'], 'product_cat');
+                if ($term) {
+                    $product->set_category_ids(array((int) $term->term_id));
+                }
+            }
+        }
+        try {
+            $product->set_sku($code);
+        } catch (Exception $e) {
+            // Mã đã có ở sản phẩm khác: để trống, Ecopillo điền
+            unset($e);
+        }
+    } else {
+        $product->set_short_description(isset($item['tomTat']) ? (string) $item['tomTat'] : '');
+        $details = isset($item['chiTiet']) ? (array) $item['chiTiet'] : array();
+        $product->set_description($details ? '<ul><li>' . implode('</li><li>', array_map('esc_html', $details)) . '</li></ul>' : '');
+    }
+    $id = $product->save();
+    wp_safe_redirect($id ? get_edit_post_link($id, 'raw') : $back);
+    exit;
 }

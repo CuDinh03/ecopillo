@@ -72,6 +72,9 @@ export interface FrameContentProduct {
   woo: string[]
   /** Phần "Hiểu kỹ trước khi chọn" đang có (productInfoText.ts), điền sẵn vào ô trong trang sửa sản phẩm Woo */
   hieuKy: string
+  /** Câu dưới giá, các ý "Chất liệu & đặc điểm" đang có: điền sẵn khi Ecopillo bấm "Tạo sản phẩm nháp trong Woo" (đợt F) */
+  tomTat: string
+  chiTiet: string[]
 }
 
 /**
@@ -186,6 +189,8 @@ export function buildPriceFrame(): PriceFrame {
     ten: p.name,
     woo: wooSlugsFor(singleProductPath(p.slug)),
     hieuKy: infoToText(PRODUCT_INFO[p.slug]?.sections ?? []),
+    tomTat: p.summary,
+    chiTiet: [...(p.details ?? [])],
   }))
   const shellOf = (kind: 'ga-phu' | 'ga-chun' | 'chan-ga' | 'chan-he', label: string) => {
     const col = boSuuTap.find((c) => c.kieu === kind) ?? boSuuTap[0]

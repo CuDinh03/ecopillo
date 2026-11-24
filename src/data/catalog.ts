@@ -497,6 +497,8 @@ const withCollectionText = (c: Collection): Collection => {
   markLiveDiffers()
   return {
     ...c,
+    // Tên bộ Ecopillo sửa ở tên danh mục Woo (đợt F); link, mã bộ giữ nguyên
+    ...(live.ten ? { name: live.ten } : {}),
     ...(live.khauHieu ? { tagline: live.khauHieu } : {}),
     ...(live.moTa ? { description: live.moTa, metaDescription: undefined } : {}),
     ...(live.cauChuyen ? { story: live.cauChuyen } : {}),

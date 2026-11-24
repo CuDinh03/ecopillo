@@ -64,10 +64,10 @@ function eco_bst_fields_edit($term)
         <th scope="row">Dùng trên giao diện mới</th>
         <td><label><input type="checkbox" name="eco_bst_bat" value="1" <?php checked($on); ?>>
             <?php echo $col
-                ? 'Giao diện mới dùng mô tả, khẩu hiệu, câu chuyện ở đây cho bộ ' . esc_html($col['ten'])
+                ? 'Giao diện mới dùng tên, mô tả, khẩu hiệu, câu chuyện ở đây cho bộ ' . esc_html($col['ten'])
                 : 'Hiện thành bộ sưu tập trên giao diện mới'; ?></label>
             <p class="description"><?php echo $col
-                ? 'Tích khi đã soát xong. Ô nào để trống thì web giữ chữ đang có. Ô "Mô tả" phía trên là câu giới thiệu bộ.'
+                ? 'Tích khi đã soát xong. Ô nào để trống thì web giữ chữ đang có. Ô "Tên" phía trên (bỏ chữ "Bộ sưu tập" ở đầu) là tên bộ trên web; ô "Mô tả" là câu giới thiệu bộ.'
                 : 'Mỗi sản phẩm trong danh mục này là một mẫu: mã mẫu ở ô Mã sản phẩm, tên màu ở dòng đầu Mô tả ngắn, ảnh, biến thể ba cỡ (1m6, 1m8, 2m2; chăn hè một giá thì để sản phẩm đơn). Ô "Mô tả" phía trên là câu giới thiệu bộ. Đường dẫn (slug) không dấu, ví dụ bo-suu-tap-eco-lumi.'; ?></p></td>
     </tr>
     <?php if (!$col) : ?>
@@ -264,6 +264,11 @@ function eco_bst_compute()
         }
         if (isset($existing[$term->slug])) {
             $col = $existing[$term->slug];
+            // Tên bộ: tên danh mục bỏ "Bộ sưu tập" ở đầu (đợt F); khác tên đang có trên web thì dùng
+            $existing_name = trim(preg_replace('/^b(ộ|o)\s+s(ư|u)u\s+t(ậ|a)p\s+/iu', '', eco_sp_text($term->name, 80)));
+            if ($existing_name !== '' && $existing_name !== (string) $col['ten']) {
+                $text['ten'] = $existing_name;
+            }
             if ($text) {
                 $result['chu'][(string) $col['id']] = $text;
             }

@@ -87,6 +87,8 @@ export interface LiveNewCollection {
 
 /** Chữ bộ sưu tập có sẵn Ecopillo đã soát và tích ở trang sửa danh mục Woo (đợt C): ô trống giữ chữ trong code */
 export interface LiveCollectionText {
+  /** Tên bộ (tên danh mục Woo bỏ chữ "Bộ sưu tập" ở đầu), đợt F */
+  ten?: string
   trongBo?: readonly string[]
   khauHieu?: string
   moTa?: string
@@ -298,7 +300,9 @@ const cleanCollectionText = (input: unknown): LiveCollectionText => {
   const moTa = text(v.moTa, 600)
   const cauChuyen = text(v.cauChuyen, 1200)
   const trongBo = cleanTexts(v.trongBo, 200, 12)
+  const ten = text(v.ten, 80)
   return {
+    ...(ten ? { ten } : {}),
     ...(khauHieu ? { khauHieu } : {}),
     ...(moTa ? { moTa } : {}),
     ...(cauChuyen ? { cauChuyen } : {}),
