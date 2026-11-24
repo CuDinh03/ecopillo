@@ -28,6 +28,7 @@ import { FOOTER_TEXT_SET } from './pageText/footer'
 import { GIFTS_TEXT_SET } from './pageText/gifts'
 import { HOME_TEXT_SET } from './pageText/home'
 import { ORDER_TEXT_SET } from './pageText/order'
+import { ORDER_CUSTOMER_TEXT_SET, ORDER_STEPS_TEXT_SET, ORDER_SUMMARY_TEXT_SET } from './pageText/orderFlow'
 import { PRIVACY_SECTIONS_SET, PRIVACY_TEXT_SET } from './pageText/privacy'
 import { PRODUCTS_PAGE_TEXT_SET } from './pageText/products'
 import { RECRUIT_TEXT_SET } from './pageText/recruit'
@@ -82,6 +83,9 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   LISTING_HEAD_SET,
   LISTING_GUIDES_SET,
   ORDER_TEXT_SET,
+  ORDER_STEPS_TEXT_SET,
+  ORDER_CUSTOMER_TEXT_SET,
+  ORDER_SUMMARY_TEXT_SET,
   BLOG_TEXT_SET,
   FAQ_PAGE_TEXT_SET,
   FOOTER_TEXT_SET,
