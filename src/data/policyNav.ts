@@ -1,22 +1,14 @@
-import { PATHS } from './links'
+import { hiddenPageTarget, PATHS } from './links'
 import { liveList, type EditableField, type EditableSet } from './liveContent'
 import { chu, definePageText, doan, legacyPageText } from './pageText/define'
+import { POLICY_ALIAS_OF, POLICY_PAGES, type PolicySlug } from './policyKeys'
 
 /**
  * Danh sách trang chính sách cho menu, chân trang và bộ định tuyến. Tách riêng khỏi policies.ts
- * để phần chữ dài của từng chính sách chỉ tải khi khách mở trang đó.
- * Đường link giữ đúng như web cũ (owner chốt 15/10/2026); chỉ "Hướng dẫn mua hàng" là trang mới.
- * `label` ở đây là chữ gốc; chữ đang hiện (Ecopillo sửa ở Nội dung web) lấy từ POLICY_NAV.
+ * để phần chữ dài của từng chính sách chỉ tải khi khách mở trang đó. Các trang có sẵn: policyKeys.ts.
+ * `label` ở đó là chữ gốc; chữ đang hiện (Ecopillo sửa ở Nội dung web) lấy từ POLICY_NAV.
  */
-export const POLICY_PAGES = [
-  { slug: 'huong-dan-mua-hang', label: 'Hướng dẫn mua hàng' },
-  { slug: 'chinh-sach-van-chuyen', label: 'Giao hàng' },
-  { slug: 'chinh-sach-thanh-toan', label: 'Thanh toán' },
-  { slug: 'chinh-sach-doi-tra-hang-va-hoan-tien', label: 'Kiểm hàng, đổi hàng' },
-  { slug: 'chinh-sach-bao-hanh-san-pham', label: 'Bảo hành' },
-] as const
-
-export type PolicySlug = (typeof POLICY_PAGES)[number]['slug']
+export { POLICY_PAGES, type PolicySlug }
 
 export const policyPath = (slug: string): string => `/${slug}/`
 
@@ -70,7 +62,7 @@ const LEGACY_LABELS = legacyPageText('menu-chinh-sach', {
  */
 export const POLICY_ALIASES: Readonly<Record<string, { slug: PolicySlug; title: string; description?: string }>> = {
   'chinh-sach-kiem-tra-hang': {
-    slug: 'chinh-sach-doi-tra-hang-va-hoan-tien',
+    slug: POLICY_ALIAS_OF['chinh-sach-kiem-tra-hang'],
     title: POLICY_NAV_TEXT.kiemTraHangTieuDe,
     description: POLICY_NAV_TEXT.kiemTraHangMoTa,
   },
@@ -126,17 +118,21 @@ export const POLICY_MENU_SET: EditableSet = {
   truong: NAV_FIELDS,
 }
 
-/** Menu chính sách đang hiện: các trang có sẵn + trang bảo vệ thông tin + trang Ecopillo thêm, theo thứ tự Ecopillo xếp */
+/**
+ * Menu chính sách đang hiện: các trang có sẵn + trang bảo vệ thông tin + trang Ecopillo thêm, theo thứ tự Ecopillo xếp.
+ * Trang Ecopillo đã ẩn (trang chính sách chọn "Ẩn" ở bộ "Đầu các trang chính sách", trang đã gỡ) thì bỏ khỏi menu.
+ */
 export const POLICY_NAV: readonly PolicyNavRow[] = liveList<PolicyNavRow>(POLICY_MENU_SET.khoa, navRows(LEGACY_LABELS), NAV_FIELDS, () => ({
   label: '',
   to: '',
   // Menu chỉ dẫn tới trang trong web (bộ định tuyến); link ngoài, #khối thì bỏ dòng
-})).filter((row) => row.to.startsWith('/') && !row.to.startsWith('//'))
+})).filter((row) => row.to.startsWith('/') && !row.to.startsWith('//') && !hiddenPageTarget(row.to))
 
 const sameLink = (a: string, b: string): boolean => a.replace(/\/?$/, '/') === b.replace(/\/?$/, '/')
 
-/** Các trang chính sách (không gồm trang bảo vệ thông tin) với tên đang hiện; trang Ecopillo bỏ khỏi menu dùng tên gốc */
-export const POLICY_PAGE_LINKS: readonly { slug: PolicySlug; to: string; label: string }[] = POLICY_PAGES.map((p) => {
+/** Các trang chính sách đang hiện (không gồm trang bảo vệ thông tin) với tên đang hiện; trang Ecopillo bỏ khỏi menu dùng tên gốc */
+export const POLICY_PAGE_LINKS: readonly { slug: PolicySlug; to: string; label: string }[] = POLICY_PAGES.flatMap((p) => {
   const to = policyPath(p.slug)
-  return { slug: p.slug, to, label: POLICY_NAV.find((n) => sameLink(n.to, to))?.label ?? LEGACY_LABELS[LABEL_KEY[p.slug]] }
+  if (hiddenPageTarget(to)) return []
+  return [{ slug: p.slug, to, label: POLICY_NAV.find((n) => sameLink(n.to, to))?.label ?? LEGACY_LABELS[LABEL_KEY[p.slug]] }]
 })

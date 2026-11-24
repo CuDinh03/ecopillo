@@ -20,6 +20,7 @@ import { chen } from '../data/pageText/define'
 import { postLabelText } from '../data/pageText/miscLabels'
 import { Blocks } from '../components/ui/Blocks'
 import { ARTICLE_ORDER } from '../data/pageLayout'
+import { PolicyLayout } from '../components/policy/PolicyLayout'
 
 function Block({ block }: { block: PostBlock }) {
   switch (block.type) {
@@ -88,6 +89,16 @@ export function ArticlePage() {
     post ? { image: share, type: 'article' } : { notFound: true },
   )
   if (!post) return <NotFoundPage />
+  // Trang Ecopillo tạo kiểu "Trang chính sách" (trang-moi.php, đợt I): khung trang chính sách, menu chính sách bên trái
+  if (post.isPolicyPage) {
+    return (
+      <PolicyLayout title={post.title} intro={post.excerpt}>
+        <div className="chu-deu text-base leading-[1.75] text-ink-soft [&>:first-child]:mt-0">
+          <WordPressBody slug={post.slug} live={post.wp?.live ? { title: post.title } : undefined} />
+        </div>
+      </PolicyLayout>
+    )
+  }
 
   // Bài khác: cùng nhóm trước, mới nhất trước
   const others = [

@@ -36,6 +36,8 @@ export interface WordPressInfo {
 export interface Post {
   /** Trang Ecopillo tự tạo trong WordPress (đợt G): hiện bằng khung bài viết, không có ngày, mục, bài liên quan */
   isPage?: boolean
+  /** Trang tự tạo chọn kiểu "Trang chính sách" (trang-moi.php, đợt I): hiện trong khung trang chính sách (PolicyLayout) */
+  isPolicyPage?: boolean
   slug: string
   title: string
   excerpt: string

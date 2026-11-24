@@ -3,6 +3,7 @@ import { isCodePostHidden } from './codePostKeys'
 import { liveList, rowKey, type EditableField, type EditableSet } from './liveContent'
 import { liveCategories, liveHidden, liveNewCollections, liveNewPatternBySlug, liveNewProductBySlug, markLiveDiffers } from './liveData'
 import { liveRedirectFor } from './liveRedirects'
+import { isPolicyHidden } from './policyKeys'
 
 /**
  * Mọi đường link của web nằm ở đây.
@@ -419,7 +420,7 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
 
 /**
  * Trang Ecopillo đã gỡ trong WordPress → link chuyển tới (không có thì trang còn hiện): danh mục ẩn / xoá (đợt E),
- * sản phẩm, mẫu, bộ sưu tập, bài viết đã gỡ (đợt E2). Máy chủ trả 301 (trang-wp.php); đây là lớp trên trình duyệt.
+ * sản phẩm, mẫu, bộ sưu tập, bài viết đã gỡ (đợt E2), trang chính sách đã ẩn (đợt I). Máy chủ trả 301 (trang-wp.php); đây là lớp trên trình duyệt.
  * (Bỏ qua phần sau "#", "?"; không dùng withSlash vì withSlash khai ở cuối file.)
  */
 export const hiddenPageTarget = (rawPath: string): string | undefined => {
@@ -429,7 +430,9 @@ export const hiddenPageTarget = (rawPath: string): string | undefined => {
   if (hidden) return hidden
   // Bài viết dựng sẵn Ecopillo chọn "Ẩn" ở Nội dung web → "Bài viết dựng sẵn" (posts.ts): về trang Tin tức
   const slug = key.match(/^\/([a-z0-9-]+)\/$/)?.[1]
-  return slug && isCodePostHidden(slug) ? PATHS.blog : undefined
+  if (slug && isCodePostHidden(slug)) return PATHS.blog
+  // Trang chính sách có sẵn Ecopillo chọn "Ẩn" (hoặc xoá dòng) ở bộ "Đầu các trang chính sách" (policyKeys.ts): về trang Hỏi đáp
+  return slug && isPolicyHidden(slug) ? PATHS.faq : undefined
 }
 
 /** Trang danh mục đang hiện (có route, được đặt link tới) */

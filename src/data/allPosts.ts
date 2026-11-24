@@ -64,7 +64,12 @@ const livePost = (entry: LivePost): Post => ({
 const CODE_SLUGS = new Set(CODE_POST_SLUGS)
 const LIVE = LIVE_POSTS.filter((p) => !CODE_SLUGS.has(p.slug) && !p.isPage).map(livePost)
 /** Trang Ecopillo tự tạo (đợt G): mở được ở link của nó, không nằm trong Tin tức, tìm bài, bài liên quan */
-const OWN_PAGES: readonly Post[] = LIVE_POSTS.filter((p) => p.isPage && !CODE_SLUGS.has(p.slug)).map((p) => ({ ...livePost(p), isPage: true }))
+const OWN_PAGES: readonly Post[] = LIVE_POSTS.filter((p) => p.isPage && !CODE_SLUGS.has(p.slug)).map((p) => ({
+  ...livePost(p),
+  isPage: true,
+  // Kiểu "Trang chính sách" (đợt I): ArticlePage vẽ trong khung trang chính sách
+  ...(p.isPolicyPage ? { isPolicyPage: true } : {}),
+}))
 const LIVE_SLUGS = new Set(LIVE.map((p) => p.slug))
 
 /** Bài WordPress: bản sửa trong WordPress thay bản lúc dựng; bài mới (chưa có lúc dựng) lên đầu, mới nhất trước */

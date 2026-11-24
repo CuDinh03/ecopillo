@@ -1,5 +1,5 @@
 import { COLLECTIONS } from './catalog'
-import { collectionPathById, isListingShown, LISTINGS, PATHS } from './links'
+import { collectionPathById, hiddenPageTarget, isListingShown, LISTINGS, PATHS } from './links'
 import { chen } from './pageText/define'
 import { isMenuLink } from './pageText/linkField'
 import { PAGE_FRAME_TEXT as T } from './pageText/pageFrame'
@@ -71,9 +71,9 @@ const categoryLink = (category: CategoryId): RelatedLink[] => {
   return [{ label, to: categoryUrl(category) }]
 }
 
-/** Dòng "chữ | link" Ecopillo sửa → link; link sai (không phải /… hay https://…) thì bỏ dòng */
+/** Dòng "chữ | link" Ecopillo sửa → link; link sai (không phải /… hay https://…), trang đã ẩn / gỡ thì bỏ dòng */
 const linksOf = (rows: readonly { ten: string; link: string }[]): RelatedLink[] =>
-  rows.filter((r) => isMenuLink(r.link)).map((r) => ({ label: r.ten, to: r.link }))
+  rows.filter((r) => isMenuLink(r.link) && !hiddenPageTarget(r.link)).map((r) => ({ label: r.ten, to: r.link }))
 
 const BUYING_GUIDE: readonly RelatedLink[] = linksOf(T.linkMuaHang)
 

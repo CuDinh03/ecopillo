@@ -105,6 +105,8 @@ function Headline({ isMain, className }: { isMain: boolean; className: string })
 interface CategoryRowSize {
   /** Khung cả hàng */
   row: string
+  /** Bề ngang mỗi ô (điện thoại: theo số cột `--cot`); không có thì theo `row` */
+  cell?: string
   /** Vòng tròn biểu tượng */
   circle: string
   name: string
@@ -112,15 +114,25 @@ interface CategoryRowSize {
 }
 
 /**
- * Bốn biểu tượng Chăn / Ga / Gối / Đệm như banner, bấm sang danh mục.
+ * Ecopillo thêm, xoá nhóm (1 đến 8; heroBanner.ts). Tới 4 nhóm: một hàng như banner đã duyệt.
+ * Quá 4 nhóm: hai hàng chia đều (5 → 3 + 2, 6 → 3 + 3, 7 → 4 + 3, 8 → 4 + 4), hàng dưới căn giữa, ô gọn hơn một chút
+ * để phần chữ không lấn sang cảnh giường.
+ */
+const CATEGORY_COUNT = HERO_CATEGORIES.length
+const IS_TWO_ROWS = CATEGORY_COUNT > 4
+const CATEGORY_COLUMNS = IS_TWO_ROWS ? Math.ceil(CATEGORY_COUNT / 2) : 4
+
+/**
+ * Các biểu tượng Chăn / Ga / Gối / Đệm như banner, bấm sang danh mục.
  * Vòng tròn vẽ bằng CSS (màu xanh nhạt của bộ nhận diện, gần đúng dải màu trong file thiết kế) để luôn nét;
  * nét vẽ bên trong là ảnh tách từ file thiết kế.
  */
 function CategoryRow({ size }: { size: CategoryRowSize }) {
+  const style = { ...delay(80), '--cot': CATEGORY_COLUMNS } as CSSProperties
   return (
-    <ul style={delay(80)} className={`hero-in ${size.row}`}>
-      {HERO_CATEGORIES.map((c) => (
-        <li key={c.name}>
+    <ul style={style} className={`hero-in ${size.row}`}>
+      {HERO_CATEGORIES.map((c, i) => (
+        <li key={`${i}-${c.name}`} className={size.cell}>
           <HomeLink
             to={c.to}
             className="group flex flex-col items-center rounded-2xl text-center text-deep-900 outline-offset-4"
@@ -139,11 +151,24 @@ function CategoryRow({ size }: { size: CategoryRowSize }) {
   )
 }
 
-/** Điện thoại: bốn ô chia đều bề ngang */
+/** Bề ngang ô điện thoại: (100% − (cột − 1) × 0,25rem) / cột, nên 4 nhóm hiện y như lưới 4 cột trước đây */
+const MOBILE_CELL = 'w-[calc((100%-(var(--cot)-1)*0.25rem)/var(--cot))]'
+
+/** Điện thoại: chia đều bề ngang theo 4 cột; ít hơn 4 nhóm thì căn giữa, ô giữ cỡ cũ */
 const MOBILE_ROW: CategoryRowSize = {
-  row: 'mt-5 grid w-full grid-cols-4 gap-1',
+  row: 'mt-5 flex w-full flex-wrap justify-center gap-1',
+  cell: MOBILE_CELL,
   circle: 'size-[3.25rem]',
   name: 'mt-1.5 text-[0.95rem]',
+  text: 'text-meta',
+}
+
+/** Điện thoại, hai hàng */
+const MOBILE_ROW_TWO: CategoryRowSize = {
+  row: 'mt-5 flex w-full flex-wrap justify-center gap-x-1 gap-y-2.5',
+  cell: MOBILE_CELL,
+  circle: 'size-[2.875rem]',
+  name: 'mt-1 text-[0.9rem]',
   text: 'text-meta',
 }
 
@@ -153,6 +178,14 @@ const DESKTOP_ROW: CategoryRowSize = {
   circle: 'size-[clamp(3rem,4.6cqi,5.5rem)]',
   name: 'mt-[clamp(0.375rem,0.6cqi,0.75rem)] text-[clamp(1rem,1.5cqi,1.6rem)]',
   text: 'text-[clamp(0.8125rem,1.15cqi,1.25rem)] whitespace-nowrap',
+}
+
+/** Máy tính, hai hàng: ô gọn hơn, 4 cột vẫn hẹp hơn hàng 4 nhóm gốc (không lấn sang cây, giường) */
+const DESKTOP_ROW_TWO: CategoryRowSize = {
+  row: 'mt-[clamp(0.875rem,1.8cqi,1.75rem)] flex max-w-[calc(var(--cot)*clamp(4.5rem,7cqi,8.5rem)+(var(--cot)-1)*clamp(0.5rem,1.4cqi,1.75rem))] flex-wrap justify-center gap-x-[clamp(0.5rem,1.4cqi,1.75rem)] gap-y-[clamp(0.5rem,1cqi,1.25rem)] [&>li]:w-[clamp(4.5rem,7cqi,8.5rem)]',
+  circle: 'size-[clamp(2.625rem,3.7cqi,4.5rem)]',
+  name: 'mt-[clamp(0.25rem,0.5cqi,0.625rem)] text-[clamp(0.9375rem,1.3cqi,1.4rem)]',
+  text: 'text-[clamp(0.75rem,1cqi,1.1rem)]',
 }
 
 /** Khung vàng dùng chung cho hai khối của dải: viền vàng, tiêu đề trên dải vàng, ruột vàng nhạt */
@@ -236,7 +269,7 @@ function MobileTop() {
       <HeroPicture className="absolute inset-0 h-full w-full object-cover object-bottom" />
       <div className="relative flex flex-col items-center px-5 pt-[5.25rem]">
         <Headline isMain className="w-[min(100%,22rem)]" />
-        <CategoryRow size={MOBILE_ROW} />
+        <CategoryRow size={IS_TWO_ROWS ? MOBILE_ROW_TWO : MOBILE_ROW} />
         <div style={delay(160)} className="hero-in mt-5 grid w-full grid-cols-2 gap-2.5">
           <HomeLink to={HOME_TEXT.linkXemBoSuuTap} className={buttonClass('primary', 'md', 'px-3')}>
             {HOME_TEXT.nutXemBoSuuTap}
@@ -252,6 +285,24 @@ function MobileTop() {
   )
 }
 
+/** Khung máy tính tới 4 nhóm (banner đã duyệt): cao cố định, từ 1280px ảnh trọn khung */
+const DESKTOP_FRAME = {
+  frame: 'md:block md:h-[clamp(400px,40vw,520px)] xl:h-auto',
+  picture: 'absolute inset-0 h-full w-full object-cover object-[30%_center] lg:object-right xl:static xl:block xl:aspect-[2069/760] xl:h-auto',
+  content: 'absolute inset-0 z-10 flex items-center pt-[4.5rem] pl-8 lg:pl-10 xl:pl-[9.4%]',
+}
+
+/**
+ * Quá 4 nhóm (hai hàng biểu tượng): khung ít nhất cao như trên, cao thêm khi chữ cần chỗ, ảnh phủ kín khung nên chữ
+ * không bị cắt ở đáy. Từ 1024px neo giữa: khung cao thêm thì ảnh phóng ra hai bên, cây cảnh giữa ảnh đứng yên, không
+ * trôi vào hàng biểu tượng (neo phải thì cây trôi sang trái).
+ */
+const DESKTOP_FRAME_TALL = {
+  frame: 'md:flex md:min-h-[clamp(400px,40vw,520px)] xl:min-h-[calc(100vw*760/2069)]',
+  picture: 'absolute inset-0 h-full w-full object-cover object-[30%_center] lg:object-center',
+  content: 'relative z-10 flex w-full items-center pt-[4.5rem] pb-6 pl-8 lg:pl-10 xl:pl-[9.4%]',
+}
+
 /**
  * Máy tính. Từ 1280px ảnh trọn khung theo bề ngang, chữ đặt đúng chỗ trong banner (lề trái 9,4%, rộng 36%), nên khi màn hình
  * rộng hơn khung nội dung 1240px chữ vẫn không lấn sang giường.
@@ -263,14 +314,14 @@ export function Hero() {
     <section aria-label={HOME_TEXT.bannerDoc} className="relative -mt-[4.5rem] bg-gradient-to-b from-hero-sky-top to-hero-sky-bottom">
       <MobileTop />
 
-      <div className="@container relative hidden overflow-hidden md:block md:h-[clamp(400px,40vw,520px)] xl:h-auto">
-        <HeroPicture className="absolute inset-0 h-full w-full object-cover object-[30%_center] lg:object-right xl:static xl:block xl:aspect-[2069/760] xl:h-auto" />
+      <div className={`@container relative hidden overflow-hidden ${IS_TWO_ROWS ? DESKTOP_FRAME_TALL.frame : DESKTOP_FRAME.frame}`}>
+        <HeroPicture className={IS_TWO_ROWS ? DESKTOP_FRAME_TALL.picture : DESKTOP_FRAME.picture} />
 
         {/* Chừa chỗ cho thanh đầu trang trong suốt phía trên */}
-        <div className="absolute inset-0 z-10 flex items-center pt-[4.5rem] pl-8 lg:pl-10 xl:pl-[9.4%]">
+        <div className={IS_TWO_ROWS ? DESKTOP_FRAME_TALL.content : DESKTOP_FRAME.content}>
           <div>
             <Headline isMain={false} className="-ml-[2.7cqi] w-[clamp(18.5rem,39.15cqi,50rem)]" />
-            <CategoryRow size={DESKTOP_ROW} />
+            <CategoryRow size={IS_TWO_ROWS ? DESKTOP_ROW_TWO : DESKTOP_ROW} />
             <div style={delay(160)} className="hero-in mt-[clamp(1.25rem,2.4cqi,2.5rem)] flex gap-3">
               <HomeLink to={HOME_TEXT.linkXemBoSuuTap} className={buttonClass('primary', 'md', 'xl:h-14 xl:px-7 xl:text-base')}>
                 {HOME_TEXT.nutXemBoSuuTap}

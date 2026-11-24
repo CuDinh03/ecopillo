@@ -102,13 +102,18 @@ export const HERO_IMAGES = {
   headlineSrcSet: BANNER.anhChu.srcSet || BANNER.anhChu.src,
 }
 
+/** Số nhóm tối đa trên banner: quá 4 nhóm thì xếp hai hàng (Hero.tsx), quá 8 thì chật chỗ trời của ảnh */
+export const HERO_CATEGORY_MAX = 8
+
+/**
+ * Các nhóm dưới banner. Owner 24/11/2026 ("thêm được thì phải sửa được và xoá được"): Ecopillo thêm, xoá, đổi thứ tự,
+ * từ 1 đến 8 nhóm; 4 nhóm thì giữ đúng như banner đã duyệt.
+ */
 export const BANNER_GROUPS_SET: EditableSet = {
   khoa: 'banner-nhom',
-  khongThemXoa: true,
-  khongDoiThuTu: true,
   nhom: 'Trang chủ',
-  ten: 'Bốn nhóm dưới banner',
-  moTa: 'Chữ, biểu tượng và link của 4 nhóm Chăn · Ga · Gối · Đệm trên banner. Biểu tượng là ảnh vuông nền trong suốt (vòng tròn xanh web tự vẽ).',
+  ten: 'Các nhóm dưới banner',
+  moTa: `Chữ, biểu tượng và link các nhóm Chăn · Ga · Gối · Đệm trên banner. Thêm, xoá, đổi thứ tự được, từ 1 đến ${HERO_CATEGORY_MAX} nhóm (quá 4 nhóm thì xếp hai hàng). Biểu tượng là ảnh vuông nền trong suốt (vòng tròn xanh web tự vẽ).`,
   kieu: 'nhieu',
   goc: BASE_CATEGORIES,
   tieuDeDong: 'name',
@@ -120,7 +125,13 @@ export const BANNER_GROUPS_SET: EditableSet = {
   ] satisfies EditableField[],
 }
 
-/** Giữ đủ 4 nhóm; dòng đã lưu trước khi có ô biểu tượng, link thì dùng biểu tượng và link gốc */
+/** Dòng trống cho nhóm Ecopillo thêm: thiếu tên, biểu tượng hay link thì bỏ dòng (liveList) */
+const EMPTY_CATEGORY: HeroCategory = { name: '', text: '', to: '', icon: { src: '', srcSet: '', alt: '' } }
+
+/**
+ * Bốn dòng đầu: dòng đã lưu trước khi có ô biểu tượng, link (lúc 4 nhóm cố định) thì dùng biểu tượng và link gốc cùng vị trí.
+ * Dòng thứ 5 trở đi là nhóm Ecopillo thêm, phải đủ ô.
+ */
 export const HERO_CATEGORIES: readonly HeroCategory[] = liveList(BANNER_GROUPS_SET.khoa, BASE_CATEGORIES, BANNER_GROUPS_SET.truong, (i) => ({
-  ...BASE_CATEGORIES[Math.min(i, BASE_CATEGORIES.length - 1)],
-})).slice(0, BASE_CATEGORIES.length)
+  ...(BASE_CATEGORIES[i] ?? EMPTY_CATEGORY),
+})).slice(0, HERO_CATEGORY_MAX)

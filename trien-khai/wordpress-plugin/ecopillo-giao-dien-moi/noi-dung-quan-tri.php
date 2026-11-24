@@ -220,6 +220,9 @@ function eco_nd_input($field, $name, $value, $in_form_set = false)
             return $label . '<textarea id="' . esc_attr($id) . '" name="' . esc_attr($name) . '" rows="3" class="large-text">' . esc_textarea((string) $value) . '</textarea>' . $hint;
         case 'chon':
             list($options, $labels) = eco_nd_field_options($field);
+            // Giá trị lưu kiểu cũ (mã đã sanitize_title) vẫn chọn đúng lựa chọn, không rơi về lựa chọn đầu
+            $picked = eco_nd_pick_option($options, $value);
+            $value = $picked !== null ? $picked : $value;
             $html = $label . '<select id="' . esc_attr($id) . '" name="' . esc_attr($name) . '">';
             foreach ($options as $i => $option) {
                 $text = isset($labels[$i]) ? $labels[$i] : $option;

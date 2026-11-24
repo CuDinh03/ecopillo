@@ -1,6 +1,6 @@
 import { COLLECTIONS, type Collection, type Pattern } from './catalog'
 import { slugify } from '../lib/slug'
-import { liveList, type EditableField, type EditableSet } from './liveContent'
+import { liveList, rowKey, type EditableField, type EditableSet } from './liveContent'
 
 /**
  * Câu chuyện của từng phối màu (thiết kế "Kết hợp D", owner chọn ngày 14/10/2026).
@@ -52,7 +52,8 @@ const BASE_TONE_ROWS: readonly ToneRow[] = [
 /**
  * Gam màu Ecopillo sửa ở Nội dung web → Sản phẩm → "Gam màu" (owner 24/11/2026: thêm, xoá, sửa được): tên gam, cụm chữ trong câu,
  * hai màu của dải màu. Mã gam có sẵn giữ nguyên (câu chuyện trong file này, link ?gam=… bám theo mã); gam mới lấy mã theo tên gam
- * (cùng cách với plugin bo-suu-tap-moi.php eco_bst_tones), nên đổi tên gam mới thêm là đổi mã của nó.
+ * lúc lưu lần đầu (cờ khoaDongTheoTieuDe, plugin noi-dung.php eco_nd_fill_row_keys) rồi giữ nguyên khi đổi tên (đợt I 24/11/2026).
+ * Dòng đã lưu trước đó chưa có mã: mã theo tên như trước (plugin bo-suu-tap-moi.php eco_bst_tones cũng vậy), lưu lại lần sau thì mã đó được giữ.
  * Mẫu vào gam qua thuộc tính "Gam màu" trong Woo (ghi đúng tên gam); mẫu có câu chuyện trong code giữ gam trong code.
  */
 export const TONE_SET: EditableSet = {
@@ -66,13 +67,14 @@ export const TONE_SET: EditableSet = {
   goc: BASE_TONE_ROWS,
   tieuDeDong: 'ten',
   khoaDong: 'ma',
+  khoaDongTheoTieuDe: true,
   truong: [
     {
       khoa: 'ten',
       nhan: 'Tên gam',
       kieu: 'chu',
       batBuoc: true,
-      goiY: 'Ghi y hệt giá trị thuộc tính "Gam màu" trong Woo (không phân biệt dấu, hoa thường). Gam mới thêm: đổi tên thì phải đổi cả thuộc tính trong Woo.',
+      goiY: 'Ghi y hệt giá trị thuộc tính "Gam màu" trong Woo (không phân biệt dấu, hoa thường). Đổi tên thì đổi cả thuộc tính trong Woo; link lọc ?gam=… giữ nguyên.',
     },
     { khoa: 'cum', nhan: 'Cụm chữ trong câu', kieu: 'chu', batBuoc: true, goiY: 'Ghép vào câu "Thêm … ở bộ khác", "Xem cả …", ví dụ "gam xanh".' },
     { khoa: 'mau1', nhan: 'Dải màu: màu đầu', kieu: 'mau', batBuoc: true },
@@ -91,8 +93,9 @@ const tonesOf = (rows: readonly ToneRow[]): readonly Tone[] => {
   })
 }
 
+// Mã dòng (ô ẩn, không nằm trong `truong`) lấy từ bản đã lưu: gam mới giữ mã plugin đặt lúc lưu lần đầu
 const TONE_ROWS = liveList<ToneRow>(TONE_SET.khoa, BASE_TONE_ROWS, TONE_SET.truong, (_i, row) => ({
-  ...(BASE_TONE_ROWS.find((r) => r.ma && r.ma === row.ma) ?? { ma: '', ten: '', cum: '', mau1: '#ffffff', mau2: '#ffffff' }),
+  ...(BASE_TONE_ROWS.find((r) => r.ma && r.ma === rowKey(row.ma)) ?? { ma: rowKey(row.ma), ten: '', cum: '', mau1: '#ffffff', mau2: '#ffffff' }),
 }))
 
 /** `label` chỉ hiện trong wp-admin (danh sách gam ở priceFrame.ts) và để khớp thuộc tính Woo, không hiện trên web */

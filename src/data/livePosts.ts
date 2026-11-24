@@ -24,6 +24,8 @@ export interface LivePost {
   cover: { src: string; srcSet: string; alt: string } | null
   /** Trang WordPress Ecopillo tích "Hiện bằng giao diện mới" (trang-moi.php, đợt G): không vào danh sách Tin tức */
   isPage?: boolean
+  /** Trang tự tạo chọn kiểu "Trang chính sách" (trang-moi.php `kieu: 'chinh-sach'`, đợt I): khung trang chính sách */
+  isPolicyPage?: boolean
   /** Ô "Hiện ở cuối trang sản phẩm thuộc nhóm" khi soạn bài (bai-viet-moi.php, đợt H): mã nhóm hoặc 'chinh-sach' */
   topics?: readonly string[]
 }
@@ -53,6 +55,7 @@ function clean(input: unknown): LivePost | undefined {
     modified: typeof v.sua === 'string' && DATE.test(v.sua) ? v.sua : date,
     readMinutes: typeof v.phut === 'number' && v.phut > 0 && v.phut < 120 ? Math.round(v.phut) : 3,
     ...(v.trang === true ? { isPage: true } : {}),
+    ...(v.trang === true && v.kieu === 'chinh-sach' ? { isPolicyPage: true } : {}),
     ...(topicsOf(v.nhom).length ? { topics: topicsOf(v.nhom) } : {}),
     cover:
       cover && isUrl(cover.src)

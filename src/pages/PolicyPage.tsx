@@ -1,6 +1,7 @@
 import { PolicyLayout } from '../components/policy/PolicyLayout'
 import { RichText } from '../components/ui/RichText'
-import { useLocation } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
+import { hiddenPageTarget } from '../data/links'
 import { policyBySlug } from '../data/policies'
 import { POLICY_ALIASES } from '../data/policyNav'
 import { usePageMeta } from '../hooks/usePageMeta'
@@ -16,6 +17,9 @@ export function PolicyPage() {
   const policy = policyBySlug(alias?.slug ?? path)
   const title = alias?.title ?? policy?.title
   usePageMeta(title ?? null, alias?.description ?? policy?.description)
+  // Trang Ecopillo đã ẩn (bộ "Đầu các trang chính sách"): về trang Hỏi đáp như máy chủ trả 301 (trang-wp.php)
+  const hidden = hiddenPageTarget(pathname)
+  if (hidden) return <Navigate to={hidden} replace />
   if (!policy || !title) return <NotFoundPage />
   return (
     <PolicyLayout title={title} intro={policy.intro}>
