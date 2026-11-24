@@ -45,7 +45,9 @@ cái Ecopillo được tự sửa, hay xong một bước chuyển web, thì s�
   Muốn ghi lại là đang chờ thì đánh dấu `[ĐIỀN …]`, `[XÁC NHẬN …]`, `[ECOPILLO …]` **trong comment code** và ghi vào `docs/bo-nao/dang-cho.md`.
   `<FillIn>` và `RichText` vẫn còn và **tô nổi mọi chữ dạng `[…]`** trong dữ liệu, nên đừng để chữ `[…]` lọt vào `src/data/`.
   Nhãn câu chuyện chờ duyệt đi theo cờ `STORIES_APPROVED` (đang bật, không hiện).
-- **Ecopillo tự đổi màu, bố cục, chuyển hướng link** ở Nội dung web → Giao diện (owner 20/11/2026 "ecopillo cần tự làm hết được"): `src/data/theme.ts` (mau.css, plugin kiểm tương phản), `src/data/pageLayout.ts` (khối mới của các trang đó phải khai vào đây và vẽ qua `Blocks`), `src/data/liveRedirects.ts`. Màu dưới đây là màu gốc.
+- **Ecopillo tự đổi màu, kiểu chữ, bố cục, chuyển hướng link, SEO từng trang, menu chính** ở Nội dung web → Giao diện (owner 20/11/2026 "ecopillo cần tự làm hết được"; 24/11/2026 "toàn quyền chỉnh sửa ở tất cả các chi tiết, kể cả nhỏ nhất", "thêm được thì phải sửa được và xoá được"): `src/data/theme.ts` (màu + `FONT_SET`, mau.css), `src/data/pageLayout.ts` (khối mới phải khai vào đây và vẽ qua `Blocks`), `src/data/liveRedirects.ts`, `src/data/liveSeo.ts`, `src/data/pageText/mainMenu.ts`. Màu, font dưới đây là bản gốc.
+- **Không viết chữ cứng mới, kể cả nút, nhãn ô, aria, lời báo lỗi** (đợt E 24/11): thêm ô vào bộ `definePageText` cạnh khu vực đó (`src/data/pageText/*`), chỗ có số / tên dùng `chen()`. Thêm được gì thì phải sửa, xoá được: bản rà `docs/bao-cao-ra-quyen-sua-2026-11-24.md`.
+- **Danh mục sản phẩm, gỡ sản phẩm / bài có sẵn** làm trong WordPress (đợt E, plugin 2.2.0): `danh-muc.php` (thêm / sửa / ẩn / xoá danh mục, SEO; web: `liveCategories` trong `links.ts`), `an-xoa.php` (nháp / thùng rác / xoá → bỏ khỏi web, 301). Tra cứu dùng `ALL_PRODUCTS` / `ALL_COLLECTIONS` / `productBySlug` (cả thứ đã gỡ, không vỡ); liệt kê dùng `PRODUCTS` / `COLLECTIONS` (chỉ thứ đang hiện); link tới trang đã gỡ kiểm bằng `hiddenPageTarget`. Trang có sẵn cần máy chủ trả khác (SEO, ẩn, 301): `trang-wp.php` + file đánh dấu `qua-wp/` trong quy tắc .htaccess.
 - Màu: chỉ dùng bộ nhận diện trong `src/index.css` (`@theme`): chàm `#2D2E8D`, chàm sáng `#333DBA`,
   xanh nhạt `#D3EFFF`/`#E9F8FF`, trắng, vàng `#FFC271` (chỉ cho quà tặng, ưu đãi; ngoại lệ: dải trắng ngay dưới banner trang chủ có hai khung vàng, "Hệ sinh thái sản phẩm" (owner duyệt 17/10/2026)
   và "Tốt · Thật · Thiện" (chị Phương 09/11/2026: "làm khung cam như bên hệ sinh thái cho cân"), `BangEcBar` trong `Hero.tsx`).
@@ -55,7 +57,7 @@ cái Ecopillo được tự sửa, hay xong một bước chuyển web, thì s�
 - **Nền cả web là xanh `#D3EFFF`, khối nổi màu trắng** (owner chọn 17/10/2026, mục 33, phương án 1): `bg-page` = #D3EFFF;
   `ivory`, `cream-50`, `cream-100`, `mist-50` đều là trắng. Thẻ, ô, hộp trắng tách khỏi nền bằng `shadow-[var(--shadow-soft)]`, không dùng viền `ring-cream-200` (trùng màu nền nên không thấy).
   Dải kéo hết bề ngang không đặt nền (để nền xanh liền). Đường kẻ dùng `border-line` (chàm 14%). Ô nhỏ nằm **bên trong** khối trắng dùng `bg-mist-100` (#E9F8FF).
-- Font: Be Vietnam Pro (chữ thường) + Noto Serif Display (tiêu đề, lớp `font-display`; chữ đứng đậm 600, chữ nghiêng 400, owner chọn mẫu A 04/11/2026).
+- Font gốc: Be Vietnam Pro (chữ thường) + Noto Serif Display (tiêu đề, lớp `font-display`; chữ đứng đậm 600, chữ nghiêng 400, owner chọn mẫu A 04/11/2026). Ecopillo đổi được ở Kiểu chữ web (chỉ font đủ dấu tiếng Việt).
   Mỗi tiêu đề chỉ một kiểu chữ (02/11/2026). Đổi font hay độ đậm thì đo lại `size-adjust` ở đầu `src/index.css`.
   Font viết tay của logo (lớp `font-slogan`, 1FTV VIP Betterlett, `public/fonts/betterlett-slogan.woff`) **từ 16/11/2026 không còn chỗ nào dùng**,
   vì đầu trang chủ đã thành banner "Chốn yên". Khai báo `@font-face` vẫn để trong `src/index.css`. File font **chỉ có chữ của câu "Nâng niu giấc mơ xanh"**:
