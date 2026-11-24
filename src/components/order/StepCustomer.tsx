@@ -6,8 +6,10 @@ import type { CustomerErrors, CustomerInfo, OrderSummaryData } from '../../lib/o
 import { PROVINCES } from '../../lib/shipping'
 import { Icon } from '../ui/Icon'
 import { Select } from '../ui/Select'
-import { BANK_LINE, DEPOSIT_SHORT, NO_DEPOSIT } from '../../data/paymentPolicy'
+import { BANK_LINE } from '../../data/paymentPolicy'
 import { ORDER_TEXT } from '../../data/pageText/order'
+import { ORDER_CUSTOMER_TEXT as T } from '../../data/pageText/orderFlow'
+import { chen } from '../../data/pageText/define'
 
 interface StepCustomerProps {
   customer: CustomerInfo
@@ -38,7 +40,7 @@ function Field({ id, label, error, hint, optional, children, className = '' }: F
     <div data-field className={`scroll-mt-[5.5rem] ${className}`}>
       <label htmlFor={`f-${id}`} className="text-sm font-medium text-deep-900">
         {label}
-        {optional && <span className="font-normal text-ink-faint"> (không bắt buộc)</span>}
+        {optional && <span className="font-normal text-ink-faint"> {T.khongBatBuoc}</span>}
       </label>
       {children}
       {error ? (
@@ -60,9 +62,9 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
   return (
     <div className="space-y-12">
       <fieldset>
-        <legend className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">Thông tin nhận hàng</legend>
+        <legend className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">{T.tieuDe}</legend>
         <div className="mt-6 grid gap-5 sm:grid-cols-2">
-          <Field id="name" label="Họ và tên người nhận" error={errors.name}>
+          <Field id="name" label={T.oTen} error={errors.name}>
             <input
               id="f-name"
               autoComplete="name"
@@ -70,11 +72,11 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
               onChange={(e) => onChange({ name: e.target.value })}
               aria-invalid={Boolean(errors.name)}
               aria-describedby={describedBy('name')}
-              placeholder="Nguyễn Thị Lan"
+              placeholder={T.oTenMau}
               className={inputClass(Boolean(errors.name))}
             />
           </Field>
-          <Field id="phone" label="Số điện thoại" error={errors.phone} hint="Nhân viên sẽ gọi số này để xác nhận đơn.">
+          <Field id="phone" label={T.oSdt} error={errors.phone} hint={T.oSdtGoiY}>
             <input
               id="f-phone"
               type="tel"
@@ -84,23 +86,23 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
               onChange={(e) => onChange({ phone: e.target.value })}
               aria-invalid={Boolean(errors.phone)}
               aria-describedby={describedBy('phone')}
-              placeholder="09xx xxx xxx"
+              placeholder={T.oSdtMau}
               className={inputClass(Boolean(errors.phone))}
             />
           </Field>
-          <Field id="provinceId" label="Tỉnh / thành phố" error={errors.provinceId} className="sm:col-span-2">
+          <Field id="provinceId" label={T.oTinh} error={errors.provinceId} className="sm:col-span-2">
             <Select
               id="f-provinceId"
               variant="field"
               value={customer.provinceId}
               onChange={(provinceId) => onChange({ provinceId })}
-              placeholder="Chọn tỉnh/thành nhận hàng"
+              placeholder={T.oTinhMau}
               options={PROVINCE_OPTIONS}
               ariaInvalid={Boolean(errors.provinceId)}
               ariaDescribedBy={describedBy('provinceId')}
             />
           </Field>
-          <Field id="address" label="Địa chỉ nhận hàng" error={errors.address} className="sm:col-span-2">
+          <Field id="address" label={T.oDiaChi} error={errors.address} className="sm:col-span-2">
             <input
               id="f-address"
               autoComplete="street-address"
@@ -108,17 +110,17 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
               onChange={(e) => onChange({ address: e.target.value })}
               aria-invalid={Boolean(errors.address)}
               aria-describedby={describedBy('address')}
-              placeholder="Số nhà, tên đường, phường/xã"
+              placeholder={T.oDiaChiMau}
               className={inputClass(Boolean(errors.address))}
             />
           </Field>
-          <Field id="note" label="Ghi chú cho Ecopillo" optional className="sm:col-span-2">
+          <Field id="note" label={T.oGhiChu} optional className="sm:col-span-2">
             <textarea
               id="f-note"
               rows={2}
               value={customer.note}
               onChange={(e) => onChange({ note: e.target.value })}
-              placeholder="Ví dụ: giao giờ hành chính, gói quà cưới, gọi trước khi giao…"
+              placeholder={T.oGhiChuMau}
               className={`${inputClass(false)} resize-none`}
             />
           </Field>
@@ -127,7 +129,7 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
 
       <section aria-labelledby="pay-title">
         <h2 id="pay-title" className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">
-          Thanh toán
+          {T.thanhToan}
         </h2>
         <div className="mt-6 flex gap-4 rounded-2xl bg-mist-50 p-5 ring-2 ring-deep-800">
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ivory text-deep-800 ring-1 ring-cream-200">
@@ -137,20 +139,20 @@ export function StepCustomer({ customer, errors, summary, onChange }: StepCustom
             <p className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
               <span className="font-medium text-deep-900">{ORDER_TEXT.thanhToanTieuDe}</span>
               <span className="text-sm text-mist-600">
-                {shipFee === null ? ORDER_TEXT.mienPhiGiao : shipFee === 0 ? 'Miễn phí giao hàng' : `Phí giao ${formatVND(shipFee)}`}
+                {shipFee === null ? ORDER_TEXT.mienPhiGiao : shipFee === 0 ? T.mienPhiGiaoHang : chen(T.phiGiao, { phi: formatVND(shipFee) })}
               </span>
             </p>
             <p className="mt-1 text-small leading-relaxed text-ink-soft">
               {/* Thông báo Ecopillo từ 07/08/2026 (src/data/paymentPolicy.ts): một tài khoản duy nhất */}
               <span className="block font-medium text-deep-900">{BANK_LINE}</span>
-              {NO_DEPOSIT} {DEPOSIT_SHORT}: nhân viên báo khi gọi xác nhận đơn.
+              {T.datCoc}
             </p>
           </div>
         </div>
         <p className="mt-4 text-xs leading-relaxed text-ink-soft">
-          {ORDER_TEXT.xemHang} Khi bấm “Đặt hàng”, Quý khách đồng ý để Ecopillo dùng thông tin trên để gọi xác nhận và giao hàng, theo{' '}
+          {ORDER_TEXT.xemHang} {T.dongY}{' '}
           <Link to={PATHS.privacy} className="-my-2 inline-block py-2 font-medium text-deep-900 underline underline-offset-2">
-            chính sách bảo vệ thông tin
+            {T.linkChinhSach}
           </Link>
           .
         </p>

@@ -2,6 +2,8 @@ import { CONTACT } from '../../data/brand'
 import { formatVND } from '../../lib/format'
 import { Icon, ZaloMark } from '../ui/Icon'
 import { ORDER_TEXT } from '../../data/pageText/order'
+import { ORDER_SUMMARY_TEXT as T } from '../../data/pageText/orderFlow'
+import { chen } from '../../data/pageText/define'
 
 /** Cam kết ngắn dưới tóm tắt đơn, dùng chung cho mọi kiểu đơn */
 export function OrderAssurances({ deliveryTime }: { deliveryTime?: string }) {
@@ -10,7 +12,7 @@ export function OrderAssurances({ deliveryTime }: { deliveryTime?: string }) {
       {deliveryTime && (
         <p className="mt-4 flex items-center gap-2 px-2 text-sm text-ink-soft">
           <Icon name="truck" size={17} className="text-mist-600" />
-          Giao dự kiến: <span className="font-medium text-deep-900">{deliveryTime}</span>
+          {T.giaoDuKien} <span className="font-medium text-deep-900">{deliveryTime}</span>
         </p>
       )}
       <ul className="mt-5 space-y-2 px-2 text-meta text-ink-soft">
@@ -46,7 +48,7 @@ export function MobileOrderBar({ amount, amountLabel, nextLabel, hint, canContin
       <div className="flex items-center gap-2">
         <a
           href={CONTACT.hotlineTel}
-          aria-label={`Gọi hotline ${CONTACT.hotlineDisplay}`}
+          aria-label={chen(T.goiHotline, { so: CONTACT.hotlineDisplay })}
           className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-call text-ivory active:bg-call-dark"
         >
           <Icon name="phone" size={19} />
@@ -55,7 +57,7 @@ export function MobileOrderBar({ amount, amountLabel, nextLabel, hint, canContin
           href={CONTACT.zaloUrl}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Nhắn Zalo Ecopillo"
+          aria-label={T.nhanZalo}
           className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-zalo active:brightness-90"
         >
           <ZaloMark tone="light" />

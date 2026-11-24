@@ -14,6 +14,8 @@ import { formatMillions } from '../../lib/format'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { ORDER_TEXT } from '../../data/pageText/order'
+import { ORDER_STEPS_TEXT as T } from '../../data/pageText/orderFlow'
+import { chen } from '../../data/pageText/define'
 
 interface StepPatternProps {
   collectionId: string | null
@@ -36,7 +38,7 @@ export function StepPattern({ collectionId, patternCode, onSelectCollection, onS
   return (
     <div className="space-y-12">
       <fieldset id="chon-bo" className="scroll-mt-28">
-        <legend className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">Chọn bộ sưu tập</legend>
+        <legend className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">{T.chonBo}</legend>
         <p className="mt-1 text-sm text-ink-soft">{ORDER_TEXT.giaTuCoNho}</p>
         <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 xl:grid-cols-4">
           {COLLECTIONS.map((c) => (
@@ -52,13 +54,13 @@ export function StepPattern({ collectionId, patternCode, onSelectCollection, onS
 
       <fieldset id="chon-mau" className="scroll-mt-28">
         <legend className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">
-          Chọn mẫu{collection ? ` · ${collection.name}` : null}
+          {T.chonMau}{collection ? ` · ${collection.name}` : null}
         </legend>
 
         {!collection ? (
           <p className="mt-6 flex items-center gap-3 rounded-2xl border border-dashed border-line p-6 text-sm text-ink-soft">
             <Icon name="arrowLeft" size={18} className="rotate-90 text-mist-600" />
-            Chọn một bộ sưu tập ở trên để xem các mẫu.
+            {T.chuaChonBo}
           </p>
         ) : (
           <>
@@ -93,7 +95,7 @@ export function StepPattern({ collectionId, patternCode, onSelectCollection, onS
                         compact
                         className="h-full w-full"
                         tint={p.swatch}
-                        note={`Ảnh mẫu ${p.code}`}
+                        note={chen(T.anhMau, { ma: p.code })}
                         image={imageOfPattern(collection, p)}
                         sizes="(min-width: 1280px) 190px, (min-width: 640px) 30vw, 45vw"
                       />
@@ -104,12 +106,12 @@ export function StepPattern({ collectionId, patternCode, onSelectCollection, onS
                       )}
                       {p.isNew && !soldOut && (
                         <span className="absolute top-2 left-2 rounded-full bg-ivory px-2 py-0.5 text-label font-medium tracking-wide text-deep-800 uppercase">
-                          Mới
+                          {T.nhanMoi}
                         </span>
                       )}
                       {soldOut && (
                         <span className="absolute inset-x-2 top-2 rounded-full bg-deep-900/85 px-2 py-1 text-center text-label font-medium text-ivory">
-                          Tạm hết hàng
+                          {T.hetHang}
                         </span>
                       )}
                     </div>
@@ -117,7 +119,7 @@ export function StepPattern({ collectionId, patternCode, onSelectCollection, onS
                       <span className="block font-medium tracking-wide text-deep-900">{p.code}</span>
                       <span className="block text-meta leading-snug text-ink-soft">{p.colorName}</span>
                       {someSoldOut && (
-                        <span className="mt-1 block text-label text-alert">Một số kích thước tạm hết</span>
+                        <span className="mt-1 block text-label text-alert">{T.motSoCoHet}</span>
                       )}
                     </span>
                   </label>
@@ -130,12 +132,12 @@ export function StepPattern({ collectionId, patternCode, onSelectCollection, onS
                 onClick={() => setExpandedFor(collection.id)}
                 className="mt-5 inline-flex h-11 items-center gap-2 rounded-full border border-deep-800/20 px-5 text-sm font-medium text-deep-900 transition hover:border-deep-800/50"
               >
-                Xem thêm mẫu
+                {T.xemThemMau}
                 <Icon name="chevronDown" size={16} />
               </button>
             )}
             <p className="mt-5 text-sm text-ink-soft">
-              Muốn xem ảnh thật từng mẫu hoặc mẫu khác tại hệ thống phân phối Ecopillo? Nhắn Zalo{' '}
+              {T.xemAnhThat}{' '}
               <a
                 href={CONTACT.zaloUrl}
                 target="_blank"
@@ -176,11 +178,11 @@ function CollectionOption({ collection, checked, onSelect }: CollectionOptionPro
         {collection.name}
       </span>
       <span className={`tabular mt-2 text-meta ${checked ? 'text-mist-100' : 'text-ink-soft'}`}>
-        từ {formatMillions(min)}
+        {chen(T.giaTu, { gia: formatMillions(min) })}
       </span>
       {gift.perSet > 0 && (
         <span className={`mt-1.5 flex items-center gap-1 text-label ${checked ? 'text-brass-100' : 'text-brass-600'}`}>
-          <Icon name="gift" size={12} /> Có quà
+          <Icon name="gift" size={12} /> {T.coQua}
         </span>
       )}
     </label>

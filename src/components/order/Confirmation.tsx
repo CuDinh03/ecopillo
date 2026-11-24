@@ -9,6 +9,8 @@ import { PreviewNotSent } from '../ui/PreviewNotSent'
 import { buttonClass, ContactButtons } from '../ui/primitives'
 import { BANK_LINE } from '../../data/paymentPolicy'
 import { ORDER_TEXT } from '../../data/pageText/order'
+import { ORDER_SUMMARY_TEXT as T } from '../../data/pageText/orderFlow'
+import { chen } from '../../data/pageText/define'
 
 interface ConfirmationProps {
   orderCode: string
@@ -25,21 +27,22 @@ export function Confirmation({ orderCode, delivered, summary, customer, onNewOrd
   if (!line) return null
 
   const steps: readonly { icon: IconName; title: string; text: ReactNode; done?: boolean }[] = [
-    { icon: 'check', title: ORDER_TEXT.buocNhan, text: `Mã đơn ${orderCode}`, done: true },
+    { icon: 'check', title: ORDER_TEXT.buocNhan, text: chen(T.maDon, { ma: orderCode }), done: true },
     {
       icon: 'phone',
       title: ORDER_TEXT.buocGoi,
       text: (
         <>
-          Gọi tới số <span className="tabular font-medium text-deep-900">{customer.phone}</span> trong giờ làm việc ({OPENING_HOURS})
-          {priceOnCall ? ', báo giá chính xác theo kích thước' : ''}
+          {T.goiToiSo} <span className="tabular font-medium text-deep-900">{customer.phone}</span>{' '}
+          {chen(T.trongGio, { gio: OPENING_HOURS })}
+          {priceOnCall ? T.baoGiaTheoCo : ''}
         </>
       ),
     },
     {
       icon: 'truck',
       title: ORDER_TEXT.buocGiao,
-      text: `Dự kiến ${summary.deliveryTime?.toLowerCase() ?? 'theo khu vực'} sau khi xác nhận`,
+      text: chen(T.duKienGiao, { thoiGian: summary.deliveryTime?.toLowerCase() ?? T.theoKhuVuc }),
     },
   ]
 
@@ -49,7 +52,7 @@ export function Confirmation({ orderCode, delivered, summary, customer, onNewOrd
         <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-mist-100 text-deep-800 ring-8 ring-mist-50">
           <Icon name="check" size={30} strokeWidth={2} />
         </span>
-        <p className="eyebrow mt-7">Đã nhận đơn · Mã {orderCode}</p>
+        <p className="eyebrow mt-7">{chen(T.daNhanMa, { ma: orderCode })}</p>
         <h1 className="font-display mt-3 text-[1.85rem] text-deep-900 sm:text-5xl">{ORDER_TEXT.camOnTieuDe}</h1>
         <p className="mx-auto mt-4 max-w-md text-lead font-medium text-deep-800">
           {ORDER_TEXT.camOnChu}
@@ -72,7 +75,7 @@ export function Confirmation({ orderCode, delivered, summary, customer, onNewOrd
               >
                 <Icon name={step.icon} size={15} />
               </span>
-              <span className="tabular text-xs text-ink-faint">Bước {i + 1}</span>
+              <span className="tabular text-xs text-ink-faint">{chen(T.buocSo, { so: i + 1 })}</span>
             </span>
             <p className="mt-3 font-medium text-deep-900">{step.title}</p>
             <p className="mt-1 text-small leading-relaxed text-ink-soft">{step.text}</p>
@@ -93,14 +96,14 @@ export function Confirmation({ orderCode, delivered, summary, customer, onNewOrd
         </div>
 
         <dl className="grid gap-x-10 gap-y-4 p-6 text-sm sm:grid-cols-2 sm:p-8">
-          <Item label="Kích thước" value={line.sizeLabel ?? '—'} />
+          <Item label={T.ctKichThuoc} value={line.sizeLabel ?? '—'} />
           <Item
-            label="Số lượng"
+            label={T.ctSoLuong}
             value={`${line.quantity} ${line.unit}${line.unitPrice ? ` × ${formatVND(line.unitPrice)}` : ''}`}
           />
           {line.gift && (
             <Item
-              label="Quà tặng kèm"
+              label={T.ctQua}
               value={
                 <>
                   {line.giftCount} {line.gift.unit} {line.gift.item}
@@ -108,24 +111,24 @@ export function Confirmation({ orderCode, delivered, summary, customer, onNewOrd
               }
             />
           )}
-          <Item label="Thanh toán" value={`Chuyển khoản: ${BANK_LINE}`} />
-          <Item label="Người nhận" value={`${customer.name.trim()} · ${customer.phone}`} />
-          <Item label="Giao đến" value={`${customer.address}, ${summary.province?.name ?? ''}`} />
-          {customer.note.trim() && <Item label="Ghi chú" value={customer.note.trim()} />}
-          <Item label="Thời gian giao dự kiến" value={summary.deliveryTime ?? '—'} highlight />
+          <Item label={T.ctThanhToan} value={chen(T.ctChuyenKhoan, { taiKhoan: BANK_LINE })} />
+          <Item label={T.ctNguoiNhan} value={`${customer.name.trim()} · ${customer.phone}`} />
+          <Item label={T.ctGiaoDen} value={`${customer.address}, ${summary.province?.name ?? ''}`} />
+          {customer.note.trim() && <Item label={T.ctGhiChu} value={customer.note.trim()} />}
+          <Item label={T.ctThoiGian} value={summary.deliveryTime ?? '—'} highlight />
         </dl>
 
         <dl className="space-y-2.5 border-t border-line bg-mist-100/60 p-6 text-sm sm:p-8">
           <div className="flex justify-between">
-            <dt className="text-ink-soft">Tạm tính</dt>
+            <dt className="text-ink-soft">{T.ctTamTinh}</dt>
             <dd className="tabular text-deep-900">{subtotal ? formatVND(subtotal) : PRICE_ON_CALL}</dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-ink-soft">Phí giao hàng</dt>
-            <dd className="tabular text-deep-900">{shippingFee === 0 ? 'Miễn phí' : formatVND(shippingFee)}</dd>
+            <dt className="text-ink-soft">{T.ctPhiGiao}</dt>
+            <dd className="tabular text-deep-900">{shippingFee === 0 ? T.mienPhi : formatVND(shippingFee)}</dd>
           </div>
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-t border-deep-900/15 pt-4">
-            <dt className="font-medium text-deep-900">Tổng thanh toán</dt>
+            <dt className="font-medium text-deep-900">{T.ctTong}</dt>
             <dd className="tabular font-display text-3xl text-deep-900 sm:text-4xl">
               {subtotal ? formatVND(total) : <span className="text-lg">{PRICE_ON_CALL}</span>}
             </dd>
@@ -135,16 +138,16 @@ export function Confirmation({ orderCode, delivered, summary, customer, onNewOrd
 
       <div className="mt-10 flex flex-col items-center gap-6">
         <p className="text-center text-sm text-ink-soft">
-          Cần đổi thông tin hoặc giao gấp? Gọi hoặc nhắn Zalo{' '}
+          {T.canDoi}{' '}
           <span className="tabular font-medium text-deep-900">{CONTACT.hotlineDisplay}</span>:
         </p>
         <ContactButtons className="justify-center" />
         <div className="flex flex-wrap justify-center gap-3">
           <button type="button" onClick={onNewOrder} className={buttonClass('ghost', 'md')}>
-            Đặt thêm đơn khác
+            {T.datThem}
           </button>
           <Link to="/" className={buttonClass('ghost', 'md')}>
-            Về trang chủ
+            {T.veTrangChu}
           </Link>
         </div>
       </div>
