@@ -49,6 +49,7 @@ import { GIFTS_SET } from './catalog'
 import { PRODUCT_UNIT_SET } from './productUnits'
 import { PRICE_BAND_SETS } from './priceBands'
 import { SHELF_SET } from './productShelves'
+import { PRODUCT_GROUPS_SET } from './products'
 import { LISTING_ORDER_SET } from './listingProducts'
 import { TONE_SET } from './stories'
 import { POST_TOPIC_SET } from './postSections'
@@ -105,6 +106,7 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   PRODUCT_REVIEW_TEXT_SET,
   GIFTS_SET,
   PRODUCT_UNIT_SET,
+  PRODUCT_GROUPS_SET,
   SHELF_SET,
   ...PRICE_BAND_SETS,
   TONE_SET,

@@ -3,9 +3,9 @@ import { Link, useLocation } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
 import { patternRange, type Pattern, type SizeId } from '../../data/catalog'
 import { NEAR_ME_URL } from '../../data/dealers'
-import { PATHS, productsUrl } from '../../data/links'
+import { PATHS } from '../../data/links'
 import { DELIVERY_POINTS, TRUST_POINTS, WARRANTY_BY_CATEGORY } from '../../data/productCommonInfo'
-import { categoryLabel, fromPriceLabel, hasPrice, orderUrl, priceLabel, PRODUCTS, type Product } from '../../data/products'
+import { categoryLabel, categoryUrl, fromPriceLabel, hasPrice, orderUrl, priceLabel, productKind, PRODUCTS, type Product } from '../../data/products'
 import { formatRange, formatVND } from '../../lib/format'
 import { breadcrumbLd } from '../../lib/structuredData'
 import { JsonLd } from '../seo/JsonLd'
@@ -25,7 +25,7 @@ export function DetailBreadcrumb({ product, current = product.name }: { product:
   const { pathname } = useLocation()
   const trail = [
     { name: L.duongDanSanPham, path: PATHS.products },
-    { name: categoryLabel(product.category), path: productsUrl({ 'danh-muc': product.category }) },
+    { name: categoryLabel(product.category), path: categoryUrl(product.category) },
     { name: current, path: pathname },
   ]
   return (
@@ -39,7 +39,7 @@ export function DetailBreadcrumb({ product, current = product.name }: { product:
         {L.duongDanSanPham}
       </Link>
       <Icon name="arrowRight" size={13} className="text-ink-faint" />
-      <Link to={productsUrl({ 'danh-muc': product.category })} className="-my-3 inline-block py-3 hover:text-deep-900">
+      <Link to={categoryUrl(product.category)} className="-my-3 inline-block py-3 hover:text-deep-900">
         {categoryLabel(product.category)}
       </Link>
     </nav>
@@ -86,7 +86,7 @@ export function ProductInfoCards({ product, className = 'mt-16' }: { product: Pr
   // Thông số bảo hành: tên gốc "Bảo hành" (dữ liệu trong code) hoặc tên Ecopillo đặt ở Nội dung web (thuộc tính Woo)
   const warrantyLabels = new Set(['bảo hành', T.thongSoBaoHanh.trim().toLowerCase()])
   const warranty =
-    product.specs?.find((spec) => warrantyLabels.has(spec.label.trim().toLowerCase()))?.value ?? WARRANTY_BY_CATEGORY[product.category]
+    product.specs?.find((spec) => warrantyLabels.has(spec.label.trim().toLowerCase()))?.value ?? WARRANTY_BY_CATEGORY[productKind(product)]
   return (
     // items-start: mỗi thẻ cao theo nội dung, không kéo thẻ 4 dòng cao bằng thẻ 10 dòng rồi để trống nửa dưới
     <div className={`grid items-start gap-5 ${collection ? 'lg:grid-cols-3' : 'lg:grid-cols-2'} ${className}`}>
@@ -149,7 +149,7 @@ export function RelatedProducts({ product, excludeCollections = [] }: RelatedPro
         <h2 id="related-title" className="font-display text-[1.8rem] text-deep-900 sm:text-[2.2rem]">
           {COMMON_TEXT.spCoTheThich}
         </h2>
-        <Link to={productsUrl({ 'danh-muc': product.category })} className="text-sm font-medium text-deep-800 hover:underline">
+        <Link to={categoryUrl(product.category)} className="text-sm font-medium text-deep-800 hover:underline">
           {T.xemTatCa}
         </Link>
       </div>

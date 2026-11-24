@@ -5,7 +5,8 @@ import { SEARCH_PAGES, SEARCH_TEXT } from './pageText/search'
 import { postLabelText } from './pageText/miscLabels'
 import { POLICY_NAV, policyPath } from './policyNav'
 import { postPath } from './posts'
-import { priceLabel, productPath, PRODUCTS, type CategoryId } from './products'
+import { CATEGORIES, categoryLabel, categoryUrl, priceLabel, productPath, PRODUCTS } from './products'
+import type { BuiltinCategoryId } from './productGroups'
 
 /**
  * Những gì thanh tìm kiếm tìm được (owner chọn B ngày 19/11/2026). Chỉ nạp khi khách mở ô tìm (SiteSearch.tsx gọi import()),
@@ -36,8 +37,8 @@ const POLICY_KEYWORDS: Readonly<Record<string, string>> = {
   [PATHS.privacy]: SEARCH_TEXT.tuBaoMat,
 }
 
-/** Chữ của nhóm để tìm (không dùng nhãn "Đệm & topper": gõ "topper" sẽ ra mọi đệm) */
-const CATEGORY_WORDS: Readonly<Record<CategoryId, string>> = {
+/** Chữ của nhóm để tìm (không dùng nhãn "Đệm & topper": gõ "topper" sẽ ra mọi đệm). Nhóm Ecopillo thêm: tên nhóm */
+const CATEGORY_WORDS: Readonly<Record<BuiltinCategoryId, string>> = {
   'bo-chan-ga': SEARCH_TEXT.tuNhomBoChanGa,
   chan: SEARCH_TEXT.tuNhomChan,
   goi: SEARCH_TEXT.tuNhomGoi,
@@ -52,11 +53,13 @@ const productEntries = (): SearchEntry[] =>
     meta: priceLabel(p),
     image: p.image,
     // Nhóm (Chăn, Gối, Đệm…) và mã, màu từng mẫu: gõ "EV04" ra bộ Eco Vera
-    keywords: [CATEGORY_WORDS[p.category], ...(p.collection?.patterns.flatMap((pt) => [pt.code, pt.colorName]) ?? [])].join(' '),
+    keywords: [(CATEGORY_WORDS as Readonly<Record<string, string>>)[p.category] ?? categoryLabel(p.category), ...(p.collection?.patterns.flatMap((pt) => [pt.code, pt.colorName]) ?? [])].join(' '),
     penalty: p.image ? 0 : 8,
   }))
 
 const pageEntries = (): SearchEntry[] => [
+  // Nhóm đang hiện (bộ Nhóm sản phẩm): mở trang Sản phẩm lọc theo nhóm
+  ...CATEGORIES.map((g) => ({ kind: 'trang' as const, title: g.label, to: categoryUrl(g.id), meta: SEARCH_TEXT.loaiNhom })),
   ...Object.entries(LISTINGS).map(([to, listing]) => ({ kind: 'trang' as const, title: listing.title, to, meta: SEARCH_TEXT.loaiDanhMuc })),
   // Trang khác: Nội dung web → Giao diện → Trang tìm được trong ô tìm (src/data/pageText/search.ts)
   ...SEARCH_PAGES.map((page) => ({ kind: 'trang' as const, title: page.ten, to: page.link, keywords: page.tuKhoa ?? '' })),

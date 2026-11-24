@@ -1,7 +1,7 @@
 import { LISTINGS, type ListingPreset } from './links'
 import { liveObject, type EditableField, type EditableSet } from './liveContent'
 import { orderByNames } from './productOrder'
-import { PRODUCTS } from './products'
+import { PRODUCTS, productKind } from './products'
 
 /**
  * Sản phẩm trong các trang danh mục nhỏ (Đệm lò xo, Ruột gối, Ruột chăn…): Ecopillo tự tích chọn ở Nội dung web
@@ -19,7 +19,7 @@ const EDITABLE_PATHS: readonly string[] = Object.entries(LISTINGS)
   .map(([path]) => path)
 
 /** Lựa chọn: mọi sản phẩm lẻ, cả chăn hè Lyocell; bộ chăn ga có trang riêng theo bộ sưu tập */
-const CHOICES = PRODUCTS.filter((p) => p.category !== 'bo-chan-ga')
+const CHOICES = PRODUCTS.filter((p) => productKind(p) !== 'bo-chan-ga')
 
 const FIELDS: readonly EditableField[] = EDITABLE_PATHS.map((path) => ({
   khoa: fieldKeyOf(path),

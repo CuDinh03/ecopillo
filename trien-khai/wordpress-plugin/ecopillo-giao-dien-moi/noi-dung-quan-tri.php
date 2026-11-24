@@ -185,6 +185,8 @@ function eco_nd_save()
             }
             $value[] = $clean;
         }
+        // Dòng mới chưa có mã: lấy theo tên (bộ có cờ khoaDongTheoTieuDe, ví dụ nhóm sản phẩm)
+        $value = eco_nd_fill_row_keys($set, $value);
         // Danh sách được xoá hết (chuyển hướng, SEO…: coTheTrong); danh sách khác phải còn ít nhất một dòng
         if (!$value && (empty($set['coTheTrong']) || $dropped > 0)) {
             wp_safe_redirect(eco_nd_page_url($key, array('ket-qua' => 'rong')));

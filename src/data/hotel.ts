@@ -1,7 +1,7 @@
 import type { ImageSource } from './catalog'
 import { liveList, liveObject, type EditableField, type EditableSet } from './liveContent'
 import { anh, chonNhieu, chu, definePageText, doan, dsCap, dsDong, legacyPageText, link } from './pageText/define'
-import { ALL_PRODUCTS, isProductShown, productBySlug } from './products'
+import { ALL_PRODUCTS, isProductShown, productBySlug, productKind } from './products'
 
 /**
  * Chữ giới thiệu khối khách sạn, dùng chung cho trang chủ (Hospitality) và trang Khách sạn và dự án (HotelPage).
@@ -253,7 +253,7 @@ const BASE_HOTEL_PRODUCT_SLUGS: readonly string[] = [
  */
 const PRODUCT_CHOICES = [
   ...BASE_HOTEL_PRODUCT_SLUGS.flatMap((slug) => productBySlug(slug) ?? []),
-  ...ALL_PRODUCTS.filter((p) => p.category !== 'bo-chan-ga' && !BASE_HOTEL_PRODUCT_SLUGS.includes(p.slug)),
+  ...ALL_PRODUCTS.filter((p) => productKind(p) !== 'bo-chan-ga' && !BASE_HOTEL_PRODUCT_SLUGS.includes(p.slug)),
 ]
 
 const whiteGoodsItems = (id: HotelWhiteGoodsGroupId) =>

@@ -56,7 +56,8 @@ function eco_nd_current($set)
 
 /**
  * Lựa chọn của ô chon / chon-nhieu: danh sách lúc dựng + `luaChonThem` lấy lúc chạy (đợt G; optionsOf trong liveContent.ts):
- * sản phẩm lẻ mới, bộ sưu tập mới, trang danh mục mới Ecopillo tạo trong Woo, tỉnh / thành ở bộ Giao hàng.
+ * sản phẩm lẻ mới, bộ sưu tập mới, trang danh mục mới Ecopillo tạo trong Woo, tỉnh / thành ở bộ Giao hàng, nhóm sản phẩm Ecopillo thêm
+ * ở bộ "Nhóm sản phẩm" (src/data/productGroups.ts).
  * @return array{0: string[], 1: string[]} giá trị, nhãn
  */
 function eco_nd_field_options($field)
@@ -98,6 +99,18 @@ function eco_nd_live_options($source)
     } elseif ($source === 'danh-muc' && function_exists('eco_dm_compute')) {
         foreach (eco_dm_compute()['moi'] as $c) {
             $out[(string) $c['duongDan']] = 'Trang danh mục mới: ' . $c['ten'];
+        }
+    } elseif ($source === 'nhom') {
+        // Mã nhóm: mã đã lưu (eco_nd_fill_row_keys lấy theo tên lúc lưu lần đầu); dòng cũ chưa có mã thì theo tên, như groupIdOf
+        $saved = eco_nd_saved('nhom-san-pham');
+        foreach ($saved && is_array($saved['giaTri']) ? $saved['giaTri'] : array() as $i => $row) {
+            if (!is_array($row)) {
+                continue;
+            }
+            $name = isset($row['ten']) ? trim((string) $row['ten']) : '';
+            $id = isset($row['ma']) && (string) $row['ma'] !== '' ? sanitize_title((string) $row['ma']) : sanitize_title($name);
+            $id = $id !== '' ? $id : 'nhom-' . ($i + 1);
+            $out[$id] = 'Nhóm sản phẩm: ' . ($name !== '' ? $name : $id);
         }
     } elseif ($source === 'tinh') {
         $saved = eco_nd_saved('giao-hang-tinh-phi');
@@ -257,6 +270,39 @@ function eco_nd_clean_row($set, $input, &$errors)
         $row[$field['khoa']] = $value;
     }
     return $row;
+}
+
+/**
+ * Bộ có cờ `khoaDongTheoTieuDe` (nhóm sản phẩm: mã nằm trên link ?danh-muc=…): dòng mới chưa có mã lấy mã theo ô tiêu đề,
+ * không trùng mã dòng khác (thêm -2, -3…). Dòng đã có mã giữ nguyên, nên đổi tên sau không đổi link.
+ */
+function eco_nd_fill_row_keys($set, $rows)
+{
+    if (empty($set['khoaDongTheoTieuDe']) || empty($set['khoaDong']) || empty($set['tieuDeDong'])) {
+        return $rows;
+    }
+    $key = (string) $set['khoaDong'];
+    $title = (string) $set['tieuDeDong'];
+    $used = array();
+    foreach ($rows as $row) {
+        if (isset($row[$key]) && (string) $row[$key] !== '') {
+            $used[(string) $row[$key]] = true;
+        }
+    }
+    foreach ($rows as $i => $row) {
+        if (isset($row[$key]) && (string) $row[$key] !== '') {
+            continue;
+        }
+        $base = sanitize_title(isset($row[$title]) ? (string) $row[$title] : '');
+        $base = $base !== '' ? $base : 'dong-' . ($i + 1);
+        $id = $base;
+        for ($n = 2; isset($used[$id]); $n++) {
+            $id = $base . '-' . $n;
+        }
+        $used[$id] = true;
+        $rows[$i][$key] = $id;
+    }
+    return $rows;
 }
 
 /* ---------------------------------------------------------------- Màu web (src/data/theme.ts) */

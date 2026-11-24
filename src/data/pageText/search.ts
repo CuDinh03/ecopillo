@@ -27,6 +27,7 @@ export const { set: SEARCH_TEXT_SET, text: SEARCH_TEXT } = definePageText(
     loiTai: chu('Khi không tải được ô tìm (trước số hotline)', 'Chưa tải được ô tìm. Quý khách thử lại, hoặc gọi'),
     meoPhim: chu('Dòng mẹo dùng phím (máy tính)', 'Mũi tên lên xuống để chọn, Enter để mở, Esc để đóng.'),
     loaiDanhMuc: chu('Dòng phụ dưới kết quả là danh mục sản phẩm', 'Danh mục sản phẩm'),
+    loaiNhom: chu('Dòng phụ dưới kết quả là nhóm sản phẩm (trang Sản phẩm lọc theo nhóm)', 'Nhóm sản phẩm'),
     loaiChinhSach: chu('Dòng phụ dưới kết quả là trang chính sách', 'Chính sách'),
     oTimNhan: chu('Ô tìm: tên cho trình đọc màn hình', 'Tìm trên web'),
     ketQuaNhan: chu('Danh sách kết quả: tên cho trình đọc màn hình', 'Kết quả tìm'),

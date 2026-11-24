@@ -15,7 +15,7 @@ interface ProductShelvesProps {
 }
 
 /**
- * Bốn kệ theo nhóm ở mục "Tất cả" (phương án 1 + 2, owner chốt 02/11/2026): mỗi bộ, mỗi sản phẩm một thẻ, một trang.
+ * Các kệ theo nhóm ở mục "Tất cả" (phương án 1 + 2, owner chốt 02/11/2026; nhóm, thứ tự: bộ Nhóm sản phẩm): mỗi bộ, mỗi sản phẩm một thẻ, một trang.
  * Không ghi số mẫu, số phối màu (khách 05/11/2026: "đừng cho số lượng vào", web chưa có đủ mẫu đang bán).
  * Máy tính 3 thẻ một hàng như web cũ (owner 17/11/2026: "khách muốn nhìn nó to như này, mình đang để hơi bé"; trước là 4),
  * kệ bộ chăn ga thêm thẻ "Xem theo phối màu" ở ô cuối.
