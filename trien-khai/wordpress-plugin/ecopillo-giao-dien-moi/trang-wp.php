@@ -7,7 +7,7 @@
  * nằm cứng trong file. Khi một trang cần đổi ở máy chủ, plugin tạo file đánh dấu
  * wp-content/uploads/ecopillo-du-lieu/qua-wp/<đường-dẫn>/index.html; quy tắc .htaccess thấy file đó thì để WordPress trả trang,
  * và plugin (eco_tw_serve):
- * - trang danh mục Ecopillo đã ẩn / xoá (danh-muc.php): trả 301 tới trang Ecopillo chọn;
+ * - trang danh mục Ecopillo đã ẩn / xoá (danh-muc.php), sản phẩm / mẫu / bài có sẵn đã gỡ (an-xoa.php): trả 301;
  * - trang có SEO Ecopillo điền (Nội dung web → "SEO từng trang", hoặc ô SEO / Yoast ở danh mục Woo): trả HTML dựng sẵn với
  *   thẻ title, description, og:title, og:description, og:image mới (Google, Facebook, Zalo đọc được ngay);
  * - link Ecopillo thêm ở "Chuyển hướng link" mà đang là một trang có sẵn: eco_nd_redirect (noi-dung.php) trả 301 trước.
@@ -106,11 +106,21 @@ function eco_tw_head($html, $title, $desc, $image = '')
     return $html;
 }
 
+/** Trang đã gỡ → trang chuyển tới: danh mục ẩn / xoá (danh-muc.php), sản phẩm, mẫu, bài có sẵn đã gỡ (an-xoa.php) */
+function eco_tw_hidden_map()
+{
+    $map = function_exists('eco_dm_compute') ? eco_dm_compute()['an'] : array();
+    if (function_exists('eco_ax_compute')) {
+        $map = array_merge(eco_ax_compute()['trang'], $map);
+    }
+    return $map;
+}
+
 /** Các trang cần WordPress trả (trang có sẵn đã đổi SEO, đã ẩn, có chuyển link Ecopillo thêm) */
 function eco_tw_wanted_paths()
 {
     $paths = array();
-    $hidden = function_exists('eco_dm_compute') ? eco_dm_compute()['an'] : array();
+    $hidden = eco_tw_hidden_map();
     $redirects = function_exists('eco_nd_redirects') ? eco_nd_redirects() : array();
     foreach (array_merge(array_keys(eco_tw_seo_map(true)), array_keys($hidden), array_keys($redirects)) as $path) {
         if (eco_tw_static_file($path) !== '') {
@@ -169,8 +179,8 @@ function eco_tw_serve()
     if (substr($path, -1) !== '/' || !eco_tw_is_path($path)) {
         return;
     }
-    // Trang danh mục Ecopillo đã ẩn / xoá trong Woo
-    $hidden = function_exists('eco_dm_compute') ? eco_dm_compute()['an'] : array();
+    // Trang Ecopillo đã gỡ: danh mục ẩn / xoá, sản phẩm, mẫu, bài
+    $hidden = eco_tw_hidden_map();
     if (isset($hidden[$path])) {
         wp_safe_redirect(home_url($hidden[$path]), 301, 'Ecopillo');
         exit;

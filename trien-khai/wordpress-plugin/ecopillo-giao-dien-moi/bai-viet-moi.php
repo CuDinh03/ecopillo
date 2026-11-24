@@ -84,8 +84,10 @@ function eco_bv_compute()
             continue;
         }
         $modified = get_post_modified_time('Y-m-d', false, $post);
-        if (isset($built[$slug]) && (string) $modified <= (string) $built[$slug]) {
-            continue; // bài đã có lúc dựng, chưa sửa
+        // Bài đã có lúc dựng, chưa sửa. Khung chỉ ghi ngày (không giờ): bài sửa đúng ngày dựng vẫn coi là đã sửa (đợt E2),
+        // trước đây so "<=" nên sửa cùng ngày bị bỏ qua
+        if (isset($built[$slug]) && (string) $modified < (string) $built[$slug]) {
+            continue;
         }
         $GLOBALS['post'] = $post;
         setup_postdata($post);

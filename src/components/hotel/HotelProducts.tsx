@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import type { ImageSource } from '../../data/catalog'
 import { HOTEL_PAGE, HOTEL_PRODUCTS, type HotelProductEntry } from '../../data/hotel'
-import { productBySlug, productPath } from '../../data/products'
+import { isProductShown, productBySlug, productPath } from '../../data/products'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
@@ -73,7 +73,8 @@ function EntryCard({ entry, onQuote }: { entry: HotelProductEntry; onQuote: (nam
   }
   const product = productBySlug(entry.slug)
   // Mã sai thì bỏ thẻ; lúc build listPrerenderPaths (entry-server.tsx) báo lỗi nếu mã không khớp products.ts
-  if (!product) return null
+  // Sản phẩm Ecopillo đã gỡ trong Woo (đợt E2) cũng bỏ thẻ
+  if (!product || !isProductShown(product.slug)) return null
   return (
     <article className={CARD_CLASS}>
       <CardImage image={product.image} note={product.imageNote} />

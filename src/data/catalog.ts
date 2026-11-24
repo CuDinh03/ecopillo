@@ -20,6 +20,7 @@ import {
   livePattern,
   livePatternContent,
   markLiveDiffers,
+  liveHidden,
   mergePrices,
   type LiveNewCollection,
   type LiveNewPattern,
@@ -539,7 +540,11 @@ const NEW_COLLECTIONS: readonly Collection[] = liveNewCollections()
   .map(newCollection)
 if (NEW_COLLECTIONS.length) markLiveDiffers()
 
-export const COLLECTIONS: readonly Collection[] = [
+/**
+ * Mọi bộ sưu tập, kể cả bộ / mẫu Ecopillo đã gỡ trong WordPress: chỉ để tra cứu (collectionById), không để liệt kê.
+ * Liệt kê dùng COLLECTIONS.
+ */
+export const ALL_COLLECTIONS: readonly Collection[] = [
   ...BASE_COLLECTIONS.map(withCollectionText).map((c) => ({
     ...c,
     patterns: withNewPatterns(
@@ -550,10 +555,27 @@ export const COLLECTIONS: readonly Collection[] = [
   ...NEW_COLLECTIONS,
 ]
 
+/**
+ * Bộ sưu tập đang hiện (đợt E2): bỏ bộ Ecopillo đã ẩn / xoá danh mục, bỏ mẫu đã gỡ trong Woo (nháp, thùng rác, xoá);
+ * bộ không còn mẫu nào thì bỏ cả bộ. Ảnh bìa là mẫu đã gỡ thì lấy mẫu đầu còn lại.
+ */
+export const COLLECTIONS: readonly Collection[] = (() => {
+  const hidden = liveHidden()
+  if (!hidden.bo.size && !hidden.mau.size) return ALL_COLLECTIONS
+  return ALL_COLLECTIONS.flatMap((c) => {
+    if (hidden.bo.has(c.id)) return []
+    const patterns = c.patterns.filter((p) => !hidden.mau.has(`${c.id}/${p.code}`))
+    if (!patterns.length) return []
+    if (patterns.length === c.patterns.length) return [c]
+    return [{ ...c, patterns, cover: patterns.some((p) => p.code === c.cover) ? c.cover : patterns[0].code }]
+  })
+})()
+
 export const BEDDING_SETS = COLLECTIONS.filter((c) => c.kind !== 'chan-he')
 
+/** Tra một bộ theo mã (cả bộ đã gỡ, để chỗ tra cứu không vỡ; link của nó đã chuyển hướng) */
 export const collectionById = (id: string | null | undefined): Collection | undefined =>
-  COLLECTIONS.find((c) => c.id === id)
+  COLLECTIONS.find((c) => c.id === id) ?? ALL_COLLECTIONS.find((c) => c.id === id)
 
 export const patternPrice = (collection: Collection, pattern: Pattern, size: SizeId): number =>
   (pattern.prices ?? collection.prices)[size]

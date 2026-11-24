@@ -1,3 +1,4 @@
+import { liveHidden } from './liveData'
 import wordpressIndex from './bai-viet-wp/danh-sach.json'
 import { LIVE_POSTS, type LivePost } from './livePosts'
 import { POSTS, type Post } from './posts'
@@ -65,8 +66,15 @@ const MERGED_WORDPRESS: readonly Post[] = [
   ...WORDPRESS_POSTS.map((w) => (LIVE_SLUGS.has(w.slug) ? (LIVE.find((p) => p.slug === w.slug) ?? w) : w)),
 ]
 
-/** Bài trong code đứng đầu (bài chọn lọc), sau đó bài WordPress mới nhất trước */
-export const ALL_POSTS: readonly Post[] = [...POSTS.map((p) => ({ ...p, category: labelOf(p.slug, p.category) })), ...MERGED_WORDPRESS]
+/**
+ * Bài trong code đứng đầu (bài chọn lọc), sau đó bài WordPress mới nhất trước. Bài có sẵn Ecopillo đã gỡ trong WordPress
+ * (nháp, riêng tư, thùng rác, xoá hẳn: đợt E2, plugin an-xoa.php) thì bỏ; link bài chuyển về trang Tin tức (máy chủ trả 301).
+ */
+const HIDDEN_POSTS = liveHidden().bai
+export const ALL_POSTS: readonly Post[] = [
+  ...POSTS.map((p) => ({ ...p, category: labelOf(p.slug, p.category) })),
+  ...MERGED_WORDPRESS,
+].filter((p) => !HIDDEN_POSTS.has(p.slug))
 
 export const anyPostBySlug = (slug: string | undefined): Post | undefined => ALL_POSTS.find((p) => p.slug === slug)
 

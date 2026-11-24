@@ -166,6 +166,19 @@ export interface LiveCategories {
   moi: readonly LiveNewCategory[]
   an: Readonly<Record<string, string>>
 }
+/**
+ * Sản phẩm, mẫu, bộ sưu tập, bài viết có sẵn Ecopillo đã gỡ trong WordPress (đợt E2, plugin an-xoa.php): chuyển sang nháp,
+ * riêng tư, thùng rác hoặc xoá hẳn sau khi cài plugin; bộ sưu tập: tích "Ẩn trang" ở danh mục hoặc xoá danh mục.
+ * Web bỏ chúng khỏi mọi danh sách; `trang`: link trang của chúng → trang chuyển tới (máy chủ trả 301).
+ */
+export interface LiveHidden {
+  sanPham: ReadonlySet<string>
+  mau: ReadonlySet<string>
+  bo: ReadonlySet<string>
+  bai: ReadonlySet<string>
+  trang: Readonly<Record<string, string>>
+}
+
 /** Tiêu đề, mô tả trên Google của một trang (link → SEO) Ecopillo điền ở danh mục Woo (ô của plugin hoặc khung Yoast SEO) */
 export interface LiveSeo {
   tieuDe?: string
@@ -183,6 +196,7 @@ interface LiveData {
   boSuuTapChu: Readonly<Record<string, LiveCollectionText>>
   danhMuc: LiveCategories
   seo: Readonly<Record<string, LiveSeo>>
+  an: LiveHidden
 }
 
 const isPrice = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v > 0 && v < 1e10
@@ -453,12 +467,25 @@ function cleanSeo(input: unknown): Record<string, LiveSeo> {
   return seo
 }
 
+function cleanHidden(input: unknown): LiveHidden {
+  const raw = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>
+  const keys = (v: unknown): Set<string> =>
+    new Set(Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string' && /^[a-z0-9-]{1,120}(\/[A-Za-z0-9-]{1,40})?$/.test(x)).slice(0, 400) : [])
+  const trang: Record<string, string> = {}
+  for (const [path, to] of Object.entries(raw.trang && typeof raw.trang === 'object' ? raw.trang : {}).slice(0, 600)) {
+    if (isPagePath(path) && (to === '/' || isPagePath(to)) && to !== path) trang[path] = to
+  }
+  return { sanPham: keys(raw.sanPham), mau: keys(raw.mau), bo: keys(raw.bo), bai: keys(raw.bai), trang }
+}
+
+const NO_HIDDEN: LiveHidden = { sanPham: new Set(), mau: new Set(), bo: new Set(), bai: new Set(), trang: {} }
+
 function read(): LiveData {
-  const empty: LiveData = { mau: {}, sanPham: {}, mauMoi: [], sanPhamMoi: [], noiDungSanPham: {}, noiDungMau: {}, boSuuTapMoi: [], boSuuTapChu: {}, danhMuc: { chu: {}, moi: [], an: {} }, seo: {} }
+  const empty: LiveData = { mau: {}, sanPham: {}, mauMoi: [], sanPhamMoi: [], noiDungSanPham: {}, noiDungMau: {}, boSuuTapMoi: [], boSuuTapChu: {}, danhMuc: { chu: {}, moi: [], an: {} }, seo: {}, an: NO_HIDDEN }
   if (typeof window === 'undefined') return empty
   const raw = (window as { __ECO_GIA__?: unknown }).__ECO_GIA__
   if (!raw || typeof raw !== 'object') return empty
-  const { mau, sanPham, mauMoi, sanPhamMoi, noiDungWoo, boSuuTapMoi, boSuuTapChu, danhMucWoo, seo } = raw as {
+  const { mau, sanPham, mauMoi, sanPhamMoi, noiDungWoo, boSuuTapMoi, boSuuTapChu, danhMucWoo, seo, an } = raw as {
     mau?: unknown
     sanPham?: unknown
     mauMoi?: unknown
@@ -468,6 +495,7 @@ function read(): LiveData {
     boSuuTapChu?: unknown
     danhMucWoo?: unknown
     seo?: unknown
+    an?: unknown
   }
   const patterns: Record<string, LivePattern> = {}
   for (const [key, value] of Object.entries(mau && typeof mau === 'object' ? mau : {})) {
@@ -494,6 +522,7 @@ function read(): LiveData {
     boSuuTapChu: cleanContentMap(boSuuTapChu, cleanCollectionText),
     danhMuc: cleanCategories(danhMucWoo),
     seo: cleanSeo(seo),
+    an: cleanHidden(an),
   }
 }
 
@@ -534,12 +563,19 @@ export const liveCategories = (): LiveCategories => LIVE.danhMuc
 /** Tiêu đề, mô tả trên Google Ecopillo điền ở danh mục Woo, theo link trang */
 export const liveCategorySeo = (): Readonly<Record<string, LiveSeo>> => LIVE.seo
 
+/** Sản phẩm, mẫu, bộ, bài Ecopillo đã gỡ trong WordPress (đợt E2) */
+export const liveHidden = (): LiveHidden => LIVE.an
+
+/** Có gỡ gì không: trang dựng sẵn còn liệt kê thứ đã gỡ, phải vẽ lại thay vì gắn vào */
+export const anyLiveHidden = (): boolean =>
+  LIVE.an.sanPham.size + LIVE.an.mau.size + LIVE.an.bo.size + LIVE.an.bai.size + Object.keys(LIVE.danhMuc.an).length > 0
+
 /** Có ô giá / hết hàng nào khác bản dựng sẵn không (main.tsx dùng để chọn vẽ lại hay gắn vào HTML có sẵn) */
 let differs = false
 export const markLiveDiffers = (): void => {
   differs = true
 }
-export const liveDiffers = (): boolean => differs
+export const liveDiffers = (): boolean => differs || anyLiveHidden()
 
 /** Bảng giá mới: ghép ô giá live lên bảng cũ; không ô nào đổi thì trả lại đúng bảng cũ */
 export function mergePrices<T extends Readonly<Record<string, number>>>(base: T, live: Readonly<Record<string, number>> | undefined): T {

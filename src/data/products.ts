@@ -1,8 +1,9 @@
 import { formatRange, formatVND } from '../lib/format'
-import { liveNewProducts, liveProduct, liveProductContent, markLiveDiffers, mergePrices, type LiveNewProduct } from './liveData'
+import { liveHidden, liveNewProducts, liveProduct, liveProductContent, markLiveDiffers, mergePrices, type LiveNewProduct } from './liveData'
 import { slugify } from '../lib/slug'
 import { collectionPath, LISTINGS, PATHS, singleProductPath, WOO_CATEGORY_LISTINGS } from './links'
 import {
+  ALL_COLLECTIONS,
   COLLECTIONS,
   collectionRange,
   coverOf,
@@ -924,8 +925,11 @@ function newProductOf(v: LiveNewProduct): Product | undefined {
   }
 }
 
+/** Ảnh, giá, nội dung Woo cho một sản phẩm có sẵn */
+const finishProduct = (p: Product): Product => withLiveContent(withLivePrice(withPhoto(p)))
+
 const BASE_PRODUCTS: readonly Product[] = [
-  ...COLLECTIONS.map(collectionProduct),
+  ...ALL_COLLECTIONS.map(collectionProduct),
   ...essentialProducts,
   CHAN_DONG_KIEU_HAN,
   CHAN_HE_E_COOL,
@@ -947,10 +951,7 @@ const BASE_PRODUCTS: readonly Product[] = [
   DEM_TRON,
   BAO_VE_DEM,
   DIVAN,
-]
-  .map(withPhoto)
-  .map(withLivePrice)
-  .map(withLiveContent)
+].map(finishProduct)
 
 /** Sản phẩm mới không được trùng khoá sản phẩm có sẵn (khoá cũng là tên trên link) */
 const NEW_PRODUCTS: readonly Product[] = liveNewProducts()
@@ -961,9 +962,30 @@ const NEW_PRODUCTS: readonly Product[] = liveNewProducts()
 // Trang dựng sẵn không có sản phẩm mới: vẽ lại thay vì gắn vào HTML cũ (main.tsx)
 if (NEW_PRODUCTS.length) markLiveDiffers()
 
-export const PRODUCTS: readonly Product[] = [...BASE_PRODUCTS, ...NEW_PRODUCTS]
+/** Mọi sản phẩm, kể cả sản phẩm Ecopillo đã gỡ trong Woo: chỉ để tra cứu (productBySlug), không để liệt kê */
+export const ALL_PRODUCTS: readonly Product[] = [...BASE_PRODUCTS, ...NEW_PRODUCTS]
 
-export const productBySlug = (slug: string | undefined): Product | undefined => PRODUCTS.find((p) => p.slug === slug)
+/**
+ * Sản phẩm đang hiện (đợt E2): bỏ sản phẩm lẻ Ecopillo đã gỡ trong Woo (nháp, thùng rác, xoá), bỏ bộ chăn ga của bộ đã gỡ;
+ * bộ còn hiện nhưng bớt mẫu thì dựng lại theo các mẫu còn lại.
+ */
+export const PRODUCTS: readonly Product[] = (() => {
+  const hidden = liveHidden()
+  if (!hidden.sanPham.size && !hidden.bo.size && !hidden.mau.size) return ALL_PRODUCTS
+  return ALL_PRODUCTS.flatMap((p) => {
+    if (!p.collection) return hidden.sanPham.has(p.slug) ? [] : [p]
+    const shown = COLLECTIONS.find((c) => c.id === p.collection?.id)
+    if (!shown) return []
+    return shown === p.collection ? [p] : [finishProduct(collectionProduct(shown))]
+  })
+})()
+
+/** Tra một sản phẩm theo khoá (cả sản phẩm đã gỡ, để chỗ tra cứu không vỡ; link của nó đã chuyển hướng) */
+export const productBySlug = (slug: string | undefined): Product | undefined =>
+  PRODUCTS.find((p) => p.slug === slug) ?? ALL_PRODUCTS.find((p) => p.slug === slug)
+
+/** Sản phẩm có đang hiện không (Ecopillo chưa gỡ trong Woo) */
+export const isProductShown = (slug: string): boolean => PRODUCTS.some((p) => p.slug === slug)
 
 /** Đường link trang sản phẩm: bộ sưu tập mở trang danh mục của web cũ, sản phẩm lẻ mở trang sản phẩm của web cũ (links.ts) */
 export const productPath = (p: Product): string => (p.collection ? collectionPath(p.collection) : singleProductPath(p.slug))

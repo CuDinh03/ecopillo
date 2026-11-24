@@ -1,6 +1,6 @@
 import type { Collection, Pattern } from './catalog'
 import { liveList, rowKey, type EditableField, type EditableSet } from './liveContent'
-import { liveCategories, liveNewCollections, liveNewPatternBySlug, liveNewProductBySlug, markLiveDiffers } from './liveData'
+import { liveCategories, liveHidden, liveNewCollections, liveNewPatternBySlug, liveNewProductBySlug, markLiveDiffers } from './liveData'
 import { liveRedirectFor } from './liveRedirects'
 
 /**
@@ -395,7 +395,7 @@ const LIVE_NEW_LISTINGS: Readonly<Record<string, ListingPreset>> = Object.fromEn
 
 /**
  * Mọi trang danh mục nhỏ: trang có sẵn (giữ link web cũ) + trang Ecopillo tạo trong Woo. Trang Ecopillo đã ẩn / xoá vẫn nằm đây
- * (khung giá, menu dựng lúc build cần đủ), nhưng không có route: link chuyển theo `hiddenListingTarget`.
+ * (khung giá, menu dựng lúc build cần đủ), nhưng không có route: link chuyển theo `hiddenPageTarget`.
  */
 export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
   ...Object.fromEntries(
@@ -414,16 +414,19 @@ export const LISTINGS: Readonly<Record<string, ListingPreset>> = {
   ...LIVE_NEW_LISTINGS,
 }
 
-/** Trang danh mục Ecopillo đã ẩn hoặc đã xoá trong Woo → link chuyển tới (không có thì trang còn hiện) */
-export const hiddenListingTarget = (path: string): string | undefined =>
-  // Không dùng withSlash: hàm này chạy ngay lúc nạp module, withSlash khai ở cuối file
-  LIVE_CATEGORIES.an[path.endsWith('/') ? path : `${path}/`]
-
-// Mở thẳng link một trang danh mục đã ẩn (máy chủ chưa kịp 301): HTML dựng sẵn không khớp, vẽ lại để chuyển trang
-if (typeof window !== 'undefined' && hiddenListingTarget(window.location.pathname)) markLiveDiffers()
+/**
+ * Trang Ecopillo đã gỡ trong WordPress → link chuyển tới (không có thì trang còn hiện): danh mục ẩn / xoá (đợt E),
+ * sản phẩm, mẫu, bộ sưu tập, bài viết đã gỡ (đợt E2). Máy chủ trả 301 (trang-wp.php); đây là lớp trên trình duyệt.
+ * (Bỏ qua phần sau "#", "?"; không dùng withSlash vì withSlash khai ở cuối file.)
+ */
+export const hiddenPageTarget = (rawPath: string): string | undefined => {
+  const path = rawPath.split(/[?#]/)[0]
+  const key = path.endsWith('/') ? path : `${path}/`
+  return LIVE_CATEGORIES.an[key] ?? liveHidden().trang[key]
+}
 
 /** Trang danh mục đang hiện (có route, được đặt link tới) */
-export const isListingShown = (path: string): boolean => !!LISTINGS[path] && !hiddenListingTarget(path)
+export const isListingShown = (path: string): boolean => !!LISTINGS[path] && !hiddenPageTarget(path)
 
 /**
  * Danh mục WooCommerce → trang danh mục của web mới (giai đoạn 4b, docs/ke-hoach-khach-tu-sua-du-lieu.md).
@@ -595,8 +598,8 @@ export const redirectFor = (rawPath: string, collections: readonly Collection[])
   // Chuyển hướng Ecopillo tự thêm ở Nội dung web (liveRedirects.ts) đứng trước bảng trong code
   const live = liveRedirectFor(path)
   if (live) return live
-  // Trang danh mục Ecopillo ẩn / xoá trong Woo (đợt E)
-  const hidden = hiddenListingTarget(path)
+  // Trang Ecopillo đã gỡ: danh mục ẩn / xoá (đợt E), sản phẩm, mẫu, bộ, bài viết (đợt E2)
+  const hidden = hiddenPageTarget(path)
   if (hidden) return hidden
   if (REDIRECTS[path]) return REDIRECTS[path]
   const paged = path.match(/^(.*\/)page\/\d+\/$/)

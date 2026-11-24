@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
 import { collectionById, coverOf, ESSENTIALS, type EssentialItem, type ImageSource } from '../../data/catalog'
-import { collectionPath, PATHS } from '../../data/links'
+import { collectionPath, hiddenPageTarget, PATHS } from '../../data/links'
 import { productForEssential, productPath } from '../../data/products'
 import { formatVND } from '../../lib/format'
 import { revealDelay } from '../../lib/reveal'
@@ -59,7 +59,8 @@ const GROUPS = ESSENTIALS.map((g) => ({
   title: g.title,
   subtitle: g.subtitle,
   to: GROUP_LINKS[g.id] ?? PATHS.products,
-  tiles: g.items.map(toTile),
+  // Ô trỏ tới sản phẩm / trang Ecopillo đã gỡ trong WordPress (đợt E2) thì bỏ
+  tiles: g.items.map(toTile).filter((tile) => !hiddenPageTarget(tile.to)),
 }))
 
 export function Essentials() {

@@ -1,7 +1,7 @@
 import { productImage, type ImageSource } from './catalog'
-import { LISTINGS, singleProductPath } from './links'
+import { hiddenPageTarget, LISTINGS, singleProductPath } from './links'
 import { LISTING_GUIDES } from './listingGuides'
-import { productBySlug } from './products'
+import { isProductShown, PRODUCTS, productBySlug } from './products'
 import { chu, definePageText, doan, dsDong } from './pageText/define'
 
 /**
@@ -87,20 +87,29 @@ const bongEpPreference = (): MattressPreference => {
 
 const ecoLuxe = productOf('dem-lo-xo-tui-cao-cap-eco-luxe')
 
-export const MATTRESS_FEATURED: MattressFeatured = {
-  name: ecoLuxe.name,
-  min: ecoLuxe.min,
-  to: singleProductPath('dem-lo-xo-tui-cao-cap-eco-luxe'),
-  image: productImage('dem-lo-xo-tui-cao-cap-eco-luxe-2', ecoLuxe.name),
+/** Đệm nổi bật: Eco Luxe; Ecopillo gỡ Eco Luxe trong Woo (đợt E2) thì lấy đệm đầu tiên còn hiện */
+const featuredOf = (): MattressFeatured => {
+  if (isProductShown(ecoLuxe.slug)) {
+    return {
+      name: ecoLuxe.name,
+      min: ecoLuxe.min,
+      to: singleProductPath(ecoLuxe.slug),
+      image: productImage('dem-lo-xo-tui-cao-cap-eco-luxe-2', ecoLuxe.name),
+    }
+  }
+  const other = PRODUCTS.find((p) => p.category === 'dem' && p.image && !p.collection) ?? ecoLuxe
+  return { name: other.name, min: other.min, to: singleProductPath(other.slug), image: other.image ?? productImage('dem-lo-xo-tui-cao-cap-eco-luxe-2', other.name) }
 }
 
-/** Bốn dòng cách nằm, khớp thứ tự points[0..3] của danh mục đệm (bỏ dòng topper — topper nằm ở chip) */
+export const MATTRESS_FEATURED: MattressFeatured = featuredOf()
+
+/** Bốn dòng cách nằm, khớp thứ tự points[0..3] của danh mục đệm (bỏ dòng topper — topper nằm ở chip); bỏ dòng trỏ tới trang đã gỡ */
 export const MATTRESS_PREFERENCES: readonly MattressPreference[] = [
   preference('dem-eco-foam-da-tang', 0),
   preference('dem-lo-xo-tui-doc-lap', 1),
   preference('dem-cao-su-thien-nhien-eco-latex', 2),
   bongEpPreference(),
-]
+].filter((row) => !hiddenPageTarget(row.to))
 
 const chipOf = (path: string, label: string): MattressChip => {
   if (!LISTINGS[path]) throw new Error(`mattressPicker: thiếu danh mục ${path}`)
@@ -141,4 +150,7 @@ export const { set: MATTRESS_TEXT_SET, text: MATTRESS_TEXT } = definePageText(
 export const MATTRESS_PICKER_TITLE: string = MATTRESS_TEXT.tieuDe
 export const MATTRESS_PICKER_LEAD: string = MATTRESS_TEXT.danDat
 export const MATTRESS_FEATURED_TEXT: string = MATTRESS_TEXT.noiBatChu
-export const MATTRESS_CHIPS: readonly MattressChip[] = BASE_CHIPS.map((chip, i) => ({ ...chip, label: MATTRESS_TEXT.nutNhom[i] ?? chip.label }))
+export const MATTRESS_CHIPS: readonly MattressChip[] = BASE_CHIPS.map((chip, i) => ({ ...chip, label: MATTRESS_TEXT.nutNhom[i] ?? chip.label })).filter(
+  // Nút trỏ tới danh mục / sản phẩm Ecopillo đã gỡ (đợt E, E2) thì bỏ
+  (chip) => !hiddenPageTarget(chip.to),
+)

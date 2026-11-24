@@ -156,14 +156,14 @@ function eco_dm_compute($fresh = false)
         $seo_note = $seo ? ' · có SEO riêng' : '';
         if (isset($existing[$path])) {
             $page = $existing[$path];
-            if (!empty($page['boSuuTap'])) {
-                $result['rows'][] = array('ten' => $term->name, 'id' => $term->term_id, 'trang' => $path, 'trangThai' => 'Trang bộ sưu tập (chữ sửa ở khung bộ sưu tập)' . $seo_note);
-                continue;
-            }
             if (get_term_meta($term->term_id, ECO_DM_META_AN, true) === '1') {
                 $target = eco_dm_target_of($term->term_id, $path);
                 $result['an'][$path] = $target;
                 $result['rows'][] = array('ten' => $term->name, 'id' => $term->term_id, 'trang' => $path, 'trangThai' => 'Đã ẩn, link chuyển tới ' . $target);
+                continue;
+            }
+            if (!empty($page['boSuuTap'])) {
+                $result['rows'][] = array('ten' => $term->name, 'id' => $term->term_id, 'trang' => $path, 'trangThai' => 'Trang bộ sưu tập đang hiện (chữ sửa ở khung bộ sưu tập)' . $seo_note);
                 continue;
             }
             $text = '';
@@ -264,16 +264,16 @@ function eco_dm_box_fields($term)
         $fields[] = array('Ẩn trang', '<label><input type="checkbox" name="eco_dm_an" value="1" ' . checked($meta(ECO_DM_META_AN), '1', false) . '> Ẩn trang này trên giao diện mới</label>'
             . '<p class="description">Link trang chuyển (301) tới trang ở ô dưới, để link Google đã biết không ra trang lỗi. Xoá danh mục cũng vậy.</p>');
     } elseif ($page) {
-        $fields[] = array('Trang trên web', 'Trang bộ sưu tập <a href="' . esc_url(home_url($path)) . '" target="_blank" rel="noopener">' . esc_html($path) . '</a>. Khẩu hiệu, mô tả, câu chuyện: phần "Giao diện mới" phía trên; ở đây chỉ có SEO.');
+        $fields[] = array('Trang trên web', 'Trang bộ sưu tập <a href="' . esc_url(home_url($path)) . '" target="_blank" rel="noopener">' . esc_html($path) . '</a>. Khẩu hiệu, mô tả, câu chuyện: phần "Giao diện mới" phía trên.');
+        $fields[] = array('Ẩn bộ', '<label><input type="checkbox" name="eco_dm_an" value="1" ' . checked($meta(ECO_DM_META_AN), '1', false) . '> Ẩn bộ sưu tập này trên giao diện mới</label>'
+            . '<p class="description">Bộ và mọi mẫu của bộ rời khỏi web (trang chủ, Sản phẩm, menu, đặt hàng); link trang bộ và trang từng mẫu chuyển (301). Muốn bỏ một mẫu: chuyển sản phẩm mẫu đó sang Bản nháp hoặc Thùng rác.</p>');
     } else {
         $fields[] = array('Trang trên web', '<label><input type="checkbox" name="eco_dm_bat" value="1" ' . checked($meta(ECO_DM_META_BAT), '1', false) . '> Hiện thành trang danh mục trên giao diện mới</label>'
             . '<p class="description">Trang ở đúng link danh mục' . ($path ? ' (<code>' . esc_html($path) . '</code>)' : '') . ', tiêu đề là Tên, đoạn dưới tiêu đề là Mô tả, gồm các sản phẩm đã đăng trong danh mục (thứ tự theo "Thứ tự menu" của sản phẩm). '
             . 'Đường dẫn (slug) không dấu. Bỏ tích hoặc xoá danh mục: link chuyển (301) tới trang ở ô dưới.</p>');
     }
-    if (!$page || empty($page['boSuuTap'])) {
-        $fields[] = array('Chuyển tới khi ẩn / xoá', '<input type="text" name="eco_dm_chuyen" maxlength="200" placeholder="' . esc_attr(eco_dm_default_target()) . '" value="' . esc_attr($meta(ECO_DM_META_CHUYEN)) . '">'
-            . '<p class="description">Phần sau tên miền, ví dụ /danh-muc-san-pham/dem-ecopillo/. Để trống: trang Sản phẩm.</p>');
-    }
+    $fields[] = array('Chuyển tới khi ẩn / xoá', '<input type="text" name="eco_dm_chuyen" maxlength="200" placeholder="' . esc_attr(eco_dm_default_target()) . '" value="' . esc_attr($meta(ECO_DM_META_CHUYEN)) . '">'
+        . '<p class="description">Phần sau tên miền, ví dụ /danh-muc-san-pham/dem-ecopillo/. Để trống: trang Sản phẩm.</p>');
     $yoast = $term ? eco_dm_yoast($term) : array();
     $hint = $yoast ? ' Để trống thì dùng ô ở khung Yoast SEO: "' . esc_html(isset($yoast['tieuDe']) ? $yoast['tieuDe'] : '') . '".' : ' Để trống thì giữ tiêu đề sẵn có (hoặc ô ở khung Yoast SEO nếu có).';
     $fields[] = array('Tiêu đề trên Google', '<input type="text" name="eco_dm_seo_tieu_de" maxlength="200" value="' . esc_attr($meta(ECO_DM_META_SEO_TIEU_DE)) . '">'

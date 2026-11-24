@@ -10,8 +10,8 @@ import { Icon } from '../components/ui/Icon'
 import { SendFailed } from '../components/ui/SendFailed'
 import { buttonClass, Container } from '../components/ui/primitives'
 import { CONTACT } from '../data/brand'
-import { collectionById, isSizeSoldOut, type SheetStyle, type SizeId } from '../data/catalog'
-import { productBySlug } from '../data/products'
+import { collectionById, COLLECTIONS, isSizeSoldOut, type SheetStyle, type SizeId } from '../data/catalog'
+import { isProductShown, productBySlug } from '../data/products'
 import {
   createDraft,
   MAX_QUANTITY,
@@ -45,7 +45,9 @@ export function OrderPage() {
   const [searchParams] = useHydratedSearchParams()
   const hydrated = useHydrated()
   // Biên bản mục 47: ruột gối, ruột chăn, topper, đệm cũng đặt online được
-  const product = productBySlug(searchParams.get(PRODUCT_PARAM) ?? undefined)
+  // Sản phẩm Ecopillo đã gỡ trong Woo (đợt E2) thì không đặt được qua link cũ
+  const linked = productBySlug(searchParams.get(PRODUCT_PARAM) ?? undefined)
+  const product = linked && isProductShown(linked.slug) ? linked : undefined
   if (product && !product.collection) {
     return (
       <SingleOrder
@@ -82,7 +84,7 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
   // Bấm "Đặt mua" ở trang chủ khi đang ở trang này: cập nhật bộ sưu tập theo đường dẫn
   const paramCollection = searchParams.get(COLLECTION_PARAM)
   useEffect(() => {
-    if (paramCollection && collectionById(paramCollection)) {
+    if (paramCollection && COLLECTIONS.some((c) => c.id === paramCollection)) {
       setDraft((d) =>
         d.collectionId === paramCollection ? d : { ...d, collectionId: paramCollection, patternCode: null, size: null },
       )

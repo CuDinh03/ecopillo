@@ -7,7 +7,7 @@ import {
   type ImageSource,
 } from './catalog'
 import { HOTEL_PHOTOS } from './hotel'
-import { collectionPathById, isListingShown, LISTINGS, PATHS, singleProductPath } from './links'
+import { collectionPathById, hiddenPageTarget, isListingShown, LISTINGS, PATHS, singleProductPath } from './links'
 import { listingOf } from './listingProducts'
 import { liveList, type EditableField, type EditableSet } from './liveContent'
 import { hasPrice, PRICE_ON_CALL_LABEL, PRODUCTS, productBySlug, type Product } from './products'
@@ -119,10 +119,19 @@ const groupMin = (rows: readonly MenuRow[]): number => {
   return priced.length ? Math.min(...priced) : 0
 }
 
+/** Dòng trỏ tới trang Ecopillo đã gỡ trong WordPress (sản phẩm, bộ, danh mục: đợt E, E2) thì bỏ */
+const shownRow = (row: MenuRow): boolean => !hiddenPageTarget(row.to)
+
 const group = (g: Omit<MenuGroup, 'min'>): MenuGroup => {
-  const allRows = g.sections?.length ? g.sections.flatMap((s) => s.rows) : g.rows
-  return { ...g, min: groupMin(allRows) }
+  const rows = g.rows.filter(shownRow)
+  const sections = g.sections?.map((s) => ({ ...s, rows: s.rows.filter(shownRow) })).filter((s) => s.rows.length > 0)
+  const allRows = sections?.length ? sections.flatMap((s) => s.rows) : rows
+  return { ...g, rows, ...(g.sections ? { sections } : {}), min: groupMin(allRows) }
 }
+
+/** Bộ sưu tập Ecopillo tạo trong Woo (đợt C) theo kiểu: vào cuối nhóm tương ứng của ô xổ (đợt E2) */
+const newSetRows = (kinds: readonly string[]): MenuRow[] =>
+  BEDDING_SETS.filter((c) => c.livePath && kinds.includes(c.kind)).map((c) => collectionRow(c.id))
 
 const DEM_PATH = '/danh-muc-san-pham/dem-ecopillo/'
 const GA_PHU_PATH = '/danh-muc-san-pham/san-pham/bo-ga-phu/'
@@ -273,7 +282,7 @@ export const PRODUCT_MENU: readonly MenuGroup[] = [
     sections: [
       {
         title: 'Bộ ga phủ',
-        rows: GA_PHU_ORDER.map(collectionRow),
+        rows: [...GA_PHU_ORDER.map(collectionRow), ...newSetRows(['ga-phu', 'chan-ga'])],
       },
       {
         title: 'Bộ ga phủ và chun chần',
@@ -283,7 +292,7 @@ export const PRODUCT_MENU: readonly MenuGroup[] = [
       },
       {
         title: 'Bộ ga chun',
-        rows: [collectionRow('eco-flora')],
+        rows: [collectionRow('eco-flora'), ...newSetRows(['ga-chun'])],
       },
     ],
   }),
@@ -327,5 +336,3 @@ export const PRODUCT_MENU_GIFTS = {
   to: PATHS.gifts,
 } as const
 
-/** Kiểm tra BEDDING_SETS còn đủ khi thêm bộ mới (tránh quên đưa vào menu) */
-void BEDDING_SETS

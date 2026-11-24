@@ -28,6 +28,8 @@ export interface FramePattern {
 }
 
 export interface FrameProduct {
+  /** Trang chuyển tới khi Ecopillo gỡ sản phẩm này trong Woo (đợt E2): trang danh mục có nó, không có thì trang Sản phẩm */
+  veTrang: string
   khoa: string
   ten: string
   duongDan: string
@@ -106,6 +108,8 @@ export interface PriceFrame {
   khungDanhMuc: string
   /** Trang Sản phẩm: nơi chuyển tới mặc định khi Ecopillo ẩn / xoá một danh mục */
   trangSanPham: string
+  /** Trang Tin tức: nơi chuyển tới khi Ecopillo gỡ một bài viết có sẵn (đợt E2) */
+  trangTinTuc: string
 }
 
 const slugOf = (path: string): string => path.replace(/\/$/, '').split('/').pop() ?? ''
@@ -144,7 +148,9 @@ export function buildPriceFrame(): PriceFrame {
     if (p.collection || p.isPriceOnCall) continue
     const path = singleProductPath(p.slug)
     const chon = p.choices?.filter((c) => c.price !== undefined).map((c) => ({ id: c.id, nhan: c.label, gia: c.price as number })) ?? null
+    const home = Object.entries(LISTINGS).find(([, l]) => l.products?.includes(p.slug))?.[0]
     sanPham.push({
+      veTrang: home ?? PATHS.products,
       khoa: p.slug,
       ten: p.name,
       duongDan: path,
@@ -204,5 +210,5 @@ export function buildPriceFrame(): PriceFrame {
     })),
   ]
   const khungDanhMuc = Object.keys(LISTINGS).find((path) => LISTINGS[path]?.products?.length) ?? ''
-  return { mau, sanPham, noiDung, boMoi, boSuuTap, danhMuc, baiViet, baiTrongCode, khungBai, slugCu, trangDanhMuc, khungDanhMuc, trangSanPham: PATHS.products }
+  return { mau, sanPham, noiDung, boMoi, boSuuTap, danhMuc, baiViet, baiTrongCode, khungBai, slugCu, trangDanhMuc, khungDanhMuc, trangSanPham: PATHS.products, trangTinTuc: PATHS.blog }
 }

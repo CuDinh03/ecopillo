@@ -6,7 +6,7 @@ import { Icon } from '../components/ui/Icon'
 import { PageHero } from '../components/ui/PageHero'
 import { Placeholder } from '../components/ui/Placeholder'
 import { buttonClass, ContactButtons, Container, SectionHeading } from '../components/ui/primitives'
-import { collectionById, coverOf } from '../data/catalog'
+import { collectionById, COLLECTIONS, coverOf } from '../data/catalog'
 import { collectionPathById } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
@@ -27,7 +27,11 @@ const OCCASION_IDS: readonly (readonly string[])[] = [
   ['eco-rosa', 'eco-vera'],
   ['eco-tera', 'eco-liora'],
 ]
-const OCCASIONS = GIFTS_TEXT.dip.slice(0, OCCASION_IDS.length).map((o, i) => ({ ...o, ids: OCCASION_IDS[i] }))
+// Bộ Ecopillo đã gỡ trong WordPress (đợt E2) thì bỏ khỏi dịp; dịp không còn bộ nào thì bỏ dịp
+const OCCASIONS = GIFTS_TEXT.dip
+  .slice(0, OCCASION_IDS.length)
+  .map((o, i) => ({ ...o, ids: OCCASION_IDS[i].filter((id) => COLLECTIONS.some((c) => c.id === id)) }))
+  .filter((o) => o.ids.length > 0)
 
 const SERVICE_ICONS = ['box', 'truck', 'ruler'] as const
 const SERVICES = GIFTS_TEXT.dichVu.map((item, i) => ({ ...item, icon: SERVICE_ICONS[i % SERVICE_ICONS.length] }))
