@@ -2,7 +2,7 @@ import { patternImage, type ImageSource } from './catalog'
 import { CODE_POST_SHOW_FIELD, codePostBodyKey, codePostKey } from './codePostKeys'
 import { productsUrl } from './links'
 import { liveList, liveObject, type EditableField, type EditableImage, type EditableSet } from './liveContent'
-import { POST_SECTIONS, SECTION_LABELS, type PostLabel, type PostSection } from './postSections'
+import { knownLabel, POST_SECTIONS, SECTION_LABELS, type PostLabel, type PostSection } from './postSections'
 
 /**
  * Bài viết (biên bản mục 49: 59 bài trên web cũ chuyển sang, GIỮ NGUYÊN đường link, chỉ đổi giao diện).
@@ -346,7 +346,8 @@ function withMeta(base: Post, meta: MetaRow, body: readonly PostBlock[]): Post {
     slug: base.slug,
     title: meta.tieuDe,
     excerpt: meta.gioiThieu,
-    category: section ? SECTION_LABELS[section] : base.category,
+    // Chủ đề Ecopillo đã xoá ở Nội dung web: bài về nhóm Cẩm nang
+    category: knownLabel(section ? SECTION_LABELS[section] : base.category),
     readMinutes: minutes >= 1 && minutes <= 120 ? minutes : base.readMinutes,
     cover: meta.anhBia.src ? meta.anhBia : base.cover,
     ...(meta.moTaGoogle ? { seoDescription: meta.moTaGoogle } : {}),
@@ -400,7 +401,10 @@ export const CODE_POST_SETS: readonly EditableSet[] = EDITABLE.flatMap((e) => e.
 export const CODE_POST_SLUGS: readonly string[] = BASE_POSTS.map((p) => p.slug)
 
 /** Bài dựng sẵn đang hiện, đã ghép phần Ecopillo sửa */
-export const POSTS: readonly Post[] = EDITABLE.map((e) => e.post).filter((p): p is Post => p !== undefined)
+export const POSTS: readonly Post[] = EDITABLE.map((e) => e.post)
+  .filter((p): p is Post => p !== undefined)
+  // Chủ đề gốc của bài mà Ecopillo đã xoá ở Nội dung web: bài về nhóm Cẩm nang
+  .map((p) => (knownLabel(p.category) === p.category ? p : { ...p, category: knownLabel(p.category) }))
 
 export const postBySlug = (slug: string | undefined): Post | undefined => POSTS.find((p) => p.slug === slug)
 

@@ -1,5 +1,6 @@
 import { COLLECTIONS, type Collection, type Pattern } from './catalog'
-import { PRODUCT_LABELS } from './pageText/productLabels'
+import { slugify } from '../lib/slug'
+import { liveList, type EditableField, type EditableSet } from './liveContent'
 
 /**
  * Câu chuyện của từng phối màu (thiết kế "Kết hợp D", owner chọn ngày 14/10/2026).
@@ -15,10 +16,12 @@ import { PRODUCT_LABELS } from './pageText/productLabels'
  */
 export const STORIES_APPROVED = true
 
-export type ToneId = 'xanh' | 'hong' | 'tim' | 'kem' | 'xam' | 'be'
+/** Mã gam: 6 gam gốc ('xanh', 'hong', 'tim', 'kem', 'xam', 'be') hoặc mã gam Ecopillo thêm (lấy theo tên gam) */
+export type ToneId = string
 
 export interface Tone {
   id: ToneId
+  /** Tên gam: khớp giá trị thuộc tính "Gam màu" trong Woo (bo-suu-tap-moi.php so không dấu) */
   label: string
   /** Cụm chữ ghép vào câu, ví dụ "Thêm gam xanh ở bộ khác" */
   phrase: string
@@ -26,18 +29,74 @@ export interface Tone {
   swatch: string
 }
 
-/**
- * Cách chia gam là bản nháp, chờ Ecopillo duyệt. Cụm chữ `phrase` Ecopillo sửa ở Nội dung web (pageText/productLabels.ts);
- * `label` chỉ hiện trong wp-admin (danh sách gam ở priceFrame.ts), không hiện trên web.
- */
-export const TONES: readonly Tone[] = [
-  { id: 'xanh', label: 'Xanh', phrase: PRODUCT_LABELS.gamXanh, swatch: 'linear-gradient(135deg, #a2bfe1, #b6d7e8)' },
-  { id: 'hong', label: 'Hồng, đỏ cam', phrase: PRODUCT_LABELS.gamHong, swatch: 'linear-gradient(135deg, #f0d2d8, #cfa9a2)' },
-  { id: 'tim', label: 'Tím', phrase: PRODUCT_LABELS.gamTim, swatch: 'linear-gradient(135deg, #e4d4e0, #bebcc7)' },
-  { id: 'kem', label: 'Trắng, kem', phrase: PRODUCT_LABELS.gamKem, swatch: 'linear-gradient(135deg, #f4f3e9, #e5d8c8)' },
-  { id: 'xam', label: 'Xám', phrase: PRODUCT_LABELS.gamXam, swatch: 'linear-gradient(135deg, #d0c9c8, #818284)' },
-  { id: 'be', label: 'Cho bé', phrase: PRODUCT_LABELS.gamBe, swatch: 'linear-gradient(135deg, #e6d3d9, #bacbe3)' },
+interface ToneRow {
+  ma: string
+  ten: string
+  cum: string
+  mau1: string
+  mau2: string
+}
+
+const toneRow = (ma: string, ten: string, cum: string, mau1: string, mau2: string): ToneRow => ({ ma, ten, cum, mau1, mau2 })
+
+/** Cách chia gam là bản nháp, chờ Ecopillo duyệt */
+const BASE_TONE_ROWS: readonly ToneRow[] = [
+  toneRow('xanh', 'Xanh', 'gam xanh', '#a2bfe1', '#b6d7e8'),
+  toneRow('hong', 'Hồng, đỏ cam', 'gam hồng, đỏ cam', '#f0d2d8', '#cfa9a2'),
+  toneRow('tim', 'Tím', 'gam tím', '#e4d4e0', '#bebcc7'),
+  toneRow('kem', 'Trắng, kem', 'gam trắng, kem', '#f4f3e9', '#e5d8c8'),
+  toneRow('xam', 'Xám', 'gam xám', '#d0c9c8', '#818284'),
+  toneRow('be', 'Cho bé', 'phối màu cho bé', '#e6d3d9', '#bacbe3'),
 ]
+
+/**
+ * Gam màu Ecopillo sửa ở Nội dung web → Sản phẩm → "Gam màu" (owner 24/11/2026: thêm, xoá, sửa được): tên gam, cụm chữ trong câu,
+ * hai màu của dải màu. Mã gam có sẵn giữ nguyên (câu chuyện trong file này, link ?gam=… bám theo mã); gam mới lấy mã theo tên gam
+ * (cùng cách với plugin bo-suu-tap-moi.php eco_bst_tones), nên đổi tên gam mới thêm là đổi mã của nó.
+ * Mẫu vào gam qua thuộc tính "Gam màu" trong Woo (ghi đúng tên gam); mẫu có câu chuyện trong code giữ gam trong code.
+ */
+export const TONE_SET: EditableSet = {
+  khoa: 'gam-mau',
+  nhom: 'Sản phẩm',
+  ten: 'Gam màu',
+  moTa:
+    'Các gam màu chia phối màu chăn ga: khối "Thêm … ở bộ khác" ở trang bộ sưu tập, lọc ?gam=… ở trang Sản phẩm. ' +
+    'Mẫu vào gam bằng thuộc tính "Gam màu" của sản phẩm mẫu trong WooCommerce (ghi đúng tên gam ở đây). Thêm, xoá, đổi thứ tự được.',
+  kieu: 'nhieu',
+  goc: BASE_TONE_ROWS,
+  tieuDeDong: 'ten',
+  khoaDong: 'ma',
+  truong: [
+    {
+      khoa: 'ten',
+      nhan: 'Tên gam',
+      kieu: 'chu',
+      batBuoc: true,
+      goiY: 'Ghi y hệt giá trị thuộc tính "Gam màu" trong Woo (không phân biệt dấu, hoa thường). Gam mới thêm: đổi tên thì phải đổi cả thuộc tính trong Woo.',
+    },
+    { khoa: 'cum', nhan: 'Cụm chữ trong câu', kieu: 'chu', batBuoc: true, goiY: 'Ghép vào câu "Thêm … ở bộ khác", "Xem cả …", ví dụ "gam xanh".' },
+    { khoa: 'mau1', nhan: 'Dải màu: màu đầu', kieu: 'mau', batBuoc: true },
+    { khoa: 'mau2', nhan: 'Dải màu: màu cuối', kieu: 'mau', batBuoc: true },
+  ] satisfies EditableField[],
+}
+
+/** Gam không nhận mã trùng: mã có sẵn giữ nguyên, gam mới lấy mã theo tên (bỏ gam trùng mã, tên không ra mã) */
+const tonesOf = (rows: readonly ToneRow[]): readonly Tone[] => {
+  const used = new Set<string>()
+  return rows.flatMap((row) => {
+    const id = row.ma || slugify(row.ten)
+    if (!id || used.has(id)) return []
+    used.add(id)
+    return [{ id, label: row.ten, phrase: row.cum, swatch: `linear-gradient(135deg, ${row.mau1}, ${row.mau2})` }]
+  })
+}
+
+const TONE_ROWS = liveList<ToneRow>(TONE_SET.khoa, BASE_TONE_ROWS, TONE_SET.truong, (_i, row) => ({
+  ...(BASE_TONE_ROWS.find((r) => r.ma && r.ma === row.ma) ?? { ma: '', ten: '', cum: '', mau1: '#ffffff', mau2: '#ffffff' }),
+}))
+
+/** `label` chỉ hiện trong wp-admin (danh sách gam ở priceFrame.ts) và để khớp thuộc tính Woo, không hiện trên web */
+export const TONES: readonly Tone[] = tonesOf(TONE_ROWS)
 
 export const toneById = (id: string | null | undefined): Tone | undefined => TONES.find((t) => t.id === id)
 

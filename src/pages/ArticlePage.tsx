@@ -217,7 +217,8 @@ export function ArticlePage() {
           ),
           'kham-pha': (
             <Container>
-              <ExploreMore groups={relatedForPost(post)} />
+              {/* Gồm cả bài WordPress, bài Ecopillo mới đăng (ALL_POSTS đã bỏ bài ẩn) */}
+              <ExploreMore groups={relatedForPost(post, ALL_POSTS)} />
             </Container>
           ),
         }}

@@ -91,14 +91,25 @@ export const relatedForListing = (path: string, category?: CategoryId): readonly
   return groups
 }
 
-/** Cuối bài viết: sản phẩm theo chủ đề của bài, bài khác cùng chủ đề, chính sách */
-export const relatedForPost = (post: Post): readonly RelatedGroup[] => {
+/** Số bài tối đa trong nhóm "Đọc thêm" cuối bài */
+const MORE_POSTS_LIMIT = 6
+
+/**
+ * Cuối bài viết: sản phẩm theo chủ đề của bài, bài khác cùng chủ đề, chính sách.
+ * `pool`: mọi bài đang hiện. Trang bài viết truyền ALL_POSTS (allPosts.ts, gồm bài WordPress, bài Ecopillo mới đăng, đã bỏ bài ẩn);
+ * file này không nhập allPosts.ts để danh sách bài WordPress không vào gói chung của web (trang sản phẩm cũng dùng file này).
+ * Bài cùng nhóm sản phẩm trước, rồi bài cùng mục (Tin tức hoặc cùng chủ đề Cẩm nang) theo thứ tự trang Tin tức (mới nhất trước).
+ */
+export const relatedForPost = (post: Post, pool: readonly Post[] = POSTS): readonly RelatedGroup[] => {
   const groups: RelatedGroup[] = []
   const productLinks = (post.topics ?? [])
     .filter((t): t is CategoryId => t !== 'chinh-sach')
     .flatMap((t) => [CATEGORY_LINKS[t], ...listingsOf(t)])
   if (productLinks.length > 0) groups.push({ title: T.nhomSanPhamLienQuan, links: productLinks })
-  const morePosts = POSTS.filter((p) => p.slug !== post.slug && p.topics?.some((t) => post.topics?.includes(t)))
+  const others = pool.filter((p) => p.slug !== post.slug)
+  const sameTopic = others.filter((p) => p.topics?.some((t) => post.topics?.includes(t)))
+  const sameSection = others.filter((p) => p.category === post.category && !sameTopic.includes(p))
+  const morePosts = [...sameTopic, ...sameSection].slice(0, MORE_POSTS_LIMIT)
   if (morePosts.length > 0) groups.push({ title: T.nhomDocThem, links: morePosts.map(postLink) })
   groups.push({ title: T.nhomMuaHang, links: BUYING_GUIDE })
   return groups

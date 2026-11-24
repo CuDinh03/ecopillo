@@ -19,17 +19,50 @@ if (!defined('ABSPATH')) {
 define('ECO_BV_OPT_TRANG', 'ecopillo_bai_moi_trang');
 /** Danh mục "Tin tức" trên WordPress (id 30), như tools/lay-bai-viet-wordpress.mjs; bài khác ghi "Cẩm nang" */
 define('ECO_BV_TIN_TUC', 30);
-/** Ô "Mục trên web" khi soạn bài (owner 18/11/2026): mã → chữ, khớp SECTION_LABELS ở src/data/postSections.ts */
+/**
+ * Ô "Mục trên web" khi soạn bài (owner 18/11/2026): mã → chữ, khớp SECTION_LABELS ở src/data/postSections.ts.
+ * Tin tức cố định; các chủ đề Cẩm nang theo bộ "Chủ đề Cẩm nang" Ecopillo sửa ở Nội dung web (khoá chu-de-bai-viet,
+ * POST_TOPIC_SET): đã lưu thì theo bản lưu (thêm, xoá, đổi tên, thứ tự), chưa lưu thì theo bản gốc trong noi-dung-goc.json.
+ * Mã chủ đề như web tính (POST_TOPIC_LIST): chủ đề có sẵn giữ mã đã lưu, chủ đề mới lấy mã theo tên, mã trùng / mã cố định thì bỏ.
+ */
 define('ECO_BV_MUC_META', '_eco_muc_web');
 function eco_bv_muc_options()
 {
-    return array(
-        'tin-tuc' => 'Tin tức (tin về Ecopillo)',
-        'chon-chan-ga' => 'Cẩm nang · Chọn chăn ga gối đệm',
-        'giac-ngu' => 'Cẩm nang · Giấc ngủ và sức khoẻ',
-        'phong-ngu' => 'Cẩm nang · Phòng ngủ và phong thuỷ',
-        'cuoi-hoi-le-tet' => 'Cẩm nang · Cưới hỏi, lễ tết',
-    );
+    $options = array('tin-tuc' => 'Tin tức (tin về Ecopillo)');
+    $rows = array();
+    if (function_exists('eco_nd_sets') && function_exists('eco_nd_current')) {
+        $sets = eco_nd_sets();
+        if (isset($sets['chu-de-bai-viet'])) {
+            $rows = (array) eco_nd_current($sets['chu-de-bai-viet']);
+        }
+    }
+    if (!$rows) {
+        // Chưa có khung nội dung (plugin cũ, file hỏng): 4 chủ đề gốc
+        $rows = array(
+            array('ma' => 'chon-chan-ga', 'ten' => 'Chọn chăn ga gối đệm'),
+            array('ma' => 'giac-ngu', 'ten' => 'Giấc ngủ và sức khoẻ'),
+            array('ma' => 'phong-ngu', 'ten' => 'Phòng ngủ và phong thuỷ'),
+            array('ma' => 'cuoi-hoi-le-tet', 'ten' => 'Cưới hỏi, lễ tết'),
+        );
+    }
+    foreach ($rows as $row) {
+        if (!is_array($row) || !isset($row['ten']) || trim((string) $row['ten']) === '') {
+            continue;
+        }
+        $id = isset($row['ma']) && is_string($row['ma']) && $row['ma'] !== '' ? $row['ma'] : eco_bv_slug($row['ten']);
+        if ($id === '' || $id === 'cam-nang' || isset($options[$id])) {
+            continue;
+        }
+        $options[$id] = 'Cẩm nang · ' . trim((string) $row['ten']);
+    }
+    return $options;
+}
+
+/** Mã từ chữ, giống slugify ở src/lib/slug.ts: bỏ dấu, chữ thường, mọi ký tự khác a-z0-9 thành một dấu "-" */
+function eco_bv_slug($text)
+{
+    $text = strtolower(remove_accents((string) $text));
+    return trim((string) preg_replace('/[^a-z0-9]+/', '-', $text), '-');
 }
 
 /** Thẻ, thuộc tính được giữ trong thân bài (khớp ALLOWED, ATTRS ở src/lib/cleanPostHtml.ts) */

@@ -39,6 +39,11 @@ import { FONT_SET, THEME_SET } from './theme'
 import { LAYOUT_SETS } from './pageLayout'
 import { REDIRECT_SET } from './liveRedirects'
 import { SEO_SET } from './liveSeo'
+import { PRICE_BAND_SETS } from './priceBands'
+import { SHELF_SET } from './productShelves'
+import { LISTING_ORDER_SET } from './listingProducts'
+import { TONE_SET } from './stories'
+import { POST_TOPIC_SET } from './postSections'
 import { CATALOG_TEXT_SET } from './pageText/catalogText'
 import { PRODUCT_COPY_SET } from './pageText/productCopy'
 import { MISC_LABELS_SET } from './pageText/miscLabels'
@@ -86,6 +91,11 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   PRODUCT_COMMON_SET,
   PRODUCT_MENU_SET,
   LISTING_PRODUCTS_SET,
+  LISTING_ORDER_SET,
+  SHELF_SET,
+  ...PRICE_BAND_SETS,
+  TONE_SET,
+  POST_TOPIC_SET,
   // Chữ từng trang (owner 20/11/2026: "đảm bảo tất cả mọi thứ trên web, khách đều tự chỉnh sửa được")
   HOME_TEXT_SET,
   MATTRESS_TEXT_SET,
