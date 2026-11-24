@@ -58,6 +58,26 @@ function eco_nd_overview()
 
 /* ---------------------------------------------------------------- Lưu */
 
+/** Bản đã lưu trước đó của một bộ (mới nhất trước, tối đa 5): "Khôi phục bản trước" (đợt E3) */
+function eco_nd_history($key)
+{
+    $list = get_option(ECO_ND_OPT_PREFIX . $key . '_cu', array());
+    return is_array($list) ? array_values(array_filter($list, function ($item) {
+        return is_array($item) && array_key_exists('giaTri', $item);
+    })) : array();
+}
+
+/** Trước khi ghi đè / bỏ bản đang dùng: cất nó vào lịch sử */
+function eco_nd_push_history($key)
+{
+    $current = eco_nd_saved($key);
+    if (!$current) {
+        return;
+    }
+    $list = array_slice(array_merge(array($current), eco_nd_history($key)), 0, 5);
+    update_option(ECO_ND_OPT_PREFIX . $key . '_cu', $list, false);
+}
+
 /** Bộ một đối tượng: ô bắt buộc để trống thì lấy nội dung gốc (ảnh bỏ đi cũng về ảnh gốc) */
 function eco_nd_fill_from_goc($set, $raw)
 {
@@ -113,7 +133,24 @@ function eco_nd_save()
     check_admin_referer('eco_nd_luu_' . $key);
     $set = $sets[$key];
 
+    // Khôi phục một bản đã lưu trước đó
+    if (isset($_POST['khoi-phuc'])) {
+        $history = eco_nd_history($key);
+        $index = (int) $_POST['khoi-phuc'];
+        if (!isset($history[$index])) {
+            wp_safe_redirect(eco_nd_page_url($key));
+            exit;
+        }
+        $restore = $history[$index];
+        eco_nd_push_history($key);
+        update_option(ECO_ND_OPT_PREFIX . $key, array('giaTri' => $restore['giaTri'], 'luc' => current_time('mysql'), 'nguoi' => get_current_user_id()), false);
+        eco_dl_write();
+        wp_safe_redirect(eco_nd_page_url($key, array('ket-qua' => 'khoi-phuc')));
+        exit;
+    }
+
     if (!empty($_POST['tra-ve-goc'])) {
+        eco_nd_push_history($key);
         delete_option(ECO_ND_OPT_PREFIX . $key);
         eco_dl_write();
         wp_safe_redirect(eco_nd_page_url($key, array('ket-qua' => 'goc')));
@@ -154,6 +191,7 @@ function eco_nd_save()
             exit;
         }
     }
+    eco_nd_push_history($key);
     update_option(ECO_ND_OPT_PREFIX . $key, array('giaTri' => $value, 'luc' => current_time('mysql'), 'nguoi' => get_current_user_id()), false);
     eco_dl_write();
     $args = array('ket-qua' => 'ok');
@@ -291,7 +329,8 @@ function eco_nd_page()
     $result = isset($_GET['ket-qua']) ? sanitize_key(wp_unslash($_GET['ket-qua'])) : '';
     $notices = array(
         'ok' => array('success', 'Đã lưu. Web đã đổi (khách tải lại trang là thấy).'),
-        'goc' => array('success', 'Đã trả về nội dung có sẵn của web.'),
+        'goc' => array('success', 'Đã trả về nội dung có sẵn của web. Bản vừa bỏ nằm ở "Các bản đã lưu trước" bên dưới.'),
+        'khoi-phuc' => array('success', 'Đã khôi phục bản đã chọn. Web đã đổi.'),
         'rong' => array('error', 'Chưa lưu: danh sách không còn dòng nào đủ ô bắt buộc.'),
         'thieu' => array('error', 'Chưa lưu: còn ô bắt buộc sai'),
         'tuong-phan' => array('error', 'Chưa lưu: màu làm chữ khó đọc'),
@@ -336,7 +375,22 @@ function eco_nd_page()
     if ($saved) {
         echo '<button type="submit" name="tra-ve-goc" value="1" class="button" onclick="return confirm(\'Bỏ bản đã sửa, trả về nội dung có sẵn của web?\')">Trả về nội dung gốc</button>';
     }
-    echo '</p></form></div>';
+    echo '</p></form>';
+    // Các bản đã lưu trước: khôi phục một bản (bản đang dùng cũng được cất lại)
+    $history = eco_nd_history($key);
+    if ($history) {
+        echo '<h2>Các bản đã lưu trước</h2><form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
+        echo '<input type="hidden" name="action" value="eco_nd_luu"><input type="hidden" name="bo" value="' . esc_attr($key) . '">';
+        wp_nonce_field('eco_nd_luu_' . $key);
+        echo '<table class="widefat striped" style="max-width:960px"><thead><tr><th>Lưu lúc</th><th>Người lưu</th><th></th></tr></thead><tbody>';
+        foreach ($history as $i => $item) {
+            $user = !empty($item['nguoi']) ? get_userdata((int) $item['nguoi']) : null;
+            echo '<tr><td>' . esc_html(isset($item['luc']) ? (string) $item['luc'] : '') . '</td><td>' . esc_html($user ? $user->display_name : '') . '</td>'
+                . '<td><button type="submit" name="khoi-phuc" value="' . (int) $i . '" class="button" onclick="return confirm(\'Khôi phục bản này? Bản đang dùng sẽ được cất vào danh sách này.\')">Khôi phục bản này</button></td></tr>';
+        }
+        echo '</tbody></table></form>';
+    }
+    echo '</div>';
     eco_nd_script();
 }
 

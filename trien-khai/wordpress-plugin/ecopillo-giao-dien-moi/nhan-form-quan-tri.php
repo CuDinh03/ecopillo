@@ -74,6 +74,10 @@ function eco_form_column($column, $post_id)
         $status = (string) get_post_meta($post_id, '_eco_trang_thai', true);
         $style = $status === 'Mới' ? 'background:#ffc271;color:#111;padding:2px 8px;border-radius:10px;font-weight:600' : '';
         echo '<span style="' . esc_attr($style) . '">' . esc_html($status) . '</span>';
+        $note = (string) get_post_meta($post_id, '_eco_ghi_chu', true);
+        if ($note !== '') {
+            echo '<br><span style="color:#555" title="' . esc_attr($note) . '">Ghi chú: ' . esc_html(mb_substr($note, 0, 60, 'UTF-8')) . (mb_strlen($note, 'UTF-8') > 60 ? '…' : '') . '</span>';
+        }
     } elseif ($column === 'eco_tong') {
         $d = eco_form_data($post_id);
         if ($d && $d['loai'] === 'don-hang') {
@@ -157,6 +161,10 @@ function eco_form_box_status($post)
         echo '<label style="display:block;margin:4px 0"><input type="radio" name="eco_trang_thai" value="' . esc_attr($status) . '" '
             . checked($current, $status, false) . '> ' . esc_html($status) . '</label>';
     }
+    // Ghi chú nội bộ (đợt E3): chỉ người trong wp-admin thấy, không gửi đi đâu
+    $note = (string) get_post_meta($post->ID, '_eco_ghi_chu', true);
+    echo '<p style="margin-top:12px"><label for="eco_ghi_chu"><strong>Ghi chú nội bộ</strong></label><br>'
+        . '<textarea id="eco_ghi_chu" name="eco_ghi_chu" rows="5" style="width:100%" maxlength="3000">' . esc_textarea($note) . '</textarea></p>';
     echo '<p style="color:#555">Bấm "Cập nhật" ở trên để lưu.</p>';
 }
 
@@ -176,7 +184,49 @@ function eco_form_save_status($post_id, $post)
     if (in_array($status, eco_form_statuses(), true)) {
         update_post_meta($post_id, '_eco_trang_thai', $status);
     }
+    if (isset($_POST['eco_ghi_chu'])) {
+        $note = mb_substr(sanitize_textarea_field(wp_unslash($_POST['eco_ghi_chu'])), 0, 3000, 'UTF-8');
+        if ($note === '') {
+            delete_post_meta($post_id, '_eco_ghi_chu');
+        } else {
+            update_post_meta($post_id, '_eco_ghi_chu', $note);
+        }
+    }
 }
+
+/* ---------------------------------------------------------------- Đổi trạng thái nhiều đơn một lúc (đợt E3) */
+
+add_filter('bulk_actions-edit-' . ECO_FORM_POST_TYPE, function ($actions) {
+    foreach (eco_form_statuses() as $i => $status) {
+        $actions['eco_trang_thai_' . $i] = 'Đổi trạng thái: ' . $status;
+    }
+    return $actions;
+});
+
+add_filter('handle_bulk_actions-edit-' . ECO_FORM_POST_TYPE, function ($redirect, $action, $ids) {
+    if (strpos($action, 'eco_trang_thai_') !== 0) {
+        return $redirect;
+    }
+    $statuses = eco_form_statuses();
+    $index = (int) substr($action, strlen('eco_trang_thai_'));
+    if (!isset($statuses[$index])) {
+        return $redirect;
+    }
+    $done = 0;
+    foreach ((array) $ids as $id) {
+        if (current_user_can('edit_post', (int) $id) && get_post_type((int) $id) === ECO_FORM_POST_TYPE) {
+            update_post_meta((int) $id, '_eco_trang_thai', $statuses[$index]);
+            $done++;
+        }
+    }
+    return add_query_arg('eco_doi_trang_thai', $done, $redirect);
+}, 10, 3);
+
+add_action('admin_notices', function () {
+    if (isset($_GET['eco_doi_trang_thai'], $_GET['post_type']) && $_GET['post_type'] === ECO_FORM_POST_TYPE) {
+        echo '<div class="notice notice-success is-dismissible"><p>Đã đổi trạng thái ' . (int) $_GET['eco_doi_trang_thai'] . ' đơn.</p></div>';
+    }
+});
 
 /** Đơn luôn ở trạng thái riêng tư: nút "Cập nhật" của WordPress không được làm đơn thành công khai */
 add_filter('wp_insert_post_data', 'eco_form_keep_private', 10, 2);
