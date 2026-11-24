@@ -7,10 +7,6 @@ const img = (src: string, alt: string) => ({ src, srcSet: '', alt })
 /** Ô đường link (/duong-dan/, https://…, tel:): web kiểm đúng dạng link, sai thì dùng link gốc */
 const link = (nhan: string, goc: string, goiY?: string): TextField<string> => ({ nhan, kieu: 'link', goc, goiY })
 
-/** Ruột chăn gối trang chủ: câu nhỏ dưới tên từng ô, theo thứ tự ô (ESSENTIALS trong catalog.ts) */
-const NOTE_HINT =
-  'Mỗi dòng một ô, theo thứ tự ô gốc (ô của sản phẩm đã gỡ trong Woo tự ẩn, dòng của nó vẫn giữ chỗ); thiếu dòng thì các ô cuối dùng câu gốc. Sản phẩm mới đăng trong Woo ở trang danh mục của nhóm tự thêm ô cuối, câu nhỏ là câu đầu của mô tả'
-
 /**
  * Chữ, ảnh trang chủ (trừ banner, đã có bộ riêng; chữ dùng chung với trang Giới thiệu, Khách sạn nằm ở bộ của trang đó).
  * Chữ gốc giữ nguyên từng ý đã được duyệt (ghi chú nguồn ở component từng khối).
@@ -144,21 +140,7 @@ export const { set: HOME_TEXT_SET, text: HOME_TEXT } = definePageText(
       ],
       'Đúng 3 dòng theo thứ tự: ruột gối, ruột chăn, chăn và phụ kiện',
     ),
-    ruotGoiGhiChu: dsDong(
-      'Ruột chăn gối: câu nhỏ dưới tên các ô nhóm Ruột gối',
-      ['Nhẹ, thoáng, không hút ẩm', 'Sợi siêu mảnh, êm vừa, dễ giặt', 'Bông cao cấp, đàn hồi tốt', 'Mềm mượt, điều hoà nhiệt', 'Nâng đỡ cổ, thoáng khí', 'Bồng bềnh, chuẩn khách sạn 5 sao'],
-      `${NOTE_HINT}: bông PE, Micro Fiber, Micro Plus, tơ tằm, cao su, lông vũ`,
-    ),
-    ruotChanGhiChu: dsDong(
-      'Ruột chăn gối: câu nhỏ dưới tên các ô nhóm Ruột chăn',
-      ['Ấm, nhẹ, giặt máy được', 'Mỏng nhẹ, thoáng, ít bám bụi', 'Ấm sâu, siêu nhẹ cho mùa đông'],
-      `${NOTE_HINT}: chăn đông Micro Fiber, chăn tơ tằm, chăn lông vũ`,
-    ),
-    phuKienGhiChu: dsDong(
-      'Ruột chăn gối: câu nhỏ dưới tên các ô nhóm Chăn, topper và phụ kiện',
-      ['Chần bông mỏng, mát cho mùa hè', 'Vải mát E-Cool, bông siêu nhẹ', 'Làm mềm mặt đệm cứng', 'Chống thấm, chống bụi, dễ tháo giặt', 'Kệ giường khung gỗ thông, cao 30 cm'],
-      `${NOTE_HINT}: chăn hè Lyocell, chăn hè E-Cool, topper, bảo vệ đệm, divan`,
-    ),
+    // Câu nhỏ dưới tên từng ô: từ 25/11/2026 ở bộ "Trang chủ: các ô ruột chăn, ruột gối, phụ kiện" (src/data/essentialTiles.ts)
     ruotXemTatCa: chu('Ruột chăn gối: chữ link Xem tất cả của từng nhóm', 'Xem tất cả'),
     ruotGoiLink: link('Ruột chăn gối: link Xem tất cả của nhóm Ruột gối', '/danh-muc-san-pham/san-pham/ruot-goi-nam-cao-cap/'),
     ruotChanLink: link('Ruột chăn gối: link Xem tất cả của nhóm Ruột chăn', '/danh-muc-san-pham/san-pham/ruot-chan-goi/'),

@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { HomeLink } from './HomeLink'
 import { CONTACT } from '../../data/brand'
-import { collectionById, coverOf, ESSENTIALS, type EssentialItem, type ImageSource } from '../../data/catalog'
+import { collectionById, coverOf, ESSENTIALS, type ImageSource } from '../../data/catalog'
+import { ESSENTIAL_ROWS, ESSENTIAL_ROWS_SAVED, type EssentialRow } from '../../data/essentialTiles'
 import { collectionPath, hiddenPageTarget, PATHS } from '../../data/links'
 import { isProductShown, productBySlug, productPath, PRODUCTS } from '../../data/products'
 import { formatVND } from '../../lib/format'
@@ -25,14 +26,17 @@ const SUMMER_QUILT_SLUG = 'chan-he-lyocell'
 const SUMMER_QUILT = collectionById(SUMMER_QUILT_SLUG)
 
 /**
- * Chữ, link từng nhóm Ecopillo sửa (HOME_TEXT): tên, câu dưới tên theo thứ tự nhóm; câu nhỏ từng ô theo thứ tự ô gốc.
- * "Xem tất cả" mặc định là trang danh mục nhỏ (LISTINGS trong links.ts) có đúng các sản phẩm của nhóm.
+ * Link "Xem tất cả" từng nhóm Ecopillo sửa (HOME_TEXT); mặc định là trang danh mục nhỏ (LISTINGS trong links.ts) của nhóm.
+ * Tên, câu dưới tên: HOME_TEXT.ruotNhom theo thứ tự nhóm. Các ô và câu nhỏ: bộ ESSENTIAL_ROWS (essentialTiles.ts, 25/11/2026).
  */
-const GROUP_TEXT: Readonly<Record<string, { to: string; notes: readonly string[] }>> = {
-  'ruot-goi': { to: HOME_TEXT.ruotGoiLink, notes: HOME_TEXT.ruotGoiGhiChu },
-  'ruot-chan': { to: HOME_TEXT.ruotChanLink, notes: HOME_TEXT.ruotChanGhiChu },
-  'chan-topper': { to: HOME_TEXT.phuKienLink, notes: HOME_TEXT.phuKienGhiChu },
+const GROUP_LINK: Readonly<Record<string, string>> = {
+  'ruot-goi': HOME_TEXT.ruotGoiLink,
+  'ruot-chan': HOME_TEXT.ruotChanLink,
+  'chan-topper': HOME_TEXT.phuKienLink,
 }
+
+/** Ô gốc trong ESSENTIALS (catalog.ts) theo khoá: tên ngắn, câu gốc, khoảng giá ghi sẵn (bộ chăn hè) */
+const BASE_ITEM = new Map(ESSENTIALS.flatMap((g) => g.items).map((item) => [item.slug, item]))
 
 interface EssentialTile {
   key: string
@@ -52,17 +56,21 @@ const priceText = (item: { min: number; max: number }): string =>
  * Một ô theo khoá sản phẩm (đổi tên trong Woo không làm lạc ô). Sản phẩm Ecopillo đã gỡ trong Woo (nháp, thùng rác: đợt E2)
  * thì không có ô. Chăn hè là bộ sưu tập có phối màu, không phải sản phẩm lẻ: ảnh bìa và trang của bộ đó.
  */
-const toTile = (item: EssentialItem, note: string): EssentialTile | undefined => {
-  if (!isProductShown(item.slug)) return undefined
-  const base = { key: item.slug, name: item.name, note, price: priceText(item) }
-  if (item.slug === SUMMER_QUILT_SLUG && SUMMER_QUILT) {
-    return { ...base, name: HOME_TEXT.chanHeTen, to: collectionPath(SUMMER_QUILT), image: coverOf(SUMMER_QUILT), imageNote: HOME_TEXT.chanHeTen }
+const toTile = (row: EssentialRow, index: number): EssentialTile | undefined => {
+  if (!isProductShown(row.sanPham)) return undefined
+  const item = BASE_ITEM.get(row.sanPham)
+  const product = productBySlug(row.sanPham)
+  // Câu nhỏ: Ecopillo ghi, không thì câu gốc của ô, không thì câu đầu mô tả sản phẩm
+  const note = row.ghiChu || item?.note || (product ? firstSentence(product.summary) : '')
+  const key = `${index}-${row.sanPham}`
+  if (row.sanPham === SUMMER_QUILT_SLUG && SUMMER_QUILT && item) {
+    return { key, name: HOME_TEXT.chanHeTen, note, price: priceText(item), to: collectionPath(SUMMER_QUILT), image: coverOf(SUMMER_QUILT), imageNote: HOME_TEXT.chanHeTen }
   }
-  const product = productBySlug(item.slug)
   if (!product) return undefined
+  const base = { key, name: product.name, note, price: priceText(product) }
   // Tên trong ESSENTIALS ngắn ("Micro Fiber"), tên ô dùng tên đầy đủ của trang sản phẩm ("Ruột gối Micro Fiber")
   // Giá lấy theo trang sản phẩm: Ecopillo sửa giá trong WooCommerce thì ô này đổi theo (liveData.ts)
-  return { ...base, price: priceText(product), name: product.name, to: productPath(product), image: product.image, imageNote: product.imageNote }
+  return { ...base, to: productPath(product), image: product.image, imageNote: product.imageNote }
 }
 
 /** Câu đầu của mô tả sản phẩm mới (ô nhỏ chỉ đủ chỗ một câu ngắn) */
@@ -81,19 +89,21 @@ const newTiles = (to: string, taken: ReadonlySet<string>): EssentialTile[] =>
   }))
 
 const GROUPS = ESSENTIALS.map((g, i) => {
-  const text = GROUP_TEXT[g.id]
   const label = HOME_TEXT.ruotNhom[i]
-  const to = text?.to ?? PATHS.products
+  const to = GROUP_LINK[g.id] ?? PATHS.products
+  const rows = ESSENTIAL_ROWS.filter((row) => row.nhom === g.id)
   // Ô trỏ tới sản phẩm / trang Ecopillo đã gỡ trong WordPress (đợt E2) thì bỏ
-  const tiles = g.items.flatMap((item, j) => toTile(item, text?.notes[j] ?? item.note) ?? []).filter((tile) => !hiddenPageTarget(tile.to))
+  const tiles = rows.flatMap((row, j) => toTile(row, j) ?? []).filter((tile) => !hiddenPageTarget(tile.to))
+  // Chưa lưu bộ ô: sản phẩm mới đăng trong Woo ở trang danh mục của nhóm tự thêm cuối; đã lưu thì đúng các dòng Ecopillo xếp
+  const extra = ESSENTIAL_ROWS_SAVED ? [] : newTiles(to, new Set(rows.map((row) => row.sanPham)))
   return {
     id: g.id,
     title: label?.title ?? g.title,
     subtitle: label?.subtitle ?? g.subtitle,
     to,
-    tiles: [...tiles, ...newTiles(to, new Set(g.items.map((item) => item.slug)))],
+    tiles: [...tiles, ...extra],
   }
-})
+}).filter((group) => group.tiles.length > 0)
 
 export function Essentials() {
   return (
