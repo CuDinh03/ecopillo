@@ -39,6 +39,16 @@ import { FONT_SET, THEME_SET } from './theme'
 import { LAYOUT_SETS } from './pageLayout'
 import { REDIRECT_SET } from './liveRedirects'
 import { SEO_SET } from './liveSeo'
+import { POLICY_NAV_TEXT_SET } from './policyNav'
+import { HOME_COLLECTIONS_SET } from './collectionGroups'
+import { PRODUCT_MENU_TEXT_SET } from './productMenu'
+import { SEARCH_PAGES_SET, SEARCH_TEXT_SET } from './pageText/search'
+import { MAIN_MENU_SET } from './pageText/mainMenu'
+import { CONTACT_DOCK_TEXT_SET } from './pageText/contactDock'
+import { PAGE_FRAME_TEXT_SET } from './pageText/pageFrame'
+import { DEALER_TEXT_SET } from './pageText/dealers'
+import { NOT_FOUND_TEXT_SET } from './pageText/notFound'
+import { HEADER_TEXT_SET } from './pageText/header'
 
 /**
  * Mọi bộ dữ liệu Ecopillo tự sửa trong WordPress (liveContent.ts), theo thứ tự hiện trên menu "Nội dung web".
@@ -73,6 +83,7 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   HOME_TEXT_SET,
   MATTRESS_TEXT_SET,
   COLLECTION_SHOWCASE_SET,
+  HOME_COLLECTIONS_SET,
   THANK_YOU_SET,
   BRAND_VIDEO_SET,
   ABOUT_PAGE_TEXT_SET,
@@ -81,6 +92,7 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   GIFTS_TEXT_SET,
   RECRUIT_TEXT_SET,
   CONTACT_PAGE_TEXT_SET,
+  DEALER_TEXT_SET,
   PRODUCTS_PAGE_TEXT_SET,
   PRODUCT_LIST_TEXT_SET,
   PRODUCT_LABELS_SET,
@@ -94,11 +106,20 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   ORDER_SUMMARY_TEXT_SET,
   BLOG_TEXT_SET,
   FAQ_PAGE_TEXT_SET,
+  HEADER_TEXT_SET,
+  PRODUCT_MENU_TEXT_SET,
   FOOTER_TEXT_SET,
+  CONTACT_DOCK_TEXT_SET,
+  SEARCH_TEXT_SET,
+  PAGE_FRAME_TEXT_SET,
+  POLICY_NAV_TEXT_SET,
+  NOT_FOUND_TEXT_SET,
   COMMON_TEXT_SET,
   // Màu web (owner 20/11/2026 "ecopillo cần tự làm hết được")
   THEME_SET,
   FONT_SET,
+  MAIN_MENU_SET,
+  SEARCH_PAGES_SET,
   ...LAYOUT_SETS,
   REDIRECT_SET,
   // SEO từng trang (đợt E 24/11/2026)
