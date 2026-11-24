@@ -13,6 +13,8 @@ import { MAX_QUANTITY, PRICE_ON_CALL, type OrderSummaryData } from '../../lib/or
 import { Icon } from '../ui/Icon'
 import { QuantityStepper } from '../ui/QuantityStepper'
 import { ORDER_TEXT } from '../../data/pageText/order'
+import { ORDER_STEPS_TEXT as T } from '../../data/pageText/orderFlow'
+import { chen } from '../../data/pageText/define'
 
 interface StepSizeProps {
   summary: OrderSummaryData
@@ -39,7 +41,7 @@ export function StepSize({ summary, sheet, onSelectSheet, onSelectSize, onChange
       {/* Mục 28 (Ecopillo trả lời 23/10/2026): Rosa, Tera, Vera chọn ga phủ chần hoặc ga chun chần, giá riêng */}
       {collection.hasFittedOption && (
         <fieldset>
-          <legend className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">Kiểu ga</legend>
+          <legend className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">{T.kieuGa}</legend>
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             {(['phu', 'chun'] as const).map((id) => {
               const checked = activeSheet === id
@@ -76,16 +78,16 @@ export function StepSize({ summary, sheet, onSelectSheet, onSelectSize, onChange
           </div>
           {activeSheet === 'chun' && !pattern.fittedPrices && (
             <p className="mt-4 text-sm text-ink-soft">
-              Mẫu {pattern.code} chưa có giá ga chun chần: nhân viên báo giá khi gọi xác nhận.
+              {chen(T.chuaCoGiaChun, { ma: pattern.code })}
             </p>
           )}
         </fieldset>
       )}
 
       <fieldset id="chon-kich-thuoc" className="scroll-mt-28">
-        <legend className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">Chọn kích thước</legend>
+        <legend className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">{T.chonKichThuoc}</legend>
         <p className="mt-1 text-sm text-ink-soft">
-          {collection.name} · mẫu <span className="font-medium text-deep-900">{pattern.code}</span> ({pattern.colorName})
+          {collection.name} · {T.chuMau} <span className="font-medium text-deep-900">{pattern.code}</span> ({pattern.colorName})
         </p>
 
         <div className="mt-6 grid gap-3 sm:grid-cols-3">
@@ -133,7 +135,7 @@ export function StepSize({ summary, sheet, onSelectSheet, onSelectSize, onChange
                 <span className="mt-4 flex items-center justify-between gap-2">
                   {soldOut ? (
                     <span className="rounded-full bg-alert-soft px-2.5 py-1 text-label font-medium text-alert">
-                      Tạm hết hàng
+                      {T.hetHang}
                     </span>
                   ) : (
                     <span className="tabular font-medium text-deep-900">
@@ -152,15 +154,15 @@ export function StepSize({ summary, sheet, onSelectSheet, onSelectSize, onChange
       </fieldset>
 
       <fieldset>
-        <legend className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">Số lượng</legend>
+        <legend className="font-display text-[1.6rem] text-deep-900 sm:text-[1.9rem]">{T.soLuong}</legend>
         <div className="mt-5 flex flex-wrap items-center gap-5">
           <QuantityStepper value={quantity} max={MAX_QUANTITY} onChange={onChangeQuantity} />
           <p className="text-sm text-ink-soft">
             {quantity >= MAX_QUANTITY ? (
               <>
-                Cần nhiều hơn {MAX_QUANTITY} {unit} cho khách sạn, resort?{' '}
+                {chen(T.canNhieuHon, { so: MAX_QUANTITY, donVi: unit })}{' '}
                 <a href={CONTACT.hotlineTel} className="font-medium text-deep-900 underline underline-offset-4">
-                  Gọi nhận báo giá
+                  {T.goiBaoGia}
                 </a>
               </>
             ) : (
@@ -172,7 +174,7 @@ export function StepSize({ summary, sheet, onSelectSheet, onSelectSize, onChange
 
       {gift && (
         <section
-          aria-label="Quà tặng kèm"
+          aria-label={T.quaTangKem}
           className="grain relative overflow-hidden rounded-[1.5rem] bg-brass-100 p-6 sm:flex sm:items-center sm:gap-6"
         >
           <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-ivory text-brass-600">
@@ -184,7 +186,7 @@ export function StepSize({ summary, sheet, onSelectSheet, onSelectSize, onChange
               {giftCount} {gift.unit} {gift.item}
             </p>
             <p className="mt-1 text-sm text-ink-soft">
-              {gift.label} × {quantity} bộ. {ORDER_TEXT.quaGhiChu}
+              {chen(T.quaTheoBo, { qua: gift.label, so: quantity })} {ORDER_TEXT.quaGhiChu}
             </p>
           </div>
         </section>
@@ -192,7 +194,7 @@ export function StepSize({ summary, sheet, onSelectSheet, onSelectSize, onChange
 
       {size && (
         <p className="flex items-baseline justify-between border-t border-ivory pt-6">
-          <span className="text-ink-soft">Tạm tính ({quantity} {unit})</span>
+          <span className="text-ink-soft">{chen(T.tamTinhSoLuong, { so: quantity, donVi: unit })}</span>
           <span className="tabular font-display text-3xl text-deep-900">
             {priceOnCall ? <span className="text-lg">{PRICE_ON_CALL}</span> : formatVND(subtotal)}
           </span>

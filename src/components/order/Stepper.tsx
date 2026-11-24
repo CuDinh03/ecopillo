@@ -1,11 +1,12 @@
 import { Icon } from '../ui/Icon'
+import { ORDER_STEPS_TEXT } from '../../data/pageText/orderFlow'
 
 export type StepNumber = 1 | 2 | 3
 
 export const STEPS: readonly { n: StepNumber; label: string; short: string }[] = [
-  { n: 1, label: 'Chọn bộ sưu tập & mẫu', short: 'Chọn mẫu' },
-  { n: 2, label: 'Kích thước & số lượng', short: 'Kích thước' },
-  { n: 3, label: 'Thông tin nhận hàng', short: 'Nhận hàng' },
+  { n: 1, label: ORDER_STEPS_TEXT.buoc1, short: ORDER_STEPS_TEXT.buoc1Ngan },
+  { n: 2, label: ORDER_STEPS_TEXT.buoc2, short: ORDER_STEPS_TEXT.buoc2Ngan },
+  { n: 3, label: ORDER_STEPS_TEXT.buoc3, short: ORDER_STEPS_TEXT.buoc3Ngan },
 ]
 
 interface StepperProps {
@@ -15,7 +16,7 @@ interface StepperProps {
 
 export function Stepper({ current, onGoTo }: StepperProps) {
   return (
-    <nav aria-label="Các bước đặt hàng">
+    <nav aria-label={ORDER_STEPS_TEXT.nhanBuoc}>
       <ol className="grid grid-cols-3 gap-2 sm:gap-3">
         {STEPS.map((step) => {
           const done = step.n < current

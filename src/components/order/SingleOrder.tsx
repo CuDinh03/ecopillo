@@ -24,6 +24,8 @@ import { MobileOrderBar, OrderAssurances } from './OrderChrome'
 import { OrderSummary } from './OrderSummary'
 import { StepCustomer } from './StepCustomer'
 import { ORDER_TEXT } from '../../data/pageText/order'
+import { ORDER_STEPS_TEXT as T, ORDER_SUMMARY_TEXT } from '../../data/pageText/orderFlow'
+import { chen } from '../../data/pageText/define'
 
 interface SingleOrderProps {
   product: Product
@@ -99,8 +101,8 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
     )
   }
 
-  const choiceLabel = product.choiceLabel ?? 'Kích thước'
-  const hint = hasChoice ? null : `Chọn ${choiceLabel.toLowerCase()} để tiếp tục`
+  const choiceLabel = product.choiceLabel ?? T.leKichThuoc
+  const hint = hasChoice ? null : chen(T.leGoiY, { luaChon: choiceLabel.toLowerCase() })
 
   return (
     <div ref={topRef} className="scroll-mt-20 pb-36 lg:pb-24">
@@ -110,11 +112,11 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
         </Link>
         <h1 className="font-display mt-3 text-[2.2rem] leading-none text-deep-900 sm:text-5xl">{ORDER_TEXT.tieuDe}</h1>
         <p className="mt-3 text-sm text-ink-soft">
-          Nhân viên gọi xác nhận đơn trước khi giao. Cần tư vấn?{' '}
+          {T.leXacNhan} {T.canTuVan}{' '}
           <a href={CONTACT.hotlineTel} className="tabular font-medium text-deep-900 hover:underline">
             {CONTACT.hotlineDisplay}
           </a>{' '}
-          (có Zalo)
+          {T.coZalo}
         </p>
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_340px] lg:gap-12 xl:grid-cols-[1fr_380px]">
@@ -128,13 +130,13 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
               {product.variants && (
                 <>
                   <ChoiceGroup
-                    label="Kích thước"
+                    label={T.leKichThuoc}
                     options={product.variants.sizes.map((s) => ({ id: s, label: s }))}
                     value={draft.choiceId}
                     onChange={(id) => update({ choiceId: id, thickness: draft.thickness ?? product.variants?.thicknesses[0] ?? null })}
                   />
                   <ChoiceGroup
-                    label="Độ dày"
+                    label={T.leDoDay}
                     options={product.variants.thicknesses.map((t) => ({
                       id: t,
                       label: t,
@@ -156,7 +158,7 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
               )}
 
               <div className="mt-7 flex flex-wrap items-center gap-5">
-                <span className="text-sm font-medium text-deep-900">Số lượng</span>
+                <span className="text-sm font-medium text-deep-900">{T.soLuong}</span>
                 <QuantityStepper value={draft.quantity} max={MAX_QUANTITY} onChange={(q) => update({ quantity: q })} />
                 {singleUnitPrice(product, draft.choiceId, draft.thickness) !== undefined && hasChoice && (
                   <span className="tabular text-sm text-ink-soft">
@@ -169,7 +171,7 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
             <StepCustomer customer={draft.customer} errors={errors} summary={summary} onChange={changeCustomer} />
             {order.failed && (
               <div id={SEND_ERROR_ID} className="scroll-mt-[5.5rem] scroll-mb-40">
-                <SendFailed what="đơn hàng" />
+                <SendFailed what={T.donHang} />
               </div>
             )}
 
@@ -182,7 +184,7 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
                 aria-busy={order.sending}
                 className={buttonClass('primary', 'lg')}
               >
-                {order.sending ? 'Đang gửi đơn…' : 'Đặt hàng'}
+                {order.sending ? T.nutDangGui : T.nutDatHang}
                 <Icon name="arrowRight" size={18} />
               </button>
             </div>
@@ -197,8 +199,8 @@ export function SingleOrder({ product, choiceId, thickness, quantity }: SingleOr
 
       <MobileOrderBar
         amount={summary.subtotal ? summary.total : 0}
-        amountLabel={summary.priceOnCall ? 'Giá báo khi gọi xác nhận' : 'Tổng cộng'}
-        nextLabel={order.sending ? 'Đang gửi đơn…' : 'Đặt hàng'}
+        amountLabel={summary.priceOnCall ? T.leGiaKhiGoi : ORDER_SUMMARY_TEXT.tongCong}
+        nextLabel={order.sending ? T.nutDangGui : T.nutDatHang}
         hint={hint}
         canContinue={hasChoice && !order.sending}
         onNext={() => void submit()}
@@ -236,7 +238,7 @@ function ChoiceGroup({ label, options, value, onChange, priceOnCallNote }: Choic
               <span className="text-sm font-medium text-deep-900">{o.label}</span>
               {(o.price !== undefined || priceOnCallNote) && (
                 <span className="tabular mt-0.5 text-meta text-ink-soft">
-                  {o.price !== undefined ? formatVND(o.price) : 'Báo giá khi gọi'}
+                  {o.price !== undefined ? formatVND(o.price) : T.leBaoGia}
                 </span>
               )}
             </button>

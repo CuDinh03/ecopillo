@@ -16,13 +16,16 @@ import {
   type SheetStyle,
   type SizeId,
 } from '../data/catalog'
+import { CONTACT } from '../data/brand'
+import { ORDER_CUSTOMER_TEXT, ORDER_SUMMARY_TEXT } from '../data/pageText/orderFlow'
+import { chen } from '../data/pageText/define'
 import { categoryLabel, isValidSingleChoice, singleUnitPrice, type Product } from '../data/products'
 import { DELIVERY_TIME, provinceById, shippingFee, type Province } from './shipping'
 
 export const MAX_QUANTITY = 10
 
 /** Hiện thay cho giá khi lựa chọn chưa có giá (đệm theo kích thước) */
-export const PRICE_ON_CALL = 'Báo khi gọi xác nhận'
+export const PRICE_ON_CALL = ORDER_SUMMARY_TEXT.giaKhiGoi
 
 export interface CustomerInfo {
   name: string
@@ -168,10 +171,10 @@ export const summarize = (draft: OrderDraft): OrderSummaryData => {
         name: collection.name,
         detail: pattern
           ? [pattern.code, pattern.colorName, collection.hasFittedOption ? SHEET_LABELS[sheet] : null].filter(Boolean).join(' · ')
-          : 'Chưa chọn mẫu',
+          : ORDER_SUMMARY_TEXT.chuaChonMau,
         image: imageOfPattern(collection, pattern),
         tint: pattern?.swatch,
-        imageNote: pattern ? `Ảnh ${pattern.code}` : 'Ảnh bộ sưu tập',
+        imageNote: pattern ? chen(ORDER_SUMMARY_TEXT.anhMa, { ma: pattern.code }) : ORDER_SUMMARY_TEXT.anhBo,
         sizeLabel: size ? sizeById(size).label : null,
         quantity: draft.quantity,
         unit: unitOf(collection),
@@ -212,13 +215,13 @@ export const summarizeSingle = (draft: SingleDraft): OrderSummaryData => {
   const line: OrderLine = {
     kindLabel: categoryLabel(product.category),
     name: product.name,
-    detail: sizeLabel ?? (product.choices || product.variants ? 'Chưa chọn kích thước' : 'Một cỡ'),
+    detail: sizeLabel ?? (product.choices || product.variants ? ORDER_SUMMARY_TEXT.chuaChonCo : ORDER_SUMMARY_TEXT.motCo),
     image: product.image,
     imageNote: product.imageNote,
     sizeLabel,
     quantity,
     // Đệm tính "tấm"; topper, bảo vệ đệm, divan cùng nhóm nhưng tính "chiếc"
-    unit: product.category === 'dem' && product.name.startsWith('Đệm') ? 'tấm' : 'chiếc',
+    unit: product.category === 'dem' && product.name.startsWith('Đệm') ? ORDER_SUMMARY_TEXT.donViTam : ORDER_SUMMARY_TEXT.donViChiec,
     unitPrice: price ?? null,
     giftCount: 0,
   }
@@ -240,11 +243,12 @@ export const isValidPhone = (phone: string) => PHONE_PATTERN.test(normalizePhone
 
 export const validateCustomer = (c: CustomerInfo): CustomerErrors => {
   const errors: CustomerErrors = {}
-  if (c.name.trim().length < 2) errors.name = 'Vui lòng nhập họ tên người nhận.'
-  if (!PHONE_PATTERN.test(normalizePhone(c.phone)))
-    errors.phone = 'Số điện thoại chưa đúng, ví dụ 0988 832 072.'
-  if (!provinceById(c.provinceId)) errors.provinceId = 'Vui lòng chọn tỉnh/thành nhận hàng.'
-  if (c.address.trim().length < 6) errors.address = 'Vui lòng nhập số nhà, đường, phường/xã.'
+  const t = ORDER_CUSTOMER_TEXT
+  if (c.name.trim().length < 2) errors.name = t.loiTen
+  // Số ví dụ là hotline chính (Thông tin liên hệ), không viết cứng: đổi hotline thì câu báo lỗi đổi theo
+  if (!PHONE_PATTERN.test(normalizePhone(c.phone))) errors.phone = chen(t.loiSdt, { so: CONTACT.hotlineDisplay })
+  if (!provinceById(c.provinceId)) errors.provinceId = t.loiTinh
+  if (c.address.trim().length < 6) errors.address = t.loiDiaChi
   return errors
 }
 

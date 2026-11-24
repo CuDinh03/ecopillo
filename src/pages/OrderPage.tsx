@@ -28,6 +28,8 @@ import { SEND_ERROR_ID, useSendOrder } from '../hooks/useSendOrder'
 import { focusField, scrollToElement } from '../lib/scroll'
 import { useHydrated, useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
 import { ORDER_TEXT } from '../data/pageText/order'
+import { ORDER_STEPS_TEXT as T, ORDER_SUMMARY_TEXT } from '../data/pageText/orderFlow'
+import { chen } from '../data/pageText/define'
 
 const COLLECTION_PARAM = 'bo-suu-tap'
 const MOBILE_QUERY = '(max-width: 1023px)'
@@ -154,9 +156,9 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
 
   const goNext = () => {
     if (view === 1 && summary.pattern) setView(2)
-    else if (view === 1) showMissing(summary.collection ? 'chon-mau' : 'chon-bo', summary.collection ? 'Quý khách chọn một mẫu để tiếp tục.' : 'Quý khách chọn bộ sưu tập và mẫu để tiếp tục.')
+    else if (view === 1) showMissing(summary.collection ? 'chon-mau' : 'chon-bo', summary.collection ? T.nhacChonMau : T.nhacChonBo)
     else if (view === 2 && summary.size) setView(3)
-    else if (view === 2) showMissing('chon-kich-thuoc', 'Quý khách chọn một kích thước còn hàng để tiếp tục.')
+    else if (view === 2) showMissing('chon-kich-thuoc', T.nhacChonCo)
     else if (view === 3) void submit()
   }
 
@@ -207,14 +209,14 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
   }
 
   const nextLabel =
-    view === 1 ? 'Chọn kích thước' : view === 2 ? 'Nhập thông tin nhận' : order.sending ? 'Đang gửi đơn…' : 'Đặt hàng'
+    view === 1 ? T.nutBuoc1 : view === 2 ? T.nutBuoc2 : order.sending ? T.nutDangGui : T.nutDatHang
   const hint =
     view === 1 && !summary.pattern
       ? summary.collection
-        ? 'Chọn một mẫu để tiếp tục'
-        : 'Chọn bộ sưu tập và mẫu'
+        ? T.goiYChonMau
+        : T.goiYChonBo
       : view === 2 && !summary.size
-        ? 'Chọn kích thước còn hàng'
+        ? T.goiYChonCo
         : null
 
   return (
@@ -223,16 +225,16 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <Link to="/" className="-my-3 inline-flex min-h-11 items-center gap-1.5 text-sm text-ink-soft hover:text-deep-900">
-              <Icon name="arrowLeft" size={15} /> Trang chủ
+              <Icon name="arrowLeft" size={15} /> {T.trangChu}
             </Link>
             <h1 className="font-display mt-3 text-[2.2rem] leading-none text-deep-900 sm:text-5xl">{ORDER_TEXT.tieuDe}</h1>
           </div>
           <p className="hidden text-sm text-ink-soft md:block">
-            Cần tư vấn?{' '}
+            {T.canTuVan}{' '}
             <a href={CONTACT.hotlineTel} className="tabular font-medium text-deep-900 hover:underline">
               {CONTACT.hotlineDisplay}
             </a>{' '}
-            (có Zalo)
+            {T.coZalo}
           </p>
         </div>
 
@@ -253,7 +255,7 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
                 onClick={goBack}
                 className="mb-6 inline-flex items-center gap-1.5 text-sm text-ink-soft hover:text-deep-900"
               >
-                <Icon name="arrowLeft" size={15} /> Quay lại bước {view - 1}
+                <Icon name="arrowLeft" size={15} /> {chen(T.quayLai, { so: view - 1 })}
               </button>
             )}
 
@@ -276,7 +278,7 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
             )}
             {view === 3 && order.failed && (
               <div id={SEND_ERROR_ID} className="mt-8 scroll-mb-40 scroll-mt-[5.5rem]">
-                <SendFailed what="đơn hàng" />
+                <SendFailed what={T.donHang} />
               </div>
             )}
 
@@ -305,7 +307,7 @@ function SetOrder({ initialCollection }: { initialCollection: string | null }) {
 
       <MobileOrderBar
         amount={view === 3 ? summary.total : summary.subtotal}
-        amountLabel={view === 3 ? 'Tổng cộng' : 'Tạm tính'}
+        amountLabel={view === 3 ? ORDER_SUMMARY_TEXT.tongCong : ORDER_SUMMARY_TEXT.tamTinh}
         nextLabel={nextLabel}
         hint={hint}
         canContinue={canContinue && !order.sending}

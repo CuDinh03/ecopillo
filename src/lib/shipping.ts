@@ -6,6 +6,7 @@
  *   Ngoại thành hai thành phố không giao trong ngày: ngoại thành Hà Nội tính như phía Bắc, ngoại thành TP. HCM như phía Nam (Ecopillo xác nhận 11/11/2026).
  */
 
+import { ORDER_SUMMARY_TEXT } from '../data/pageText/orderFlow'
 import { slugify } from './slug'
 
 export const FREE_SHIP_THRESHOLD = 500_000
@@ -71,10 +72,11 @@ export const PROVINCES: readonly Province[] = [
 
 export const provinceById = (id: string): Province | undefined => PROVINCES.find((p) => p.id === id)
 
+// Chữ thời gian giao Ecopillo sửa ở Nội dung web → Chữ từng trang → "Đặt hàng: tóm tắt đơn và cảm ơn"
 export const DELIVERY_TIME: Readonly<Record<Region, string>> = {
-  'same-day': 'Trong ngày',
-  north: '2–3 ngày',
-  south: '3–5 ngày',
+  'same-day': ORDER_SUMMARY_TEXT.giaoTrongNgay,
+  north: ORDER_SUMMARY_TEXT.giaoPhiaBac,
+  south: ORDER_SUMMARY_TEXT.giaoPhiaNam,
 }
 
 /** Phí giao theo giá trị đơn, giống nhau trên toàn quốc */
