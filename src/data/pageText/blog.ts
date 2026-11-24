@@ -21,5 +21,6 @@ export const { set: BLOG_TEXT_SET, text: BLOG_TEXT } = definePageText(
     tatCaBai: chu('Cuối bài: link tất cả bài viết', 'Tất cả bài viết'),
     dangTai: chu('Bài viết: chữ khi đang tải thân bài', 'Đang tải bài viết…'),
     loiTai: doan('Bài viết: chữ khi không tải được thân bài', 'Chưa tải được nội dung bài. Quý khách tải lại trang giúp Ecopillo.'),
+    chuDeDoc: chu('Hàng nút lọc: tên cho trình đọc màn hình', 'Chủ đề'),
   },
 )

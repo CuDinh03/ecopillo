@@ -23,7 +23,7 @@ import {
 import { useDealers } from '../../hooks/useDealers'
 import { scrollToElement } from '../../lib/scroll'
 import { COMMON_TEXT } from '../../data/pageText/common'
-import { DEALER_TEXT } from '../../data/pageText/dealers'
+import { DEALER_TEXT, showroomKindText } from '../../data/pageText/dealers'
 import { chen } from '../../data/pageText/define'
 
 /**
@@ -69,7 +69,7 @@ export function LocalBusinessData() {
   const data = SHOWROOMS.map((s) => ({
     '@context': 'https://schema.org',
     '@type': 'HomeGoodsStore',
-    name: `Ecopillo ${s.kind} ${s.city}`,
+    name: `Ecopillo ${showroomKindText(s.kind)} ${s.city}`,
     address: { '@type': 'PostalAddress', streetAddress: s.address, addressCountry: 'VN' },
     geo: { '@type': 'GeoCoordinates', latitude: s.lat, longitude: s.lng },
     telephone: s.hotline ?? CONTACT.hotlineDisplay,
@@ -316,7 +316,7 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
               onClick={toggleSearch}
               aria-expanded={searchOpen}
               aria-controls="o-tim-diem"
-              aria-label={searchOpen ? 'Đóng ô tìm theo tên đường' : 'Tìm theo tên đường, phường, quận'}
+              aria-label={searchOpen ? DEALER_TEXT.dongOTimDoc : DEALER_TEXT.moOTimDoc}
               className={`flex h-[3.25rem] w-[3.25rem] shrink-0 items-center justify-center rounded-full ring-1 transition lg:hidden ${
                 searchOpen ? 'bg-deep-800 text-ivory ring-deep-800' : 'bg-ivory text-deep-900 ring-cream-200'
               }`}
@@ -325,7 +325,7 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
             </button>
           </div>
           <label id="o-tim-diem" className={`relative block ${searchOpen ? '' : 'max-lg:hidden'}`}>
-            <span className="sr-only">Gõ tên đường, phường hoặc quận</span>
+            <span className="sr-only">{DEALER_TEXT.oTimDoc}</span>
             <Icon name="search" size={18} className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-deep-700" />
             <input
               ref={searchRef}
@@ -356,7 +356,7 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
           <p className="font-medium text-deep-900" aria-live="polite">
             {summary}
           </p>
-          <div role="tablist" aria-label="Cách xem" className="flex rounded-full bg-cream-50 p-1 ring-1 ring-cream-200 lg:hidden">
+          <div role="tablist" aria-label={DEALER_TEXT.cachXemDoc} className="flex rounded-full bg-cream-50 p-1 ring-1 ring-cream-200 lg:hidden">
             {(['list', 'map'] as const).map((v) => (
               <button
                 key={v}
@@ -433,7 +433,7 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
           <aside ref={asideRef} className={`min-w-0 scroll-mt-[5.5rem] lg:col-span-5 ${mobileView === 'map' ? '' : 'max-lg:hidden'}`}>
             <div className="lg:sticky lg:top-28">
               {view.rows.length > 1 && (
-                <div role="group" aria-label="Chọn điểm trên bản đồ" className="-mx-5 mb-4 flex gap-2 overflow-x-auto px-5 py-1 [scrollbar-width:none] lg:hidden">
+                <div role="group" aria-label={DEALER_TEXT.chonDiemDoc} className="-mx-5 mb-4 flex gap-2 overflow-x-auto px-5 py-1 [scrollbar-width:none] lg:hidden">
                   {view.rows.map((r) => (
                     <button
                       key={r.dealer.id}

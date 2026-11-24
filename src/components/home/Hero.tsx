@@ -260,7 +260,7 @@ function MobileTop() {
  */
 export function Hero() {
   return (
-    <section aria-label="Ecopillo, chốn yên bắt đầu từ giấc ngủ ngon" className="relative -mt-[4.5rem] bg-gradient-to-b from-hero-sky-top to-hero-sky-bottom">
+    <section aria-label={HOME_TEXT.bannerDoc} className="relative -mt-[4.5rem] bg-gradient-to-b from-hero-sky-top to-hero-sky-bottom">
       <MobileTop />
 
       <div className="@container relative hidden overflow-hidden md:block md:h-[clamp(400px,40vw,520px)] xl:h-auto">

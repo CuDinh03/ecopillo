@@ -4,6 +4,7 @@ import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { BLOG_TEXT } from '../../data/pageText/blog'
 import { chen } from '../../data/pageText/define'
+import { postLabelText } from '../../data/pageText/miscLabels'
 
 /** Thẻ bài viết; feature = bài nổi bật nằm ngang ở đầu danh sách */
 export function PostCard({ post, feature = false }: { post: Post; feature?: boolean }) {
@@ -25,7 +26,7 @@ export function PostCard({ post, feature = false }: { post: Post; feature?: bool
       </div>
       <div className={`flex flex-1 flex-col ${feature ? 'p-7 sm:p-10 lg:justify-center' : 'p-6 sm:p-7'}`}>
         <p className="flex items-center gap-2 text-meta text-ink-soft">
-          <span className="font-medium tracking-[0.12em] text-mist-600 uppercase">{post.category}</span>
+          <span className="font-medium tracking-[0.12em] text-mist-600 uppercase">{postLabelText(post.category)}</span>
           <span aria-hidden>·</span>
           <span>{chen(BLOG_TEXT.phutDoc, { so: post.readMinutes })}</span>
         </p>

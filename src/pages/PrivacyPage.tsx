@@ -1,5 +1,6 @@
 import { CONTACT, SHOWROOMS } from '../data/brand'
 import { PRIVACY_SECTIONS, PRIVACY_TEXT } from '../data/pageText/privacy'
+import { showroomKindText } from '../data/pageText/dealers'
 import { PolicyLayout } from '../components/policy/PolicyLayout'
 import { RichText } from '../components/ui/RichText'
 import { usePageMeta } from '../hooks/usePageMeta'
@@ -45,7 +46,7 @@ export function PrivacyPage() {
               </a>
             </li>
             <li>
-              {SHOWROOMS[0].kind}: {SHOWROOMS[0].address}
+              {showroomKindText(SHOWROOMS[0].kind)}: {SHOWROOMS[0].address}
             </li>
           </ul>
         </section>

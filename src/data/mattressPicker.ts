@@ -133,6 +133,7 @@ export const { set: MATTRESS_TEXT_SET, text: MATTRESS_TEXT } = definePageText(
     linkXemTatCa: link('Link nút Xem tất cả đệm', DEM_PATH),
     cauHoi: chu('Câu hỏi trên 4 dòng cách nằm', 'Quý khách thích nằm thế nào?'),
     nutNhom: dsDong('Chữ 5 nút nhóm đệm', BASE_CHIPS.map((chip) => chip.label), 'Đúng 5 dòng theo thứ tự: lò xo, cao su, foam, bông ép, topper'),
+    nhomDoc: chu('Hàng nút nhóm đệm: tên cho trình đọc màn hình', 'Nhóm đệm'),
   },
 )
 

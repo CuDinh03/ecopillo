@@ -16,6 +16,7 @@ import { Icon, ZaloMark } from '../ui/Icon'
 import { buttonClass } from '../ui/primitives'
 import { DEALER_TEXT } from '../../data/pageText/dealers'
 import { chen } from '../../data/pageText/define'
+import { PRODUCT_DETAIL_TEXT } from '../../data/pageText/productUi'
 
 interface DealerCardProps {
   dealer: Dealer
@@ -49,7 +50,7 @@ function Photos({ dealer, flush = false }: { dealer: Dealer; flush?: boolean }) 
         type="button"
         onClick={() => dialogRef.current?.showModal()}
         className={`relative block h-full w-full overflow-hidden ${corner}`}
-        aria-label={`Xem ${photos.length} ảnh ${dealer.ten}`}
+        aria-label={chen(DEALER_TEXT.xemAnhDoc, { so: photos.length, ten: dealer.ten })}
       >
         {cover}
         <span className="absolute right-2 bottom-2 inline-flex items-center gap-1 rounded-full bg-deep-900/80 px-2 py-0.5 text-label text-ivory">
@@ -58,7 +59,7 @@ function Photos({ dealer, flush = false }: { dealer: Dealer; flush?: boolean }) 
       </button>
       <dialog
         ref={dialogRef}
-        aria-label={`Ảnh ${dealer.ten}`}
+        aria-label={chen(DEALER_TEXT.khungAnhDoc, { ten: dealer.ten })}
         className="m-auto w-[min(56rem,calc(100%-2rem))] rounded-[1.5rem] bg-ivory p-4 backdrop:bg-deep-950/70 sm:p-6"
         onClick={(e) => e.target === e.currentTarget && dialogRef.current?.close()}
       >
@@ -68,7 +69,7 @@ function Photos({ dealer, flush = false }: { dealer: Dealer; flush?: boolean }) 
             type="button"
             onClick={() => dialogRef.current?.close()}
             className="flex h-10 w-10 items-center justify-center rounded-full bg-mist-100 text-deep-900"
-            aria-label="Đóng"
+            aria-label={PRODUCT_DETAIL_TEXT.dong}
           >
             <Icon name="close" size={18} />
           </button>
@@ -78,7 +79,7 @@ function Photos({ dealer, flush = false }: { dealer: Dealer; flush?: boolean }) 
             <img
               key={src}
               src={src}
-              alt={`${dealer.ten}, ảnh ${i + 1}`}
+              alt={chen(DEALER_TEXT.anhThuTu, { ten: dealer.ten, so: i + 1 })}
               loading="lazy"
               className="aspect-[4/3] w-[85%] shrink-0 snap-center rounded-xl object-cover sm:w-[70%]"
             />

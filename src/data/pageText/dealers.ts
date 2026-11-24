@@ -1,3 +1,4 @@
+import type { Showroom } from '../brand'
 import { anh, chu, definePageText, doan, dsDong } from './define'
 
 /**
@@ -67,5 +68,22 @@ export const { set: DEALER_TEXT_SET, text: DEALER_TEXT } = definePageText(
     ),
     soDiemHon: chu('Trang chủ: số điểm (từ 20 điểm)', 'Hơn {so} điểm trên toàn quốc', '{so} là số điểm làm tròn xuống hàng chục'),
     soDiem: chu('Trang chủ: số điểm (dưới 20 điểm)', '{so} điểm trên toàn quốc', '{so} là số điểm'),
+    // Chữ cho trình đọc màn hình, chữ thay ảnh, tên bản đồ (không hiện trên màn hình)
+    xemAnhDoc: chu('Thẻ điểm: nút xem ảnh (trình đọc màn hình)', 'Xem {so} ảnh {ten}', '{so} là số ảnh, {ten} là tên điểm'),
+    khungAnhDoc: chu('Thẻ điểm: tên khung xem ảnh (trình đọc màn hình)', 'Ảnh {ten}', '{ten} là tên điểm'),
+    anhThuTu: chu('Thẻ điểm: chữ thay từng ảnh', '{ten}, ảnh {so}', '{ten} là tên điểm, {so} là số thứ tự ảnh'),
+    banDoTen: chu('Bản đồ: tên khung bản đồ (trình đọc màn hình)', 'Bản đồ {ten}, {diaChi}', '{ten} là tên điểm, {diaChi} là địa chỉ'),
+    moOTimDoc: chu('Điện thoại: nút mở ô tìm (trình đọc màn hình)', 'Tìm theo tên đường, phường, quận'),
+    dongOTimDoc: chu('Điện thoại: nút đóng ô tìm (trình đọc màn hình)', 'Đóng ô tìm theo tên đường'),
+    cachXemDoc: chu('Điện thoại: hàng nút Danh sách / Bản đồ (trình đọc màn hình)', 'Cách xem'),
+    chonDiemDoc: chu('Điện thoại: hàng chọn điểm trên bản đồ (trình đọc màn hình)', 'Chọn điểm trên bản đồ'),
+    oTimDoc: chu('Ô tìm: tên ô cho trình đọc màn hình', 'Gõ tên đường, phường hoặc quận'),
   },
 )
+
+/**
+ * Chữ loại của văn phòng, chi nhánh (ô "Loại" ở bộ Văn phòng, chi nhánh là mã cố định): dùng nhãn loại điểm ở trên,
+ * để trang chủ, trang Liên hệ, chân trang hiện đúng chữ Ecopillo sửa
+ */
+export const showroomKindText = (kind: Showroom['kind']): string =>
+  kind === 'Văn phòng đại diện' ? DEALER_TEXT.loaiVanPhong : kind === 'Chi nhánh' ? DEALER_TEXT.loaiChiNhanh : kind === 'Đại lý' ? DEALER_TEXT.loaiDaiLy : kind

@@ -12,7 +12,8 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import { scrollToElement } from '../lib/scroll'
 import { useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
 import { CONTACT_PAGE_TEXT } from '../data/pageText/contact'
-import { DEALER_TEXT } from '../data/pageText/dealers'
+import { DEALER_TEXT, showroomKindText } from '../data/pageText/dealers'
+import { PAGE_FRAME_TEXT } from '../data/pageText/pageFrame'
 import { chen } from '../data/pageText/define'
 import { Lines } from '../components/ui/Highlight'
 import { Blocks } from '../components/ui/Blocks'
@@ -132,14 +133,14 @@ function OfficeMap() {
     <div className="overflow-hidden rounded-[2rem] bg-ivory shadow-[var(--shadow-soft)]">
       <iframe
         key={place.id}
-        title={`Bản đồ ${place.kind} Ecopillo, ${place.address}`}
+        title={chen(CONTACT_PAGE_TEXT.banDoTen, { loai: showroomKindText(place.kind), diaChi: place.address })}
         src={mapEmbedUrl(place.address)}
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
         className="block aspect-[4/3] w-full border-0 bg-cream-50"
       />
       <div className="p-5 sm:p-6">
-        <div role="group" aria-label="Chọn địa điểm" className="flex flex-wrap gap-2">
+        <div role="group" aria-label={CONTACT_PAGE_TEXT.chonDiaDiemDoc} className="flex flex-wrap gap-2">
           {SHOWROOMS.map((s, i) => (
             <button
               key={s.id}
@@ -154,7 +155,7 @@ function OfficeMap() {
             </button>
           ))}
         </div>
-        <p className="eyebrow mt-4">{place.kind}</p>
+        <p className="eyebrow mt-4">{showroomKindText(place.kind)}</p>
         <p className="mt-1.5 font-medium text-deep-900">{place.address}</p>
         <div className="mt-4 flex flex-wrap gap-2">
           <a href={place.mapsUrl} target="_blank" rel="noopener noreferrer" className={buttonClass('primary', 'sm')}>
@@ -205,7 +206,7 @@ export function ContactPage() {
         {/* Hai cột từ 1280px: ở 1024–1279 cột thẻ chỉ còn ~258px, số điện thoại và email bị gãy dòng (rà máy tính bảng 06/11/2026) */}
         <Container className="grid gap-10 pt-10 pb-14 sm:pt-14 sm:pb-20 xl:grid-cols-12 xl:gap-14">
           <div className="xl:col-span-5">
-            <nav aria-label="Đường dẫn" className="flex items-center gap-2 text-sm text-ink-soft">
+            <nav aria-label={PAGE_FRAME_TEXT.duongDanNhan} className="flex items-center gap-2 text-sm text-ink-soft">
               <Link to="/" className="-my-3 inline-block py-3 hover:text-deep-900">
                 {CONTACT_PAGE_TEXT.duongDanTrangChu}
               </Link>
@@ -224,7 +225,7 @@ export function ContactPage() {
                 <Icon name="pin" size={19} className="mt-0.5 shrink-0 text-mist-600" />
                 <span className="text-deep-900">
                   <span className="font-medium">{CONTACT_PAGE_TEXT.diaChiNhan}</span> {office.address}
-                  <span className="block text-sm text-ink-soft">{office.kind}</span>
+                  <span className="block text-sm text-ink-soft">{showroomKindText(office.kind)}</span>
                 </span>
               </li>
               <li className="flex gap-3">

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import type { ImageSource } from '../../data/catalog'
 import { Icon } from './Icon'
+import { chen } from '../../data/pageText/define'
+import { PAGE_FRAME_TEXT } from '../../data/pageText/pageFrame'
 
 interface PlaceholderProps {
   /** Ghi chú ảnh sẽ đặt vào, ví dụ "Ảnh phòng ngủ trải bộ Eco Rosa ER25" */
@@ -78,7 +80,7 @@ export function Placeholder({
   return (
     <figure
       role="img"
-      aria-label={`Khung ảnh: ${note}`}
+      aria-label={chen(PAGE_FRAME_TEXT.khungAnhDoc, { ghiChu: note })}
       className={`weave ${positionClass} flex overflow-hidden rounded-[inherit] border border-dashed ${TONES[tone]} ${className}`}
       style={tint ? { backgroundColor: tint } : undefined}
     >

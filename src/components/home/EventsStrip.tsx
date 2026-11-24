@@ -4,6 +4,7 @@ import { postBySlug, postPath } from '../../data/posts'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
 import { HOME_TEXT } from '../../data/pageText/home'
+import { eventKindText } from '../../data/pageText/miscLabels'
 
 /**
  * Sự kiện Ecopillo đồng hành, cuối phần "Về chúng tôi" (mục 35, owner chọn mẫu B 20/10/2026: docs/de-xuat-su-kien-dong-hanh.html).
@@ -46,7 +47,7 @@ export function EventsStrip({ standalone = false }: EventsStripProps) {
         {/* Điện thoại: hàng vuốt ngang tràn mép (như .m-rail); từ 640px: lưới */}
         <ul
           tabIndex={0}
-          aria-label="Các sự kiện khác"
+          aria-label={HOME_TEXT.suKienKhacDoc}
           className="-mx-5 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-5 px-5 pb-2 [scrollbar-width:none] focus-visible:outline-2 focus-visible:outline-deep-700 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-2 lg:grid-rows-2 lg:gap-5"
         >
           {OTHER_EVENTS.map((event, i) => (
@@ -81,7 +82,7 @@ function FeaturedCard({ event, sizes = '(min-width: 1024px) 620px, 100vw' }: Fea
       </div>
       <div className="flex-1 p-6 sm:p-8">
         <p className="eyebrow">
-          {event.kind}
+          {eventKindText(event.kind)}
           {event.when && ` · ${event.when}`}
         </p>
         {/* Cỡ nhỏ lại để tên nằm một dòng trên máy tính (owner 05/11/2026: chữ "thương”" rơi xuống dòng riêng) */}
@@ -131,7 +132,7 @@ function SmallCard({ event, index, isWide }: SmallCardProps) {
       </picture>
       {/* Lớp chàm dưới chân ảnh để chữ trắng đọc được trên mọi ảnh */}
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-deep-900/95 from-35% to-deep-900/0 px-4 pt-14 pb-4 sm:px-5 sm:pb-5">
-        <p className="text-label font-medium tracking-[0.14em] text-mist-300 uppercase">{event.kind}</p>
+        <p className="text-label font-medium tracking-[0.14em] text-mist-300 uppercase">{eventKindText(event.kind)}</p>
         <h4 className="font-display mt-1.5 text-lead leading-snug sm:text-lead">{event.title}</h4>
         {event.when && <p className="mt-1.5 text-meta text-balance text-ivory/80">{event.when}</p>}
       </div>

@@ -63,5 +63,10 @@ export const { set: PAGE_FRAME_TEXT_SET, text: PAGE_FRAME_TEXT } = definePageTex
     canNgay: chu('Hộp báo gửi lỗi: chữ trước số hotline', 'Cần ngay, Quý khách gọi'),
     hoac: chu('Hộp báo gửi lỗi: chữ giữa số hotline và link Zalo', 'hoặc'),
     nhanZalo: chu('Hộp báo gửi lỗi: link Zalo', 'nhắn Zalo'),
+    khungAnhDoc: chu(
+      'Khung ảnh chưa có ảnh: chữ cho trình đọc màn hình',
+      'Khung ảnh: {ghiChu}',
+      '{ghiChu} là dòng ghi chú trong khung (sản phẩm chưa có ảnh). Gắn ảnh cho sản phẩm trong WooCommerce thì khung này không còn.',
+    ),
   },
 )

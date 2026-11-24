@@ -11,6 +11,7 @@ import { buttonClass, ContactButtons, Container, FillIn, SectionHeading } from '
 import { HOME_TEXT } from '../../data/pageText/home'
 import { FAQ_PAGE_TEXT } from '../../data/pageText/faq'
 import { chen } from '../../data/pageText/define'
+import { showroomKindText } from '../../data/pageText/dealers'
 
 /** Số điểm bán: từ 20 điểm thì làm tròn xuống hàng chục ("Hơn 30 điểm…"), như dealerCountLabel trong dealers.ts; chữ Ecopillo sửa (HOME_TEXT) */
 const dealerCountText = (count: number): string =>
@@ -64,7 +65,7 @@ export function Showrooms() {
                   />
                 </div>
                 <div className="flex flex-1 flex-col p-7 sm:p-9">
-                  <p className="eyebrow">{s.kind}</p>
+                  <p className="eyebrow">{showroomKindText(s.kind)}</p>
                   <h3 className="font-display mt-3 text-[1.85rem] text-deep-900">{s.city}</h3>
                   <ul className="mt-5 space-y-3 text-body-sm">
                     <li className="flex gap-3">

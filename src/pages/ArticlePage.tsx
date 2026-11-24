@@ -17,6 +17,7 @@ import { NotFoundPage } from './NotFoundPage'
 import { COMMON_TEXT } from '../data/pageText/common'
 import { BLOG_TEXT } from '../data/pageText/blog'
 import { chen } from '../data/pageText/define'
+import { postLabelText } from '../data/pageText/miscLabels'
 
 function Block({ block }: { block: PostBlock }) {
   switch (block.type) {
@@ -83,10 +84,10 @@ export function ArticlePage() {
               modified: post.wp?.modified,
             })}
           />
-          <Breadcrumb items={[{ label: BLOG_TEXT.duongDan, to: PATHS.blog }, { label: post.category }]} current={post.title} />
+          <Breadcrumb items={[{ label: BLOG_TEXT.duongDan, to: PATHS.blog }, { label: postLabelText(post.category) }]} current={post.title} />
           <p className="mt-8 flex flex-wrap items-center gap-x-2 gap-y-1 text-meta text-ink-soft">
             <Link to={`${PATHS.blog}?chu-de=${encodeURIComponent(post.category)}`} className="font-medium tracking-[0.12em] text-mist-600 uppercase hover:underline">
-              {post.category}
+              {postLabelText(post.category)}
             </Link>
             <span aria-hidden>·</span>
             <span>{chen(BLOG_TEXT.phutDoc, { so: post.readMinutes })}</span>

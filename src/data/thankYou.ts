@@ -57,6 +57,8 @@ const { set: THANK_YOU_SET_, text: TEXT } = definePageText(
     xemLai: chu('Trang Quà tặng: chữ link cuối dòng nhỏ (cuộn lên phần quà doanh nghiệp)', 'xem lại'),
     anhMatTruoc: anh('Ảnh mặt trước thư', BASE_CARDS.front),
     anhMatTrong: anh('Ảnh mặt trong thư', BASE_CARDS.inside),
+    xemToDoc: chu('Ảnh thư: nút xem to (trình đọc màn hình)', 'Xem to {ten}', '{ten} là phần đầu chữ mô tả ảnh, viết thường'),
+    tenKhung: chu('Khung xem to: tên khung khi chưa chọn ảnh', 'Thư cảm ơn'),
   },
 )
 export const THANK_YOU_SET = THANK_YOU_SET_
@@ -74,5 +76,7 @@ export const THANK_YOU = {
   setsTo: TEXT.linkXemBo,
   giftsNote: TEXT.ghiChuQuaTang,
   giftsBack: TEXT.xemLai,
+  zoomLabel: TEXT.xemToDoc,
+  dialogLabel: TEXT.tenKhung,
   cards: THANK_YOU_CARDS,
 }
