@@ -1,4 +1,5 @@
 import { Icon } from './Icon'
+import { PRODUCT_DETAIL_TEXT as T } from '../../data/pageText/productUi'
 
 interface QuantityStepperProps {
   value: number
@@ -14,19 +15,19 @@ export function QuantityStepper({ value, max, onChange, size = 'md' }: QuantityS
     <div className="inline-flex items-center rounded-full bg-ivory p-1 ring-1 ring-cream-200">
       <button
         type="button"
-        aria-label="Giảm số lượng"
+        aria-label={T.giamSoLuong}
         disabled={value <= 1}
         onClick={() => onChange(value - 1)}
         className={`flex ${btn} items-center justify-center rounded-full text-deep-900 transition hover:bg-mist-100 disabled:opacity-30 disabled:hover:bg-transparent`}
       >
         <Icon name="minus" size={18} />
       </button>
-      <output aria-live="polite" aria-label="Số lượng" className="tabular w-11 text-center text-lg font-medium text-deep-900">
+      <output aria-live="polite" aria-label={T.soLuong} className="tabular w-11 text-center text-lg font-medium text-deep-900">
         {value}
       </output>
       <button
         type="button"
-        aria-label="Tăng số lượng"
+        aria-label={T.tangSoLuong}
         disabled={value >= max}
         onClick={() => onChange(value + 1)}
         className={`flex ${btn} items-center justify-center rounded-full text-deep-900 transition hover:bg-mist-100 disabled:opacity-30 disabled:hover:bg-transparent`}

@@ -1,11 +1,13 @@
 import type { CSSProperties, ReactNode } from 'react'
 import type { Collection } from '../../data/catalog'
 import { CATEGORIES, type CategoryId, type PriceBand } from '../../data/products'
+import { PRODUCT_LIST_TEXT as T } from '../../data/pageText/productUi'
 
+/** Mã sắp xếp nằm trên link (?sap-xep=gia-tang), giữ nguyên; chữ Ecopillo sửa ở Nội dung web */
 export const SORTS = [
-  { id: 'noi-bat', label: 'Nổi bật', short: 'Nổi bật' },
-  { id: 'gia-tang', label: 'Giá thấp đến cao', short: 'Giá tăng' },
-  { id: 'gia-giam', label: 'Giá cao đến thấp', short: 'Giá giảm' },
+  { id: 'noi-bat', label: T.sxNoiBat, short: T.sxNoiBat },
+  { id: 'gia-tang', label: T.sxGiaTang, short: T.sxGiaTangNgan },
+  { id: 'gia-giam', label: T.sxGiaGiam, short: T.sxGiaGiamNgan },
 ] as const
 
 export type SortId = (typeof SORTS)[number]['id']
@@ -46,17 +48,17 @@ export function FilterPanel(props: FilterPanelProps) {
   return (
     <div>
       <div className="flex items-baseline justify-between gap-3">
-        <h2 className="font-display text-[1.35rem] leading-none text-deep-900">Bộ lọc</h2>
+        <h2 className="font-display text-[1.35rem] leading-none text-deep-900">{T.boLoc}</h2>
         {onClear && (
           <button type="button" onClick={onClear} className="-my-2 py-2 text-meta font-medium text-ink-soft underline underline-offset-4 hover:text-deep-900">
-            Xoá lọc
+            {T.xoaLoc}
           </button>
         )}
       </div>
 
       {!hideCategory && (
-        <FilterGroup id={id('loai')} label="Loại sản phẩm" isFirst>
-          {[{ id: null, label: 'Tất cả' } as const, ...CATEGORIES].map((c) => (
+        <FilterGroup id={id('loai')} label={T.loaiSanPham} isFirst>
+          {[{ id: null, label: T.tatCa } as const, ...CATEGORIES].map((c) => (
             <ChoiceRow key={c.label} isActive={category === c.id} onPick={() => onCategory(c.id)}>
               {c.label}
             </ChoiceRow>
@@ -64,7 +66,7 @@ export function FilterPanel(props: FilterPanelProps) {
         </FilterGroup>
       )}
 
-      <FilterGroup id={id('gia')} label="Mức giá" isFirst={hideCategory}>
+      <FilterGroup id={id('gia')} label={T.mucGia} isFirst={hideCategory}>
         <div className="flex flex-wrap gap-1.5">
           {bands.map((b) => {
             const isActive = band?.id === b.id
@@ -88,9 +90,9 @@ export function FilterPanel(props: FilterPanelProps) {
       </FilterGroup>
 
       {collections && (
-        <FilterGroup id={id('bo')} label="Bộ sưu tập">
+        <FilterGroup id={id('bo')} label={T.boSuuTap}>
           <ChoiceRow isActive={!collection} onPick={() => onCollection(undefined)}>
-            Tất cả bộ
+            {T.tatCaBo}
           </ChoiceRow>
           {collections.map((c) => {
             const isActive = collection?.id === c.id
@@ -109,7 +111,7 @@ export function FilterPanel(props: FilterPanelProps) {
         </FilterGroup>
       )}
 
-      <FilterGroup id={id('sap-xep')} label="Sắp xếp">
+      <FilterGroup id={id('sap-xep')} label={T.sapXep}>
         <div className="grid grid-cols-3 rounded-xl bg-mist-100 p-1">
           {SORTS.map((s) => (
             <button

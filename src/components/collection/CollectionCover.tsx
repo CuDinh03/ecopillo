@@ -4,6 +4,8 @@ import { collectionPath } from '../../data/links'
 import { collectionStoryOf, STORIES_APPROVED } from '../../data/stories'
 import { Icon } from '../ui/Icon'
 import { FillIn } from '../ui/primitives'
+import { chen } from '../../data/pageText/define'
+import { COLLECTION_PAGE_TEXT as T } from '../../data/pageText/productUi'
 
 const SLICE_COUNT = 5
 
@@ -45,8 +47,8 @@ export function CollectionCover({ collection, isCompactOnMobile = false }: Colle
         >
           {/* Luôn một dòng: ở 320px, lúc font dự phòng còn hiện thì dòng này xuống hai dòng rồi co lại khi font về, kéo cả trang lên (CLS 0,13, đo 28/10/2026) */}
           <span className="min-w-0 truncate">
-            <span className="font-medium">Bộ {collection.name}</span>
-            <span className="text-ink-soft"> · chọn màu</span>
+            <span className="font-medium">{chen(T.dongVeBo, { ten: collection.name })}</span>
+            <span className="text-ink-soft"> · {T.chonMauDong}</span>
           </span>
           <Icon name="arrowRight" size={16} className="shrink-0 text-ink-faint" />
         </Link>

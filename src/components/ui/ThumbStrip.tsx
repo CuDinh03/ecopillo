@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react'
 import type { ImageSource } from '../../data/catalog'
 import { Icon } from './Icon'
 import { Placeholder } from './Placeholder'
+import { chen } from '../../data/pageText/define'
+import { PRODUCT_DETAIL_TEXT as T } from '../../data/pageText/productUi'
 
 /**
  * Dãy ảnh nhỏ dưới ảnh chính (trang sản phẩm lẻ và trang bộ sưu tập), có nút ‹ › hai bên.
@@ -37,12 +39,12 @@ export function ThumbStrip({ photos, index, onIndexChange, defer = false }: Thum
 
   return (
     <div className="mt-3 flex items-center gap-2">
-      <button type="button" onClick={() => onIndexChange(index - 1)} disabled={index <= 0} aria-label="Ảnh trước" className={SIDE_BUTTON}>
+      <button type="button" onClick={() => onIndexChange(index - 1)} disabled={index <= 0} aria-label={T.anhTruoc} className={SIDE_BUTTON}>
         <Icon name="arrowLeft" size={17} />
       </button>
       <ul
         ref={listRef}
-        aria-label={`Ảnh sản phẩm, đang xem ảnh ${index + 1} trên ${photos.length}`}
+        aria-label={chen(T.ariaDayAnh, { so: index + 1, tong: photos.length })}
         className="relative flex min-w-0 flex-1 scroll-smooth gap-2.5 overflow-x-auto p-1 [scrollbar-width:none] motion-reduce:scroll-auto"
       >
         {photos.map((photo, i) => (
@@ -50,18 +52,18 @@ export function ThumbStrip({ photos, index, onIndexChange, defer = false }: Thum
             <button
               type="button"
               onClick={() => onIndexChange(i)}
-              aria-label={`Xem ảnh ${i + 1}`}
+              aria-label={chen(T.xemAnh, { so: i + 1 })}
               aria-pressed={i === index}
               className={`block h-16 w-[5.5rem] overflow-hidden rounded-xl transition ${
                 i === index ? 'ring-2 ring-deep-800 ring-offset-2 ring-offset-ivory' : 'opacity-80 hover:opacity-100'
               }`}
             >
-              <Placeholder compact className="h-full w-full" note={`Ảnh ${i + 1}`} image={photo} sizes="88px" defer={defer} />
+              <Placeholder compact className="h-full w-full" note={chen(T.anhSo, { so: i + 1 })} image={photo} sizes="88px" defer={defer} />
             </button>
           </li>
         ))}
       </ul>
-      <button type="button" onClick={() => onIndexChange(index + 1)} disabled={index >= last} aria-label="Ảnh sau" className={SIDE_BUTTON}>
+      <button type="button" onClick={() => onIndexChange(index + 1)} disabled={index >= last} aria-label={T.anhSau} className={SIDE_BUTTON}>
         <Icon name="arrowRight" size={17} />
       </button>
     </div>

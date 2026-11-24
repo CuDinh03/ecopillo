@@ -1,10 +1,12 @@
 import { REVIEW_CRITERIA, REVIEWS_ARE_REAL, reviewsForCategory } from '../../data/content'
 import type { Product } from '../../data/products'
 import { Icon } from '../ui/Icon'
+import { chen } from '../../data/pageText/define'
+import { PRODUCT_DETAIL_TEXT as T } from '../../data/pageText/productUi'
 
 function Stars({ value, size = 16 }: { value: number; size?: number }) {
   return (
-    <span role="img" className="flex gap-0.5 text-brass-500" aria-label={`${value} trên 5 sao`}>
+    <span role="img" className="flex gap-0.5 text-brass-500" aria-label={chen(T.soSao, { so: value })}>
       {Array.from({ length: 5 }, (_, i) => (
         <svg
           key={i}
@@ -35,7 +37,7 @@ export function ProductReviews({ product }: { product: Product }) {
     <section aria-labelledby="product-reviews-title" className="mt-20">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <h2 id="product-reviews-title" className="font-display text-[1.8rem] text-deep-900 sm:text-[2.2rem]">
-          Nhận xét của khách
+          {T.nhanXet}
         </h2>
       </div>
 
@@ -43,7 +45,7 @@ export function ProductReviews({ product }: { product: Product }) {
         <div className="rounded-[1.5rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] sm:p-7">
           <p className="flex items-baseline gap-2">
             <span className="tabular font-display text-5xl leading-none text-deep-900">{oneDecimal(overall)}</span>
-            <span className="text-sm text-ink-soft">/ 5 · {reviews.length} nhận xét</span>
+            <span className="text-sm text-ink-soft">{chen(T.soNhanXet, { so: reviews.length })}</span>
           </p>
           <div className="mt-3">
             <Stars value={overall} size={18} />
@@ -72,7 +74,7 @@ export function ProductReviews({ product }: { product: Product }) {
               <footer className="mt-5 border-t border-deep-900/10 pt-4 text-sm leading-tight">
                 <span className="block font-medium text-deep-900">{r.name}</span>
                 <span className="mt-0.5 block text-ink-soft">
-                  {r.place} · Đã mua cỡ {r.bought}
+                  {r.place} · {chen(T.daMuaCo, { co: r.bought })}
                 </span>
               </footer>
             </li>

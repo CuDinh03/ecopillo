@@ -1,11 +1,12 @@
 import type { MouseEvent } from 'react'
-import { formatVND } from '../../lib/format'
 import { scrollToElement } from '../../lib/scroll'
 import { SHELVES, type Shelf } from '../../data/productShelves'
+import { fromPriceLabel } from '../../data/products'
+import { PRODUCT_LIST_TEXT as T } from '../../data/pageText/productUi'
 import { Placeholder } from '../ui/Placeholder'
 
 /** Dòng phụ ô nhóm: chỉ giá khởi điểm, không ghi số mẫu (khách 05/11/2026: "đừng cho số lượng vào") */
-const tileNote = (shelf: Shelf): string => `từ ${formatVND(shelf.min)}`
+const tileNote = (shelf: Shelf): string => fromPriceLabel(shelf.min)
 
 /**
  * Bốn ô ảnh nhóm đầu mục "Tất cả" (phương án 1 + 2, owner chốt 02/11/2026): bấm ô thì cuộn tới kệ của nhóm đó.
@@ -19,7 +20,7 @@ export function GroupTiles() {
     scrollToElement(target)
   }
   return (
-    <nav aria-label="Nhóm sản phẩm" className="mt-5 sm:mt-6">
+    <nav aria-label={T.ariaNhomSanPham} className="mt-5 sm:mt-6">
       <ul className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3">
         {SHELVES.map((shelf) => (
           <li key={shelf.category}>

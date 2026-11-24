@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type PointerEvent, type ReactNode } from 'react'
 import { CATEGORIES, type CategoryId } from '../../data/products'
 import { Icon } from '../ui/Icon'
+import { PRODUCT_LIST_TEXT as T } from '../../data/pageText/productUi'
 import { FilterPanel, type FilterPanelProps } from './FilterPanel'
 
 /** Vuốt để đóng (B4, owner duyệt 24/10/2026): kéo quá 1/4 chiều cao bảng, hoặc vuốt nhanh hơn 0,11 px/ms thì đóng */
@@ -88,8 +89,8 @@ export function MobileFilterBar({ panel, activeCount, onClose, summary }: Mobile
         {summary ? (
           <p className="tabular min-w-0 flex-1 truncate text-small text-ink-soft">{summary}</p>
         ) : (
-          <div role="group" aria-label="Loại sản phẩm" className="flex min-w-0 flex-1 gap-1.5 overflow-x-auto py-0.5 [scrollbar-width:none]">
-            {[{ id: null, label: 'Tất cả' } as const, ...CATEGORIES].map((c) => (
+          <div role="group" aria-label={T.loaiSanPham} className="flex min-w-0 flex-1 gap-1.5 overflow-x-auto py-0.5 [scrollbar-width:none]">
+            {[{ id: null, label: T.tatCa } as const, ...CATEGORIES].map((c) => (
               <CategoryPill key={c.label} id={c.id} label={c.label} isActive={panel.category === c.id} onPick={panel.onCategory} />
             ))}
           </div>
@@ -105,10 +106,10 @@ export function MobileFilterBar({ panel, activeCount, onClose, summary }: Mobile
           className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-deep-800 px-3.5 text-small font-medium text-ivory"
         >
           <Icon name="filter" size={15} />
-          Bộ lọc
+          {T.boLoc}
           {activeCount > 0 && (
             <span className="tabular flex h-5 min-w-5 items-center justify-center rounded-full bg-ivory px-1 text-label text-deep-900">
-              <span className="sr-only">, đang bật </span>
+              <span className="sr-only">, {T.dangBat} </span>
               {activeCount}
             </span>
           )}
@@ -117,7 +118,7 @@ export function MobileFilterBar({ panel, activeCount, onClose, summary }: Mobile
 
       <dialog
         ref={dialogRef}
-        aria-label="Bộ lọc sản phẩm"
+        aria-label={T.ariaBangLoc}
         onClose={handleClose}
         onClick={(e) => e.target === e.currentTarget && dialogRef.current?.close()}
         className="sheet fixed inset-x-0 top-auto bottom-0 m-0 max-h-[85svh] w-full max-w-full overflow-y-auto overscroll-contain rounded-t-[1.5rem] bg-ivory p-0 text-deep-900 backdrop:bg-deep-900/35 sm:hidden"
@@ -145,7 +146,7 @@ export function MobileFilterBar({ panel, activeCount, onClose, summary }: Mobile
                 onClick={() => dialogRef.current?.close()}
                 className="tabular h-12 w-full rounded-full bg-deep-800 text-body-sm font-medium text-ivory"
               >
-                Xem kết quả
+                {T.xemKetQua}
               </button>
             </div>
           </>

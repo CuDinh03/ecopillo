@@ -4,6 +4,8 @@ import { chapterTitle } from '../../data/stories'
 import { usePageLoaded } from '../../hooks/usePageLoaded'
 import { preloadImage } from '../../lib/preload'
 import { Placeholder } from '../ui/Placeholder'
+import { chen } from '../../data/pageText/define'
+import { COLLECTION_PAGE_TEXT as T } from '../../data/pageText/productUi'
 
 interface ChapterRailProps {
   collection: Collection
@@ -43,11 +45,11 @@ export function ChapterRail({ collection, chapters, current, onOpen, onPreview, 
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div>
           <h2 id="chapters-title" className="font-display text-[1.35rem] leading-tight text-deep-900 sm:text-[2rem]">
-            <span className="lg:hidden">Chọn màu</span>
+            <span className="lg:hidden">{T.chonMau}</span>
             {/* Anh Quang (Zalo 12/11/2026): "Các màu sắc của bộ sưu tập" + tên bộ */}
-            <span className="max-lg:hidden">Các màu sắc của bộ sưu tập {collection.name}</span>
+            <span className="max-lg:hidden">{chen(T.cacMauSac, { ten: collection.name })}</span>
           </h2>
-          {chapters.length > 2 && <p className="mt-0.5 text-meta text-ink-soft lg:hidden">Vuốt ngang để xem thêm màu</p>}
+          {chapters.length > 2 && <p className="mt-0.5 text-meta text-ink-soft lg:hidden">{T.vuotNgang}</p>}
         </div>
       </div>
 
@@ -64,7 +66,7 @@ export function ChapterRail({ collection, chapters, current, onOpen, onPreview, 
               <button
                 type="button"
                 aria-pressed={active}
-                aria-label={`Chương ${i + 1}: ${chapterTitle(collection, pattern)}, ${pattern.colorName} ${pattern.code}`}
+                aria-label={chen(T.ariaChuong, { so: i + 1, ten: chapterTitle(collection, pattern), mau: pattern.colorName, ma: pattern.code })}
                 onClick={() => onOpen(pattern)}
                 onPointerEnter={(e) => {
                   preloadImage(image)
@@ -93,7 +95,7 @@ export function ChapterRail({ collection, chapters, current, onOpen, onPreview, 
                 <span className="font-display mt-2.5 block px-3 text-body leading-tight">{chapterTitle(collection, pattern)}</span>
                 <span className="tabular mt-1 block px-3 text-label leading-snug text-ink-soft">
                   {pattern.code}
-                  {soldOut && ' · tạm hết'}
+                  {soldOut && ` · ${T.tamHet}`}
                 </span>
               </button>
             </li>

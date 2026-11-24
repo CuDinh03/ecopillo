@@ -1,4 +1,5 @@
 import { COLLECTIONS, type Collection, type Pattern } from './catalog'
+import { PRODUCT_LABELS } from './pageText/productLabels'
 
 /**
  * Câu chuyện của từng phối màu (thiết kế "Kết hợp D", owner chọn ngày 14/10/2026).
@@ -25,14 +26,17 @@ export interface Tone {
   swatch: string
 }
 
-/** Cách chia gam là bản nháp, chờ Ecopillo duyệt */
+/**
+ * Cách chia gam là bản nháp, chờ Ecopillo duyệt. Cụm chữ `phrase` Ecopillo sửa ở Nội dung web (pageText/productLabels.ts);
+ * `label` chỉ hiện trong wp-admin (danh sách gam ở priceFrame.ts), không hiện trên web.
+ */
 export const TONES: readonly Tone[] = [
-  { id: 'xanh', label: 'Xanh', phrase: 'gam xanh', swatch: 'linear-gradient(135deg, #a2bfe1, #b6d7e8)' },
-  { id: 'hong', label: 'Hồng, đỏ cam', phrase: 'gam hồng, đỏ cam', swatch: 'linear-gradient(135deg, #f0d2d8, #cfa9a2)' },
-  { id: 'tim', label: 'Tím', phrase: 'gam tím', swatch: 'linear-gradient(135deg, #e4d4e0, #bebcc7)' },
-  { id: 'kem', label: 'Trắng, kem', phrase: 'gam trắng, kem', swatch: 'linear-gradient(135deg, #f4f3e9, #e5d8c8)' },
-  { id: 'xam', label: 'Xám', phrase: 'gam xám', swatch: 'linear-gradient(135deg, #d0c9c8, #818284)' },
-  { id: 'be', label: 'Cho bé', phrase: 'phối màu cho bé', swatch: 'linear-gradient(135deg, #e6d3d9, #bacbe3)' },
+  { id: 'xanh', label: 'Xanh', phrase: PRODUCT_LABELS.gamXanh, swatch: 'linear-gradient(135deg, #a2bfe1, #b6d7e8)' },
+  { id: 'hong', label: 'Hồng, đỏ cam', phrase: PRODUCT_LABELS.gamHong, swatch: 'linear-gradient(135deg, #f0d2d8, #cfa9a2)' },
+  { id: 'tim', label: 'Tím', phrase: PRODUCT_LABELS.gamTim, swatch: 'linear-gradient(135deg, #e4d4e0, #bebcc7)' },
+  { id: 'kem', label: 'Trắng, kem', phrase: PRODUCT_LABELS.gamKem, swatch: 'linear-gradient(135deg, #f4f3e9, #e5d8c8)' },
+  { id: 'xam', label: 'Xám', phrase: PRODUCT_LABELS.gamXam, swatch: 'linear-gradient(135deg, #d0c9c8, #818284)' },
+  { id: 'be', label: 'Cho bé', phrase: PRODUCT_LABELS.gamBe, swatch: 'linear-gradient(135deg, #e6d3d9, #bacbe3)' },
 ]
 
 export const toneById = (id: string | null | undefined): Tone | undefined => TONES.find((t) => t.id === id)
