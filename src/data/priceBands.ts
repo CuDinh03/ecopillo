@@ -134,6 +134,29 @@ function bandsOf(group: PriceBandGroup, set: EditableSet): readonly PriceBand[] 
   return bands.length ? [...bands].sort((a, b) => a.from - b.from) : base
 }
 
+/**
+ * Mốc giá riêng của nhóm Ecopillo thêm (ô "Mức giá của nhóm" ở bộ Nhóm sản phẩm, productGroups.ts): mỗi dòng "chữ | khoảng".
+ * Khoảng viết "0 - 500000", "500.000 – 1.000.000", "3000000 -" (mốc "Trên …"); chấm, phẩy, khoảng trắng trong số bỏ qua.
+ * Dòng sai (không đọc được số, "đến" không lớn hơn "từ") bỏ; không còn dòng nào thì nhóm dùng mốc "khi xem Tất cả".
+ */
+export function bandsFromPairs(rows: readonly { nhan: string; khoang: string }[]): readonly PriceBand[] {
+  const used = new Set<string>()
+  const bands = rows.flatMap((row, i): PriceBand[] => {
+    const match = /^\s*([\d.,\s]+?)\s*[-–—]\s*([\d.,\s]*)\s*$/.exec(row.khoang)
+    if (!match) return []
+    const from = Number(match[1].replace(/[^\d]/g, ''))
+    const toText = match[2].replace(/[^\d]/g, '')
+    const to = toText ? Number(toText) : Infinity
+    if (!Number.isFinite(from) || !(from >= 0) || !(to > from)) return []
+    const wanted = slugify(row.nhan) || `muc-${i + 1}`
+    let id = wanted
+    for (let n = 2; used.has(id); n += 1) id = `${wanted}-${n}`
+    used.add(id)
+    return [{ id, label: row.nhan, from, to }]
+  })
+  return [...bands].sort((a, b) => a.from - b.from)
+}
+
 /** Mốc giá từng nhóm (đã ghép bản Ecopillo sửa) */
 export const PRICE_BANDS: Readonly<Record<PriceBandGroup, readonly PriceBand[]>> = Object.fromEntries(
   GROUPS.map((group, i) => [group, bandsOf(group, PRICE_BAND_SETS[i])]),

@@ -50,10 +50,10 @@ export interface Post {
   /** Bộ sưu tập gợi ý ở cuối bài */
   related?: readonly { label: string; to: string }[]
   /**
-   * Bài nói về nhóm sản phẩm nào ('bo-chan-ga', 'chan', 'goi', 'dem') hoặc 'chinh-sach'.
+   * Bài nói về nhóm sản phẩm nào ('bo-chan-ga', 'chan', 'goi', 'dem', hoặc mã nhóm Ecopillo thêm ở bộ Nhóm sản phẩm) hoặc 'chinh-sach'.
    * Dùng cho khối "Khám phá thêm": bài hiện ở cuối trang sản phẩm cùng nhóm (src/data/related.ts)
    */
-  topics?: readonly ('bo-chan-ga' | 'chan' | 'goi' | 'dem' | 'chinh-sach')[]
+  topics?: readonly string[]
   body: readonly PostBlock[]
 }
 
@@ -208,7 +208,6 @@ export const CODE_POST_GROUP = 'Bài viết dựng sẵn'
 
 const SECTION_KEYS = Object.keys(SECTION_LABELS) as PostSection[]
 const TOPICS = ['bo-chan-ga', 'chan', 'goi', 'dem', 'chinh-sach'] as const
-type PostTopicId = (typeof TOPICS)[number]
 
 const META_FIELDS: readonly EditableField[] = [
   CODE_POST_SHOW_FIELD,
@@ -240,6 +239,8 @@ const META_FIELDS: readonly EditableField[] = [
     kieu: 'chon-nhieu',
     luaChon: TOPICS,
     nhanLuaChon: ['Bộ chăn ga', 'Chăn', 'Gối', 'Đệm', 'Trang chính sách'],
+    // Nhóm Ecopillo thêm ở Nội dung web → Sản phẩm → Nhóm sản phẩm cũng chọn được (đợt H)
+    luaChonThem: [{ nguon: 'nhom' }],
     goiY: 'Bài hiện trong khối "Khám phá thêm" ở cuối trang sản phẩm (trang chính sách) thuộc các nhóm đã tích.',
   },
 ]
@@ -339,7 +340,8 @@ const metaOf = (post: Post): MetaRow => ({
 /** Bài sau khi ghép thông tin Ecopillo đã sửa (thông tin chưa đổi thì giữ nguyên bài gốc) */
 function withMeta(base: Post, meta: MetaRow, body: readonly PostBlock[]): Post {
   const related = (meta.quanTam ?? []).filter((r) => isPostLink(r.link)).map((r) => ({ label: r.nhan, to: r.link }))
-  const topics = (meta.nhomSanPham ?? []).filter((t): t is PostTopicId => (TOPICS as readonly string[]).includes(t))
+  // Ô chọn đã kiểm giá trị theo lựa chọn (cả nhóm Ecopillo thêm); nhóm đã xoá thì related.ts tự bỏ
+  const topics = meta.nhomSanPham ?? []
   const section = SECTION_KEYS.find((k) => k === meta.muc)
   const minutes = Math.round(meta.phutDoc)
   return {

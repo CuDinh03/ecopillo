@@ -179,10 +179,13 @@ async function main() {
 
   // Giữ khuôn gốc: trang chủ ghi đè index.html, các trang khác ghi thư mục con
   const baseTemplate = template
+  // Mã bố cục → các link dùng bố cục đó (useLayoutReport): plugin ghi khối tự do Ecopillo thêm vào HTML các trang này
+  const layoutPaths = {}
 
   for (const url of paths) {
     try {
-      const { html: body, meta, page } = await render(url)
+      const { html: body, meta, page, layouts } = await render(url)
+      for (const key of layouts ?? []) (layoutPaths[key] ??= []).push(url)
       if (meta?.notFound) {
         failures.push(`${url} → trang báo 404 (route lệch?)`)
         continue
@@ -225,6 +228,8 @@ ${paths.map((url) => `  <url><loc>${siteOrigin}${url}</loc><lastmod>${today}</la
   writeFileSync(join(DIST, 'khung-gia.json'), JSON.stringify(buildPriceFrame()))
   // Các bộ nội dung Ecopillo tự sửa (src/data/contentFrame.ts), cũng chuyển ra ngoài site/
   writeFileSync(join(DIST, 'noi-dung-goc.json'), JSON.stringify(buildContentFrame()))
+  // Trang nào dùng bố cục nào (khối tự do ghi sẵn vào HTML ở máy chủ, trang-wp.php), cũng chuyển ra ngoài site/
+  writeFileSync(join(DIST, 'bo-cuc-trang.json'), JSON.stringify(layoutPaths))
 
   // Cloudflare Pages: có 404.html thì hết fallback SPA — phải có _redirects cho link cũ / link tạm xem thử.
   // Hai link điểm bán (05/11 mục 9): HOST_REDIRECTS chỉ ghi /lien-he/ (SPA nối ?gan-toi=1 không bị lệch neo),

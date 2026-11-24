@@ -29,6 +29,8 @@ export type PageMetaOptions = Pick<PageMeta, 'notFound' | 'image' | 'type'>
 export interface PrerenderCollector {
   meta: PageMeta | null
   page: string | null
+  /** Mã bố cục (pageLayout.ts) các khối trên trang dùng: plugin biết trang nào có khối tự do để ghi sẵn vào HTML (đợt H) */
+  layouts?: string[]
 }
 export const PageMetaContext = createContext<PrerenderCollector | null>(null)
 

@@ -4,7 +4,8 @@ import { chen } from './pageText/define'
 import { isMenuLink } from './pageText/linkField'
 import { PAGE_FRAME_TEXT as T } from './pageText/pageFrame'
 import { POLICY_PAGE_LINKS } from './policyNav'
-import { POSTS, postPath, type Post } from './posts'
+import { LIVE_POSTS } from './livePosts'
+import { CODE_POST_SLUGS, POSTS, postPath, type Post } from './posts'
 import { ALL_CATEGORIES, categoryUrl, isCategoryShown, PRODUCTS, priceLabel, productPath, type CategoryId, type Product } from './products'
 import type { BuiltinCategoryId } from './productGroups'
 
@@ -30,10 +31,21 @@ export interface RelatedGroup {
 /** Chủ đề nối bài viết với nhóm sản phẩm. Bài có chủ đề nào thì hiện ở trang sản phẩm nhóm đó, và ngược lại */
 export type Topic = CategoryId | 'chinh-sach'
 
-const postLink = (p: Post): RelatedLink => ({ label: p.title, note: chen(T.phutDoc, { so: p.readMinutes }), to: postPath(p) })
+const postLink = (p: Pick<Post, 'slug' | 'title' | 'readMinutes'>): RelatedLink => ({
+  label: p.title,
+  note: chen(T.phutDoc, { so: p.readMinutes }),
+  to: postPath(p as Post),
+})
 
-export const postsAbout = (topic: Topic, exceptSlug?: string): readonly Post[] =>
-  POSTS.filter((p) => p.slug !== exceptSlug && (p.topics as readonly string[] | undefined)?.includes(topic))
+/**
+ * Bài nói về một nhóm: 3 bài dựng sẵn (ô "Hiện ở cuối trang sản phẩm thuộc nhóm") và bài WordPress Ecopillo tích nhóm khi soạn
+ * (hộp "Mục trên web", đợt H). Bài WordPress đọc từ danh sách nhỏ du-lieu.js (livePosts.ts), không nạp cả kho bài vào gói chung.
+ */
+export const postsAbout = (topic: Topic, exceptSlug?: string): readonly Pick<Post, 'slug' | 'title' | 'readMinutes'>[] => {
+  const code = POSTS.filter((p) => p.slug !== exceptSlug && p.topics?.includes(topic))
+  const live = LIVE_POSTS.filter((p) => !p.isPage && p.slug !== exceptSlug && !CODE_POST_SLUGS.includes(p.slug) && p.topics?.includes(topic))
+  return [...code, ...live]
+}
 
 /** Danh mục nhỏ của cùng nhóm (đệm lò xo, đệm cao su…; nhóm Ecopillo thêm: các trang danh mục Ecopillo chọn cho nhóm) */
 const listingsOf = (category: CategoryId): RelatedLink[] => {

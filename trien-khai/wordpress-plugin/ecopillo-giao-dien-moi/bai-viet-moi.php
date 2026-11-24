@@ -98,6 +98,57 @@ function eco_bv_body($html)
 }
 
 /**
+ * Ô "Hiện ở cuối trang sản phẩm thuộc nhóm" khi soạn bài (đợt H, owner 24/11/2026): mã nhóm → tên. Nhóm theo bộ "Nhóm sản phẩm"
+ * ở Nội dung web (src/data/productGroups.ts; mã như web tính: mã đã lưu, chưa có thì theo tên), thêm "Trang chính sách".
+ * Web (related.ts) đưa bài vào khối "Khám phá thêm" ở cuối trang sản phẩm, trang danh mục của nhóm đã tích.
+ */
+define('ECO_BV_NHOM_META', '_eco_nhom_san_pham');
+function eco_bv_nhom_options()
+{
+    $options = array();
+    $rows = array();
+    if (function_exists('eco_nd_sets') && function_exists('eco_nd_current')) {
+        $sets = eco_nd_sets();
+        if (isset($sets['nhom-san-pham'])) {
+            $rows = (array) eco_nd_current($sets['nhom-san-pham']);
+        }
+    }
+    if (!$rows) {
+        $rows = array(
+            array('ma' => 'bo-chan-ga', 'ten' => 'Bộ chăn ga'),
+            array('ma' => 'dem', 'ten' => 'Đệm & topper'),
+            array('ma' => 'chan', 'ten' => 'Chăn'),
+            array('ma' => 'goi', 'ten' => 'Gối'),
+        );
+    }
+    foreach ($rows as $i => $row) {
+        if (!is_array($row)) {
+            continue;
+        }
+        $name = isset($row['ten']) ? trim((string) $row['ten']) : '';
+        $id = isset($row['ma']) && (string) $row['ma'] !== '' ? sanitize_title((string) $row['ma']) : sanitize_title($name);
+        $id = $id !== '' ? $id : 'nhom-' . ($i + 1);
+        if (isset($options[$id]) || $id === 'chinh-sach') {
+            continue;
+        }
+        $hidden = isset($row['hien']) && $row['hien'] === 'an';
+        $options[$id] = ($name !== '' ? $name : $id) . ($hidden ? ' (đang ẩn)' : '');
+    }
+    $options['chinh-sach'] = 'Trang chính sách';
+    return $options;
+}
+
+/** Nhóm đã tích của một bài, chỉ giữ mã còn trong danh sách */
+function eco_bv_nhom_of($post_id)
+{
+    $saved = get_post_meta($post_id, ECO_BV_NHOM_META, true);
+    $options = eco_bv_nhom_options();
+    return array_values(array_filter(is_array($saved) ? $saved : array(), function ($id) use ($options) {
+        return is_string($id) && isset($options[$id]);
+    }));
+}
+
+/**
  * Bài mới / đã sửa. @return array{live: array, bodies: array, pages: array}
  */
 function eco_bv_compute()
@@ -149,6 +200,7 @@ function eco_bv_compute()
             'sua' => $modified,
             'phut' => max(1, (int) round($words / 220)),
             'anh' => $cover ? $cover : null,
+            'nhom' => eco_bv_nhom_of($post->ID),
         );
         $result['bodies'][$slug] = $body;
         if (!isset($built[$slug])) {
@@ -230,6 +282,13 @@ function eco_bv_muc_box_html($post)
     }
     echo '<label style="display:block;margin:6px 0;color:#646970"><input type="radio" name="eco_muc_web" value=""' . checked($current, '', false) . '> Để web tự xếp</label>';
     echo '<p class="description">Tin tức: tin về chính Ecopillo (khai trương, giải thưởng, chương trình, sự kiện). Cẩm nang: bài kiến thức. "Để web tự xếp": bài cũ giữ nhóm đã duyệt, bài mới theo chuyên mục WordPress.</p>';
+    // Đợt H: bài hiện ở "Khám phá thêm" cuối trang sản phẩm của các nhóm đã tích (cả nhóm Ecopillo thêm)
+    $picked = eco_bv_nhom_of($post->ID);
+    echo '<p style="margin:14px 0 4px;font-weight:600">Hiện ở cuối trang sản phẩm thuộc nhóm</p>';
+    foreach (eco_bv_nhom_options() as $value => $label) {
+        echo '<label style="display:block;margin:6px 0"><input type="checkbox" name="eco_nhom_san_pham[]" value="' . esc_attr($value) . '"' . checked(in_array($value, $picked, true), true, false) . '> ' . esc_html($label) . '</label>';
+    }
+    echo '<p class="description">Bài hiện trong khối "Khám phá thêm" ở cuối trang sản phẩm, trang danh mục của nhóm đã tích, và gợi ý sản phẩm nhóm đó ở cuối bài. Nhóm sửa ở Nội dung web → Sản phẩm → Nhóm sản phẩm.</p>';
 }
 
 add_action('save_post_post', 'eco_bv_muc_save', 5);
@@ -246,5 +305,18 @@ function eco_bv_muc_save($post_id)
         update_post_meta($post_id, ECO_BV_MUC_META, $value);
     } else {
         delete_post_meta($post_id, ECO_BV_MUC_META);
+    }
+    $options = eco_bv_nhom_options();
+    $picked = array();
+    foreach (isset($_POST['eco_nhom_san_pham']) ? (array) wp_unslash($_POST['eco_nhom_san_pham']) : array() as $id) {
+        $id = sanitize_title((string) $id);
+        if (isset($options[$id]) && !in_array($id, $picked, true)) {
+            $picked[] = $id;
+        }
+    }
+    if ($picked) {
+        update_post_meta($post_id, ECO_BV_NHOM_META, $picked);
+    } else {
+        delete_post_meta($post_id, ECO_BV_NHOM_META);
     }
 }

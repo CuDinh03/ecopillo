@@ -41,7 +41,18 @@ interface LayoutDef {
 const def = (khoa: string, ten: string, blocks: readonly LayoutBlock[], tuDo: boolean | 'cuoi' = true): LayoutDef => ({ khoa, ten, blocks, tuDo })
 
 /** Khai bố cục một trang: trả bộ để sửa và thứ tự các khối đang hiện (mã khối, cả khối tự do "tu-do-N") */
-function defineLayout({ khoa, ten, blocks, tuDo }: LayoutDef): { set: EditableSet; order: readonly string[]; cuoi: readonly string[] } {
+/** Thứ tự (mảng order / cuoi) → mã bố cục: <Blocks> báo cho bước dựng biết trang dùng bố cục nào (layoutKeyOf) */
+const LAYOUT_KEYS = new WeakMap<readonly string[], string>()
+export const layoutKeyOf = (order: readonly string[]): string | undefined => LAYOUT_KEYS.get(order)
+
+function defineLayout(layout: LayoutDef): { set: EditableSet; order: readonly string[]; cuoi: readonly string[] } {
+  const result = buildLayout(layout)
+  LAYOUT_KEYS.set(result.order, layout.khoa)
+  LAYOUT_KEYS.set(result.cuoi, layout.khoa)
+  return result
+}
+
+function buildLayout({ khoa, ten, blocks, tuDo }: LayoutDef): { set: EditableSet; order: readonly string[]; cuoi: readonly string[] } {
   const goc: readonly LayoutRow[] = blocks.map((b) => ({ ma: b.ma, ten: b.ten, hien: 'co' }))
   const set: EditableSet = {
     khoa: `bo-cuc-${khoa}`,

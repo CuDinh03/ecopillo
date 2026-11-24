@@ -239,13 +239,14 @@ function eco_tw_hidden_map()
     return array_merge(eco_tw_code_posts()['an'], $map);
 }
 
-/** Các trang cần WordPress trả (trang có sẵn đã đổi SEO, đã ẩn, có chuyển link Ecopillo thêm) */
+/** Các trang cần WordPress trả (trang có sẵn đã đổi SEO, đã ẩn, có chuyển link Ecopillo thêm, có khối tự do) */
 function eco_tw_wanted_paths()
 {
     $paths = array();
     $hidden = eco_tw_hidden_map();
     $redirects = function_exists('eco_nd_redirects') ? eco_nd_redirects() : array();
-    foreach (array_merge(array_keys(eco_tw_seo_map(true)), array_keys($hidden), array_keys($redirects)) as $path) {
+    // Trang có khối tự do (đợt H): WordPress trả để ghi sẵn khối vào HTML
+    foreach (array_merge(array_keys(eco_tw_seo_map(true)), array_keys($hidden), array_keys($redirects), array_keys(eco_tw_free_blocks())) as $path) {
         if (eco_tw_static_file($path) !== '') {
             $paths[$path] = true;
         }
@@ -318,11 +319,147 @@ function eco_tw_serve()
         $item = $seo[$path];
         $html = eco_tw_head($html, isset($item['tieuDe']) ? $item['tieuDe'] : '', isset($item['moTa']) ? $item['moTa'] : '', isset($item['anh']) ? $item['anh'] : '');
     }
+    $html = eco_tw_put_free_blocks($html, $path);
     status_header(200);
     nocache_headers();
     header('Content-Type: text/html; charset=UTF-8');
     echo $html; // trang tĩnh của giao diện mới, các chữ chèn vào đã thoát
     exit;
+}
+
+/* ---------------------------------------------------------------- Khối tự do ghi sẵn vào HTML (đợt H) */
+
+/**
+ * Khối tự do Ecopillo thêm ở Nội dung web → Giao diện → Khối tự do (src/data/freeBlocks.ts) do trình duyệt vẽ, nên HTML dựng sẵn
+ * không có. Để Google (và mọi máy đọc không chạy JavaScript) thấy ngay chữ, ảnh, nút của khối: trang có khối tự do được đánh dấu
+ * cho WordPress trả, và eco_tw_serve ghi bản đơn giản của các khối ngay trước chân trang. Trình duyệt vẽ lại cả trang theo
+ * dữ liệu Ecopillo (main.tsx) nên khối về đúng chỗ, đúng kiểu; bản ghi sẵn nằm sát chân trang để không làm xô phần đầu trang.
+ * Trang nào dùng bố cục nào: du-lieu/bo-cuc-trang.json (tools/dung-san-html.mjs ghi lúc dựng).
+ */
+function eco_tw_layout_paths()
+{
+    static $map = null;
+    if ($map === null) {
+        $file = __DIR__ . '/du-lieu/bo-cuc-trang.json';
+        $data = is_readable($file) ? json_decode((string) file_get_contents($file), true) : null;
+        $map = is_array($data) ? $data : array();
+    }
+    return $map;
+}
+
+/** Link trang → các khối tự do đang hiện của trang đó (theo thứ tự trong bộ Khối tự do). @return array<string, array> */
+function eco_tw_free_blocks()
+{
+    $saved = function_exists('eco_nd_saved') ? eco_nd_saved('khoi-tu-do') : null;
+    $rows = $saved && is_array($saved['giaTri']) ? $saved['giaTri'] : array();
+    $layouts = eco_tw_layout_paths();
+    $out = array();
+    foreach ($rows as $row) {
+        if (!is_array($row) || (isset($row['hien']) && $row['hien'] === 'khong') || empty($row['viTri']) || !is_array($row['viTri'])) {
+            continue;
+        }
+        $paths = array();
+        foreach ($row['viTri'] as $place) {
+            $key = strstr((string) $place, '@', true);
+            foreach ($key !== false && isset($layouts[$key]) && is_array($layouts[$key]) ? $layouts[$key] : array() as $path) {
+                if (eco_tw_is_path($path)) {
+                    $paths[$path] = true;
+                }
+            }
+        }
+        foreach (array_keys($paths) as $path) {
+            $out[$path][] = $row;
+        }
+    }
+    return $out;
+}
+
+/** Bản HTML đơn giản của các khối (chữ đã thoát, link / ảnh đã kiểm); lớp CSS là lớp sẵn có của giao diện mới */
+function eco_tw_free_html($rows)
+{
+    $text = function ($value, $max) {
+        return is_string($value) && function_exists('eco_sp_text') ? eco_sp_text($value, $max) : '';
+    };
+    $html = '';
+    foreach ($rows as $row) {
+        $title = str_replace('|', ' ', $text(isset($row['tieuDe']) ? $row['tieuDe'] : '', 300));
+        $label = $text(isset($row['nhan']) ? $row['nhan'] : '', 200);
+        $inner = '';
+        if ($label !== '') {
+            $inner .= '<p class="eyebrow">' . esc_html($label) . '</p>';
+        }
+        if ($title !== '') {
+            $inner .= '<h2 class="font-display mt-3 text-[1.9rem] leading-[1.12] text-deep-900">' . esc_html($title) . '</h2>';
+        }
+        foreach (isset($row['doan']) && is_array($row['doan']) ? $row['doan'] : array() as $para) {
+            $para = is_string($para) ? trim(sanitize_textarea_field($para)) : '';
+            if ($para !== '') {
+                $inner .= '<p class="mt-4 text-body leading-relaxed text-ink-soft">' . nl2br(esc_html($para)) . '</p>';
+            }
+        }
+        $src = isset($row['anh']['src']) ? (string) $row['anh']['src'] : '';
+        if ($src !== '' && eco_nd_is_link($src) && $src[0] !== '#') {
+            $alt = $text(isset($row['anh']['alt']) ? $row['anh']['alt'] : '', 300);
+            $inner .= '<img class="mt-6 w-full max-w-3xl rounded-[1.75rem] object-cover" loading="lazy" src="' . esc_url($src) . '" alt="' . esc_attr($alt) . '">';
+        }
+        $images = isset($row['dsAnh']) && is_array($row['dsAnh']) ? array_slice($row['dsAnh'], 0, 8) : array();
+        $list = '';
+        foreach ($images as $image) {
+            if (is_string($image) && eco_nd_is_link($image) && $image[0] !== '#') {
+                $list .= '<li><img class="aspect-square w-full rounded-2xl object-cover" loading="lazy" src="' . esc_url($image) . '" alt="' . esc_attr($title) . '"></li>';
+            }
+        }
+        if ($list !== '') {
+            $inner .= '<ul class="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-3">' . $list . '</ul>';
+        }
+        $cards = '';
+        foreach (isset($row['the']) && is_array($row['the']) ? $row['the'] : array() as $card) {
+            $head = is_array($card) ? $text(isset($card['tieuDe']) ? $card['tieuDe'] : '', 300) : '';
+            $body = is_array($card) ? $text(isset($card['moTa']) ? $card['moTa'] : '', 1000) : '';
+            if ($head !== '' || $body !== '') {
+                $cards .= '<li class="rounded-[1.5rem] bg-ivory p-6"><h3 class="font-display text-[1.3rem] text-deep-900">' . esc_html($head) . '</h3><p class="mt-2 text-body-sm text-ink-soft">' . esc_html($body) . '</p></li>';
+            }
+        }
+        if ($cards !== '') {
+            $inner .= '<ul class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">' . $cards . '</ul>';
+        }
+        $buttons = '';
+        foreach (isset($row['nut']) && is_array($row['nut']) ? $row['nut'] : array() as $button) {
+            $words = is_array($button) ? $text(isset($button['chu']) ? $button['chu'] : '', 120) : '';
+            $link = is_array($button) && isset($button['link']) ? trim((string) $button['link']) : '';
+            if ($words !== '' && eco_nd_is_link($link)) {
+                $href = $link[0] === '#' ? $link : esc_url($link);
+                $buttons .= '<a class="inline-flex h-12 items-center rounded-full bg-deep-800 px-6 text-body-sm font-medium text-ivory" href="' . esc_attr($href) . '">' . esc_html($words) . '</a>';
+            }
+        }
+        if ($buttons !== '') {
+            $inner .= '<div class="mt-7 flex flex-wrap gap-3">' . $buttons . '</div>';
+        }
+        if ($inner !== '') {
+            $html .= '<section class="py-12" data-khoi-tu-do=""><div class="mx-auto w-full max-w-[1240px] px-5 sm:px-8 lg:px-10">' . $inner . '</div></section>';
+        }
+    }
+    return $html;
+}
+
+/** Ghi các khối tự do của trang vào HTML, ngay trước chân trang (không có chân trang thì cuối khung #root) */
+function eco_tw_put_free_blocks($html, $path)
+{
+    $blocks = eco_tw_free_blocks();
+    if (empty($blocks[$path])) {
+        return $html;
+    }
+    $add = eco_tw_free_html($blocks[$path]);
+    if ($add === '') {
+        return $html;
+    }
+    // Chân trang web là thẻ footer cuối (thân bài có thể có footer của trích dẫn)
+    $at = strrpos($html, '<footer');
+    if ($at === false) {
+        $root = strpos($html, '<div id="root">');
+        $at = $root === false ? false : strpos($html, '</div>', $root);
+    }
+    return $at === false ? $html : substr($html, 0, $at) . $add . substr($html, $at);
 }
 
 /* ---------------------------------------------------------------- Biểu tượng web, ảnh chia sẻ mặc định (src/data/siteIcons.ts) */

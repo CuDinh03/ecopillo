@@ -1110,9 +1110,12 @@ export const orderUrl = (collection: Collection, pattern?: Pattern, size?: SizeI
 /** Mốc giá theo từng loại: mốc gốc và phần Ecopillo sửa ở Nội dung web nằm ở priceBands.ts */
 export { PRICE_BANDS, type PriceBand } from './priceBands'
 
-/** Nhóm mới (không có bộ mốc riêng) dùng mốc "khi xem Tất cả" */
-export const priceBandsOf = (category: CategoryId | null): readonly PriceBand[] =>
-  category && isBuiltinCategory(category) ? PRICE_BANDS[category as PriceBandGroup] : PRICE_BANDS['tat-ca']
+/** Nhóm mới: mốc Ecopillo ghi ở ô "Mức giá của nhóm", không ghi thì mốc "khi xem Tất cả" */
+export const priceBandsOf = (category: CategoryId | null): readonly PriceBand[] => {
+  if (category && isBuiltinCategory(category)) return PRICE_BANDS[category as PriceBandGroup]
+  const own = category ? ALL_GROUPS.find((g) => g.id === category)?.priceBands : undefined
+  return own?.length ? own : PRICE_BANDS['tat-ca']
+}
 
 /* ——— Danh sách nhóm (nút lọc, ô nhóm, kệ) ——— */
 

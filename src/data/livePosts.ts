@@ -24,10 +24,14 @@ export interface LivePost {
   cover: { src: string; srcSet: string; alt: string } | null
   /** Trang WordPress Ecopillo tích "Hiện bằng giao diện mới" (trang-moi.php, đợt G): không vào danh sách Tin tức */
   isPage?: boolean
+  /** Ô "Hiện ở cuối trang sản phẩm thuộc nhóm" khi soạn bài (bai-viet-moi.php, đợt H): mã nhóm hoặc 'chinh-sach' */
+  topics?: readonly string[]
 }
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/
 const text = (v: unknown, max: number): string => (typeof v === 'string' ? v.trim().slice(0, max) : '')
+const topicsOf = (v: unknown): string[] =>
+  Array.isArray(v) ? [...new Set(v.filter((t): t is string => typeof t === 'string' && /^[a-z0-9-]{1,80}$/.test(t)))].slice(0, 20) : []
 const isUrl = (v: unknown): v is string => typeof v === 'string' && /^(https?:\/\/|\/(?!\/))/.test(v) && !/[\s<>"]/.test(v)
 
 function clean(input: unknown): LivePost | undefined {
@@ -49,6 +53,7 @@ function clean(input: unknown): LivePost | undefined {
     modified: typeof v.sua === 'string' && DATE.test(v.sua) ? v.sua : date,
     readMinutes: typeof v.phut === 'number' && v.phut > 0 && v.phut < 120 ? Math.round(v.phut) : 3,
     ...(v.trang === true ? { isPage: true } : {}),
+    ...(topicsOf(v.nhom).length ? { topics: topicsOf(v.nhom) } : {}),
     cover:
       cover && isUrl(cover.src)
         ? { src: cover.src, srcSet: typeof cover.srcSet === 'string' && !/[<>"]/.test(cover.srcSet) ? cover.srcSet : '', alt: text(cover.alt, 300) || title }

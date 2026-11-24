@@ -3,6 +3,7 @@ import { patternImage, productImage, type ImageSource } from './catalog'
 import { LISTINGS } from './links'
 import { liveList, liveObject, rowKey, type EditableField, type EditableSet } from './liveContent'
 import { anh, chu, legacyPageText, type PageImage } from './pageText/define'
+import { bandsFromPairs, type PriceBand } from './priceBands'
 
 /**
  * Nhóm sản phẩm lớn của trang Sản phẩm (nút lọc, ô nhóm, kệ, ?danh-muc=…, nhãn nhỏ trên thẻ, đường dẫn trang sản phẩm).
@@ -44,6 +45,8 @@ export interface ProductGroup {
   products: readonly string[]
   /** Trang danh mục Ecopillo chọn: sản phẩm lẻ của các trang này vào nhóm */
   listings: readonly string[]
+  /** Mốc giá riêng (chỉ nhóm mới, ô "Mức giá của nhóm"); trống thì dùng mốc "khi xem Tất cả" */
+  priceBands: readonly PriceBand[]
 }
 
 /** Một dòng như lưu trong WordPress */
@@ -56,6 +59,7 @@ interface GroupRow {
   anh?: PageImage
   sanPham?: readonly string[]
   danhMuc?: readonly string[]
+  mocGia?: readonly { nhan: string; khoang: string }[]
 }
 
 /** Thứ tự gốc: thứ tự kệ đã duyệt (đệm ngay sau bộ chăn ga, khách: "phần đệm tìm mãi mới thấy") */
@@ -163,6 +167,15 @@ const fieldsOf = (products: readonly { slug: string; name: string }[]): readonly
     goiY:
       'Mọi sản phẩm lẻ của trang danh mục đã chọn vào nhóm này, kể cả sản phẩm đăng sau trong WooCommerce ở danh mục đó. Cách cho nhóm mới tự nhận sản phẩm mới: tạo danh mục trong Sản phẩm → Danh mục, tích "Hiện thành trang danh mục", rồi chọn trang đó ở đây.',
   },
+  {
+    khoa: 'mocGia',
+    nhan: 'Mức giá của nhóm (chỉ nhóm mới)',
+    kieu: 'ds-cap',
+    cap: ['nhan', 'khoang'],
+    nhanCap: ['Chữ trên nút', 'Khoảng giá (đồng)'],
+    goiY:
+      'Các nút "Mức giá" khi khách lọc nhóm này. Mỗi dòng: Dưới 500 nghìn | 0 - 500000; mốc cuối: Trên 1 triệu | 1000000 -. Để trống: dùng "Mức giá khi xem Tất cả". Bốn nhóm có sẵn sửa ở các bộ "Mức giá nhóm …".',
+  },
 ]
 
 /** Bộ sửa được; `products`: sản phẩm lẻ có trong code (danh sách lựa chọn của ô Sản phẩm) */
@@ -200,6 +213,7 @@ const groupOf = (row: GroupRow, id: string): ProductGroup => {
     builtin,
     products: row.sanPham ?? [],
     listings: row.danhMuc ?? [],
+    priceBands: builtin ? [] : bandsFromPairs(row.mocGia ?? []),
   }
 }
 

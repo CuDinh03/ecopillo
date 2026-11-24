@@ -43,6 +43,7 @@ import { chen } from '../data/pageText/define'
 import { ABOUT_ORDER } from '../data/pageLayout'
 import { FreeBlock } from '../components/ui/FreeBlock'
 import { isFreeBlockId } from '../data/freeBlocks'
+import { useLayoutReport } from '../hooks/useLayoutReport'
 
 /**
  * Trang Giới thiệu (/gioi-thieu, giữ đường link web cũ) dạng chương sách (mẫu 1, owner chọn 16/10/2026,
@@ -120,6 +121,7 @@ const INTRO = {
 
 export function AboutPage() {
   usePageMeta('Giới thiệu', ABOUT_PAGE_TEXT.moTaGoogle)
+  useLayoutReport(ABOUT_ORDER)
 
   // Mỗi khối một mã (ABOUT_ORDER trong src/data/pageLayout.ts); Ecopillo đổi thứ tự, ẩn khối ở Nội dung web
   const blocks: Readonly<Record<string, ReactNode>> = {

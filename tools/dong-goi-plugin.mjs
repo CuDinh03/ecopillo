@@ -12,6 +12,7 @@
 //   quy-tac/ban-build.txt            mã commit + ngày đóng gói (hiện ở trang cài đặt)
 //   du-lieu/khung-gia.json           mọi ô giá trên web ↔ sản phẩm WooCommerce (src/data/priceFrame.ts), plugin đọc giá Woo theo đó
 //   du-lieu/noi-dung-goc.json        các bộ nội dung Ecopillo tự sửa + giá trị gốc (src/data/contentFrame.ts)
+//   du-lieu/bo-cuc-trang.json        mã bố cục → các link dùng bố cục đó (khối tự do ghi sẵn vào HTML, trang-wp.php)
 // {SITE} trong quy tắc được plugin thay bằng đường dẫn thật của site/ (ví dụ /wp-content/plugins/ecopillo-giao-dien-moi/site).
 // Thử quy tắc bằng Apache trên máy: node tools/dong-goi-plugin.mjs --chi-quy-tac <thư-mục-ra>
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
@@ -100,7 +101,7 @@ function writeRules(dir, redirects, version) {
 }
 
 const args = process.argv.slice(2)
-if (!existsSync(join(DIST, 'index.html')) || !existsSync(join(DIST, '_redirects')) || !existsSync(join(DIST, 'khung-gia.json')) || !existsSync(join(DIST, 'noi-dung-goc.json'))) {
+if (!existsSync(join(DIST, 'index.html')) || !existsSync(join(DIST, '_redirects')) || !existsSync(join(DIST, 'khung-gia.json')) || !existsSync(join(DIST, 'noi-dung-goc.json')) || !existsSync(join(DIST, 'bo-cuc-trang.json'))) {
   console.error('Chưa có bản build. Chạy: pnpm build')
   process.exit(1)
 }
@@ -128,10 +129,10 @@ mkdirSync(stage, { recursive: true })
 for (const file of readdirSync(PLUGIN_SRC).filter((f) => f.endsWith('.php'))) cpSync(join(PLUGIN_SRC, file), join(stage, file))
 cpSync(DIST, join(stage, 'site'), {
   recursive: true,
-  filter: (src) => !/(^|\/)(_redirects|khung-gia\.json|noi-dung-goc\.json|\.DS_Store|\._[^/]*)$/.test(src),
+  filter: (src) => !/(^|\/)(_redirects|khung-gia\.json|noi-dung-goc\.json|bo-cuc-trang\.json|\.DS_Store|\._[^/]*)$/.test(src),
 })
 mkdirSync(join(stage, 'du-lieu'), { recursive: true })
-for (const file of ['khung-gia.json', 'noi-dung-goc.json']) cpSync(join(DIST, file), join(stage, 'du-lieu', file))
+for (const file of ['khung-gia.json', 'noi-dung-goc.json', 'bo-cuc-trang.json']) cpSync(join(DIST, file), join(stage, 'du-lieu', file))
 writeRules(join(stage, 'quy-tac'), redirects, version)
 // Thư mục site/ chỉ có file tĩnh: chặn chạy PHP trong đó nếu ai đó lỡ đặt file .php vào
 writeFileSync(join(stage, 'site', '.htaccess'), '<FilesMatch "\\.(php|phtml|phar)$">\n  Require all denied\n</FilesMatch>\n')

@@ -57,6 +57,7 @@ const livePost = (entry: LivePost): Post => ({
   cover: entry.cover ?? { ...FALLBACK_COVER, alt: entry.title },
   body: [],
   wp: { date: entry.date, modified: entry.modified, metaTitle: entry.title, description: entry.description, live: true },
+  ...(entry.topics?.length ? { topics: entry.topics } : {}),
 })
 
 // Cả bài dựng sẵn đã ẩn: bài WordPress trùng tên không hiện thay
