@@ -384,6 +384,7 @@ function eco_dl_write()
     if (function_exists('eco_tw_sync_markers')) {
         eco_tw_sync_markers();
         eco_tw_write_sitemap();
+        eco_tw_write_files();
     }
     update_option(ECO_GIA_OPT_GHI_LUC, current_time('mysql'), false);
     return true;

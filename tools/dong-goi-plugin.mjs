@@ -69,6 +69,13 @@ export function buildRules(mode, redirects) {
     'RewriteCond %{DOCUMENT_ROOT}{DU_LIEU}/sitemap.xml -f',
     'RewriteRule ^sitemap\\.xml$ {DU_LIEU}/sitemap.xml [L]',
   )
+  // 1c. Biểu tượng web, ảnh chia sẻ mặc định Ecopillo đổi ở Nội dung web (trang-wp.php cắt ảnh vào {DU_LIEU}/tep/)
+  lines.push(
+    ...gate,
+    ...skip,
+    'RewriteCond %{DOCUMENT_ROOT}{DU_LIEU}/tep%{REQUEST_URI} -f',
+    'RewriteRule ^(favicon-48\\.png|favicon\\.png|apple-touch-icon\\.png|og-image\\.jpg)$ {DU_LIEU}/tep/$1 [L]',
+  )
   // 2. File của giao diện mới (JS, CSS, ảnh, favicon, sitemap…): có file trong site/ thì trả file đó
   lines.push(...gate, ...skip, 'RewriteCond %{DOCUMENT_ROOT}{SITE}%{REQUEST_URI} -f', 'RewriteRule ^ {SITE}%{REQUEST_URI} [L]')
   // 3. Trang: /duong-dan/ → site/duong-dan/index.html (trang chủ: site/index.html).

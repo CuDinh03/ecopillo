@@ -257,3 +257,65 @@ function eco_tw_serve()
     echo $html; // trang tĩnh của giao diện mới, các chữ chèn vào đã thoát
     exit;
 }
+
+/* ---------------------------------------------------------------- Biểu tượng web, ảnh chia sẻ mặc định (src/data/siteIcons.ts) */
+
+/** Đường dẫn trên đĩa của một ảnh trong Thư viện (link ảnh Ecopillo chọn); không phải ảnh Thư viện thì rỗng */
+function eco_tw_media_path($url)
+{
+    $url = (string) $url;
+    $id = $url !== '' ? attachment_url_to_postid($url) : 0;
+    if ($id) {
+        $file = get_attached_file($id);
+        return $file && is_file($file) ? $file : '';
+    }
+    $uploads = wp_upload_dir(null, false);
+    if ($url !== '' && strpos($url, $uploads['baseurl'] . '/') === 0) {
+        $file = $uploads['basedir'] . substr($url, strlen($uploads['baseurl']));
+        return is_file($file) && strpos(realpath($file), realpath($uploads['basedir'])) === 0 ? $file : '';
+    }
+    return '';
+}
+
+/**
+ * Cắt ảnh Ecopillo chọn thành favicon-48.png, favicon.png (512), apple-touch-icon.png (180), og-image.jpg (1200×630) trong
+ * uploads/ecopillo-du-lieu/tep/; quy tắc .htaccess trả các file này thay file dựng sẵn. Chưa chọn ảnh (hoặc trả về gốc) thì xoá.
+ * Chỉ làm lại khi ảnh đổi.
+ */
+function eco_tw_write_files()
+{
+    $saved = function_exists('eco_nd_saved') ? eco_nd_saved('bieu-tuong-web') : null;
+    $value = $saved && is_array($saved['giaTri']) ? $saved['giaTri'] : array();
+    $signature = md5((string) wp_json_encode($value));
+    if (get_option('ecopillo_tep_ban') === $signature) {
+        return;
+    }
+    $dir = eco_gia_dir() . '/tep';
+    if (!wp_mkdir_p($dir)) {
+        return;
+    }
+    $targets = array(
+        'favicon-48.png' => array('bieuTuong', 48, 48, 'image/png'),
+        'favicon.png' => array('bieuTuong', 512, 512, 'image/png'),
+        'apple-touch-icon.png' => array('bieuTuong', 180, 180, 'image/png'),
+        'og-image.jpg' => array('anhChiaSe', 1200, 630, 'image/jpeg'),
+    );
+    foreach ($targets as $name => $spec) {
+        $file = $dir . '/' . $name;
+        $source = isset($value[$spec[0]]['src']) ? eco_tw_media_path($value[$spec[0]]['src']) : '';
+        if ($source === '') {
+            if (is_file($file)) {
+                unlink($file); // ảnh gốc: dùng file dựng sẵn
+            }
+            continue;
+        }
+        $editor = wp_get_image_editor($source);
+        if (is_wp_error($editor)) {
+            continue;
+        }
+        $editor->resize($spec[1], $spec[2], true);
+        $editor->set_quality(86);
+        $editor->save($file, $spec[3]);
+    }
+    update_option('ecopillo_tep_ban', $signature, false);
+}
