@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Blocks } from '../components/ui/Blocks'
+import { PRODUCT_DETAIL_ORDER } from '../data/pageLayout'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { CollectionDetail } from '../components/collection/CollectionDetail'
 import { DetailBreadcrumb, MobileBuyBar, NearMeLine, ProductInfoCards, RelatedProducts, TrustList } from '../components/products/DetailParts'
@@ -231,15 +233,18 @@ function ProductDetail({ product }: { product: Product }) {
           </div>
         </div>
 
-        {/* Phần Ecopillo sửa trong Woo (đợt D) thay phần trong productInfo.ts; sản phẩm mới thêm phần đó cũng có */}
-        {(product.infoSections ?? info?.sections)?.length ? <ProductStory sections={product.infoSections ?? info?.sections ?? []} /> : null}
-
-        <ProductInfoCards product={product} />
-
-        <ProductReviews product={product} />
-
-        <RelatedProducts product={product} />
-        <ExploreMore groups={relatedForProduct(product)} />
+        {/* Thứ tự, ẩn / hiện các khối dưới: Nội dung web → Giao diện → Bố cục trang sản phẩm lẻ (đợt E5) */}
+        <Blocks
+          order={PRODUCT_DETAIL_ORDER}
+          blocks={{
+            // Phần Ecopillo sửa trong Woo (đợt D) thay phần trong productInfo.ts; sản phẩm mới thêm phần đó cũng có
+            'hieu-ky': (product.infoSections ?? info?.sections)?.length ? <ProductStory sections={product.infoSections ?? info?.sections ?? []} /> : null,
+            'giao-hang': <ProductInfoCards product={product} />,
+            'danh-gia': <ProductReviews product={product} />,
+            'co-the-thich': <RelatedProducts product={product} />,
+            'kham-pha': <ExploreMore groups={relatedForProduct(product)} />,
+          }}
+        />
       </Container>
 
       <MobileBuyBar product={product} size={null} unitPrice={singlePrice ?? null} singleUrl={singleUrl} />

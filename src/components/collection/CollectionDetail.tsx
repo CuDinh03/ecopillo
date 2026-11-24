@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Blocks } from '../ui/Blocks'
+import { COLLECTION_DETAIL_ORDER } from '../../data/pageLayout'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import {
   coverOf,
@@ -162,16 +164,24 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
           />
         </section>
 
-        {tone && <SameTone collection={collection} tone={tone} />}
-
-        <h2 className="font-display mt-16 text-[1.6rem] leading-tight text-deep-900 sm:mt-20 sm:text-[2.2rem]">
-          {COLLECTION_PAGE_TEXT.giongNhau}
-        </h2>
-        <ProductInfoCards product={product} className="mt-6" />
-
-        <ProductReviews product={product} />
-        <RelatedProducts product={product} excludeCollections={sameToneIds} />
-        <ExploreMore groups={relatedForProduct(product)} />
+        {/* Thứ tự, ẩn / hiện các khối dưới: Nội dung web → Giao diện → Bố cục trang bộ sưu tập (đợt E5) */}
+        <Blocks
+          order={COLLECTION_DETAIL_ORDER}
+          blocks={{
+            'cung-gam': tone ? <SameTone collection={collection} tone={tone} /> : null,
+            'giao-hang': (
+              <>
+                <h2 className="font-display mt-16 text-[1.6rem] leading-tight text-deep-900 sm:mt-20 sm:text-[2.2rem]">
+                  {COLLECTION_PAGE_TEXT.giongNhau}
+                </h2>
+                <ProductInfoCards product={product} className="mt-6" />
+              </>
+            ),
+            'danh-gia': <ProductReviews product={product} />,
+            'co-the-thich': <RelatedProducts product={product} excludeCollections={sameToneIds} />,
+            'kham-pha': <ExploreMore groups={relatedForProduct(product)} />,
+          }}
+        />
       </Container>
 
       <MobileBuyBar

@@ -128,6 +128,22 @@ export const { set: PRODUCTS_LAYOUT_SET, order: PRODUCTS_ORDER } = defineLayout(
   { ma: 'tim-theo-bo', ten: 'Hàng tìm theo bộ sưu tập' },
 ])
 
+export const { set: PRODUCT_DETAIL_LAYOUT_SET, order: PRODUCT_DETAIL_ORDER } = defineLayout('san-pham-le', 'trang sản phẩm lẻ (phần dưới ảnh và giá)', [
+  { ma: 'hieu-ky', ten: 'Hiểu kỹ trước khi chọn' },
+  { ma: 'giao-hang', ten: 'Giao hàng, đổi trả & bảo hành' },
+  { ma: 'danh-gia', ten: 'Đánh giá của khách (khi có)' },
+  { ma: 'co-the-thich', ten: 'Có thể Quý khách thích' },
+  { ma: 'kham-pha', ten: 'Khám phá thêm (link liên quan)' },
+])
+
+export const { set: COLLECTION_DETAIL_LAYOUT_SET, order: COLLECTION_DETAIL_ORDER } = defineLayout('bo-suu-tap', 'trang bộ sưu tập và từng mẫu (phần dưới)', [
+  { ma: 'cung-gam', ten: 'Cùng gam màu ở bộ khác (khi lọc gam)' },
+  { ma: 'giao-hang', ten: 'Giống nhau ở mọi phối màu (giao hàng, bảo hành)' },
+  { ma: 'danh-gia', ten: 'Đánh giá của khách (khi có)' },
+  { ma: 'co-the-thich', ten: 'Có thể Quý khách thích' },
+  { ma: 'kham-pha', ten: 'Khám phá thêm (link liên quan)' },
+])
+
 export const LAYOUT_SETS: readonly EditableSet[] = [
   HOME_DESKTOP_LAYOUT_SET,
   HOME_MOBILE_LAYOUT_SET,
@@ -137,4 +153,6 @@ export const LAYOUT_SETS: readonly EditableSet[] = [
   CONTACT_LAYOUT_SET,
   CATEGORY_LAYOUT_SET,
   PRODUCTS_LAYOUT_SET,
+  PRODUCT_DETAIL_LAYOUT_SET,
+  COLLECTION_DETAIL_LAYOUT_SET,
 ]
