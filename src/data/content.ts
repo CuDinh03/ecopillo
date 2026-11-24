@@ -47,7 +47,7 @@ export const REVIEWS_SET: EditableSet = {
   khoa: 'danh-gia',
   nhom: 'Trang chủ',
   ten: 'Cảm nhận khách hàng',
-  moTa: 'Các ô cảm nhận của khách ở trang chủ. Chỉ đưa lời khách thật, có khách đồng ý. Các dòng có sẵn là mẫu: khối chỉ hiện trên web sau khi Quý vị thay bằng cảm nhận thật và bấm Lưu; "Trả về nội dung gốc" là ẩn lại.',
+  moTa: 'Các ô cảm nhận của khách ở trang chủ. Chỉ đưa lời khách thật, có khách đồng ý. Các dòng có sẵn là mẫu: khối chỉ hiện trên web sau khi thay bằng cảm nhận thật và bấm Lưu; "Trả về nội dung gốc" là ẩn lại.',
   kieu: 'nhieu',
   goc: BASE_REVIEWS,
   tieuDeDong: 'name',
