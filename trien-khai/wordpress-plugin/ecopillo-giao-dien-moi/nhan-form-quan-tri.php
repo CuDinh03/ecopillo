@@ -274,6 +274,17 @@ function eco_form_settings_save()
         }
     }
     update_option(ECO_FORM_OPT_EMAIL, implode(', ', $emails), false);
+    // Các trạng thái đơn Ecopillo tự đặt (đợt F); "Mới" và "Thử, bỏ qua" luôn có (đếm đơn mới, đơn thử)
+    if (isset($_POST['trang_thai'])) {
+        $lines = array();
+        foreach (preg_split('/\R/u', sanitize_textarea_field(wp_unslash($_POST['trang_thai']))) as $line) {
+            $line = mb_substr(trim($line), 0, 40, 'UTF-8');
+            if ($line !== '' && !in_array($line, $lines, true)) {
+                $lines[] = $line;
+            }
+        }
+        update_option(ECO_FORM_OPT_TRANG_THAI, array_slice($lines, 0, 20), false);
+    }
     wp_safe_redirect(add_query_arg('ket-qua', 'ok', $back));
     exit;
 }
@@ -306,6 +317,11 @@ function eco_form_settings_page()
                     <th scope="row"><label for="email_nhan">Email nhận báo</label></th>
                     <td><textarea id="email_nhan" name="email_nhan" rows="2" class="large-text"><?php echo esc_textarea($emails); ?></textarea>
                         <p class="description">Nhiều email thì cách nhau bằng dấu phẩy. Để trống: không gửi email, đơn vẫn lưu.</p></td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="trang_thai">Các trạng thái đơn</label></th>
+                    <td><textarea id="trang_thai" name="trang_thai" rows="7" class="large-text"><?php echo esc_textarea(implode("\n", eco_form_statuses())); ?></textarea>
+                        <p class="description">Mỗi dòng một trạng thái, theo thứ tự hiện ở cột phải khi xem đơn và ở "Đổi trạng thái" hàng loạt. "Mới" (đơn vừa tới, đếm ở menu) và "Thử, bỏ qua" luôn có. Đổi tên một trạng thái thì đơn cũ vẫn giữ tên cũ.</p></td>
                 </tr>
             </table>
             <p class="submit">

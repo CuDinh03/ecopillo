@@ -34,9 +34,19 @@ define('ECO_FORM_EMAIL_MAC_DINH', 'ecopillo.com.vn@gmail.com');
 define('ECO_FORM_PHONE', '/^(0|\+84)(3|5|7|8|9)\d{8}$/');
 
 /** Trạng thái nhân viên ghi cho từng đơn (giống cột "Trạng thái" trong Trang tính) */
+define('ECO_FORM_OPT_TRANG_THAI', 'ecopillo_form_trang_thai');
+
+/** Trạng thái đơn: bản Ecopillo đặt ở Cài đặt nhận đơn (đợt F), luôn có "Mới" đầu và "Thử, bỏ qua" */
 function eco_form_statuses()
 {
-    return array('Mới', 'Đã gọi', 'Đã chốt', 'Đã giao', 'Huỷ', 'Thử, bỏ qua');
+    $saved = get_option(ECO_FORM_OPT_TRANG_THAI, array());
+    $list = is_array($saved) && $saved ? array_values(array_filter(array_map('strval', $saved), 'strlen')) : array('Mới', 'Đã gọi', 'Đã chốt', 'Đã giao', 'Huỷ', 'Thử, bỏ qua');
+    $list = array_values(array_diff($list, array('Mới')));
+    array_unshift($list, 'Mới');
+    if (!in_array('Thử, bỏ qua', $list, true)) {
+        $list[] = 'Thử, bỏ qua';
+    }
+    return $list;
 }
 
 function eco_form_topics()
