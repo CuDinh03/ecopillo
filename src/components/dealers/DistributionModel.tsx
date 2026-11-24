@@ -15,6 +15,7 @@ export function DistributionModel() {
         <div className="relative">
           <img
             src={DISTRIBUTION_MAP.src}
+            srcSet={DISTRIBUTION_MAP.srcSet || undefined}
             alt={DISTRIBUTION_MAP.alt}
             width={DISTRIBUTION_MAP.width}
             height={DISTRIBUTION_MAP.height}

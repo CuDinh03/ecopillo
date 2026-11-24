@@ -65,8 +65,8 @@ function EntryCard({ entry, onQuote }: { entry: HotelProductEntry; onQuote: (nam
             </button>
           }
           note={entry.note}
-          price="Giá liên hệ"
-          action="Nhận báo giá"
+          price={HOTEL_PAGE.theGiaLienHe}
+          action={HOTEL_PAGE.theNhanBaoGia}
         />
       </article>
     )
@@ -85,8 +85,8 @@ function EntryCard({ entry, onQuote }: { entry: HotelProductEntry; onQuote: (nam
           </Link>
         }
         note={product.summary}
-        price="Giá liên hệ"
-        action="Xem sản phẩm"
+        price={HOTEL_PAGE.theGiaLienHe}
+        action={HOTEL_PAGE.theXemSanPham}
       />
     </article>
   )

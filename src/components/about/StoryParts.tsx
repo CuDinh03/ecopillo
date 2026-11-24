@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
 import type { ImageSource } from '../../data/catalog'
 import { Icon, type IconName } from '../ui/Icon'
+import { ABOUT_PAGE_TEXT } from '../../data/pageText/aboutPage'
+import { chen } from '../../data/pageText/define'
 
 /**
  * Các khối dựng trang Giới thiệu (mẫu 2, owner chọn 09/11/2026; mẫu: docs/de-xuat-gioi-thieu-dai-ly-09-11.html).
@@ -54,7 +56,7 @@ export function Chapter({ id, numeral, icon, eyebrow, title, isTitleHidden = fal
           {/* Gạch ngắn canh dòng đầu: nhãn dài xuống dòng trên điện thoại thì gạch không trôi xuống giữa */}
           <p className={`flex items-start gap-2 ${STORY_LABEL}`}>
             <span aria-hidden="true" className="mt-[0.6em] h-0.5 w-[22px] shrink-0 rounded-full bg-deep-700" />
-            {numeral ? `Chương ${numeral} · ${eyebrow}` : eyebrow}
+            {numeral ? chen(ABOUT_PAGE_TEXT.chuongNhan, { so: numeral, nhan: eyebrow }) : eyebrow}
           </p>
           <h2
             id={titleId}

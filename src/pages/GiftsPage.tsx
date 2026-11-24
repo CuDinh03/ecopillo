@@ -42,7 +42,7 @@ export function GiftsPage() {
   return (
     <div className="pb-24">
       <PageHero
-        crumbs={[{ label: 'Quà tặng và sự kiện' }]}
+        crumbs={[{ label: GIFTS_TEXT.duongDan }]}
         eyebrow={GIFTS_TEXT.nhan}
         title={<Lines text={GIFTS_TEXT.tieuDe} breakClassName="max-sm:hidden" />}
         lead={GIFTS_TEXT.danDat}

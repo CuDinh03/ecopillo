@@ -35,7 +35,7 @@ export function RecruitPage() {
   return (
     <div className="pb-24">
       <PageHero
-        crumbs={[{ label: 'Tuyển đại lý' }]}
+        crumbs={[{ label: RECRUIT_TEXT.duongDan }]}
         eyebrow={LETTER.eyebrow}
         title={LETTER.title}
       >
@@ -48,7 +48,7 @@ export function RecruitPage() {
           <p className="font-display text-[1.35rem] leading-snug text-deep-800 italic">{LETTER.signOff}</p>
         </div>
         <Link to={`${PATHS.contact}#diem-ban`} className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-deep-900 underline-offset-4 hover:underline">
-          Xem các điểm phân phối hiện có <Icon name="arrowRight" size={15} />
+          {RECRUIT_TEXT.xemDiemPhanPhoi} <Icon name="arrowRight" size={15} />
         </Link>
       </PageHero>
 

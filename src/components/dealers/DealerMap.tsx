@@ -1,6 +1,8 @@
 import { directionsUrl, pinEmbedUrl } from '../../data/brand'
 import { KIND_LABEL, telHref, type Dealer } from '../../data/dealers'
 import { Icon } from '../ui/Icon'
+import { DEALER_TEXT } from '../../data/pageText/dealers'
+import { chen } from '../../data/pageText/define'
 import { buttonClass } from '../ui/primitives'
 
 interface DealerMapProps {
@@ -35,10 +37,10 @@ export function DealerMap({ dealer, className = '' }: DealerMapProps) {
           <p className="mt-1 text-body-sm text-ink-soft">{dealer.dia_chi}</p>
           <div className="mt-4 flex flex-wrap gap-2">
             <a href={directionsUrl(dealer.dia_chi)} target="_blank" rel="noopener noreferrer" className={buttonClass('primary', 'sm')}>
-              <Icon name="pin" size={16} /> Chỉ đường
+              <Icon name="pin" size={16} /> {DEALER_TEXT.nutChiDuong}
             </a>
             <a href={telHref(dealer)} className={buttonClass('secondary', 'sm')}>
-              <Icon name="phone" size={15} /> Gọi {dealer.dien_thoai}
+              <Icon name="phone" size={15} /> {chen(DEALER_TEXT.banDoGoi, { so: dealer.dien_thoai })}
             </a>
           </div>
         </div>

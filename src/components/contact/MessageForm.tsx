@@ -1,6 +1,6 @@
 import { useEffect, useId, useState, type FormEvent, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { OPENING_HOURS } from '../../data/brand'
+import { CONTACT, OPENING_HOURS } from '../../data/brand'
 import { PATHS } from '../../data/links'
 import { isValidPhone } from '../../lib/order'
 import { focusField, scrollToElement } from '../../lib/scroll'
@@ -11,6 +11,7 @@ import { PreviewNotSent } from '../ui/PreviewNotSent'
 import { SendFailed } from '../ui/SendFailed'
 import { buttonClass } from '../ui/primitives'
 import { CONTACT_PAGE_TEXT } from '../../data/pageText/contact'
+import { chen } from '../../data/pageText/define'
 
 /**
  * Form "Gửi tin nhắn cho chúng tôi" (trang Liên hệ mua hàng, trang Khách sạn, Đăng ký mở đại lý).
@@ -29,6 +30,9 @@ export const TOPICS = [
 
 export type Topic = (typeof TOPICS)[number]
 
+/** Chữ hiện trên nút chủ đề (Ecopillo sửa ở Nội dung web); mã chủ đề gửi đi và ?chu-de=… giữ nguyên */
+const topicLabel = (topic: Topic): string => CONTACT_PAGE_TEXT.chuDe[TOPICS.indexOf(topic)] || topic
+
 interface ContactForm {
   topic: Topic
   name: string
@@ -42,9 +46,9 @@ const EMPTY_FORM: ContactForm = { topic: 'Tư vấn chọn mẫu', name: '', pho
 
 const validate = (f: ContactForm): ContactErrors => {
   const errors: ContactErrors = {}
-  if (f.name.trim().length < 2) errors.name = 'Vui lòng nhập họ tên.'
-  if (!isValidPhone(f.phone)) errors.phone = 'Số điện thoại chưa đúng, ví dụ 0988 832 072.'
-  if (f.message.trim().length < 5) errors.message = 'Quý khách vui lòng ghi ngắn gọn điều cần hỏi.'
+  if (f.name.trim().length < 2) errors.name = CONTACT_PAGE_TEXT.loiHoTen
+  if (!isValidPhone(f.phone)) errors.phone = chen(CONTACT_PAGE_TEXT.loiSoDienThoai, { so: CONTACT.hotlineDisplay })
+  if (f.message.trim().length < 5) errors.message = CONTACT_PAGE_TEXT.loiNoiDung
   return errors
 }
 
@@ -66,6 +70,20 @@ function Field({ id, label, error, children }: { id: string; label: string; erro
         </p>
       )}
     </div>
+  )
+}
+
+/** Câu cảm ơn sau khi gửi: số điện thoại khách ghi (chỗ {so}) in đậm như trước */
+function ThanksLine({ name, phone }: { name: string; phone: string }) {
+  // Tách chỗ {so} trước rồi mới chèn tên: tên khách gõ có "{so}" cũng không làm lệch câu
+  const [before, ...after] = CONTACT_PAGE_TEXT.daNhanChu.split('{so}').map((part) => chen(part, { ten: name, gio: OPENING_HOURS }))
+  if (after.length === 0) return <>{before}</>
+  return (
+    <>
+      {before}
+      <span className="tabular font-medium text-deep-900">{phone}</span>
+      {after.join(phone)}
+    </>
   )
 }
 
@@ -168,10 +186,9 @@ export function MessageForm({
         </span>
         <h3 className="font-display mt-6 text-[1.9rem] leading-tight text-deep-900">{CONTACT_PAGE_TEXT.daNhanTieuDe}</h3>
         <p className="mt-3 max-w-sm text-ink-soft">
-          Cảm ơn {sent.form.name.trim()}. Bộ phận Chăm sóc khách hàng sẽ gọi lại số{' '}
-          <span className="tabular font-medium text-deep-900">{sent.form.phone}</span> trong giờ làm việc ({OPENING_HOURS}).
+          <ThanksLine name={sent.form.name.trim()} phone={sent.form.phone} />
         </p>
-        <p className="mt-2 text-sm text-ink-faint">Chủ đề: {sent.form.topic}</p>
+        <p className="mt-2 text-sm text-ink-faint">{chen(CONTACT_PAGE_TEXT.daNhanChuDe, { chuDe: topicLabel(sent.form.topic) })}</p>
         <PreviewNotSent delivered={sent.result.delivered} className="mt-6 max-w-sm" />
         <button
           type="button"
@@ -181,7 +198,7 @@ export function MessageForm({
           }}
           className={buttonClass('secondary', 'md', 'mt-8')}
         >
-          Gửi tin nhắn khác
+          {CONTACT_PAGE_TEXT.daNhanNut}
         </button>
       </div>
     )
@@ -195,7 +212,7 @@ export function MessageForm({
         <input id="c-website" name="website" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
       </div>
       <fieldset>
-        <legend className="text-sm font-medium text-deep-900">Quý khách cần</legend>
+        <legend className="text-sm font-medium text-deep-900">{CONTACT_PAGE_TEXT.chuDeNhan}</legend>
         <div className="mt-3 flex flex-wrap gap-2">
           {TOPICS.map((t) => {
             const active = form.topic === t
@@ -209,7 +226,7 @@ export function MessageForm({
                   active ? 'bg-deep-800 text-ivory' : 'bg-cream-50 text-deep-900 ring-1 ring-cream-200 hover:ring-deep-700/40'
                 }`}
               >
-                {t}
+                {topicLabel(t)}
               </button>
             )
           })}
@@ -217,7 +234,7 @@ export function MessageForm({
       </fieldset>
 
       <div className="grid gap-5 sm:grid-cols-2">
-        <Field id="name" label="Họ tên" error={errors.name}>
+        <Field id="name" label={CONTACT_PAGE_TEXT.hoTenNhan} error={errors.name}>
           <input
             id="c-name"
             autoComplete="name"
@@ -226,10 +243,10 @@ export function MessageForm({
             aria-invalid={!!errors.name}
             aria-describedby={errors.name ? 'c-name-error' : undefined}
             className={inputClass(!!errors.name)}
-            placeholder="Nguyễn Thị Lan"
+            placeholder={CONTACT_PAGE_TEXT.hoTenViDu}
           />
         </Field>
-        <Field id="phone" label="Số điện thoại" error={errors.phone}>
+        <Field id="phone" label={CONTACT_PAGE_TEXT.soDienThoaiNhan} error={errors.phone}>
           <input
             id="c-phone"
             type="tel"
@@ -240,12 +257,12 @@ export function MessageForm({
             aria-invalid={!!errors.phone}
             aria-describedby={errors.phone ? 'c-phone-error' : undefined}
             className={inputClass(!!errors.phone)}
-            placeholder="09xx xxx xxx"
+            placeholder={CONTACT_PAGE_TEXT.soDienThoaiViDu}
           />
         </Field>
       </div>
 
-      <Field id="message" label="Nội dung yêu cầu" error={errors.message}>
+      <Field id="message" label={CONTACT_PAGE_TEXT.noiDungNhan} error={errors.message}>
         <textarea
           id="c-message"
           rows={5}
@@ -266,9 +283,9 @@ export function MessageForm({
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="max-w-sm text-meta leading-relaxed text-ink-faint">
-          Ecopillo chỉ dùng thông tin này để liên hệ lại, theo{' '}
+          {CONTACT_PAGE_TEXT.baoMatTruoc}{' '}
           <Link to={PATHS.privacy} className="-my-2 inline-block py-2 underline underline-offset-2 hover:text-deep-900">
-            chính sách bảo vệ thông tin
+            {CONTACT_PAGE_TEXT.baoMatLink}
           </Link>
           .
         </p>
@@ -278,7 +295,7 @@ export function MessageForm({
           aria-busy={sending}
           className={buttonClass('primary', 'lg', 'shrink-0')}
         >
-          {sending ? 'Đang gửi…' : submitLabel}
+          {sending ? CONTACT_PAGE_TEXT.dangGui : submitLabel}
           <Icon name="arrowRight" size={18} />
         </button>
       </div>

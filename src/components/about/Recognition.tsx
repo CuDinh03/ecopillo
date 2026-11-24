@@ -4,6 +4,8 @@ import type { Partner } from '../../data/content'
 import { PRESS } from '../../data/press'
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
+import { ABOUT_PAGE_TEXT } from '../../data/pageText/aboutPage'
+import { chen } from '../../data/pageText/define'
 
 /**
  * Các khối "được ghi nhận" lấy từ catalog Ecopillo 22.07.2026 (owner chọn 24/10/2026, mẫu docs/de-xuat-phan-moi-catalog.html):
@@ -21,7 +23,7 @@ function useCertificateViewer() {
   const viewer = (
     <dialog
       ref={dialogRef}
-      aria-label={shown ? `Giấy ${shown.name}` : 'Giấy chứng nhận'}
+      aria-label={shown ? `Giấy ${shown.name}` : ABOUT_PAGE_TEXT.giayNhan}
       className="m-auto max-h-[calc(100svh-2rem)] w-[min(34rem,calc(100%-2rem))] rounded-[1.5rem] bg-ivory p-4 backdrop:bg-deep-950/70 sm:p-6"
       onClick={(e) => e.target === e.currentTarget && dialogRef.current?.close()}
     >
@@ -137,7 +139,7 @@ export function CertificateBadges({ showImages = true }: { showImages?: boolean 
               />
               <span>
                 <span className="block text-meta leading-snug font-medium text-deep-900 sm:text-body-sm">{c.short}</span>
-                <span className="mt-0.5 hidden text-label text-ink-faint sm:block">Bấm xem giấy</span>
+                <span className="mt-0.5 hidden text-label text-ink-faint sm:block">{ABOUT_PAGE_TEXT.bamXemGiay}</span>
               </span>
             </button>
           </li>
@@ -202,7 +204,7 @@ export function PressQuotes() {
             rel="noopener noreferrer"
             className="mt-5 inline-flex items-center gap-1.5 rounded-full border border-line px-4 py-2 text-sm font-medium text-deep-900 transition hover:bg-mist-100"
           >
-            Đọc bài trên {article.outlet}
+            {chen(ABOUT_PAGE_TEXT.docBai, { bao: article.outlet })}
             <Icon name="arrowRight" size={15} />
           </a>
         )}

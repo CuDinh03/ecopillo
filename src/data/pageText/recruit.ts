@@ -1,4 +1,4 @@
-import { chu, definePageText, doan, doanNhieu, dsCap, dsDong } from './define'
+import { anh, chu, definePageText, doan, doanNhieu, dsCap, dsDong } from './define'
 
 /**
  * Chữ trang Tuyển đại lý. Thư ngỏ và Mô hình kinh doanh: chữ chị Phương gửi Zalo 19/11/2026, giữ nguyên văn.
@@ -15,6 +15,7 @@ export const { set: RECRUIT_TEXT_SET, text: RECRUIT_TEXT } = definePageText(
       'Mô tả trên Google',
       'Ecopillo tuyển đại lý, nhà phân phối chăn ga gối đệm cao cấp vải Lyocell tại các tỉnh, thành. Để lại thông tin, bộ phận kinh doanh gọi lại.',
     ),
+    duongDan: chu('Đường dẫn đầu trang: tên trang', 'Tuyển đại lý'),
     thuNhan: chu('Thư ngỏ: nhãn nhỏ', 'Thư ngỏ hợp tác'),
     thuTieuDe: chu('Thư ngỏ: tiêu đề', 'Đồng hành kiến tạo thịnh vượng'),
     thu: doanNhieu('Thư ngỏ: các đoạn', [
@@ -23,6 +24,7 @@ export const { set: RECRUIT_TEXT_SET, text: RECRUIT_TEXT } = definePageText(
       'Bằng nền tảng sản phẩm chất lượng, chính sách hợp tác minh bạch và tinh thần đồng hành lâu dài, Ecopillo mong muốn cùng Quý đối tác mở rộng thị trường, gia tăng giá trị kinh doanh và kiến tạo những thành công bền vững.',
     ]),
     thuKyTen: chu('Thư ngỏ: dòng ký tên', 'Ecopillo – Cộng sinh cùng phát triển.'),
+    xemDiemPhanPhoi: chu('Thư ngỏ: chữ link xem điểm phân phối', 'Xem các điểm phân phối hiện có'),
     moHinhNhan: chu('Mô hình: nhãn nhỏ', 'Mô hình kinh doanh'),
     moHinhTieuDe: chu('Mô hình: tiêu đề', 'Ba trụ cột – Một hệ sinh thái'),
     moHinhChu: doan(
@@ -45,6 +47,15 @@ export const { set: RECRUIT_TEXT_SET, text: RECRUIT_TEXT } = definePageText(
       'Đồng hành cùng khách sạn, resort, homestay và các dự án lưu trú với giải pháp chăn ga gối đệm đồng bộ. Đảm bảo chất lượng, tính thẩm mỹ, độ bền và năng lực cung ứng theo yêu cầu của từng dự án.',
       'Mở rộng mạng lưới đại lý và nhà phân phối trên toàn quốc. Xây dựng hệ thống hợp tác bền vững dựa trên lợi ích song phương, với nguồn hàng ổn định, chính sách kinh doanh cạnh tranh, hỗ trợ bán hàng và đồng hành phát triển thị trường.',
     ]),
+    anhBanDo: anh(
+      'Bản đồ: ảnh',
+      {
+        src: '/images/distribution/ban-do-phan-phoi.webp',
+        srcSet: '',
+        alt: 'Bản đồ Việt Nam đánh dấu văn phòng Hà Nội, chi nhánh TP. Hồ Chí Minh và các vùng có nhà phân phối Ecopillo',
+      },
+      'Ảnh dọc, tỉ lệ như ảnh gốc 563×900',
+    ),
     soNhaPhanPhoi: chu('Bản đồ: con số', '50'),
     soNhaPhanPhoiChu: chu('Bản đồ: chữ dưới con số', 'nhà phân phối'),
     banDoChuThich: doan(

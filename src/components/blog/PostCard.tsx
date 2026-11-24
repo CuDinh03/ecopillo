@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom'
 import { postPath, type Post } from '../../data/posts'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
+import { BLOG_TEXT } from '../../data/pageText/blog'
+import { chen } from '../../data/pageText/define'
 
 /** Thẻ bài viết; feature = bài nổi bật nằm ngang ở đầu danh sách */
 export function PostCard({ post, feature = false }: { post: Post; feature?: boolean }) {
@@ -25,7 +27,7 @@ export function PostCard({ post, feature = false }: { post: Post; feature?: bool
         <p className="flex items-center gap-2 text-meta text-ink-soft">
           <span className="font-medium tracking-[0.12em] text-mist-600 uppercase">{post.category}</span>
           <span aria-hidden>·</span>
-          <span>{post.readMinutes} phút đọc</span>
+          <span>{chen(BLOG_TEXT.phutDoc, { so: post.readMinutes })}</span>
         </p>
         <h3
           className={`font-display mt-3 leading-tight text-deep-900 ${feature ? 'text-[1.5rem] sm:text-[2.2rem]' : 'text-[1.35rem]'}`}
@@ -36,7 +38,7 @@ export function PostCard({ post, feature = false }: { post: Post; feature?: bool
         </h3>
         <p className={`mt-3 leading-relaxed text-ink-soft ${feature ? 'text-body' : 'line-clamp-3 text-body-sm'}`}>{post.excerpt}</p>
         <span className="mt-auto inline-flex items-center gap-1 pt-5 text-small font-medium text-deep-800">
-          Đọc bài <Icon name="arrowRight" size={15} className="transition group-hover:translate-x-0.5" />
+          {BLOG_TEXT.docBai} <Icon name="arrowRight" size={15} className="transition group-hover:translate-x-0.5" />
         </span>
       </div>
     </article>

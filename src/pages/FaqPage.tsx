@@ -17,7 +17,7 @@ export function FaqPage() {
   return (
     <>
       <PageHero
-        crumbs={[{ label: 'Hỏi đáp' }]}
+        crumbs={[{ label: FAQ_PAGE_TEXT.duongDan }]}
         eyebrow={FAQ_PAGE_TEXT.nhan}
         title={<Lines text={FAQ_PAGE_TEXT.tieuDe} />}
         lead={FAQ_PAGE_TEXT.danDat}

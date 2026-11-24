@@ -4,20 +4,23 @@ import { Container, LinkButton } from '../components/ui/primitives'
 import { PATHS } from '../data/links'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { COMMON_TEXT } from '../data/pageText/common'
+import { NOT_FOUND_TEXT } from '../data/pageText/notFound'
 
-/** Lối đi tiếp gần nhất cho khách bấm phải đường link cũ (biên bản mục 07: không để khách kẹt ở trang lỗi) */
-const SUGGESTIONS = [
-  { to: PATHS.products, label: 'Sản phẩm' },
-  { to: PATHS.blog, label: 'Tin tức, cẩm nang' },
-  { to: PATHS.faq, label: 'Hỏi đáp, chính sách' },
-  { to: PATHS.contact, label: 'Liên hệ' },
-] as const
+/**
+ * Lối đi tiếp gần nhất cho khách bấm phải đường link cũ (biên bản mục 07: không để khách kẹt ở trang lỗi).
+ * Chữ từng link Ecopillo sửa ở Nội dung web (NOT_FOUND_TEXT.goiY, cùng thứ tự); dòng để trống thì bỏ link đó.
+ */
+const SUGGESTION_PATHS = [PATHS.products, PATHS.blog, PATHS.faq, PATHS.contact] as const
+const SUGGESTIONS = SUGGESTION_PATHS.flatMap((to, i) => {
+  const label = NOT_FOUND_TEXT.goiY[i]?.trim()
+  return label ? [{ to, label }] : []
+})
 
 export function NotFoundPage() {
   usePageMeta('Không tìm thấy trang', undefined, { notFound: true })
   return (
     <Container className="py-24 text-center sm:py-32">
-      <p className="eyebrow">Lỗi 404</p>
+      <p className="eyebrow">{NOT_FOUND_TEXT.nhan}</p>
       <h1 className="font-display mt-4 text-[2.2rem] text-deep-900">{COMMON_TEXT.loi404TieuDe}</h1>
       <p className="mt-4 text-ink-soft">{COMMON_TEXT.loi404Chu}</p>
       <ul className="mx-auto mt-8 flex max-w-xl flex-wrap justify-center gap-2">
@@ -34,7 +37,7 @@ export function NotFoundPage() {
         ))}
       </ul>
       <LinkButton to="/" className="mt-8">
-        Về trang chủ
+        {NOT_FOUND_TEXT.nutTrangChu}
       </LinkButton>
     </Container>
   )
