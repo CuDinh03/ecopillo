@@ -38,6 +38,7 @@ import { THANK_YOU_SET } from './thankYou'
 import { FONT_SET, THEME_SET } from './theme'
 import { LAYOUT_SETS } from './pageLayout'
 import { REDIRECT_SET } from './liveRedirects'
+import { PAGE_ALIAS_SET } from './pageAliasFrame'
 import { SEO_SET } from './liveSeo'
 import { GIFT_OCCASIONS_SET } from './giftOccasions'
 import { PRODUCT_PROCESS_SET } from './about'
@@ -167,6 +168,7 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   SEARCH_PAGES_SET,
   ...LAYOUT_SETS,
   REDIRECT_SET,
+  PAGE_ALIAS_SET,
   // SEO từng trang (đợt E 24/11/2026)
   SEO_SET,
   SITE_ICONS_SET,

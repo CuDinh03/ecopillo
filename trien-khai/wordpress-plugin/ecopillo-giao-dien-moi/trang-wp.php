@@ -10,7 +10,10 @@
  * - trang danh mục Ecopillo đã ẩn / xoá (danh-muc.php), sản phẩm / mẫu / bài có sẵn đã gỡ (an-xoa.php): trả 301;
  * - trang có SEO Ecopillo điền (Nội dung web → "SEO từng trang", hoặc ô SEO / Yoast ở danh mục Woo): trả HTML dựng sẵn với
  *   thẻ title, description, og:title, og:description, og:image mới (Google, Facebook, Zalo đọc được ngay);
- * - link Ecopillo thêm ở "Chuyển hướng link" mà đang là một trang có sẵn: eco_nd_redirect (noi-dung.php) trả 301 trước.
+ * - link Ecopillo thêm ở "Chuyển hướng link" mà đang là một trang có sẵn: eco_nd_redirect (noi-dung.php) trả 301 trước;
+ * - trang Ecopillo đổi link ở "Đổi link trang" (src/data/pageAliases.ts): link cũ trả 301 sang link mới. Link mới không có file
+ *   trong site/ nên quy tắc .htaccess để WordPress trả (không cần đánh dấu): plugin trả HTML dựng sẵn của trang với canonical,
+ *   og:url, link trong trang đổi sang link mới.
  * File đánh dấu được ghi lại mỗi lần ghi du-lieu.js (eco_dl_write), trang hết cần thì xoá đánh dấu, máy chủ lại trả file tĩnh.
  */
 
@@ -49,28 +52,17 @@ function eco_tw_write_sitemap()
         return;
     }
     $hidden = eco_tw_hidden_map();
+    // Trang Ecopillo đã đổi link: sơ đồ ghi link mới (giữ ngày sửa của trang)
+    $aliases = eco_tw_aliases();
     $urls = array();
     foreach ($m as $row) {
         $path = (string) parse_url(html_entity_decode($row[1]), PHP_URL_PATH);
         if ($path !== '' && !isset($hidden[$path])) {
-            $urls[$path] = isset($row[2]) ? $row[2] : '';
+            $urls[isset($aliases[$path]) ? $aliases[$path] : $path] = isset($row[2]) ? $row[2] : '';
         }
     }
     $today = current_time('Y-m-d');
-    $add = array();
-    foreach ((array) get_option('ecopillo_dm_trang', array()) as $path => $page) {
-        $add[] = (string) $path; // danh mục mới
-    }
-    foreach ((array) get_option('ecopillo_bo_moi_trang', array()) as $path => $page) {
-        $add[] = (string) $path; // bộ sưu tập mới
-    }
-    foreach ((array) get_option('ecopillo_mau_moi_trang', array()) as $slug => $page) {
-        $add[] = isset($page['url']) ? (string) $page['url'] : '/san-pham/' . $slug . '/'; // mẫu mới, sản phẩm mới
-    }
-    foreach ((array) get_option(defined('ECO_BV_OPT_TRANG') ? ECO_BV_OPT_TRANG : 'ecopillo_bai_moi_trang', array()) as $slug => $page) {
-        $add[] = isset($page['url']) ? (string) $page['url'] : '/' . $slug . '/'; // bài mới
-    }
-    foreach ($add as $path) {
+    foreach (eco_tw_created_paths() as $path) {
         if (eco_tw_is_path($path) && !isset($hidden[$path]) && !isset($urls[$path])) {
             $urls[$path] = $today;
         }
@@ -85,6 +77,25 @@ function eco_tw_write_sitemap()
     if (file_put_contents($file . '.tmp', $out) !== false) {
         rename($file . '.tmp', $file);
     }
+}
+
+/** Link các trang Ecopillo tạo sau lần dựng: danh mục mới, bộ sưu tập mới, mẫu mới, sản phẩm mới, bài mới */
+function eco_tw_created_paths()
+{
+    $add = array();
+    foreach ((array) get_option('ecopillo_dm_trang', array()) as $path => $page) {
+        $add[] = (string) $path; // danh mục mới
+    }
+    foreach ((array) get_option('ecopillo_bo_moi_trang', array()) as $path => $page) {
+        $add[] = (string) $path; // bộ sưu tập mới
+    }
+    foreach ((array) get_option('ecopillo_mau_moi_trang', array()) as $slug => $page) {
+        $add[] = isset($page['url']) ? (string) $page['url'] : '/san-pham/' . $slug . '/'; // mẫu mới, sản phẩm mới
+    }
+    foreach ((array) get_option(defined('ECO_BV_OPT_TRANG') ? ECO_BV_OPT_TRANG : 'ecopillo_bai_moi_trang', array()) as $slug => $page) {
+        $add[] = isset($page['url']) ? (string) $page['url'] : '/' . $slug . '/'; // bài mới
+    }
+    return $add;
 }
 
 /** Link trang hợp lệ: "/" hoặc /a/b/ (chữ thường không dấu, số, gạch) */
@@ -239,14 +250,255 @@ function eco_tw_hidden_map()
     return array_merge(eco_tw_code_posts()['an'], $map);
 }
 
-/** Các trang cần WordPress trả (trang có sẵn đã đổi SEO, đã ẩn, có chuyển link Ecopillo thêm, có khối tự do) */
+/* ---------------------------------------------------------------- Đổi link trang có sẵn (src/data/pageAliases.ts) */
+
+/** Mã bộ "Đổi link trang" ở Nội dung web → Giao diện (src/data/pageAliasFrame.ts) */
+define('ECO_TW_ALIAS_SET', 'doi-link-trang');
+
+/**
+ * Link Ecopillo gõ ở ô "Link mới" → dạng chuẩn: bỏ tên miền của web, bỏ dấu, chữ thường, gạch ngang thay khoảng trắng,
+ * "/" hai đầu ("Về Ecopillo" → "/ve-ecopillo/"). Link sang web khác giữ nguyên để bước kiểm báo lỗi.
+ */
+function eco_tw_alias_normalize($link)
+{
+    $link = trim((string) $link);
+    $home = untrailingslashit(home_url());
+    $host = (string) wp_parse_url($home, PHP_URL_HOST);
+    if ($link !== '' && stripos($link, $home . '/') === 0) {
+        $link = substr($link, strlen($home));
+    } elseif ($host !== '' && preg_match('#^(?:www\.)?' . preg_quote($host, '#') . '(/.*)?$#i', $link, $m)) {
+        $link = isset($m[1]) ? $m[1] : ''; // gõ tên miền không có https://
+    } elseif (preg_match('#^[a-z][a-z0-9+.-]*:#i', $link) || strpos($link, '//') === 0) {
+        return $link;
+    }
+    $link = (string) preg_replace('/[?#].*$/s', '', $link);
+    $parts = array();
+    foreach (explode('/', $link) as $part) {
+        $part = sanitize_title(remove_accents(rawurldecode($part)));
+        if ($part !== '') {
+            $parts[] = $part;
+        }
+    }
+    return $parts ? '/' . implode('/', $parts) . '/' : ($link === '' ? '' : '/');
+}
+
+/** Link máy chủ đang trả 301 theo quy tắc .htaccess (linkDaCo trong noi-dung-goc.json, sinh từ HOST_REDIRECTS) */
+function eco_tw_alias_reserved()
+{
+    $sets = function_exists('eco_nd_sets') ? eco_nd_sets() : array();
+    $list = isset($sets[ECO_TW_ALIAS_SET]['linkDaCo']) ? (array) $sets[ECO_TW_ALIAS_SET]['linkDaCo'] : array();
+    return array_flip(array_map('strval', $list));
+}
+
+/** Link cũ các dòng Ecopillo ghi ở "Chuyển hướng link" (bản đã lưu, chưa lọc), cùng cách chuẩn hoá như eco_nd_redirects */
+function eco_tw_redirect_sources()
+{
+    $saved = function_exists('eco_nd_saved') ? eco_nd_saved('chuyen-huong') : null;
+    $out = array();
+    foreach ($saved && is_array($saved['giaTri']) ? $saved['giaTri'] : array() as $row) {
+        if (is_array($row) && isset($row['tu']) && (string) $row['tu'] !== '') {
+            $out[strtolower(trailingslashit((string) $row['tu']))] = true;
+        }
+    }
+    return $out;
+}
+
+/**
+ * Lỗi của một dòng đổi link (chữ rỗng = dòng dùng được). $saving: kiểm thêm phần chỉ có ý nghĩa lúc Ecopillo bấm Lưu (trùng bài,
+ * trang WordPress, trang Ecopillo tạo, dòng "Chuyển hướng link"). Lúc đọc chỉ kiểm phần chắc chắn, để thứ thêm sau (bài mới,
+ * dòng chuyển hướng mới) không làm trang đang chạy ở link mới bỗng mất: "Đổi link trang" đứng trên (eco_nd_redirects bỏ dòng trùng).
+ */
+function eco_tw_alias_problem($from, $to, $saving)
+{
+    if (!eco_tw_is_path($from) || $from === '/' || eco_tw_static_file($from) === '') {
+        return 'không có trang này trên giao diện mới';
+    }
+    if ($to === '') {
+        return 'chưa ghi link mới';
+    }
+    if (strlen($to) > 200 || !preg_match('#^/[a-z0-9-]+(?:/[a-z0-9-]+)*/$#', $to)) {
+        return 'link mới chỉ gồm chữ thường không dấu, số, gạch ngang, có "/" hai đầu (ví dụ /ve-ecopillo/)';
+    }
+    if ($to === $from) {
+        return 'link mới trùng link đang dùng';
+    }
+    // Đầu link dành cho WordPress và file của web (như RESERVED_FIRST trong pageAliases.ts)
+    if (preg_match('#^/(?:wp-[^/]*|api|feed|comments|embed|page|search|assets|fonts|images|hieu-ung)/#', $to)) {
+        return 'link mới bắt đầu bằng phần dành cho WordPress hoặc file của web';
+    }
+    if (eco_tw_static_file($to) !== '') {
+        return 'link mới trùng một trang có sẵn của web';
+    }
+    $reserved = eco_tw_alias_reserved();
+    $hidden = eco_tw_hidden_map();
+    if (isset($reserved[$to]) || isset($hidden[$to])) {
+        return 'link mới đang tự chuyển (301) sang trang khác';
+    }
+    if (!$saving) {
+        return '';
+    }
+    if (in_array($to, eco_tw_created_paths(), true)) {
+        return 'link mới trùng một trang Ecopillo đã tạo (danh mục, bộ sưu tập, sản phẩm, bài viết mới)';
+    }
+    if (url_to_postid(home_url($to)) > 0) {
+        return 'link mới trùng một bài viết, trang hoặc sản phẩm trong WordPress';
+    }
+    if (preg_match('#^/(danh-muc-san-pham|category)/(?:.+/)?([a-z0-9-]+)/$#', $to, $m) && term_exists($m[2], $m[1] === 'category' ? 'category' : 'product_cat')) {
+        return 'link mới trùng một danh mục trong WordPress';
+    }
+    $sources = eco_tw_redirect_sources();
+    if (isset($sources[$from]) || isset($sources[$to])) {
+        return 'link này đang có dòng ở Nội dung web → Chuyển hướng link; xoá dòng đó trước';
+    }
+    return '';
+}
+
+/**
+ * Kiểm các dòng đổi link. @return array{map: array<string, string>, loi: string[]} map: link cũ → link mới đã kiểm;
+ * loi: lỗi từng dòng để màn hình sửa báo (dòng lỗi bị bỏ)
+ */
+function eco_tw_alias_check($rows, $saving = false)
+{
+    $map = array();
+    $news = array();
+    $errors = array();
+    foreach (is_array($rows) ? $rows : array() as $row) {
+        if (!is_array($row)) {
+            continue;
+        }
+        $from = isset($row['trang']) ? strtolower(trailingslashit(trim((string) $row['trang']))) : '';
+        $to = isset($row['linkMoi']) ? strtolower(trim((string) $row['linkMoi'])) : '';
+        $to = $to !== '' && substr($to, -1) !== '/' ? $to . '/' : $to;
+        $problem = eco_tw_alias_problem($from, $to, $saving);
+        if ($problem === '' && isset($map[$from])) {
+            $problem = 'trang này đã có một dòng đổi link khác';
+        }
+        if ($problem === '' && isset($news[$to])) {
+            $problem = 'hai trang cùng một link mới';
+        }
+        if ($problem !== '') {
+            $errors[] = ($to !== '' ? $to : $from) . ': ' . $problem;
+            continue;
+        }
+        $map[$from] = $to;
+        $news[$to] = $from;
+    }
+    // Đổi nối tiếp (link mới của trang này là link cũ của trang khác): bỏ cả hai phía, như pageAliases.ts
+    foreach ($map as $from => $to) {
+        if (isset($map[$to]) || isset($news[$from])) {
+            $errors[] = $to . ': link mới đang là link cũ của một trang khác cũng đổi link (đổi nối tiếp)';
+            unset($map[$from]);
+        }
+    }
+    return array('map' => $map, 'loi' => $errors);
+}
+
+/** Link cũ → link mới của các trang Ecopillo đã đổi link (bản đã lưu, kiểm lại mỗi lần đọc) */
+function eco_tw_aliases()
+{
+    static $cache = array();
+    $saved = function_exists('eco_nd_saved') ? eco_nd_saved(ECO_TW_ALIAS_SET) : null;
+    $rows = $saved && is_array($saved['giaTri']) ? $saved['giaTri'] : array();
+    if (!$rows) {
+        return array();
+    }
+    $signature = md5((string) wp_json_encode($rows));
+    if (!isset($cache[$signature])) {
+        $cache[$signature] = eco_tw_alias_check($rows)['map'];
+    }
+    return $cache[$signature];
+}
+
+/** Link khách thấy của một trang (link mới nếu Ecopillo đã đổi link), giữ ?…, #… phía sau */
+function eco_tw_public_path($path)
+{
+    $path = (string) $path;
+    $aliases = eco_tw_aliases();
+    if (!$aliases || !preg_match('/^([^?#]*)(.*)$/s', $path, $m)) {
+        return $path;
+    }
+    $key = strtolower(trailingslashit($m[1]));
+    return isset($aliases[$key]) ? $aliases[$key] . $m[2] : $path;
+}
+
+/**
+ * HTML dựng sẵn trả từ WordPress: link tới trang đã đổi link (href trong trang, canonical, og:url, link trong JSON-LD) đổi sang
+ * link mới, để Google đọc đúng link chính mà không phải đi qua 301. Chỉ đổi link nguyên vẹn (theo sau là " # ?).
+ */
+function eco_tw_alias_html($html, $aliases)
+{
+    if (!$aliases) {
+        return $html;
+    }
+    $origin = preg_match('#<link rel="canonical" href="(https?://[^/"]+)#', $html, $m) ? $m[1] : untrailingslashit(home_url());
+    foreach ($aliases as $from => $to) {
+        $pattern = '#(href="|content="|":")(' . preg_quote($origin, '#') . ')?' . preg_quote($from, '#') . '(?=["\#?])#';
+        $html = (string) preg_replace($pattern, '${1}${2}' . $to, $html);
+    }
+    return $html;
+}
+
+/**
+ * Lưu xong "Đổi link trang" (cả khôi phục, trả về gốc): xoá bộ nhớ đệm trang của LiteSpeed Cache (nếu có), để link mới không còn
+ * trả trang lỗi đã lưu đệm từ trước, link cũ không còn trả trang cũ (như lúc đổi chế độ, ecopillo-giao-dien-moi.php)
+ */
+add_action('eco_nd_da_luu', 'eco_tw_alias_after_save');
+function eco_tw_alias_after_save($key)
+{
+    if ($key === ECO_TW_ALIAS_SET) {
+        do_action('litespeed_purge_all');
+    }
+}
+
+/** Lưu "Đổi link trang": chuẩn hoá ô Link mới trước khi kiểm từng ô (noi-dung-quan-tri.php, eco_nd_save) */
+add_filter('eco_nd_truoc_luu', 'eco_tw_alias_before_save', 10, 2);
+function eco_tw_alias_before_save($raw, $key)
+{
+    if ($key !== ECO_TW_ALIAS_SET || !is_array($raw)) {
+        return $raw;
+    }
+    foreach ($raw as $i => $row) {
+        if (is_array($row) && isset($row['linkMoi'])) {
+            $raw[$i]['linkMoi'] = eco_tw_alias_normalize($row['linkMoi']);
+        }
+    }
+    return $raw;
+}
+
+/**
+ * Lưu "Đổi link trang" (link mới trùng trang khác, bài WordPress, link đang 301, đổi nối tiếp…) hoặc "Chuyển hướng link"
+ * (link cũ / link mới của trang đã đổi link): có lỗi thì không lưu, màn hình sửa báo từng dòng
+ */
+add_filter('eco_nd_kiem_luu', 'eco_tw_alias_save_errors', 10, 3);
+function eco_tw_alias_save_errors($errors, $key, $value)
+{
+    $errors = (array) $errors;
+    if ($key === ECO_TW_ALIAS_SET) {
+        return array_merge($errors, eco_tw_alias_check($value, true)['loi']);
+    }
+    if ($key === 'chuyen-huong') {
+        $aliases = eco_tw_aliases();
+        foreach (is_array($value) ? $value : array() as $row) {
+            $from = is_array($row) && isset($row['tu']) ? strtolower(trailingslashit((string) $row['tu'])) : '';
+            if ($from !== '' && (isset($aliases[$from]) || in_array($from, $aliases, true))) {
+                $errors[] = $from . ': trang này đã đổi link ở Nội dung web → Đổi link trang (link cũ tự chuyển sang link mới)';
+            }
+        }
+    }
+    return $errors;
+}
+
+/**
+ * Các trang cần WordPress trả (trang có sẵn đã đổi SEO, đã ẩn, có chuyển link Ecopillo thêm, có khối tự do, link cũ của trang đã
+ * đổi link). Link mới của trang đã đổi link không cần đánh dấu: không có file trong site/ nên .htaccess đã để WordPress trả.
+ */
 function eco_tw_wanted_paths()
 {
     $paths = array();
     $hidden = eco_tw_hidden_map();
     $redirects = function_exists('eco_nd_redirects') ? eco_nd_redirects() : array();
     // Trang có khối tự do (đợt H): WordPress trả để ghi sẵn khối vào HTML
-    foreach (array_merge(array_keys(eco_tw_seo_map(true)), array_keys($hidden), array_keys($redirects), array_keys(eco_tw_free_blocks())) as $path) {
+    foreach (array_merge(array_keys(eco_tw_seo_map(true)), array_keys($hidden), array_keys($redirects), array_keys(eco_tw_free_blocks()), array_keys(eco_tw_aliases())) as $path) {
         if (eco_tw_static_file($path) !== '') {
             $paths[$path] = true;
         }
@@ -300,26 +552,48 @@ function eco_tw_serve()
     }
     $path = (string) parse_url(isset($_SERVER['REQUEST_URI']) ? (string) $_SERVER['REQUEST_URI'] : '', PHP_URL_PATH);
     $path = $path === '' ? '/' : $path;
+    // Trang Ecopillo đã đổi link (eco_tw_aliases): link cũ → 301 link mới, giữ phần ?… (bộ lọc trang Sản phẩm, mã đo quảng cáo)
+    $aliases = eco_tw_aliases();
+    $query = isset($_SERVER['QUERY_STRING']) && (string) $_SERVER['QUERY_STRING'] !== '' ? '?' . (string) $_SERVER['QUERY_STRING'] : '';
+    if ($aliases && substr($path, -1) !== '/' && eco_tw_is_path($path . '/')) {
+        // Gõ thiếu "/" cuối (link cũ hoặc link mới): đưa thẳng về link mới, không để WordPress đoán sang bài khác
+        $slashed = $path . '/';
+        $to = isset($aliases[$slashed]) ? $aliases[$slashed] : (in_array($slashed, $aliases, true) ? $slashed : '');
+        if ($to !== '') {
+            wp_safe_redirect(home_url($to) . $query, 301, 'Ecopillo');
+            exit;
+        }
+    }
     if (substr($path, -1) !== '/' || !eco_tw_is_path($path)) {
         return;
     }
-    // Trang Ecopillo đã gỡ: danh mục ẩn / xoá, sản phẩm, mẫu, bài
+    // Link mới của trang đã đổi link: trả trang dựng sẵn ở link cũ ($source)
+    $source = array_search($path, $aliases, true);
+    $source = $source !== false ? (string) $source : $path;
+    // Trang Ecopillo đã gỡ: danh mục ẩn / xoá, sản phẩm, mẫu, bài (cả link cũ lẫn link mới, chuyển thẳng một lần)
     $hidden = eco_tw_hidden_map();
-    if (isset($hidden[$path])) {
-        wp_safe_redirect(home_url($hidden[$path]), 301, 'Ecopillo');
+    if (isset($hidden[$source])) {
+        wp_safe_redirect(home_url(eco_tw_public_path($hidden[$source])), 301, 'Ecopillo');
         exit;
     }
-    $file = eco_tw_static_file($path);
+    if (isset($aliases[$path])) {
+        wp_safe_redirect(home_url($aliases[$path]) . $query, 301, 'Ecopillo');
+        exit;
+    }
+    $file = eco_tw_static_file($source);
     if ($file === '') {
         return;
     }
     $html = (string) file_get_contents($file);
     $seo = eco_tw_seo_map();
-    if (isset($seo[$path])) {
-        $item = $seo[$path];
+    // Dòng SEO ghi theo link mới đứng trên dòng ghi theo link cũ (như usePageMeta.ts)
+    $seo_key = isset($seo[$path]) ? $path : $source;
+    if (isset($seo[$seo_key])) {
+        $item = $seo[$seo_key];
         $html = eco_tw_head($html, isset($item['tieuDe']) ? $item['tieuDe'] : '', isset($item['moTa']) ? $item['moTa'] : '', isset($item['anh']) ? $item['anh'] : '');
     }
-    $html = eco_tw_put_free_blocks($html, $path);
+    $html = eco_tw_put_free_blocks($html, $source);
+    $html = eco_tw_alias_html($html, $aliases);
     status_header(200);
     nocache_headers();
     header('Content-Type: text/html; charset=UTF-8');

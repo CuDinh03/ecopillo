@@ -408,10 +408,14 @@ function eco_nd_theme_css()
 
 /* ---------------------------------------------------------------- Chuyển hướng link Ecopillo tự thêm (src/data/liveRedirects.ts) */
 
-/** Bảng link cũ → link mới đã kiểm: chỉ link trong web, không trang chủ, không wp-…, không vòng */
+/**
+ * Bảng link cũ → link mới đã kiểm: chỉ link trong web, không trang chủ, không wp-…, không vòng. Bỏ dòng có link cũ là link cũ /
+ * link mới của trang Ecopillo đã đổi link (trang-wp.php, eco_tw_aliases): "Đổi link trang" đứng trên, như links.ts trên web
+ */
 function eco_nd_redirects()
 {
     $saved = eco_nd_saved('chuyen-huong');
+    $aliases = function_exists('eco_tw_aliases') ? eco_tw_aliases() : array();
     $map = array();
     foreach ($saved && is_array($saved['giaTri']) ? $saved['giaTri'] : array() as $row) {
         $from = isset($row['tu']) ? strtolower(trailingslashit((string) $row['tu'])) : '';
@@ -420,6 +424,9 @@ function eco_nd_redirects()
             continue;
         }
         if ($from === '/' || strpos($from, '/wp-') === 0 || $from === strtolower(trailingslashit($to))) {
+            continue;
+        }
+        if (isset($aliases[$from]) || in_array($from, $aliases, true)) {
             continue;
         }
         $map[$from] = $to;
@@ -441,7 +448,12 @@ function eco_nd_redirect()
     if (!$map || !isset($map[$key])) {
         return;
     }
-    wp_safe_redirect(home_url($map[$key]), 301, 'Ecopillo');
+    // Đích là trang Ecopillo đã đổi link: chuyển thẳng tới link mới (một lần 301). Chỉ khi khách đang thấy giao diện mới
+    $to = $map[$key];
+    if (function_exists('eco_tw_public_path') && function_exists('eco_mm_visitor_sees_new') && eco_mm_visitor_sees_new()) {
+        $to = eco_tw_public_path($to);
+    }
+    wp_safe_redirect(home_url($to), 301, 'Ecopillo');
     exit;
 }
 

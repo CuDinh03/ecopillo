@@ -145,6 +145,7 @@ function eco_nd_save()
         eco_nd_push_history($key);
         update_option(ECO_ND_OPT_PREFIX . $key, array('giaTri' => $restore['giaTri'], 'luc' => current_time('mysql'), 'nguoi' => get_current_user_id()), false);
         eco_dl_write();
+        do_action('eco_nd_da_luu', $key);
         wp_safe_redirect(eco_nd_page_url($key, array('ket-qua' => 'khoi-phuc')));
         exit;
     }
@@ -153,11 +154,14 @@ function eco_nd_save()
         eco_nd_push_history($key);
         delete_option(ECO_ND_OPT_PREFIX . $key);
         eco_dl_write();
+        do_action('eco_nd_da_luu', $key);
         wp_safe_redirect(eco_nd_page_url($key, array('ket-qua' => 'goc')));
         exit;
     }
 
     $raw = isset($_POST['du_lieu']) && is_array($_POST['du_lieu']) ? wp_unslash($_POST['du_lieu']) : array();
+    // Bộ cần chuẩn hoá ô trước khi kiểm (Đổi link trang: "Về Ecopillo" → /ve-ecopillo/; trang-wp.php)
+    $raw = apply_filters('eco_nd_truoc_luu', $raw, $key);
     $errors = array();
     if ($set['kieu'] === 'mot') {
         // Ô bắt buộc để trống: dùng lại nội dung gốc của ô đó thay vì không cho lưu cả bộ (đợt E3)
@@ -193,9 +197,17 @@ function eco_nd_save()
             exit;
         }
     }
+    // Kiểm riêng của từng bộ (Đổi link trang, Chuyển hướng link: trùng trang, trùng link đang chuyển; trang-wp.php): lỗi thì không lưu
+    $problems = apply_filters('eco_nd_kiem_luu', array(), $key, $value);
+    if ($problems) {
+        wp_safe_redirect(eco_nd_page_url($key, array('ket-qua' => 'kiem', 'o' => rawurlencode(implode('; ', array_slice((array) $problems, 0, 6))))));
+        exit;
+    }
     eco_nd_push_history($key);
     update_option(ECO_ND_OPT_PREFIX . $key, array('giaTri' => $value, 'luc' => current_time('mysql'), 'nguoi' => get_current_user_id()), false);
     eco_dl_write();
+    // Bộ cần làm thêm sau khi lưu (Đổi link trang: xoá bộ nhớ đệm trang của LiteSpeed; trang-wp.php)
+    do_action('eco_nd_da_luu', $key);
     $args = array('ket-qua' => 'ok');
     if (!empty($dropped)) {
         $args['bo-dong'] = (int) $dropped;
@@ -336,11 +348,12 @@ function eco_nd_page()
         'rong' => array('error', 'Chưa lưu: danh sách không còn dòng nào đủ ô bắt buộc.'),
         'thieu' => array('error', 'Chưa lưu: còn ô bắt buộc sai'),
         'tuong-phan' => array('error', 'Chưa lưu: màu làm chữ khó đọc'),
+        'kiem' => array('error', 'Chưa lưu, sửa các dòng sau rồi Lưu lại'),
     );
     echo '<div class="wrap"><h1>' . esc_html($set['ten']) . '</h1><p>' . esc_html($set['moTa']) . '</p>';
     if (isset($notices[$result])) {
         $text = $notices[$result][1];
-        if (($result === 'thieu' || $result === 'tuong-phan') && isset($_GET['o'])) {
+        if (in_array($result, array('thieu', 'tuong-phan', 'kiem'), true) && isset($_GET['o'])) {
             $text .= ': ' . sanitize_text_field(rawurldecode(wp_unslash($_GET['o'])));
         }
         if ($result === 'ok' && isset($_GET['bo-dong'])) {
