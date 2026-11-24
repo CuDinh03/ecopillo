@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { livePostBodyUrl } from '../../data/livePosts'
 import { cleanPostHtml } from '../../lib/cleanPostHtml'
 import { scrollToElement } from '../../lib/scroll'
+import { BLOG_TEXT } from '../../data/pageText/blog'
 
 /**
  * Thân bài lấy từ WordPress (HTML đã làm sạch lúc lấy về: tools/lay-bai-viet-wordpress.mjs chỉ giữ thẻ đọc được,
@@ -20,7 +21,7 @@ const cache = new Map<string, ComponentType>()
 function BodyError() {
   return (
     <p className="mt-8 text-ink-soft">
-      Chưa tải được nội dung bài. Quý khách tải lại trang giúp Ecopillo.
+      {BLOG_TEXT.loiTai}
     </p>
   )
 }
@@ -81,7 +82,7 @@ export function WordPressBody({ slug, live }: { slug: string; live?: { title: st
   return (
     // Chỉ bắt lượt bấm của link bên trong (link tự có bàn phím: Enter cũng sinh sự kiện click)
     <div onClick={onClick}>
-      <Suspense fallback={<p className="mt-8 text-ink-soft">Đang tải bài viết…</p>}>
+      <Suspense fallback={<p className="mt-8 text-ink-soft">{BLOG_TEXT.dangTai}</p>}>
         <Body />
       </Suspense>
     </div>

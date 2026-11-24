@@ -1,8 +1,8 @@
 import { useId, useRef, useState, type KeyboardEvent } from 'react'
 import {
-  HOTEL_LINEN,
   HOTEL_PAGE,
   HOTEL_WHITE_GOODS,
+  WHITE_GOODS_DETAIL_IMAGE,
   type HotelWhiteGoodsGroup,
   type HotelWhiteGoodsGroupId,
   type HotelWhiteGoodsItem,
@@ -12,8 +12,9 @@ import { scrollToElement } from '../../lib/scroll'
 import { CrossfadeImage } from '../ui/CrossfadeImage'
 import { Icon } from '../ui/Icon'
 import { buttonClass, Container } from '../ui/primitives'
+import { chen } from '../../data/pageText/define'
 
-const DETAIL_IMAGE = { src: '/images/details/vai-ed25.webp', alt: 'Cận chất vải Lyocell của bộ Eco Doris ED25' }
+const DETAIL_IMAGE = WHITE_GOODS_DETAIL_IMAGE
 
 const twoDigits = (n: number) => String(n).padStart(2, '0')
 
@@ -34,7 +35,7 @@ export function WhiteGoods({ onQuote }: { onQuote: (message: string) => void }) 
         ? `${item.name} ${item.chips.join(' · ')}`
         : item.name
       : group.label
-    onQuote(`Cần báo giá: ${label}`)
+    onQuote(chen(HOTEL_PAGE.canBaoGia, { ten: label }))
     const target = document.getElementById('bao-gia')
     if (target) scrollToElement(target, 'start')
   }
@@ -67,6 +68,7 @@ export function WhiteGoods({ onQuote }: { onQuote: (message: string) => void }) 
           </div>
           <img
             src={DETAIL_IMAGE.src}
+            srcSet={DETAIL_IMAGE.srcSet || undefined}
             alt={DETAIL_IMAGE.alt}
             loading="lazy"
             decoding="async"
@@ -127,7 +129,7 @@ export function WhiteGoods({ onQuote }: { onQuote: (message: string) => void }) 
 
           <div className="mt-6 flex flex-wrap gap-3">
             <button type="button" onClick={() => requestQuote()} className={buttonClass('primary', 'lg')}>
-              Liên hệ báo giá
+              {HOTEL_PAGE.hangTrangNut}
               <Icon name="arrowRight" size={18} />
             </button>
             <a href={CONTACT.hotlineTel} className={buttonClass('secondary', 'lg')}>
@@ -135,7 +137,7 @@ export function WhiteGoods({ onQuote }: { onQuote: (message: string) => void }) 
               {CONTACT.hotlineDisplay}
             </a>
           </div>
-          <p className="mt-3 text-small text-ink-soft">{HOTEL_LINEN.sizes}</p>
+          <p className="mt-3 text-small text-ink-soft">{HOTEL_PAGE.hangTrangKichThuoc}</p>
         </div>
       </Container>
     </section>
@@ -169,7 +171,7 @@ function GroupPanel({
               <span className="font-display row-span-2 text-[1.35rem] leading-none text-deep-700 italic">{twoDigits(i + 1)}</span>
               <div className="min-w-0">
                 <p className="font-display text-[1.25rem] leading-snug text-deep-900">{item.name}</p>
-                {item.chips && (
+                {item.chips && item.chips.length > 0 && (
                   <span className="mt-1.5 flex flex-wrap gap-1.5">
                     {item.chips.map((chip) => (
                       <span key={chip} className="rounded-full bg-mist-100 px-2.5 py-0.5 text-meta font-medium text-deep-800">
@@ -180,10 +182,10 @@ function GroupPanel({
                 )}
                 {item.note && <p className="mt-1 text-small text-ink-soft">{item.note}</p>}
                 {/* Điện thoại: chữ "Giá liên hệ" dưới tên (bên phải chỉ còn mũi tên) */}
-                <p className="mt-1 text-small font-semibold text-deep-900 sm:hidden">Giá liên hệ</p>
+                <p className="mt-1 text-small font-semibold text-deep-900 sm:hidden">{HOTEL_PAGE.theGiaLienHe}</p>
               </div>
               <div className="flex items-center gap-2 self-center">
-                <span className="hidden text-small font-semibold text-deep-900 sm:inline">Giá liên hệ</span>
+                <span className="hidden text-small font-semibold text-deep-900 sm:inline">{HOTEL_PAGE.theGiaLienHe}</span>
                 <button
                   type="button"
                   aria-label={`Liên hệ báo giá ${item.name}`}

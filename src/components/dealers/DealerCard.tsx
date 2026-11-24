@@ -1,6 +1,7 @@
 import { useRef, type MouseEvent } from 'react'
 import {
   DEFAULT_DEALER_PHOTO,
+  DEFAULT_DEALER_PHOTO_ALT,
   formatKm,
   hoursText,
   KIND_LABEL,
@@ -13,6 +14,8 @@ import { directionsUrl } from '../../data/brand'
 import { useHydrated } from '../../hooks/useHydratedSearchParams'
 import { Icon, ZaloMark } from '../ui/Icon'
 import { buttonClass } from '../ui/primitives'
+import { DEALER_TEXT } from '../../data/pageText/dealers'
+import { chen } from '../../data/pageText/define'
 
 interface DealerCardProps {
   dealer: Dealer
@@ -33,7 +36,7 @@ function Photos({ dealer, flush = false }: { dealer: Dealer; flush?: boolean }) 
   const cover = (
     <img
       src={photos[0]}
-      alt={dealer.anh.length > 0 ? `Cửa hàng ${dealer.ten}` : 'Ecopillo'}
+      alt={dealer.anh.length > 0 ? `Cửa hàng ${dealer.ten}` : DEFAULT_DEALER_PHOTO_ALT}
       loading="lazy"
       decoding="async"
       className="h-full w-full object-cover"
@@ -96,13 +99,13 @@ function Actions({ dealer, className, size = 'sm' }: { dealer: Dealer; className
         rel="noopener noreferrer"
         className={buttonClass('primary', size, 'min-w-0 flex-1 max-sm:!px-2 max-sm:text-small sm:flex-none')}
       >
-        <Icon name="navigate" size={15} /> Chỉ đường
+        <Icon name="navigate" size={15} /> {DEALER_TEXT.nutChiDuong}
       </a>
       <a href={telHref(dealer)} className={buttonClass('secondary', size, 'min-w-0 flex-1 max-sm:!px-2 max-sm:text-small sm:flex-none')}>
-        <Icon name="phone" size={15} /> Gọi
+        <Icon name="phone" size={15} /> {DEALER_TEXT.nutGoi}
       </a>
       <a href={zaloHref(dealer)} target="_blank" rel="noopener noreferrer" className={buttonClass('secondary', size, 'min-w-0 flex-1 max-sm:!px-2 max-sm:text-small sm:flex-none')}>
-        <ZaloMark /> Zalo
+        <ZaloMark /> {DEALER_TEXT.nutZalo}
       </a>
     </div>
   )
@@ -136,9 +139,9 @@ export function DealerCard({ dealer, km, selected = false, onSelect, featured = 
       {featured && (
         <p className="flex flex-wrap items-center justify-between gap-x-4 gap-y-0.5 bg-deep-800 px-4 py-2.5 text-ivory sm:px-6">
           <span className="inline-flex items-center gap-2 text-meta font-medium tracking-[0.12em] uppercase">
-            <Icon name="locate" size={15} /> Gần Quý khách nhất
+            <Icon name="locate" size={15} /> {DEALER_TEXT.ganNhat}
           </span>
-          {km !== undefined && <span className="tabular text-small font-medium">cách khoảng {formatKm(km)}</span>}
+          {km !== undefined && <span className="tabular text-small font-medium">{chen(DEALER_TEXT.cachKhoang, { km: formatKm(km) })}</span>}
         </p>
       )}
       {/* Thẻ thường trên điện thoại: ảnh nhỏ bên trái. Thẻ gần nhất: ảnh rộng phía trên. Từ sm: ảnh cột trái cao hết thẻ */}
@@ -156,7 +159,9 @@ export function DealerCard({ dealer, km, selected = false, onSelect, featured = 
             <span className="rounded-full bg-cream-50 px-2.5 py-0.5 text-label font-medium tracking-[0.12em] text-deep-800 uppercase ring-1 ring-cream-200">
               {KIND_LABEL[dealer.loai]}
             </span>
-            {km !== undefined && !featured && <span className="tabular text-meta font-medium text-deep-700">cách khoảng {formatKm(km)}</span>}
+            {km !== undefined && !featured && (
+              <span className="tabular text-meta font-medium text-deep-700">{chen(DEALER_TEXT.cachKhoang, { km: formatKm(km) })}</span>
+            )}
           </p>
           <h3 className={`font-display mt-2 leading-tight text-deep-900 ${featured ? 'text-[1.55rem] sm:text-[1.8rem]' : 'text-[1.3rem] sm:text-[1.45rem]'}`}>
             {dealer.ten}

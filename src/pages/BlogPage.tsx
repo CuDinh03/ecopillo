@@ -11,6 +11,7 @@ import { revealDelay } from '../lib/reveal'
 import { useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
 import { BLOG_TEXT } from '../data/pageText/blog'
 import { Lines } from '../components/ui/Highlight'
+import { chen } from '../data/pageText/define'
 
 /** Mỗi lần hiện thêm bao nhiêu bài (61 bài: 3 bài trong code + 58 bài WordPress, 17/11/2026) */
 const PAGE_SIZE = 12
@@ -38,7 +39,7 @@ export function BlogPage() {
   return (
     <div className="pb-24">
       <PageHero
-        crumbs={[{ label: 'Tin tức' }]}
+        crumbs={[{ label: BLOG_TEXT.duongDan }]}
         eyebrow={BLOG_TEXT.nhan}
         title={<Lines text={BLOG_TEXT.tieuDe} />}
         lead={BLOG_TEXT.danDat}
@@ -57,7 +58,7 @@ export function BlogPage() {
                 active === c ? 'bg-deep-800 text-ivory' : 'bg-cream-50 text-deep-900 ring-1 ring-cream-200 hover:ring-deep-700/40'
               }`}
             >
-              {c ?? 'Tất cả'}
+              {c ?? BLOG_TEXT.locTatCa}
             </button>
           ))}
         </div>
@@ -83,11 +84,11 @@ export function BlogPage() {
               onClick={() => setShown({ key: active, count: count + PAGE_SIZE })}
               className={buttonClass('secondary', 'lg')}
             >
-              Xem thêm bài viết
+              {BLOG_TEXT.xemThem}
               <Icon name="chevronDown" size={18} />
             </button>
             <p className="text-meta text-ink-soft">
-              Đang xem {count} / {posts.length} bài
+              {chen(BLOG_TEXT.dangXem, { so: count, tong: posts.length })}
             </p>
           </div>
         )}

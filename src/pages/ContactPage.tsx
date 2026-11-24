@@ -12,6 +12,8 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import { scrollToElement } from '../lib/scroll'
 import { useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
 import { CONTACT_PAGE_TEXT } from '../data/pageText/contact'
+import { DEALER_TEXT } from '../data/pageText/dealers'
+import { chen } from '../data/pageText/define'
 import { Lines } from '../components/ui/Highlight'
 import { Blocks } from '../components/ui/Blocks'
 import { CONTACT_ORDER } from '../data/pageLayout'
@@ -57,9 +59,9 @@ function HotlineCard() {
         <Icon name="phone" size={22} />
       </span>
       <span className="min-w-0 flex-1 leading-tight">
-        <span className="block text-label font-medium tracking-[0.12em] text-ivory/75 uppercase">Hotline</span>
+        <span className="block text-label font-medium tracking-[0.12em] text-ivory/75 uppercase">{CONTACT_PAGE_TEXT.hotlineNhan}</span>
         <span className="tabular mt-1 block text-[1.35rem] font-medium sm:text-[1.5rem]">{CONTACT.hotlineDisplay}</span>
-        <span className="mt-0.5 block text-meta text-ivory/80">{OPENING_HOURS} · có Zalo</span>
+        <span className="mt-0.5 block text-meta text-ivory/80">{chen(CONTACT_PAGE_TEXT.hotlineDong, { gio: OPENING_HOURS })}</span>
       </span>
       <Icon name="arrowRight" size={18} className="shrink-0 opacity-60 transition group-hover:translate-x-0.5 group-hover:opacity-100" />
     </a>
@@ -99,6 +101,9 @@ const TOPIC_PARAM: Readonly<Record<string, Topic>> = {
   'don-hang': 'Hỏi về đơn hàng',
 }
 
+/** Tên fanpage trên ô Messenger: bỏ phần "facebook.com/" của tên fanpage ở bộ Thông tin liên hệ (ô hẹp) */
+const fanpageName = (display: string) => display.replace(/^(https?:\/\/)?(www\.)?(facebook|fb)\.com\//i, '') || display
+
 /**
  * Chị Phương (Zalo 17/11/2026): "Số 678 là bán lẻ, 072 là mở đại lý". Owner chốt chỉ đổi nhãn hai ô này;
  * các nút gọi khác trên web vẫn dùng hotline 072.
@@ -110,12 +115,12 @@ const CHANNELS: readonly (ChannelProps & { key: string })[] = [
     key: 'messenger',
     href: CONTACT.messengerUrl,
     icon: <Icon name="messenger" size={18} />,
-    label: 'Messenger',
-    value: 'Ecopillo.com.vn',
+    label: CONTACT_PAGE_TEXT.nhanMessenger,
+    value: fanpageName(CONTACT.fanpageDisplay),
     external: true,
     chip: 'bg-messenger text-ivory',
   },
-  { key: 'email', href: `mailto:${CONTACT.email}`, icon: <Icon name="mail" size={18} />, label: 'Email', value: CONTACT.email },
+  { key: 'email', href: `mailto:${CONTACT.email}`, icon: <Icon name="mail" size={18} />, label: CONTACT_PAGE_TEXT.nhanEmail, value: CONTACT.email },
 ]
 
 /** Bản đồ địa chỉ văn phòng / chi nhánh; bấm tên thành phố để đổi điểm */
@@ -153,14 +158,14 @@ function OfficeMap() {
         <p className="mt-1.5 font-medium text-deep-900">{place.address}</p>
         <div className="mt-4 flex flex-wrap gap-2">
           <a href={place.mapsUrl} target="_blank" rel="noopener noreferrer" className={buttonClass('primary', 'sm')}>
-            <Icon name="pin" size={16} /> Chỉ đường
+            <Icon name="pin" size={16} /> {DEALER_TEXT.nutChiDuong}
           </a>
           <button
             type="button"
             onClick={() => navigate(`${PATHS.contact}#diem-ban`)}
             className={buttonClass('secondary', 'sm')}
           >
-            Tìm đại lý gần tôi
+            {DEALER_TEXT.nutGanToi}
           </button>
         </div>
       </div>
@@ -202,10 +207,10 @@ export function ContactPage() {
           <div className="xl:col-span-5">
             <nav aria-label="Đường dẫn" className="flex items-center gap-2 text-sm text-ink-soft">
               <Link to="/" className="-my-3 inline-block py-3 hover:text-deep-900">
-                Trang chủ
+                {CONTACT_PAGE_TEXT.duongDanTrangChu}
               </Link>
               <span aria-hidden>/</span>
-              <span className="text-deep-900">Liên hệ mua hàng</span>
+              <span className="text-deep-900">{CONTACT_PAGE_TEXT.duongDan}</span>
             </nav>
             <p className="eyebrow mt-8">{CONTACT_PAGE_TEXT.nhan}</p>
             <h1 id="contact-title" className="font-display mt-4 text-[2.4rem] leading-[1.05] text-deep-900 sm:text-[3.6rem]">
@@ -218,13 +223,13 @@ export function ContactPage() {
               <li className="flex gap-3">
                 <Icon name="pin" size={19} className="mt-0.5 shrink-0 text-mist-600" />
                 <span className="text-deep-900">
-                  <span className="font-medium">Địa chỉ:</span> {office.address}
+                  <span className="font-medium">{CONTACT_PAGE_TEXT.diaChiNhan}</span> {office.address}
                   <span className="block text-sm text-ink-soft">{office.kind}</span>
                 </span>
               </li>
               <li className="flex gap-3">
                 <Icon name="clock" size={19} className="mt-0.5 shrink-0 text-mist-600" />
-                <span className="text-deep-900">Mở cửa {OPENING_HOURS}</span>
+                <span className="text-deep-900">{chen(CONTACT_PAGE_TEXT.moCua, { gio: OPENING_HOURS })}</span>
               </li>
             </ul>
           </div>

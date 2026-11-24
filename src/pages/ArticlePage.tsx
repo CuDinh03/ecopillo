@@ -15,6 +15,8 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import { articleLd, shareImageOf } from '../lib/structuredData'
 import { NotFoundPage } from './NotFoundPage'
 import { COMMON_TEXT } from '../data/pageText/common'
+import { BLOG_TEXT } from '../data/pageText/blog'
+import { chen } from '../data/pageText/define'
 
 function Block({ block }: { block: PostBlock }) {
   switch (block.type) {
@@ -81,13 +83,13 @@ export function ArticlePage() {
               modified: post.wp?.modified,
             })}
           />
-          <Breadcrumb items={[{ label: 'Tin tức', to: PATHS.blog }, { label: post.category }]} current={post.title} />
+          <Breadcrumb items={[{ label: BLOG_TEXT.duongDan, to: PATHS.blog }, { label: post.category }]} current={post.title} />
           <p className="mt-8 flex flex-wrap items-center gap-x-2 gap-y-1 text-meta text-ink-soft">
             <Link to={`${PATHS.blog}?chu-de=${encodeURIComponent(post.category)}`} className="font-medium tracking-[0.12em] text-mist-600 uppercase hover:underline">
               {post.category}
             </Link>
             <span aria-hidden>·</span>
-            <span>{post.readMinutes} phút đọc</span>
+            <span>{chen(BLOG_TEXT.phutDoc, { so: post.readMinutes })}</span>
             {post.wp && (
               <>
                 <span aria-hidden>·</span>
@@ -120,7 +122,7 @@ export function ArticlePage() {
 
           {post.related && (
             <div className="mt-12 border-t border-line pt-8">
-              <p className="eyebrow">Có thể Quý khách quan tâm</p>
+              <p className="eyebrow">{BLOG_TEXT.quanTam}</p>
               <ul className="mt-4 flex flex-wrap gap-2">
                 {post.related.map((r) => (
                   <li key={r.to}>
@@ -148,9 +150,9 @@ export function ArticlePage() {
       {others.length > 0 && (
         <Container className="mt-16 sm:mt-24">
           <div className="flex items-end justify-between gap-4">
-            <h2 className="font-display text-[1.8rem] text-deep-900 sm:text-[2.2rem]">Bài viết khác</h2>
+            <h2 className="font-display text-[1.8rem] text-deep-900 sm:text-[2.2rem]">{BLOG_TEXT.baiKhac}</h2>
             <Link to={PATHS.blog} className="inline-flex items-center gap-1 text-sm font-medium text-deep-800 hover:underline">
-              Tất cả bài viết <Icon name="arrowRight" size={14} />
+              {BLOG_TEXT.tatCaBai} <Icon name="arrowRight" size={14} />
             </Link>
           </div>
           <ul className="mt-6 grid gap-5 sm:grid-cols-2">

@@ -1,6 +1,7 @@
 import { CORPORATE_GIFTS, GIFT_MORE_IMAGES, GIFT_POSTER, GIFT_SIDE_IMAGES, type CorporateGiftImage } from '../../data/corporateGifts'
 import { revealDelay } from '../../lib/reveal'
 import { ContactButtons, Container } from '../ui/primitives'
+import { GIFTS_TEXT } from '../../data/pageText/gifts'
 
 /**
  * Quà tặng doanh nghiệp, sự kiện ở trang Quà tặng và sự kiện, đặt trên khối thư cảm ơn (owner chọn mẫu A 27/10/2026:
@@ -33,7 +34,7 @@ export function CorporateGifts() {
             <div className="mt-6 self-start rounded-[1.25rem] bg-brass-100 px-5 py-4 text-deep-900">
               <p className="flex flex-wrap items-baseline gap-x-3">
                 <span>
-                  <span className="text-small">từ </span>
+                  <span className="text-small">{GIFTS_TEXT.quaGiaTu} </span>
                   <span className="font-display text-[2.25rem] leading-none">{g.price}</span>
                 </span>
                 <span className="text-small font-medium">{g.priceLabel}</span>

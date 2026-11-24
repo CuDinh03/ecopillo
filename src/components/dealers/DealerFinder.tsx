@@ -9,6 +9,8 @@ import { CONTACT, SHOWROOMS } from '../../data/brand'
 import { PATHS, SITE_ORIGIN } from '../../data/links'
 import {
   FAR_KM,
+  OFFICIAL_CLOSE,
+  OFFICIAL_OPEN,
   formatKm,
   matchesQuery,
   PAGE_SIZE,
@@ -21,6 +23,8 @@ import {
 import { useDealers } from '../../hooks/useDealers'
 import { scrollToElement } from '../../lib/scroll'
 import { COMMON_TEXT } from '../../data/pageText/common'
+import { DEALER_TEXT } from '../../data/pageText/dealers'
+import { chen } from '../../data/pageText/define'
 
 /**
  * Khối tìm điểm bán (thiết kế chốt 13/10/2026).
@@ -69,7 +73,7 @@ export function LocalBusinessData() {
     address: { '@type': 'PostalAddress', streetAddress: s.address, addressCountry: 'VN' },
     geo: { '@type': 'GeoCoordinates', latitude: s.lat, longitude: s.lng },
     telephone: s.hotline ?? CONTACT.hotlineDisplay,
-    openingHours: 'Mo-Su 08:30-22:00',
+    openingHours: `Mo-Su ${OFFICIAL_OPEN}-${OFFICIAL_CLOSE}`,
     // URL chuẩn sau khi gộp: trang Liên hệ mua hàng, neo điểm bán
     url: `${SITE_ORIGIN}${PATHS.contact}#diem-ban`,
   }))
@@ -81,23 +85,23 @@ function NoDealerNearby({ place }: { place?: string }) {
   return (
     <div className="rounded-[1.75rem] bg-deep-900 p-6 text-ivory sm:p-8">
       <p className="font-display text-[1.5rem] leading-tight sm:text-[1.75rem]">
-        {place ? `${place} chưa có đại lý Ecopillo` : 'Khu vực của Quý khách chưa có đại lý Ecopillo'}
+        {place ? chen(DEALER_TEXT.chuaCoTaiNoi, { noi: place }) : DEALER_TEXT.chuaCoKhuVuc}
       </p>
       <p className="mt-3 max-w-xl text-body-sm text-mist-200/90">
         {COMMON_TEXT.chuaCoDaiLy}
       </p>
       <div className="mt-6 flex flex-wrap gap-3">
         <Link to={PATHS.order} className={buttonClass('light', 'md')}>
-          Đặt hàng online <Icon name="arrowRight" size={17} />
+          {DEALER_TEXT.nutDatOnline} <Icon name="arrowRight" size={17} />
         </Link>
         <a href={CONTACT.zaloUrl} target="_blank" rel="noopener noreferrer" className={buttonClass('outlineLight', 'md')}>
-          <ZaloMark tone="light" /> Nhắn Zalo Ecopillo
+          <ZaloMark tone="light" /> {DEALER_TEXT.nutNhanZalo}
         </a>
       </div>
       <p className="mt-6 border-t border-ivory/15 pt-5 text-sm text-mist-200/90">
-        Quý khách kinh doanh chăn ga tại đây?{' '}
+        {DEALER_TEXT.kinhDoanhHoi}{' '}
         <Link to={PATHS.recruit} className="font-medium text-ivory underline underline-offset-4">
-          Trở thành đại lý Ecopillo
+          {DEALER_TEXT.kinhDoanhLink}
         </Link>
       </p>
     </div>
@@ -142,7 +146,7 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
     () =>
       sortedProvinces.map((p) => {
         const count = dealers.filter((d) => d.tinh === p.name).length
-        return { value: p.id, label: p.name, note: count > 0 ? `${count} điểm` : undefined }
+        return { value: p.id, label: p.name, note: count > 0 ? chen(DEALER_TEXT.soDiemTinh, { so: count }) : undefined }
       }),
     [dealers],
   )
@@ -235,16 +239,16 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
 
   const summary =
     view.mode === 'far'
-      ? `Điểm gần nhất cách khoảng ${formatKm(view.nearest ?? 0)}`
+      ? chen(DEALER_TEXT.tomTatXa, { km: formatKm(view.nearest ?? 0) })
       : view.mode === 'empty-province'
-        ? `Các điểm gần ${province?.name ?? ''} nhất`
+        ? chen(DEALER_TEXT.tomTatGanTinh, { noi: province?.name ?? '' })
         : view.total === 0
-          ? 'Không thấy điểm nào khớp'
+          ? DEALER_TEXT.tomTatKhongThay
           : me && view.nearest !== undefined
-            ? `${view.total} điểm, gần nhất cách ${formatKm(view.nearest)}`
+            ? chen(DEALER_TEXT.tomTatGanNhat, { so: view.total, km: formatKm(view.nearest) })
             : province
-              ? `${view.total} điểm tại ${province.name}`
-              : `${view.total} điểm trên toàn quốc`
+              ? chen(DEALER_TEXT.tomTatTinh, { so: view.total, noi: province.name })
+              : chen(DEALER_TEXT.tomTatToanQuoc, { so: view.total })
 
   // Bản đồ hiện điểm khách vừa bấm; chưa bấm thì hiện điểm đầu danh sách (gần nhất khi đã định vị)
   const mapDealer = (view.rows.find((r) => r.dealer.id === selectedId) ?? view.rows[0])?.dealer
@@ -291,7 +295,7 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
               className={buttonClass('primary', 'lg', 'w-full disabled:cursor-wait disabled:opacity-80 lg:w-auto')}
             >
               <Icon name="locate" size={19} />
-              {geo === 'locating' ? 'Đang tìm vị trí…' : 'Tìm đại lý gần tôi'}
+              {geo === 'locating' ? DEALER_TEXT.dangTimViTri : DEALER_TEXT.nutGanToi}
             </button>
           </div>
           {/* Điện thoại: ô gõ chữ thu vào nút kính lúp cạnh ô tỉnh.
@@ -302,9 +306,9 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
               variant="pill"
               value={provinceId}
               onChange={chooseProvince}
-              placeholder={me ? 'Gần tôi nhất (mọi tỉnh)' : 'Chọn tỉnh/thành'}
+              placeholder={me ? DEALER_TEXT.ganToiMoiTinh : DEALER_TEXT.chonTinh}
               options={provinceOptions}
-              ariaLabel="Chọn tỉnh/thành"
+              ariaLabel={DEALER_TEXT.chonTinh}
               className="min-w-0 flex-1"
             />
             <button
@@ -332,7 +336,7 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
                 setSelectedId(null)
                 setLimit(PAGE_SIZE)
               }}
-              placeholder="Gõ tên đường, phường, quận cũ…"
+              placeholder={DEALER_TEXT.oTim}
               className="h-[3.25rem] w-full rounded-full bg-ivory pr-5 pl-11 text-base text-deep-900 ring-1 ring-cream-200 transition outline-none placeholder:text-ink-faint focus:ring-2 focus:ring-deep-700"
             />
           </label>
@@ -340,9 +344,9 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
 
         <div aria-live="polite" className="mt-3 text-small">
           {geo === 'failed' ? (
-            <p className="font-medium text-deep-900">Không lấy được vị trí. Quý khách chọn tỉnh/thành bên dưới nhé.</p>
+            <p className="font-medium text-deep-900">{DEALER_TEXT.khongLayViTri}</p>
           ) : (
-            <p className="text-ink-faint">Vị trí chỉ dùng để tìm đại lý gần Quý khách, không lưu lại.</p>
+            <p className="text-ink-faint">{DEALER_TEXT.viTriRiengTu}</p>
           )}
         </div>
       </Container>
@@ -365,7 +369,7 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
                 }`}
               >
                 <Icon name={v === 'list' ? 'list' : 'map'} size={15} />
-                {v === 'list' ? 'Danh sách' : 'Bản đồ'}
+                {v === 'list' ? DEALER_TEXT.xemDanhSach : DEALER_TEXT.xemBanDo}
               </button>
             ))}
           </div>
@@ -377,7 +381,7 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
               <>
                 <NoDealerNearby place={view.mode === 'empty-province' ? province?.name : undefined} />
                 <p className="pt-2 font-medium text-deep-900">
-                  {view.rows.length > 1 ? `Hoặc ghé ${view.rows.length} điểm gần nhất:` : 'Hoặc ghé điểm gần nhất:'}
+                  {view.rows.length > 1 ? chen(DEALER_TEXT.hoacGheNhieu, { so: view.rows.length }) : DEALER_TEXT.hoacGheMot}
                 </p>
               </>
             )}
@@ -385,7 +389,9 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
             {view.mode === 'list' && view.total === 0 && (
               <div className="rounded-[1.5rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)]">
                 <p className="text-deep-900">
-                  Không thấy điểm nào có “{query}”{province ? ` tại ${province.name}` : ''}.
+                  {province
+                    ? chen(DEALER_TEXT.khongThayCoTai, { tu: query, noi: province.name })
+                    : chen(DEALER_TEXT.khongThayCo, { tu: query })}
                 </p>
                 <button
                   type="button"
@@ -395,7 +401,7 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
                   }}
                   className="mt-3 text-sm font-medium text-deep-700 underline underline-offset-4"
                 >
-                  Xem tất cả điểm
+                  {DEALER_TEXT.xemTatCa}
                 </button>
               </div>
             )}
@@ -403,7 +409,7 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
             {shown.map((r, i) => (
               <Fragment key={r.dealer.id}>
                 {hasFeatured && i === 1 && (
-                  <p className="pt-3 font-medium text-deep-900">{view.total - 1} điểm khác</p>
+                  <p className="pt-3 font-medium text-deep-900">{chen(DEALER_TEXT.diemKhac, { so: view.total - 1 })}</p>
                 )}
                 <DealerCard
                   dealer={r.dealer}
@@ -417,7 +423,7 @@ export function DealerFinder({ embedded = false }: DealerFinderProps) {
 
             {view.mode === 'list' && view.total > limit && (
               <button type="button" onClick={() => setLimit((n) => n + PAGE_SIZE)} className={buttonClass('secondary', 'md', 'w-full')}>
-                Xem thêm {Math.min(PAGE_SIZE, view.total - limit)} điểm
+                {chen(DEALER_TEXT.xemThem, { so: Math.min(PAGE_SIZE, view.total - limit) })}
               </button>
             )}
           </div>

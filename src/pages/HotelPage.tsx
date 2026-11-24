@@ -15,6 +15,7 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 import { Blocks } from '../components/ui/Blocks'
 import { HOTEL_ORDER } from '../data/pageLayout'
+import { chen } from '../data/pageText/define'
 
 /**
  * Trang Khách sạn và dự án (biên bản mục 30, 48): chăn ga gối cho khách sạn, resort, nhà nghỉ, dự án.
@@ -39,7 +40,7 @@ export function HotelPage() {
   const prefillQuote = (message: string) => setQuotePrefill((prev) => ({ message, key: prev.key + 1 }))
   // Thẻ "Giá liên hệ" ở khối Sản phẩm: điền sẵn form rồi cuộn xuống (Hàng trắng tự cuộn trong component của nó)
   const quoteProduct = (name: string) => {
-    prefillQuote(`Cần báo giá: ${name}`)
+    prefillQuote(chen(HOTEL_PAGE.canBaoGia, { ten: name }))
     const target = document.getElementById('bao-gia')
     if (target) scrollToElement(target, 'start')
   }
@@ -81,7 +82,7 @@ function HotelHero() {
       </div>
       {/* Lề trái bằng lề Container của trang để chữ thẳng hàng với các phần bên dưới */}
       <div className="flex flex-col justify-center px-5 pt-7 pb-10 sm:px-8 lg:py-16 lg:pr-12 lg:pl-[max(2.5rem,calc((100vw-1240px)/2+2.5rem))]">
-        <Breadcrumb items={[{ label: 'Khách sạn và dự án' }]} />
+        <Breadcrumb items={[{ label: HOTEL_PAGE.duongDan }]} />
         <p className="eyebrow mt-8">{HOTEL_EYEBROW}</p>
         {/*
           Đúng hai dòng ở mọi bề ngang (chị Phương 09/11/2026: "cái này có thể ghi 2 dòng đk k", "4 dòng hơi dài").

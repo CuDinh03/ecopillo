@@ -1,6 +1,8 @@
 import { PROCESS_GATE_RESULTS, PRODUCT_PROCESS, PRODUCT_PROCESS_TITLE, type ProcessStep } from '../../data/about'
 import { Icon } from '../ui/Icon'
 import { STORY_LABEL } from './StoryParts'
+import { ABOUT_PAGE_TEXT } from '../../data/pageText/aboutPage'
+import { chen } from '../../data/pageText/define'
 
 /**
  * Quy trình phát triển sản phẩm 7 bước trong chương IV trang Giới thiệu (mẫu A, chị Phương chọn 12/11/2026,
@@ -18,7 +20,7 @@ export function ProductProcess() {
       {PRODUCT_PROCESS.map((stage, stageIndex) => (
         <div key={stage.name} className="mt-6">
           <p data-reveal className={`${STORY_LABEL} text-deep-700`}>
-            Chặng {stageIndex + 1}
+            {chen(ABOUT_PAGE_TEXT.changNhan, { so: stageIndex + 1 })}
             <span className="font-display ml-2 text-[1rem] font-normal tracking-normal text-ink-faint normal-case italic">{stage.name}</span>
           </p>
           {/* Đường chỉ nối các vòng biểu tượng: tâm vòng 16px (điện thoại) / 20px (máy tính) */}
@@ -48,7 +50,7 @@ function ProcessRow({ step, number }: { step: ProcessStep; number: number }) {
           <Icon name={step.icon} size={17} />
         </span>
         <div className={`min-w-0 flex-1 ${isGate ? 'rounded-2xl bg-mist-100 p-3.5 ring-[1.5px] ring-deep-700 ring-inset sm:p-4' : 'pt-0.5 sm:pt-1.5'}`}>
-          <p className="font-display text-[0.95rem] leading-none text-ink-faint italic">Bước {number}</p>
+          <p className="font-display text-[0.95rem] leading-none text-ink-faint italic">{chen(ABOUT_PAGE_TEXT.buocNhan, { so: number })}</p>
           <p className="mt-1 text-[1.05rem] leading-snug font-semibold text-deep-900">{step.title}</p>
           <p className="mt-1.5 text-body-sm leading-relaxed text-ink-soft">{step.text}</p>
           {isGate && <GateResults />}

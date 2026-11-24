@@ -39,6 +39,7 @@ import { revealDelay } from '../lib/reveal'
 import { BRAND_VIDEO, BRAND_VIDEO_LEAD } from '../data/brand'
 import { ABOUT_PAGE_TEXT, ABOUT_PAGE_TEXT_SET } from '../data/pageText/aboutPage'
 import { Highlight } from '../components/ui/Highlight'
+import { chen } from '../data/pageText/define'
 
 /**
  * Trang Giới thiệu (/gioi-thieu, giữ đường link web cũ) dạng chương sách (mẫu 1, owner chọn 16/10/2026,
@@ -89,7 +90,7 @@ export function AboutPage() {
       <TableOfContents />
 
       <StoryRail>
-        <Chapter id="loi-mo" icon="night" eyebrow="Lời mở" title={ABOUT_PAGE_TEXT.mucLoiMo} isTitleHidden>
+        <Chapter id="loi-mo" icon="night" eyebrow={ABOUT_PAGE_TEXT.loiMoNhan} title={ABOUT_PAGE_TEXT.mucLoiMo} isTitleHidden>
           <Prose dropCap>{STORY_OPENING}</Prose>
         </Chapter>
 
@@ -272,7 +273,7 @@ function Cover() {
         </span>
       </div>
       <div className="flex min-w-0 flex-col justify-center px-5 pt-7 pb-10 sm:px-8 lg:py-16 lg:pr-14 lg:pl-[max(2.5rem,calc((100vw-1240px)/2+2.5rem))]">
-        <Breadcrumb items={[{ label: 'Giới thiệu' }]} />
+        <Breadcrumb items={[{ label: ABOUT_PAGE_TEXT.duongDan }]} />
         <p className="eyebrow mt-8 flex items-center gap-2">
           <Icon name="book" size={15} className="text-deep-700" /> {ABOUT_PAGE_TEXT.nhan}
         </p>
@@ -292,10 +293,10 @@ function Cover() {
         <div className="mt-8 flex flex-wrap gap-3">
           <a href="#muc-luc" className={buttonClass('primary', 'lg')}>
             <Icon name="book" size={18} />
-            Đọc câu chuyện
+            {ABOUT_PAGE_TEXT.nutDocChuyen}
           </a>
           <LinkButton to={PATHS.products} variant="secondary" size="lg">
-            Xem sản phẩm
+            {ABOUT_PAGE_TEXT.nutXemSanPham}
           </LinkButton>
         </div>
       </div>
@@ -305,10 +306,10 @@ function Cover() {
 
 function TableOfContents() {
   return (
-    <nav id="muc-luc" aria-label="Mục lục" className="scroll-mt-[4.5rem] border-b border-line py-8 sm:py-10">
+    <nav id="muc-luc" aria-label={ABOUT_PAGE_TEXT.mucLucNhan} className="scroll-mt-[4.5rem] border-b border-line py-8 sm:py-10">
       <div className="mx-auto grid w-full max-w-[1240px] gap-4 px-5 sm:px-8 lg:grid-cols-[12rem_1fr] lg:gap-8 lg:px-10">
         <p className="eyebrow flex items-center gap-2">
-          <Icon name="list" size={15} className="text-deep-700" /> Mục lục
+          <Icon name="list" size={15} className="text-deep-700" /> {ABOUT_PAGE_TEXT.mucLucNhan}
         </p>
         <ol className="sm:columns-2 sm:gap-10">
           {TOC.map((t) => (
@@ -358,7 +359,7 @@ function Recognition() {
           decoding="async"
           className="aspect-[2/1] w-full rounded-2xl bg-mist-100 object-cover"
         />
-        <figcaption className="font-display mt-2.5 text-body-sm text-ink-faint italic">Lễ công bố {AWARD_NAME}.</figcaption>
+        <figcaption className="font-display mt-2.5 text-body-sm text-ink-faint italic">{chen(ABOUT_PAGE_TEXT.giaiThuongChuThich, { ten: AWARD_NAME })}</figcaption>
       </figure>
       {/* 1A: tủ chứng nhận, ảnh giấy cắt từ catalog 22.07.2026 (owner chọn 24/10/2026) */}
       <CertificateCabinet />
@@ -379,7 +380,7 @@ function Recognition() {
       <PartnerLogos partners={HOTEL_PARTNERS} className="mt-6" itemClassName="h-16 sm:h-20 !bg-mist-100 !shadow-none" />
       <Link to={PATHS.hotel} className={buttonClass('secondary', 'md', 'mt-6')}>
         <Icon name="building" size={17} />
-        Khách sạn và dự án
+        {ABOUT_PAGE_TEXT.nutKhachSan}
         <Icon name="arrowRight" size={17} />
       </Link>
     </>
@@ -401,15 +402,15 @@ function Closing() {
         <div className="mt-8 flex flex-wrap gap-3">
           <LinkButton to={`${PATHS.contact}#diem-ban`} variant="light">
             <Icon name="pin" size={17} />
-            Liên hệ mua hàng
+            {ABOUT_PAGE_TEXT.loiKetNutDiemBan}
           </LinkButton>
           <LinkButton to={PATHS.products} variant="outlineLight">
             <Icon name="bed" size={17} />
-            Xem sản phẩm
+            {ABOUT_PAGE_TEXT.nutXemSanPham}
           </LinkButton>
           <LinkButton to={PATHS.contact} variant="outlineLight">
             <Icon name="mail" size={17} />
-            Liên hệ
+            {ABOUT_PAGE_TEXT.loiKetNutLienHe}
           </LinkButton>
         </div>
       </div>
@@ -434,7 +435,7 @@ function Closing() {
  */
 function FounderLetter() {
   return (
-    <Chapter id="thu-sang-lap" icon="feather" eyebrow="Thư" title="Chia sẻ từ người sáng lập">
+    <Chapter id="thu-sang-lap" icon="feather" eyebrow={ABOUT_PAGE_TEXT.thuNhan} title={ABOUT_PAGE_TEXT.mucThu}>
       <blockquote className="mt-2">
         {FOUNDER_LETTER.map((paragraph) => (
           <Prose key={paragraph.slice(0, 24)}>{paragraph}</Prose>

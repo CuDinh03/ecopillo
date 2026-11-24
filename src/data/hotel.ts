@@ -1,6 +1,6 @@
 import type { ImageSource } from './catalog'
 import { liveObject, type EditableField, type EditableSet } from './liveContent'
-import { anh, chu, definePageText, doan, dsCap } from './pageText/define'
+import { anh, chu, definePageText, doan, dsCap, dsDong } from './pageText/define'
 
 /**
  * Chữ giới thiệu khối khách sạn, dùng chung cho trang chủ (Hospitality) và trang Khách sạn và dự án (HotelPage).
@@ -179,28 +179,15 @@ export type HotelProductEntry =
   | { kind: 'product'; slug: string }
   | { kind: 'quote'; name: string; note: string; image: ImageSource }
 
-/**
- * Chín sản phẩm của danh mục khách sạn web cũ (/danh-muc-san-pham/du-an-khach-san-nha-nghi/), theo thứ tự anh Quang
- * gửi qua Zalo 09/11/2026: "làm sao cho xuất hiện được những sp này ở phần Khách sạn & dự án".
- * Chăn ga khách sạn và khăn chưa có trang riêng: bảng giá 2026 ghi "Giá liên hệ", nên bấm thẻ là điền sẵn form báo giá.
- */
-export const HOTEL_PRODUCTS: readonly HotelProductEntry[] = [
-  { kind: 'product', slug: 'dem-tron-cao-cap-ecopillo' },
+/** Hai món chưa có trang riêng trong khối "Sản phẩm cho khách sạn" (chữ gốc; Ecopillo sửa ở HOTEL_PAGE_SET) */
+const BASE_HOTEL_QUOTES: readonly { name: string; note: string; image: ImageSource }[] = [
   {
-    kind: 'quote',
     name: 'Chăn ga gối đệm khách sạn',
     // Mật độ sợi theo catalog trang 65, khớp món Chăn ga của Hàng trắng
     note: 'Cotton T250, T255, T300, T400 · may theo cỡ giường',
     image: BASE_HOTEL_PHOTOS.sheets,
   },
-  { kind: 'product', slug: 'divan-ecopillo' },
-  { kind: 'product', slug: 'dem-lo-xo-tui-doc-lap' },
-  { kind: 'product', slug: 'ruot-goi-micro-fiber' },
-  { kind: 'product', slug: 'chan-dong-micro-fiber' },
-  { kind: 'product', slug: 'topper-micro-fiber' },
-  { kind: 'product', slug: 'dem-lo-xo-eco-fresh' },
   {
-    kind: 'quote',
     name: 'Khăn tắm, khăn tay, khăn mặt',
     // Cỡ theo bảng giá 2026 trang 20 (Đồ vải khách sạn); chất liệu theo catalog trang 65
     note: 'Cotton · khăn tắm 70×140, khăn tay 35×70, khăn mặt 35×35 cm',
@@ -258,6 +245,7 @@ export const { set: HOTEL_PAGE_SET, text: HOTEL_PAGE } = definePageText(
       'Ecopillo cung cấp chăn ga gối đệm số lượng lớn cho khách sạn, resort, nhà nghỉ: đường may 4 mũi/cm, giải pháp đồng bộ, báo giá theo số lượng.',
     ),
     // Chị Phương 09/11/2026: "cái này có thể ghi 2 dòng đk k"
+    duongDan: chu('Đường dẫn đầu trang: tên trang', 'Khách sạn và dự án'),
     tieuDe: chu('Đầu trang: tiêu đề', 'Giấc ngủ năm sao | cho khách lưu trú', 'Dấu | là chỗ xuống dòng'),
     nutBaoGia: chu('Đầu trang: chữ nút', 'Nhận báo giá'),
     anhDau: anh('Đầu trang: ảnh', BASE_HOTEL_PHOTOS.hero, 'Ảnh này tải trước để trang mở nhanh: đổi ảnh thì báo bên làm web cập nhật'),
@@ -272,6 +260,19 @@ export const { set: HOTEL_PAGE_SET, text: HOTEL_PAGE } = definePageText(
       'Sản phẩm: đoạn',
       'Giá theo số lượng và số phòng: Ecopillo báo giá riêng cho từng khách sạn, dự án. Bấm thẻ để xem chi tiết hoặc nhận báo giá.',
     ),
+    theGiaLienHe: chu('Sản phẩm, Hàng trắng: chữ giá', 'Giá liên hệ'),
+    theNhanBaoGia: chu('Sản phẩm: chữ trên thẻ món chưa có trang', 'Nhận báo giá'),
+    theXemSanPham: chu('Sản phẩm: chữ trên thẻ có trang sản phẩm', 'Xem sản phẩm'),
+    monBaoGia: dsCap(
+      'Sản phẩm: 2 món chưa có trang riêng (bấm là điền form báo giá)',
+      ['name', 'note'],
+      ['Tên món', 'Chữ phụ'],
+      BASE_HOTEL_QUOTES.map((q) => ({ name: q.name, note: q.note })),
+      'Đúng 2 dòng: chăn ga khách sạn (thẻ thứ 2), khăn (thẻ cuối)',
+    ),
+    anhMonBaoGia1: anh('Sản phẩm: ảnh món chăn ga khách sạn', BASE_HOTEL_QUOTES[0].image),
+    anhMonBaoGia2: anh('Sản phẩm: ảnh món khăn', BASE_HOTEL_QUOTES[1].image),
+    canBaoGia: chu('Form báo giá: chữ điền sẵn khi bấm một món', 'Cần báo giá: {ten}', '{ten} là tên món Quý khách bấm'),
     hangTrangNhan: chu('Hàng trắng: nhãn nhỏ', 'Hàng trắng khách sạn'),
     hangTrangTieuDe: chu('Hàng trắng: tiêu đề', 'Hàng trắng cho phòng lưu trú'),
     hangTrangChu: doan('Hàng trắng: đoạn', 'Đệm, đồ vải trên giường và đồ phòng tắm. Giá báo theo số phòng, cỡ giường và số lượng.'),
@@ -282,6 +283,17 @@ export const { set: HOTEL_PAGE_SET, text: HOTEL_PAGE } = definePageText(
       BASE_HOTEL_WHITE_GOODS.map((g) => ({ label: g.label, blurb: g.blurb })),
       'Đúng 3 dòng: đệm, đồ vải trên giường, đồ phòng tắm',
     ),
+    hangTrangNut: chu('Hàng trắng: chữ nút báo giá', 'Liên hệ báo giá'),
+    hangTrangKichThuoc: chu('Hàng trắng: dòng dưới nút', HOTEL_LINEN.sizes),
+    anhNhomDem: anh('Hàng trắng: ảnh nhóm đệm', BASE_HOTEL_PHOTOS.home),
+    anhNhomGiuong: anh('Hàng trắng: ảnh nhóm đồ vải trên giường', BASE_HOTEL_PHOTOS.runner),
+    anhNhomTam: anh('Hàng trắng: ảnh nhóm phòng tắm', BASE_HOTEL_PHOTOS.towels),
+    anhCanVai: anh('Hàng trắng: ảnh cận vải nhỏ đè góc', {
+      src: '/images/details/vai-ed25.webp',
+      srcSet: '',
+      alt: 'Cận chất vải Lyocell của bộ Eco Doris ED25',
+    }),
+    chipChanGa: dsDong('Hàng trắng: các ô mật độ sợi của món Chăn ga', ['T250', 'T255', 'T300', 'T400'], 'Mỗi dòng một ô, ví dụ T300'),
     monDem: dsCap('Hàng trắng: món nhóm đệm', ['name', 'note'], ['Tên món', 'Chữ phụ (- là không có)'], whiteGoodsItems('dem')),
     monGiuong: dsCap('Hàng trắng: món nhóm đồ vải trên giường', ['name', 'note'], ['Tên món', 'Chữ phụ (- là không có)'], whiteGoodsItems('giuong')),
     monTam: dsCap('Hàng trắng: món nhóm phòng tắm', ['name', 'note'], ['Tên món', 'Chữ phụ (- là không có)'], whiteGoodsItems('tam')),
@@ -320,8 +332,48 @@ const ITEM_ROWS: Readonly<Record<HotelWhiteGoodsGroupId, readonly { name: string
   tam: HOTEL_PAGE.monTam,
 }
 
+const GROUP_IMAGES: Readonly<Record<HotelWhiteGoodsGroupId, ImageSource>> = {
+  dem: HOTEL_PAGE.anhNhomDem,
+  giuong: HOTEL_PAGE.anhNhomGiuong,
+  tam: HOTEL_PAGE.anhNhomTam,
+}
+
+/** Món có ô mật độ sợi (Chăn ga) lấy ô từ Nội dung web; Ecopillo xoá hết dòng thì món không còn ô */
+const withChips = (items: readonly HotelWhiteGoodsItem[]): readonly HotelWhiteGoodsItem[] =>
+  items.map((item) => (item.chips ? { ...item, chips: HOTEL_PAGE.chipChanGa.filter(Boolean) } : item))
+
 export const HOTEL_WHITE_GOODS: readonly HotelWhiteGoodsGroup[] = BASE_HOTEL_WHITE_GOODS.map((group, i) => ({
   ...group,
   ...(HOTEL_PAGE.hangTrangNhom[i] ?? {}),
-  items: itemsOf(ITEM_ROWS[group.id], group.items),
+  image: GROUP_IMAGES[group.id],
+  items: withChips(itemsOf(ITEM_ROWS[group.id], group.items)),
 }))
+
+/** Ảnh cận vải đè góc ảnh nhóm ở khối Hàng trắng */
+export const WHITE_GOODS_DETAIL_IMAGE: ImageSource = HOTEL_PAGE.anhCanVai
+
+const QUOTE_IMAGES: readonly ImageSource[] = [HOTEL_PAGE.anhMonBaoGia1, HOTEL_PAGE.anhMonBaoGia2]
+
+/** Món chưa có trang riêng thứ i: chữ Ecopillo sửa, thiếu dòng thì dùng chữ gốc */
+const quoteEntry = (i: number): HotelProductEntry => {
+  const base = BASE_HOTEL_QUOTES[i]
+  const row = HOTEL_PAGE.monBaoGia[i]
+  return { kind: 'quote', name: row?.name || base.name, note: row?.note ?? base.note, image: QUOTE_IMAGES[i] ?? base.image }
+}
+
+/**
+ * Chín sản phẩm của danh mục khách sạn web cũ (/danh-muc-san-pham/du-an-khach-san-nha-nghi/), theo thứ tự anh Quang
+ * gửi qua Zalo 09/11/2026: "làm sao cho xuất hiện được những sp này ở phần Khách sạn & dự án".
+ * Chăn ga khách sạn và khăn chưa có trang riêng: bảng giá 2026 ghi "Giá liên hệ", nên bấm thẻ là điền sẵn form báo giá.
+ */
+export const HOTEL_PRODUCTS: readonly HotelProductEntry[] = [
+  { kind: 'product', slug: 'dem-tron-cao-cap-ecopillo' },
+  quoteEntry(0),
+  { kind: 'product', slug: 'divan-ecopillo' },
+  { kind: 'product', slug: 'dem-lo-xo-tui-doc-lap' },
+  { kind: 'product', slug: 'ruot-goi-micro-fiber' },
+  { kind: 'product', slug: 'chan-dong-micro-fiber' },
+  { kind: 'product', slug: 'topper-micro-fiber' },
+  { kind: 'product', slug: 'dem-lo-xo-eco-fresh' },
+  quoteEntry(1),
+]

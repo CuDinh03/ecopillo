@@ -11,6 +11,8 @@ import { slugify } from '../lib/slug'
 import { PATHS } from './links'
 import { liveList, type EditableField, type EditableSet } from './liveContent'
 import { RECRUIT_TEXT } from './pageText/recruit'
+import { DEALER_TEXT } from './pageText/dealers'
+import { chen } from './pageText/define'
 
 export type DealerKind = 'van-phong' | 'chi-nhanh' | 'dai-ly'
 
@@ -38,10 +40,11 @@ export interface Dealer {
   ghi_chu?: string
 }
 
+/** Nhãn loại điểm: Ecopillo sửa ở Nội dung web → Chữ từng trang → Khối Điểm bán */
 export const KIND_LABEL: Readonly<Record<DealerKind, string>> = {
-  'van-phong': 'Văn phòng đại diện',
-  'chi-nhanh': 'Chi nhánh',
-  'dai-ly': 'Đại lý',
+  'van-phong': DEALER_TEXT.loaiVanPhong,
+  'chi-nhanh': DEALER_TEXT.loaiChiNhanh,
+  'dai-ly': DEALER_TEXT.loaiDaiLy,
 }
 
 /** Điểm gần nhất xa hơn mức này thì coi như khu vực chưa có đại lý */
@@ -58,8 +61,16 @@ export const NEAR_ME_URL = `${PATHS.contact}?gan-toi=1#diem-ban`
 /** Hiện bấy nhiêu điểm đầu, còn lại sau nút "Xem thêm" */
 export const PAGE_SIZE = 10
 
-/** Ảnh dùng khi điểm chưa có ảnh: đội ngũ Ecopillo tại cửa hàng */
-export const DEFAULT_DEALER_PHOTO = '/images/video/bia-phim-sm.webp'
+/** Ảnh dùng khi điểm chưa có ảnh: đội ngũ Ecopillo tại cửa hàng (Ecopillo đổi được ở Khối Điểm bán) */
+export const DEFAULT_DEALER_PHOTO: string = DEALER_TEXT.anhMacDinh.src
+export const DEFAULT_DEALER_PHOTO_ALT: string = DEALER_TEXT.anhMacDinh.alt
+
+/** Giờ "08:30" Ecopillo gõ sai dạng thì dùng giờ gốc, kẻo tính trạng thái mở cửa sai */
+const timeOr = (value: string, fallback: string) => (/^\d{1,2}:\d{2}$/.test(value.trim()) ? value.trim().padStart(5, '0') : fallback)
+
+/** Giờ mở, đóng cửa của văn phòng, chi nhánh và đại lý Đà Nẵng (ba điểm trong SHOWROOMS) */
+export const OFFICIAL_OPEN = timeOr(DEALER_TEXT.gioMoVanPhong, '08:30')
+export const OFFICIAL_CLOSE = timeOr(DEALER_TEXT.gioDongVanPhong, '22:00')
 
 export interface ProvinceInfo {
   id: string
@@ -154,11 +165,11 @@ const OFFICIAL: readonly Dealer[] = SHOWROOMS.map((s) => ({
   lat: s.lat,
   lng: s.lng,
   dien_thoai: s.hotline ?? CONTACT.hotlineDisplay,
-  gio_mo: '08:30',
-  gio_dong: '22:00',
+  gio_mo: OFFICIAL_OPEN,
+  gio_dong: OFFICIAL_CLOSE,
   ngay_nghi: [],
   anh: STORE_PHOTOS[s.id] ?? (s.photo ? [s.photo.src.replace(/(?<!-sm)\.webp$/, '-sm.webp')] : []),
-  ghi_chu: 'Có trưng bày đệm, gối để nằm thử',
+  ghi_chu: DEALER_TEXT.ghiChuVanPhong,
 }))
 
 /** Mã ba điểm trong SHOWROOMS */
@@ -284,16 +295,18 @@ export const SALES_CHANNELS: readonly { title: string; tagline: string; text: st
   text: RECRUIT_TEXT.truCotMoTa[i] ?? '',
 }))
 
+/** Ảnh bản đồ phân phối: Ecopillo đổi ảnh, chữ thay thế ở bộ Trang Tuyển đại lý; cỡ là cỡ ảnh gốc (giữ chỗ, không xô trang) */
 export const DISTRIBUTION_MAP = {
-  src: '/images/distribution/ban-do-phan-phoi.webp',
-  alt: 'Bản đồ Việt Nam đánh dấu văn phòng Hà Nội, chi nhánh TP. Hồ Chí Minh và các vùng có nhà phân phối Ecopillo',
+  src: RECRUIT_TEXT.anhBanDo.src,
+  srcSet: RECRUIT_TEXT.anhBanDo.srcSet,
+  alt: RECRUIT_TEXT.anhBanDo.alt,
   width: 563,
   height: 900,
 } as const
 
 /** "Hơn N điểm trên toàn quốc": làm tròn xuống hàng chục khi từ 20 điểm */
 export const dealerCountLabel = (count: number) =>
-  count >= 20 ? `Hơn ${Math.floor(count / 10) * 10} điểm trên toàn quốc` : `${count} điểm trên toàn quốc`
+  count >= 20 ? chen(DEALER_TEXT.soDiemHon, { so: Math.floor(count / 10) * 10 }) : chen(DEALER_TEXT.soDiem, { so: count })
 
 /* ---------- Khoảng cách ---------- */
 
@@ -345,7 +358,9 @@ export const zaloHref = (d: Dealer) => `https://zalo.me/${digits(d.zalo || d.die
 
 /* ---------- Giờ mở cửa (tính theo giờ Việt Nam, không theo giờ máy khách) ---------- */
 
-const WEEKDAYS = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy']
+const WEEKDAYS_GOC = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy']
+/** Tên thứ Ecopillo sửa được; thiếu dòng thì dùng tên gốc */
+const WEEKDAYS = WEEKDAYS_GOC.map((name, i) => DEALER_TEXT.thu[i] || name)
 const WEEKDAY_INDEX: Readonly<Record<string, number>> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }
 
 const vnNow = (now: Date) => {
@@ -374,7 +389,7 @@ export interface OpenStatus {
 }
 
 /** Chữ thay cho giờ mở cửa khi đại lý chưa báo giờ */
-export const NO_HOURS_TEXT = 'Quý khách gọi trước khi ghé'
+export const NO_HOURS_TEXT: string = DEALER_TEXT.chuaBaoGio
 
 /** null khi đại lý chưa báo giờ mở cửa */
 export const openStatus = (d: Dealer, now = new Date()): OpenStatus | null => {
@@ -384,22 +399,22 @@ export const openStatus = (d: Dealer, now = new Date()): OpenStatus | null => {
   const closes = toMinutes(d.gio_dong)
   const closedToday = d.ngay_nghi.includes(day)
   if (!closedToday && minutes >= opens && minutes < closes) {
-    return { open: true, text: `Đang mở cửa · đến ${shortTime(d.gio_dong)}` }
+    return { open: true, text: chen(DEALER_TEXT.dangMo, { gio: shortTime(d.gio_dong) }) }
   }
   // Tìm lần mở cửa kế tiếp: còn trong hôm nay (chưa tới giờ mở) hoặc ngày làm việc kế tiếp
-  if (!closedToday && minutes < opens) return { open: false, text: `Đã đóng cửa, mở lại ${shortTime(d.gio_mo)}` }
+  if (!closedToday && minutes < opens) return { open: false, text: chen(DEALER_TEXT.daDongHomNay, { gio: shortTime(d.gio_mo) }) }
   for (let i = 1; i <= 7; i++) {
     const next = (day + i) % 7
     if (d.ngay_nghi.includes(next)) continue
-    const when = i === 1 ? 'sáng mai' : WEEKDAYS[next]
-    return { open: false, text: `Đã đóng cửa, mở lại ${shortTime(d.gio_mo)} ${when}` }
+    const when = i === 1 ? DEALER_TEXT.sangMai : WEEKDAYS[next]
+    return { open: false, text: chen(DEALER_TEXT.daDongMoLai, { gio: shortTime(d.gio_mo), khi: when }) }
   }
-  return { open: false, text: 'Tạm nghỉ' }
+  return { open: false, text: DEALER_TEXT.tamNghi }
 }
 
 export const hoursText = (d: Dealer) => {
   if (!d.gio_mo || !d.gio_dong) return NO_HOURS_TEXT
-  const base = `${shortTime(d.gio_mo)}–${shortTime(d.gio_dong)}`
-  if (d.ngay_nghi.length === 0) return `${base} hằng ngày`
-  return `${base}, nghỉ ${d.ngay_nghi.map((n) => WEEKDAYS[n]).join(', ')}`
+  const hours = { mo: shortTime(d.gio_mo), dong: shortTime(d.gio_dong) }
+  if (d.ngay_nghi.length === 0) return chen(DEALER_TEXT.gioHangNgay, hours)
+  return chen(DEALER_TEXT.gioNgayNghi, { ...hours, ngay: d.ngay_nghi.map((n) => WEEKDAYS[n]).join(', ') })
 }
