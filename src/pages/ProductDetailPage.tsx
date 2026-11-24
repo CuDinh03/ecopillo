@@ -23,6 +23,8 @@ import { productMetaDescription } from '../lib/metaDescription'
 import { productLd, shareImageOf } from '../lib/structuredData'
 import { NotFoundPage } from './NotFoundPage'
 import { COMMON_TEXT } from '../data/pageText/common'
+import { chen } from '../data/pageText/define'
+import { PRODUCT_DETAIL_TEXT as T } from '../data/pageText/productUi'
 
 /**
  * Trang sản phẩm, ở đúng đường link của web cũ (src/data/links.ts):
@@ -47,7 +49,7 @@ export function ProductDetailPage() {
 }
 
 function MissingProduct() {
-  usePageMeta('Không tìm thấy trang', undefined, { notFound: true })
+  usePageMeta(T.khongTimThay, undefined, { notFound: true })
   return <NotFoundPage />
 }
 
@@ -57,7 +59,7 @@ function MissingProduct() {
  */
 const productDescription = (product: Product): string =>
   // Chưa có giá: "…, giá báo khi gọi xác nhận." thay vì "giá Báo giá khi gọi xác nhận."
-  productMetaDescription(product.summary, product.name, hasPrice(product) ? priceLabel(product) : 'báo khi gọi xác nhận')
+  productMetaDescription(product.summary, product.name, hasPrice(product) ? priceLabel(product) : T.moTaGoogleGiaKhiGoi)
 
 /** Sản phẩm lẻ (ruột gối, ruột chăn, topper, đệm): ảnh chính + ảnh phụ, chọn kích thước rồi đặt online */
 function ProductDetail({ product }: { product: Product }) {
@@ -134,7 +136,7 @@ function ProductDetail({ product }: { product: Product }) {
                 index={Math.min(photoIndex, photos.length - 1)}
                 onIndexChange={setPhotoIndex}
                 onClose={lightbox.close}
-                label={`Ảnh ${product.name}`}
+                label={chen(T.ariaKhungAnh, { ten: product.name })}
               />
             )}
           </div>
@@ -158,14 +160,14 @@ function ProductDetail({ product }: { product: Product }) {
                 <>
                   {/* Giá trong từng ô: ô kích thước theo độ dày đang chọn, ô độ dày theo kích thước đang chọn */}
                   <VariantGroup
-                    label="Kích thước"
+                    label={T.kichThuoc}
                     options={variants.sizes}
                     value={variantSize}
                     onChange={setVariantSize}
                     priceOf={(size) => variantPrices(size, thickness)}
                   />
                   <VariantGroup
-                    label="Độ dày"
+                    label={T.doDay}
                     options={variants.thicknesses}
                     value={thickness}
                     onChange={setThickness}
@@ -175,7 +177,7 @@ function ProductDetail({ product }: { product: Product }) {
               )}
               {product.choices && (
                 <VariantGroup
-                  label={product.choiceLabel ?? 'Kích thước'}
+                  label={product.choiceLabel ?? T.kichThuoc}
                   options={product.choices.map((c) => c.label)}
                   value={choice?.label ?? null}
                   priceOf={(label) => {
@@ -194,8 +196,8 @@ function ProductDetail({ product }: { product: Product }) {
               {product.choices && choice && choice.price === undefined && (
                 <p className="text-sm text-ink-soft">
                   {product.isPriceOnCall
-                    ? 'Nhân viên báo giá chính xác khi gọi xác nhận đơn.'
-                    : `Giá cỡ ${choice.label} theo độ dày và dòng đệm: nhân viên báo giá chính xác khi gọi xác nhận đơn.`}
+                    ? T.baoGiaChinhXac
+                    : chen(T.baoGiaCo, { co: choice.label })}
                 </p>
               )}
               {specs.length > 0 && (
@@ -211,12 +213,12 @@ function ProductDetail({ product }: { product: Product }) {
               <div className="hidden gap-3 lg:flex">
                 {singleUrl && (
                   <Link to={singleUrl} className={buttonClass('primary', 'lg', 'flex-1')}>
-                    Đặt mua
+                    {T.datMua}
                     <Icon name="arrowRight" size={18} />
                   </Link>
                 )}
                 <a href={CONTACT.zaloUrl} target="_blank" rel="noopener noreferrer" className={buttonClass('secondary', 'lg')}>
-                  <ZaloMark /> Tư vấn
+                  <ZaloMark /> {T.tuVan}
                 </a>
               </div>
               <p className="text-sm text-ink-soft">
@@ -285,7 +287,7 @@ function VariantGroup({ label, options, value, onChange, priceOf }: VariantGroup
               }`}
             >
               <span className="text-sm font-medium text-deep-900">{option}</span>
-              <span className="tabular mt-0.5 text-meta text-ink-soft">{prices.length ? formatRange(Math.min(...prices), Math.max(...prices)) : 'Báo giá khi gọi'}</span>
+              <span className="tabular mt-0.5 text-meta text-ink-soft">{prices.length ? formatRange(Math.min(...prices), Math.max(...prices)) : T.baoGiaKhiGoi}</span>
             </button>
           )
         })}

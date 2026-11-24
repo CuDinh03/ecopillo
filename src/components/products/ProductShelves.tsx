@@ -4,6 +4,8 @@ import { productPath, shortPriceLabel, type CategoryId, type Product } from '../
 import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
+import { chen } from '../../data/pageText/define'
+import { PRODUCT_LIST_TEXT as T } from '../../data/pageText/productUi'
 
 interface ProductShelvesProps {
   /** Bấm "Chỉ xem …" hoặc "Xem theo phối màu": mở lưới của nhóm đó (?danh-muc=…) */
@@ -44,10 +46,10 @@ export function ProductShelves({ onPick, reveal }: ProductShelvesProps) {
                   onClick={() => onPick('bo-chan-ga')}
                   className="group flex w-full flex-col justify-center gap-2 rounded-[1.25rem] bg-ivory p-5 text-left shadow-[var(--shadow-soft)] transition duration-500 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-mist-600"
                 >
-                  <span className="font-display text-[1.3rem] leading-tight text-deep-900">Xem theo phối màu</span>
+                  <span className="font-display text-[1.3rem] leading-tight text-deep-900">{T.xemTheoPhoiMau}</span>
                   <span className="text-meta leading-relaxed text-ink-soft">{COLORWAY_HINT}</span>
                   <span className="mt-1 inline-flex items-center gap-1 text-small font-medium text-mist-600">
-                    Xem tất cả phối màu
+                    {T.xemTatCaPhoiMau}
                     <Icon name="arrowRight" size={14} className="transition-transform group-hover:translate-x-0.5" />
                   </span>
                 </button>
@@ -61,7 +63,7 @@ export function ProductShelves({ onPick, reveal }: ProductShelvesProps) {
 }
 
 function ShelfHeader({ shelf, onPick }: { shelf: Shelf; onPick: (category: CategoryId) => void }) {
-  const action = shelf.category === 'bo-chan-ga' ? 'Xem theo phối màu' : `Chỉ xem ${shelf.shortLabel}`
+  const action = shelf.category === 'bo-chan-ga' ? T.xemTheoPhoiMau : chen(T.chiXem, { ten: shelf.shortLabel })
   return (
     <div className="flex items-baseline justify-between gap-3 sm:gap-4">
       {/* Tên kệ không bẻ giữa chữ ("Bộ chăn / ga" ở 320px) */}
@@ -102,7 +104,7 @@ function ShelfCard({ product }: { product: Product }) {
         </h3>
         {colorways > 1 ? (
           <span className="mt-1.5 self-start rounded-full bg-mist-100 px-2 py-0.5 text-label font-medium text-deep-900">
-            Nhiều phối màu
+            {T.nhieuPhoiMau}
           </span>
         ) : (
           <p className="mt-1 line-clamp-1 text-label text-ink-faint sm:line-clamp-2 sm:text-meta">{product.summary}</p>

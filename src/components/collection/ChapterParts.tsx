@@ -25,6 +25,8 @@ import { Placeholder } from '../ui/Placeholder'
 import { ThumbStrip } from '../ui/ThumbStrip'
 import { buttonClass, FillIn } from '../ui/primitives'
 import { COMMON_TEXT } from '../../data/pageText/common'
+import { chen } from '../../data/pageText/define'
+import { COLLECTION_PAGE_TEXT as T, PRODUCT_DETAIL_TEXT as D } from '../../data/pageText/productUi'
 
 /* Sân khấu của một chương (phần lấy từ hướng A): ảnh lớn, câu chuyện, lựa chọn mua */
 
@@ -64,7 +66,7 @@ export function ChapterImage({ image, gallery = [], shown, note, onPrev, onNext,
         ) : (
           <Placeholder className="absolute inset-0 h-full w-full" tone="mist" tint={shown.swatch} note={note} />
         )}
-        {current && <ZoomTrigger onOpen={lightbox.open} label={`Phóng to ảnh ${shown.code}`} />}
+        {current && <ZoomTrigger onOpen={lightbox.open} label={chen(T.phongToAnh, { ma: shown.code })} />}
         {/* Góc trái trên: góc trái dưới ảnh gốc có vòng mã in sẵn, chip đặt ở đó thì đè lên vòng (rà 23/10/2026) */}
         <span
           key={shown.code}
@@ -73,10 +75,10 @@ export function ChapterImage({ image, gallery = [], shown, note, onPrev, onNext,
           {shown.code} · {shown.colorName}
         </span>
         <div className="absolute right-3 bottom-3 flex gap-2">
-          <button type="button" onClick={onPrev} aria-label="Chương trước" className={ARROW}>
+          <button type="button" onClick={onPrev} aria-label={T.chuongTruoc} className={ARROW}>
             <Icon name="arrowLeft" size={18} />
           </button>
-          <button type="button" onClick={onNext} aria-label="Chương sau" className={ARROW}>
+          <button type="button" onClick={onNext} aria-label={T.chuongSau} className={ARROW}>
             <Icon name="arrowRight" size={18} />
           </button>
         </div>
@@ -90,7 +92,7 @@ export function ChapterImage({ image, gallery = [], shown, note, onPrev, onNext,
           onIndexChange={setPhotoIndex}
           onClose={lightbox.close}
           caption={shown.code}
-          label={`Ảnh phối màu ${shown.code} · ${shown.colorName}`}
+          label={chen(T.ariaKhungAnh, { ma: shown.code, mau: shown.colorName })}
         />
       )}
     </div>
@@ -176,7 +178,7 @@ function StoryText({ text }: { text: string }) {
           // Vùng bấm cao 44px nhưng không đẩy chữ (lề âm)
           className="-my-2 inline-flex h-11 items-center text-sm font-medium text-deep-700 underline underline-offset-4 lg:hidden"
         >
-          Đọc tiếp
+          {T.docTiep}
         </button>
       )}
     </div>
@@ -202,7 +204,7 @@ export function ChapterBuy({ collection, pattern, size, onSize, isSoldOut, class
       </p>
 
       <fieldset className="mt-6">
-        <legend className="text-sm font-medium text-deep-900">Kích thước</legend>
+        <legend className="text-sm font-medium text-deep-900">{D.kichThuoc}</legend>
         <div className="mt-3 grid grid-cols-3 gap-2">
           {SIZES.map((s) => {
             const soldOut = isSizeSoldOut(pattern, s.id)
@@ -225,7 +227,7 @@ export function ChapterBuy({ collection, pattern, size, onSize, isSoldOut, class
                 <span className="text-label tracking-[0.1em] uppercase">{s.bed}</span>
                 <span className={`mt-0.5 text-sm font-medium ${soldOut ? 'line-through' : 'text-deep-900'}`}>{s.label.replace(' cm', '')}</span>
                 <span className={`tabular mt-1 text-meta ${soldOut ? 'text-alert' : 'text-ink-soft'}`}>
-                  {soldOut ? 'Tạm hết hàng' : formatVND(patternPrice(collection, pattern, s.id))}
+                  {soldOut ? T.coHetHang : formatVND(patternPrice(collection, pattern, s.id))}
                 </span>
               </button>
             )
@@ -246,16 +248,16 @@ export function ChapterBuy({ collection, pattern, size, onSize, isSoldOut, class
         {isSoldOut ? (
           // Nhãn, không phải nút: màu chữ đặt thẳng (không dùng opacity) để đủ tương phản 4.5:1 (axe 06/11/2026), cùng kiểu nhãn hết hàng trên điện thoại (DetailParts)
           <span className="inline-flex h-14 flex-1 cursor-not-allowed items-center justify-center rounded-full bg-mist-100 px-7 text-base font-medium text-ink-soft">
-            {pattern.code} tạm hết hàng
+            {chen(D.tamHetHang, { ma: pattern.code })}
           </span>
         ) : (
           <Link to={orderUrl(collection, pattern, size)} className={buttonClass('primary', 'lg', 'flex-1')}>
-            Đặt mua {pattern.code}
+            {D.datMua} {pattern.code}
             <Icon name="arrowRight" size={18} />
           </Link>
         )}
         <a href={CONTACT.zaloUrl} target="_blank" rel="noopener noreferrer" className={buttonClass('secondary', 'lg')}>
-          <ZaloMark /> Tư vấn
+          <ZaloMark /> {D.tuVan}
         </a>
       </div>
 

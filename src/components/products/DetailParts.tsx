@@ -5,13 +5,15 @@ import { patternRange, type Pattern, type SizeId } from '../../data/catalog'
 import { NEAR_ME_URL } from '../../data/dealers'
 import { PATHS, productsUrl } from '../../data/links'
 import { DELIVERY_POINTS, TRUST_POINTS, WARRANTY_BY_CATEGORY } from '../../data/productCommonInfo'
-import { categoryLabel, hasPrice, orderUrl, priceLabel, PRODUCTS, type Product } from '../../data/products'
+import { categoryLabel, fromPriceLabel, hasPrice, orderUrl, priceLabel, PRODUCTS, type Product } from '../../data/products'
 import { formatRange, formatVND } from '../../lib/format'
 import { breadcrumbLd } from '../../lib/structuredData'
 import { JsonLd } from '../seo/JsonLd'
 import { Icon, ZaloMark } from '../ui/Icon'
 import { ProductCard } from './ProductCard'
 import { COMMON_TEXT } from '../../data/pageText/common'
+import { chen } from '../../data/pageText/define'
+import { PRODUCT_DETAIL_TEXT as T, PRODUCT_LIST_TEXT as L } from '../../data/pageText/productUi'
 
 /* Các phần dùng chung cho trang chi tiết sản phẩm lẻ và trang bộ sưu tập (từng phối màu); chữ giao hàng, bảo hành ở src/data/productCommonInfo.ts */
 
@@ -22,19 +24,19 @@ import { COMMON_TEXT } from '../../data/pageText/common'
 export function DetailBreadcrumb({ product, current = product.name }: { product: Product; current?: string }) {
   const { pathname } = useLocation()
   const trail = [
-    { name: 'Sản phẩm', path: PATHS.products },
+    { name: L.duongDanSanPham, path: PATHS.products },
     { name: categoryLabel(product.category), path: productsUrl({ 'danh-muc': product.category }) },
     { name: current, path: pathname },
   ]
   return (
-    <nav aria-label="Đường dẫn" className="flex flex-wrap items-center gap-2 text-sm text-ink-soft">
+    <nav aria-label={L.ariaDuongDan} className="flex flex-wrap items-center gap-2 text-sm text-ink-soft">
       <JsonLd data={breadcrumbLd(trail)} />
       <Link to="/" className="-my-3 inline-block py-3 hover:text-deep-900">
-        Trang chủ
+        {L.duongDanTrangChu}
       </Link>
       <Icon name="arrowRight" size={13} className="text-ink-faint" />
       <Link to={PATHS.products} className="-my-3 inline-block py-3 hover:text-deep-900">
-        Sản phẩm
+        {L.duongDanSanPham}
       </Link>
       <Icon name="arrowRight" size={13} className="text-ink-faint" />
       <Link to={productsUrl({ 'danh-muc': product.category })} className="-my-3 inline-block py-3 hover:text-deep-900">
@@ -51,7 +53,7 @@ export function NearMeLine() {
       <Link to={NEAR_ME_URL} className="inline-flex min-h-11 items-center gap-1.5 hover:text-deep-900">
         <Icon name="pin" size={15} className="text-mist-600" />
         {COMMON_TEXT.spNamThu}{' '}
-        <span className="font-medium text-deep-900 underline underline-offset-4">Tìm đại lý gần Quý khách</span>
+        <span className="font-medium text-deep-900 underline underline-offset-4">{T.timDaiLy}</span>
       </Link>
     </p>
   )
@@ -86,7 +88,7 @@ export function ProductInfoCards({ product, className = 'mt-16' }: { product: Pr
     // items-start: mỗi thẻ cao theo nội dung, không kéo thẻ 4 dòng cao bằng thẻ 10 dòng rồi để trống nửa dưới
     <div className={`grid items-start gap-5 ${collection ? 'lg:grid-cols-3' : 'lg:grid-cols-2'} ${className}`}>
       {collection && (
-        <InfoCard title="Trong bộ gồm">
+        <InfoCard title={T.trongBoGom}>
           <ul className="space-y-2">
             {collection.contents.map((c) => (
               <li key={c} className="flex gap-2">
@@ -96,7 +98,7 @@ export function ProductInfoCards({ product, className = 'mt-16' }: { product: Pr
           </ul>
         </InfoCard>
       )}
-      <InfoCard title="Chất liệu & đặc điểm">
+      <InfoCard title={T.chatLieu}>
         <ul className="space-y-2">
           {product.details.map((d) => (
             <li key={d} className="flex gap-2">
@@ -105,7 +107,7 @@ export function ProductInfoCards({ product, className = 'mt-16' }: { product: Pr
           ))}
         </ul>
       </InfoCard>
-      <InfoCard title="Giao hàng, đổi trả & bảo hành">
+      <InfoCard title={T.giaoHang}>
         <ul className="space-y-2">
           {DELIVERY_POINTS.map((p) => (
             <li key={p} className="flex gap-2">
@@ -116,7 +118,7 @@ export function ProductInfoCards({ product, className = 'mt-16' }: { product: Pr
             <li className="flex gap-2">
               <Icon name="shield" size={15} className="mt-1 shrink-0 text-mist-600" />
               <span>
-                Bảo hành tính từ ngày mua: <strong className="font-medium text-deep-900">{warranty}</strong>
+                {T.baoHanhTu} <strong className="font-medium text-deep-900">{warranty}</strong>
               </span>
             </li>
           )}
@@ -145,7 +147,7 @@ export function RelatedProducts({ product, excludeCollections = [] }: RelatedPro
           {COMMON_TEXT.spCoTheThich}
         </h2>
         <Link to={productsUrl({ 'danh-muc': product.category })} className="text-sm font-medium text-deep-800 hover:underline">
-          Xem tất cả
+          {T.xemTatCa}
         </Link>
       </div>
       <ul className="mt-6 grid grid-cols-2 gap-3 sm:gap-5 xl:grid-cols-3">
@@ -180,13 +182,13 @@ export function MobileBuyBar({ product, pattern, size, unitPrice, singleUrl, isS
   const range = collection && pattern ? patternRange(collection, pattern) : { min: product.min, max: product.max }
   // Chưa chọn: khoảng thấp nhất – cao nhất (owner 18/11/2026), cả sản phẩm lẻ; chưa có giá thì chữ báo giá
   const price = unitPrice ? formatVND(unitPrice) : collection || hasPrice(product) ? formatRange(range.min, range.max) : priceLabel(product)
-  const shortPrice = unitPrice || range.min === range.max ? price : `từ ${formatVND(range.min)}`
+  const shortPrice = unitPrice || range.min === range.max ? price : fromPriceLabel(range.min)
   return (
     <div className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ivory/95 px-3 pt-2.5 backdrop-blur-md lg:hidden">
       <div className="flex items-center gap-2">
         <a
           href={CONTACT.hotlineTel}
-          aria-label={`Gọi hotline ${CONTACT.hotlineDisplay}`}
+          aria-label={chen(T.ariaGoiHotline, { so: CONTACT.hotlineDisplay })}
           className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-call text-ivory"
         >
           <Icon name="phone" size={19} />
@@ -195,14 +197,14 @@ export function MobileBuyBar({ product, pattern, size, unitPrice, singleUrl, isS
           href={CONTACT.zaloUrl}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Nhắn Zalo Ecopillo"
+          aria-label={T.ariaZalo}
           className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-zalo"
         >
           <ZaloMark tone="light" />
         </a>
         {isSoldOut ? (
           <span className="flex h-12 min-w-0 flex-1 items-center justify-center rounded-2xl bg-mist-100 text-body-sm font-medium text-ink-faint ring-1 ring-cream-200">
-            {pattern?.code} tạm hết hàng
+            {chen(T.tamHetHang, { ma: pattern?.code ?? '' })}
           </span>
         ) : (
           url && (
@@ -212,7 +214,7 @@ export function MobileBuyBar({ product, pattern, size, unitPrice, singleUrl, isS
                   <span className="max-[359px]:hidden">{price}</span>
                   <span className="min-[360px]:hidden">{shortPrice}</span>
                 </span>
-                <span className="block truncate text-body-sm font-medium">Đặt mua {pattern?.code ?? ''}</span>
+                <span className="block truncate text-body-sm font-medium">{T.datMua} {pattern?.code ?? ''}</span>
               </span>
               <Icon name="arrowRight" size={18} className="shrink-0" />
             </Link>

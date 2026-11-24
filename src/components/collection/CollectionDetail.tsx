@@ -29,6 +29,7 @@ import { ChapterRail } from './ChapterRail'
 import { CollectionCover } from './CollectionCover'
 import { SAME_TONE_LIMIT, SameTone } from './SameTone'
 import { useHydratedSearchParams } from '../../hooks/useHydratedSearchParams'
+import { COLLECTION_PAGE_TEXT } from '../../data/pageText/productUi'
 
 interface CollectionDetailProps {
   product: Product
@@ -164,7 +165,7 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
         {tone && <SameTone collection={collection} tone={tone} />}
 
         <h2 className="font-display mt-16 text-[1.6rem] leading-tight text-deep-900 sm:mt-20 sm:text-[2.2rem]">
-          Giống nhau ở mọi phối màu
+          {COLLECTION_PAGE_TEXT.giongNhau}
         </h2>
         <ProductInfoCards product={product} className="mt-6" />
 

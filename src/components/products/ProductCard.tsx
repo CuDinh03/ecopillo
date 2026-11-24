@@ -4,6 +4,7 @@ import { categoryLabel, priceLabel, productPath, type Product } from '../../data
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { COMMON_TEXT } from '../../data/pageText/common'
+import { PRODUCT_LIST_TEXT } from '../../data/pageText/productUi'
 
 /** Ảnh mẫu khác trong cùng bộ sưu tập, dùng khi chưa có ảnh thư viện */
 function otherPatternImage(collection: Collection, currentSrc?: string): ImageSource | undefined {
@@ -73,7 +74,7 @@ export function ProductCard({ product }: { product: Product }) {
               <span className="text-ink-faint">{COMMON_TEXT.theSanPham}</span>
             )}
             <span className="hidden items-center gap-1 font-medium text-deep-800 transition-transform group-hover:translate-x-0.5 sm:flex">
-              Xem <Icon name="arrowRight" size={14} />
+              {PRODUCT_LIST_TEXT.xemThe} <Icon name="arrowRight" size={14} />
             </span>
           </div>
         </div>

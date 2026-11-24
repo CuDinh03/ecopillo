@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { imageOfPattern, patternPrice, SIZES } from '../../data/catalog'
 import { patternPath, type Colorway } from '../../data/stories'
-import { formatVND } from '../../lib/format'
+import { fromPriceLabel } from '../../data/products'
 import { Placeholder } from '../ui/Placeholder'
 
 /** Ô một phối màu: ảnh, tên câu chuyện, bộ sưu tập và giá từ. Dùng ở trang Sản phẩm (lọc theo gam) và cuối mỗi chương */
@@ -38,7 +38,7 @@ export function ColorwayCard({ colorway, deferImage = false }: ColorwayCardProps
         <p className="mt-1 text-label text-ink-faint sm:text-meta">
           {collection.name} · {pattern.code}
         </p>
-        <p className="tabular mt-auto pt-3 text-meta font-medium text-deep-900 sm:text-body-sm">từ {formatVND(from)}</p>
+        <p className="tabular mt-auto pt-3 text-meta font-medium text-deep-900 sm:text-body-sm">{fromPriceLabel(from)}</p>
       </div>
     </article>
   )

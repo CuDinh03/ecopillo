@@ -30,6 +30,8 @@ import { revealDelay } from '../lib/reveal'
 import { scrollToElement } from '../lib/scroll'
 import { useHydratedSearchParams } from '../hooks/useHydratedSearchParams'
 import { PRODUCTS_PAGE_TEXT } from '../data/pageText/products'
+import { chen } from '../data/pageText/define'
+import { PRODUCT_LIST_TEXT as T } from '../data/pageText/productUi'
 
 const CATEGORY_PARAM = 'danh-muc'
 const COLLECTION_PARAM = 'bo-suu-tap'
@@ -63,7 +65,7 @@ const bySort = <T,>(items: readonly T[], sort: SortId, priceOf: (item: T) => num
 }
 
 export function ProductsPage() {
-  usePageMeta('Sản phẩm', PRODUCTS_PAGE_TEXT.moTaGoogle)
+  usePageMeta(T.duongDanSanPham, PRODUCTS_PAGE_TEXT.moTaGoogle)
   const [params, setParams] = useHydratedSearchParams()
   const rawCategory = params.get(CATEGORY_PARAM)
   const category = isCategory(rawCategory) ? rawCategory : rawCategory ? (LEGACY_CATEGORY[rawCategory] ?? null) : null
@@ -165,21 +167,28 @@ export function ProductsPage() {
   }
   const activeCount = [band, collection, tone].filter(Boolean).length + (sort === 'noi-bat' ? 0 : 1)
   // Dòng trên lưới chỉ nói đang lọc gì, không ghi số (chị Phương 09/11/2026: "tất cả các số này bỏ hộ c nha. K cần đâu")
-  const scopeLabel =
-    collection && tone ? ` ${collection.name}, ${tone.phrase}` : collection ? ` của ${collection.name}` : tone ? ` ${tone.phrase}` : ''
-  const filterLabel = isFiltered ? `Phối màu${scopeLabel}` : band ? 'Sản phẩm' : ''
-  const resultLabel = band ? `${filterLabel}, giá ${band.label.replace(/^\S+/, (w) => w.toLowerCase())}` : filterLabel
+  const filterLabel =
+    collection && tone
+      ? chen(T.ketQuaBoVaGam, { bo: collection.name, gam: tone.phrase })
+      : collection
+        ? chen(T.ketQuaBo, { bo: collection.name })
+        : tone
+          ? chen(T.ketQuaGam, { gam: tone.phrase })
+          : band
+            ? T.ketQuaChiGia
+            : ''
+  const resultLabel = band ? chen(T.ketQuaGia, { loc: filterLabel, muc: band.label.replace(/^\S+/, (w) => w.toLowerCase()) }) : filterLabel
 
   return (
     <div className="pb-24">
       <section>
         <Container className="pt-10 pb-12 sm:pt-14 sm:pb-16">
-          <nav aria-label="Đường dẫn" className="flex items-center gap-2 text-sm text-ink-soft">
+          <nav aria-label={T.ariaDuongDan} className="flex items-center gap-2 text-sm text-ink-soft">
             <Link to="/" className="hover:text-deep-900">
-              Trang chủ
+              {T.duongDanTrangChu}
             </Link>
             <Icon name="arrowRight" size={13} className="text-ink-faint" />
-            <span className="text-deep-900">Sản phẩm</span>
+            <span className="text-deep-900">{T.duongDanSanPham}</span>
           </nav>
           <h1 className="font-display mt-4 text-[2.4rem] leading-tight text-deep-900 sm:text-[3.6rem]">
             {PRODUCTS_PAGE_TEXT.tieuDe}
@@ -187,7 +196,7 @@ export function ProductsPage() {
           <div className="mt-4 grid gap-6 lg:grid-cols-[1.15fr_1fr] lg:gap-10">
             <p className="max-w-2xl text-ink-soft">{PRODUCTS_INTRO}</p>
             {/* Điện thoại: bốn cam kết gộp trong một khối trắng cho đầu trang ngắn lại */}
-            <ul aria-label="Ecopillo cam kết" className="grid gap-x-2 gap-y-2.5 rounded-2xl bg-ivory p-4 shadow-[var(--shadow-soft)] sm:grid-cols-2 sm:gap-y-2 sm:bg-transparent sm:p-0 sm:shadow-none">
+            <ul aria-label={T.ariaCamKet} className="grid gap-x-2 gap-y-2.5 rounded-2xl bg-ivory p-4 shadow-[var(--shadow-soft)] sm:grid-cols-2 sm:gap-y-2 sm:bg-transparent sm:p-0 sm:shadow-none">
               {PRODUCTS_PROMISES.map((promise) => (
                 <li key={promise} className="flex gap-2 text-small leading-snug text-ink-soft sm:rounded-2xl sm:bg-ivory sm:px-3.5 sm:py-3 sm:shadow-[var(--shadow-soft)]">
                   <Icon name="check" size={16} className="mt-0.5 shrink-0 text-mist-600" />
@@ -205,7 +214,7 @@ export function ProductsPage() {
           panel={{ ...panel, idPrefix: 'loc-dt', hideCategory: isShelfMode }}
           activeCount={activeCount}
           onClose={revealGrid}
-          summary={isShelfMode ? 'Tất cả sản phẩm' : undefined}
+          summary={isShelfMode ? T.tatCaSanPham : undefined}
         />
 
         {/* 640–1279px: khối lọc phía trên lưới như trước. Từ 1280px khối lọc là cột dính bên phải (bên dưới).
@@ -216,10 +225,10 @@ export function ProductsPage() {
             {!isShelfMode && (
               <div
                 role="group"
-                aria-label="Danh mục"
+                aria-label={T.ariaDanhMuc}
                 className="-mx-5 flex min-w-0 flex-1 gap-6 overflow-x-auto border-b border-line px-5 [scrollbar-width:none] sm:mx-0 sm:px-0"
               >
-                {[{ id: null, label: 'Tất cả' } as const, ...CATEGORIES].map((c) => {
+                {[{ id: null, label: T.tatCa } as const, ...CATEGORIES].map((c) => {
                   const active = category === c.id
                   return (
                     <button
@@ -253,8 +262,8 @@ export function ProductsPage() {
               <h2 id="browse-title" className="font-display text-[1.45rem] leading-tight text-deep-900 sm:text-[1.8rem]">
                 {PRODUCTS_PAGE_TEXT.timTheoBo}
               </h2>
-              <div role="group" aria-label="Bộ sưu tập" className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3 lg:grid-cols-8">
-                <Tile active={!collection} onPick={() => update({ [COLLECTION_PARAM]: null })} title="Tất cả bộ" note="Mọi bộ sưu tập" />
+              <div role="group" aria-label={T.boSuuTap} className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3 lg:grid-cols-8">
+                <Tile active={!collection} onPick={() => update({ [COLLECTION_PARAM]: null })} title={T.tatCaBo} note={T.tatCaBoGhiChu} />
                 {BEDDING_SETS.map((c) => (
                   <CollectionTile
                     key={c.id}
@@ -276,7 +285,7 @@ export function ProductsPage() {
         */}
         <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_18rem] xl:items-start xl:gap-x-8">
           <aside
-            aria-label="Bộ lọc"
+            aria-label={T.boLoc}
             data-lenis-prevent
             className="hidden xl:sticky xl:top-[5.75rem] xl:col-start-2 xl:row-start-1 xl:mt-6 xl:block xl:max-h-[calc(100dvh-5.75rem-6.5rem)] xl:overflow-y-auto xl:overscroll-contain xl:[scrollbar-width:thin] xl:[scrollbar-color:var(--color-line)_transparent] xl:rounded-[1.5rem] xl:bg-ivory xl:p-5 xl:shadow-[var(--shadow-lift)]"
           >
@@ -287,7 +296,7 @@ export function ProductsPage() {
               <>
                 {/* Neo cuộn cho revealGrid khi đổi lọc từ cột phải / bảng lọc */}
                 <p ref={gridRef} className="sr-only scroll-mt-[5.5rem]" aria-live="polite">
-                  Tất cả sản phẩm
+                  {T.tatCaSanPham}
                 </p>
                 <GroupTiles />
                 <ProductShelves onPick={pickCategory} reveal={isFirstGrid} />
@@ -302,12 +311,12 @@ export function ProductsPage() {
                       onClick={() => update({ [TONE_PARAM]: null, [COLLECTION_PARAM]: null })}
                       className="-my-2 py-2 font-medium text-deep-900 underline underline-offset-4"
                     >
-                      {band ? 'Xoá lọc màu' : 'Xoá lọc'}
+                      {band ? T.xoaLocMau : T.xoaLoc}
                     </button>
                   )}
                   {band && (
                     <button type="button" onClick={() => update({ [PRICE_PARAM]: null })} className="-my-2 py-2 font-medium text-deep-900 underline underline-offset-4">
-                      Xoá lọc giá
+                      {T.xoaLocGia}
                     </button>
                   )}
                   {tone && !STORIES_APPROVED && <FillIn>[ECOPILLO DUYỆT CÁCH CHIA GAM MÀU]</FillIn>}
@@ -315,9 +324,9 @@ export function ProductsPage() {
 
                 {items.length === 0 ? (
                   <div className="mt-6 rounded-[1.5rem] border border-dashed border-line p-10 text-center text-ink-soft">
-                    Không có sản phẩm phù hợp.{' '}
+                    {T.khongCoSanPham}{' '}
                     <button type="button" onClick={() => setParams({}, { replace: true })} className="font-medium text-deep-900 underline">
-                      Xoá bộ lọc
+                      {T.xoaBoLoc}
                     </button>
                   </div>
                 ) : (
@@ -433,12 +442,12 @@ const itemKey = (item: GridItem): string =>
 function Pagination({ page, count, onPick }: { page: number; count: number; onPick: (page: number) => void }) {
   const pageButton = 'inline-flex h-11 min-w-11 items-center justify-center rounded-full px-3 text-body-sm transition'
   return (
-    <nav aria-label="Trang" className="mt-10 flex flex-wrap justify-center gap-2">
+    <nav aria-label={T.ariaPhanTrang} className="mt-10 flex flex-wrap justify-center gap-2">
       <button
         type="button"
         onClick={() => onPick(page - 1)}
         disabled={page === 1}
-        aria-label="Trang trước"
+        aria-label={T.trangTruoc}
         className={`${pageButton} bg-ivory text-deep-900 shadow-[var(--shadow-soft)] disabled:opacity-40`}
       >
         <Icon name="arrowLeft" size={16} />
@@ -449,7 +458,7 @@ function Pagination({ page, count, onPick }: { page: number; count: number; onPi
           type="button"
           onClick={() => onPick(n)}
           aria-current={n === page ? 'page' : undefined}
-          aria-label={`Trang ${n}`}
+          aria-label={chen(T.trangSo, { so: n })}
           className={`${pageButton} tabular ${n === page ? 'bg-deep-800 font-medium text-ivory' : 'bg-ivory text-deep-900 shadow-[var(--shadow-soft)] hover:bg-mist-100'}`}
         >
           {n}
@@ -459,7 +468,7 @@ function Pagination({ page, count, onPick }: { page: number; count: number; onPi
         type="button"
         onClick={() => onPick(page + 1)}
         disabled={page === count}
-        aria-label="Trang sau"
+        aria-label={T.trangSau}
         className={`${pageButton} bg-ivory text-deep-900 shadow-[var(--shadow-soft)] disabled:opacity-40`}
       >
         <Icon name="arrowRight" size={16} />
@@ -483,7 +492,7 @@ function PriceBands({ bands, active, countOf, onPick }: PriceBandsProps) {
   return (
     <div className="mt-4 flex flex-col gap-2 sm:mt-5 sm:flex-row sm:items-center sm:gap-4">
       <span id="price-band-label" className="eyebrow shrink-0">
-        Mức giá
+        {T.mucGia}
       </span>
       <div
         role="group"
@@ -519,8 +528,8 @@ const SORT_OPTIONS = SORTS.map((s) => ({ value: s.id, label: s.label }))
 function SortSelect({ value, onChange }: { value: SortId; onChange: (value: string) => void }) {
   return (
     <div className="inline-flex h-11 shrink-0 items-center gap-1.5 self-start text-sm text-ink-soft sm:self-auto">
-      <span aria-hidden="true">Sắp xếp:</span>
-      <Select variant="inline" value={value} options={SORT_OPTIONS} onChange={onChange} ariaLabel="Sắp xếp" alignRight />
+      <span aria-hidden="true">{T.sapXep}:</span>
+      <Select variant="inline" value={value} options={SORT_OPTIONS} onChange={onChange} ariaLabel={T.sapXep} alignRight />
     </div>
   )
 }

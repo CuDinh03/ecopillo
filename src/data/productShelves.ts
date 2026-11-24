@@ -1,4 +1,5 @@
-import { patternImage, productImage, type ImageSource } from './catalog'
+import type { ImageSource } from './catalog'
+import { PRODUCT_LABELS } from './pageText/productLabels'
 import { CATEGORIES, hasPrice, PRODUCTS, type CategoryId, type Product } from './products'
 import { COLORWAYS } from './stories'
 
@@ -15,15 +16,23 @@ export const SHELF_ORDER: readonly CategoryId[] = ['bo-chan-ga', 'dem', 'chan', 
 /** Kệ đệm: ba mẫu bán chạy lên đầu, còn lại theo thứ tự trong PRODUCTS */
 const MATTRESS_FIRST: readonly string[] = ['dem-lo-xo-tui-cao-cap-eco-luxe', 'dem-lo-xo-tui-doc-lap', 'dem-eco-foam-da-tang']
 
-/** Chữ nút "Chỉ xem …" ở đầu kệ (bộ chăn ga dùng nút "Xem N phối màu") */
-const SHORT_LABELS: Readonly<Record<CategoryId, string>> = { 'bo-chan-ga': 'bộ chăn ga', dem: 'đệm', chan: 'chăn', goi: 'gối' }
+/**
+ * Chữ nút "Chỉ xem …" ở đầu kệ, Ecopillo sửa ở Nội dung web (pageText/productLabels.ts).
+ * Kệ bộ chăn ga dùng nút "Xem theo phối màu" nên tên ngắn của nó không hiện, giữ trong code.
+ */
+const SHORT_LABELS: Readonly<Record<CategoryId, string>> = {
+  'bo-chan-ga': 'bộ chăn ga',
+  dem: PRODUCT_LABELS.tenNganDem,
+  chan: PRODUCT_LABELS.tenNganChan,
+  goi: PRODUCT_LABELS.tenNganGoi,
+}
 
-/** Ảnh ô nhóm, chọn theo mẫu đã duyệt */
-const TILE_IMAGES: Readonly<Record<CategoryId, (alt: string) => ImageSource>> = {
-  'bo-chan-ga': (alt) => patternImage('ED25', alt),
-  dem: (alt) => productImage('dem-lo-xo-tui-cao-cap-eco-luxe-2', alt),
-  chan: (alt) => productImage('chan-long-vu-tu-nhien', alt),
-  goi: (alt) => productImage('ruot-goi-long-vu-tu-nhien', alt),
+/** Ảnh ô nhóm, chọn theo mẫu đã duyệt; Ecopillo đổi ảnh ở Nội dung web (pageText/productLabels.ts) */
+const TILE_IMAGES: Readonly<Record<CategoryId, ImageSource>> = {
+  'bo-chan-ga': PRODUCT_LABELS.anhNhomBoChanGa,
+  dem: PRODUCT_LABELS.anhNhomDem,
+  chan: PRODUCT_LABELS.anhNhomChan,
+  goi: PRODUCT_LABELS.anhNhomGoi,
 }
 
 /** Số phối màu của một bộ (bộ chăn ga, chăn hè); sản phẩm lẻ là 0 */
@@ -66,10 +75,10 @@ export const SHELVES: readonly Shelf[] = SHELF_ORDER.map((category) => {
     shortLabel: SHORT_LABELS[category],
     count: cardCount(category),
     products,
-    tileImage: TILE_IMAGES[category](label),
+    tileImage: TILE_IMAGES[category],
     min: Math.min(...inGroup.filter(hasPrice).map((p) => p.min)),
   }
 })
 
 /** Câu trên thẻ "Xem theo phối màu" (máy tính). Không ghi số (khách 05/11/2026: "đừng cho số lượng vào") */
-export const COLORWAY_HINT = 'Mỗi bộ có nhiều phối màu; bấm vào bộ để chọn, hoặc xem mọi phối màu trên một lưới.'
+export const COLORWAY_HINT: string = PRODUCT_LABELS.phoiMauGoiY

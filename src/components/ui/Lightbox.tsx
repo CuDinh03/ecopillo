@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom'
 import type { ImageSource } from '../../data/catalog'
 import { Icon } from './Icon'
 import { ZoomStage } from './ZoomStage'
+import { chen } from '../../data/pageText/define'
+import { PRODUCT_DETAIL_TEXT as T } from '../../data/pageText/productUi'
 
 /**
  * Khung xem ảnh toàn màn hình, dùng chung cho mọi dãy ảnh (C3, owner chốt 09/11/2026; mẫu ở docs/de-xuat-gop-y-08-11.html mục C3).
@@ -30,7 +32,7 @@ const thumbOf = (photo: ImageSource): string => photo.srcSet.split(',')[0]?.trim
  * Lớp bấm phủ kín ảnh chính trên trang để mở khung xem toàn màn hình, kèm biểu tượng kính lúp ở góc phải trên.
  * Đặt ngay sau ảnh trong khung `relative`; chip, mũi tên đặt sau lớp này thì vẫn bấm được như cũ.
  */
-export function ZoomTrigger({ onOpen, label = 'Phóng to ảnh' }: { onOpen: () => void; label?: string }) {
+export function ZoomTrigger({ onOpen, label = T.phongToAnh }: { onOpen: () => void; label?: string }) {
   return (
     <button type="button" onClick={onOpen} aria-label={label} className="group absolute inset-0 cursor-zoom-in">
       <span
@@ -108,7 +110,7 @@ export function Lightbox({ photos, index, onIndexChange, onClose, caption, label
             {caption && <span className="text-white/70"> · {caption}</span>}
           </p>
           <button type="button" onClick={onClose} className={`${BUTTON} gap-1.5 px-4 text-small font-medium`} autoFocus>
-            <Icon name="close" size={18} /> Đóng
+            <Icon name="close" size={18} /> {T.dong}
           </button>
         </div>
 
@@ -120,7 +122,7 @@ export function Lightbox({ photos, index, onIndexChange, onClose, caption, label
                 type="button"
                 onClick={() => go(index - 1)}
                 disabled={index === 0}
-                aria-label="Ảnh trước"
+                aria-label={T.anhTruoc}
                 className={`${BUTTON} absolute top-1/2 left-3 hidden w-11 -translate-y-1/2 disabled:opacity-30 md:flex`}
               >
                 <Icon name="arrowLeft" size={20} />
@@ -129,7 +131,7 @@ export function Lightbox({ photos, index, onIndexChange, onClose, caption, label
                 type="button"
                 onClick={() => go(index + 1)}
                 disabled={index === count - 1}
-                aria-label="Ảnh sau"
+                aria-label={T.anhSau}
                 className={`${BUTTON} absolute top-1/2 right-3 hidden w-11 -translate-y-1/2 disabled:opacity-30 md:flex`}
               >
                 <Icon name="arrowRight" size={20} />
@@ -141,8 +143,8 @@ export function Lightbox({ photos, index, onIndexChange, onClose, caption, label
               aria-hidden
               className="pointer-events-none absolute bottom-3 left-1/2 w-max max-w-[calc(100%-2rem)] -translate-x-1/2 rounded-full bg-white/16 px-3.5 py-1.5 text-center text-label text-white"
             >
-              <span className="md:hidden">Chụm 2 ngón hoặc chạm 2 lần để phóng · vuốt ngang đổi ảnh</span>
-              <span className="hidden md:inline">Bấm vào ảnh để phóng, rê chuột để soi · phím ← → đổi ảnh</span>
+              <span className="md:hidden">{T.goiYDienThoai}</span>
+              <span className="hidden md:inline">{T.goiYMayTinh}</span>
             </p>
           )}
         </div>
@@ -150,7 +152,7 @@ export function Lightbox({ photos, index, onIndexChange, onClose, caption, label
         {count > 1 && (
           <ul
             ref={thumbsRef}
-            aria-label="Chọn ảnh"
+            aria-label={T.ariaChonAnh}
             className="flex shrink-0 gap-2 overflow-x-auto overscroll-contain px-4 pt-3 pb-[max(0.875rem,env(safe-area-inset-bottom))] [scrollbar-width:none] sm:justify-center"
           >
             {photos.map((photo, i) => (
@@ -158,7 +160,7 @@ export function Lightbox({ photos, index, onIndexChange, onClose, caption, label
                 <button
                   type="button"
                   onClick={() => go(i)}
-                  aria-label={`Xem ảnh ${i + 1}`}
+                  aria-label={chen(T.xemAnh, { so: i + 1 })}
                   aria-current={i === index ? 'true' : undefined}
                   className={`block h-11 w-[3.75rem] overflow-hidden rounded-lg transition ${
                     i === index ? 'opacity-100 outline-2 outline-offset-2 outline-white' : 'opacity-55 hover:opacity-90'

@@ -15,6 +15,8 @@ import {
   type Pattern,
   type SizeId,
 } from './catalog'
+import { chen } from './pageText/define'
+import { bandLabel, PRODUCT_LABELS } from './pageText/productLabels'
 import { PRODUCTS_PAGE_TEXT } from './pageText/products'
 import type { InfoSection } from './productInfo'
 import { textToInfo } from './productInfoText'
@@ -27,11 +29,12 @@ import { textToInfo } from './productInfoText'
 
 export type CategoryId = 'bo-chan-ga' | 'chan' | 'goi' | 'dem'
 
+/** Tên và câu ngắn của nhóm: Ecopillo sửa ở Nội dung web → Chữ từng trang (pageText/productLabels.ts); mã nhóm giữ nguyên */
 export const CATEGORIES: readonly { id: CategoryId; label: string; hint: string }[] = [
-  { id: 'bo-chan-ga', label: 'Bộ chăn ga', hint: 'Mềm mại, thoáng mát' },
-  { id: 'chan', label: 'Chăn', hint: 'Nhẹ nhàng, ấm áp' },
-  { id: 'goi', label: 'Gối', hint: 'Nâng niu từng giấc ngủ' },
-  { id: 'dem', label: 'Đệm & topper', hint: 'Nâng đỡ chuẩn cột sống' },
+  { id: 'bo-chan-ga', label: PRODUCT_LABELS.nhomBoChanGa, hint: PRODUCT_LABELS.nhomBoChanGaCau },
+  { id: 'chan', label: PRODUCT_LABELS.nhomChan, hint: PRODUCT_LABELS.nhomChanCau },
+  { id: 'goi', label: PRODUCT_LABELS.nhomGoi, hint: PRODUCT_LABELS.nhomGoiCau },
+  { id: 'dem', label: PRODUCT_LABELS.nhomDem, hint: PRODUCT_LABELS.nhomDemCau },
 ]
 
 /** Đường dẫn cũ (?danh-muc=ruot-goi…) vẫn mở đúng nhóm mới */
@@ -99,7 +102,10 @@ export interface Product {
 }
 
 /** Chữ thay cho giá khi Ecopillo chưa gửi giá (owner 28/10/2026: không để nhãn chờ trên web) */
-export const PRICE_ON_CALL_LABEL = 'Báo giá khi gọi xác nhận'
+export const PRICE_ON_CALL_LABEL: string = PRODUCT_LABELS.giaKhiGoi
+
+/** "từ 1.250.000đ": chữ Ecopillo sửa được, {gia} là số tiền */
+export const fromPriceLabel = (price: number): string => chen(PRODUCT_LABELS.giaTu, { gia: formatVND(price) })
 
 /** Sản phẩm đã có giá (để tính giá thấp nhất của nhóm, lọc theo mức giá) */
 export const hasPrice = (p: Product): boolean => !p.isPriceOnCall && p.min > 0
@@ -1015,13 +1021,13 @@ export const singleOrderUrl = (p: Product, choiceId?: string | null, thickness?:
 
 export const priceLabel = (p: Product): string => {
   if (!hasPrice(p)) return PRICE_ON_CALL_LABEL
-  return p.isFromPrice ? `từ ${formatVND(p.min)}` : formatRange(p.min, p.max)
+  return p.isFromPrice ? fromPriceLabel(p.min) : formatRange(p.min, p.max)
 }
 
 /** Giá ngắn trên thẻ kệ: chỉ giá thấp nhất cho gọn, giá đủ khoảng ở trang sản phẩm */
 export const shortPriceLabel = (p: Product): string => {
   if (!hasPrice(p)) return PRICE_ON_CALL_LABEL
-  return p.min === p.max ? formatVND(p.min) : `từ ${formatVND(p.min)}`
+  return p.min === p.max ? formatVND(p.min) : fromPriceLabel(p.min)
 }
 
 /** Mở trang đặt hàng với bộ sưu tập, mẫu, kích thước đã chọn sẵn */
@@ -1051,36 +1057,40 @@ export interface PriceBand {
 
 const band = (id: string, label: string, from: number, to = Infinity): PriceBand => ({ id, label, from, to })
 
+/** Chữ trên nút mức giá Ecopillo sửa ở Nội dung web (mỗi dòng một mốc theo thứ tự); mã và khoảng giá giữ trong code */
+const withLabels = (labels: readonly string[], bands: readonly PriceBand[]): readonly PriceBand[] =>
+  bands.map((b, i) => ({ ...b, label: bandLabel(labels, i, b.label) }))
+
 /** Mốc giá đổi theo loại vì giá mỗi loại chênh rất khác nhau (gối vài trăm nghìn, đệm hàng chục triệu). Đổi giá nhiều thì xem lại mốc */
 export const PRICE_BANDS: Readonly<Record<CategoryId | 'tat-ca', readonly PriceBand[]>> = {
-  'tat-ca': [
+  'tat-ca': withLabels(PRODUCT_LABELS.mucGiaTatCa, [
     band('duoi-1-trieu', 'Dưới 1 triệu', 0, MILLION),
     band('1-3-trieu', '1 – 3 triệu', MILLION, 3 * MILLION),
     band('3-6-trieu', '3 – 6 triệu', 3 * MILLION, 6 * MILLION),
     band('6-10-trieu', '6 – 10 triệu', 6 * MILLION, 10 * MILLION),
     band('tren-10-trieu', 'Trên 10 triệu', 10 * MILLION),
-  ],
-  'bo-chan-ga': [
+  ]),
+  'bo-chan-ga': withLabels(PRODUCT_LABELS.mucGiaBoChanGa, [
     band('duoi-5-trieu', 'Dưới 5 triệu', 0, 5 * MILLION),
     band('5-8-trieu', '5 – 8 triệu', 5 * MILLION, 8 * MILLION),
     band('tren-8-trieu', 'Trên 8 triệu', 8 * MILLION),
-  ],
-  chan: [
+  ]),
+  chan: withLabels(PRODUCT_LABELS.mucGiaChan, [
     band('duoi-2-trieu', 'Dưới 2 triệu', 0, 2 * MILLION),
     band('2-4-trieu', '2 – 4 triệu', 2 * MILLION, 4 * MILLION),
     band('tren-4-trieu', 'Trên 4 triệu', 4 * MILLION),
-  ],
-  goi: [
+  ]),
+  goi: withLabels(PRODUCT_LABELS.mucGiaGoi, [
     band('duoi-500k', 'Dưới 500 nghìn', 0, 500_000),
     band('500k-1-trieu', '500 nghìn – 1 triệu', 500_000, MILLION),
     band('tren-1-trieu', 'Trên 1 triệu', MILLION),
-  ],
-  dem: [
+  ]),
+  dem: withLabels(PRODUCT_LABELS.mucGiaDem, [
     band('duoi-5-trieu', 'Dưới 5 triệu', 0, 5 * MILLION),
     band('5-10-trieu', '5 – 10 triệu', 5 * MILLION, 10 * MILLION),
     band('10-20-trieu', '10 – 20 triệu', 10 * MILLION, 20 * MILLION),
     band('tren-20-trieu', 'Trên 20 triệu', 20 * MILLION),
-  ],
+  ]),
 }
 
 export const priceBandsOf = (category: CategoryId | null): readonly PriceBand[] => PRICE_BANDS[category ?? 'tat-ca']

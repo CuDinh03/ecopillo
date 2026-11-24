@@ -15,6 +15,7 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import { revealDelay } from '../lib/reveal'
 import { NotFoundPage } from './NotFoundPage'
 import { PRODUCTS_PAGE_TEXT } from '../data/pageText/products'
+import { PRODUCT_LIST_TEXT } from '../data/pageText/productUi'
 
 /** Số phối màu hiện trên trang danh mục bộ chăn ga; xem hết ở trang Sản phẩm */
 const COLORWAY_PREVIEW = 8
@@ -55,7 +56,7 @@ export function CategoryPage() {
   return (
     <div className="pb-24">
       <PageHero
-        crumbs={[{ label: 'Sản phẩm', to: PATHS.products }, { label: listing.title }]}
+        crumbs={[{ label: PRODUCT_LIST_TEXT.duongDanSanPham, to: PATHS.products }, { label: listing.title }]}
         eyebrow={PRODUCTS_PAGE_TEXT.tieuDe}
         title={listing.title}
         lead={listing.description}
@@ -106,7 +107,7 @@ export function CategoryPage() {
 
         <div className="mt-12 flex justify-center">
           <Link to={moreUrl} className={buttonClass('secondary', 'lg')}>
-            Xem tất cả sản phẩm <Icon name="arrowRight" size={18} />
+            {PRODUCT_LIST_TEXT.xemTatCaSanPham} <Icon name="arrowRight" size={18} />
           </Link>
         </div>
 
