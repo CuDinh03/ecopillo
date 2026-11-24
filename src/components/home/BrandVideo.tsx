@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { BRAND_VIDEO, BRAND_VIDEO_LEAD, CONTACT } from '../../data/brand'
+import { chen } from '../../data/pageText/define'
 import type { ImageSource } from '../../data/catalog'
 import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
@@ -105,7 +106,7 @@ export function BrandVideoPlayer({ className = 'rounded-[1.75rem] shadow-[var(--
             setMode('manual')
           }}
           className="group absolute inset-0 h-full w-full text-left"
-          aria-label={`Phát video: ${BRAND_VIDEO.title}`}
+          aria-label={chen(BRAND_VIDEO.playLabel, { ten: BRAND_VIDEO.title })}
         >
           <Placeholder
             className="absolute inset-0 h-full w-full transition-transform duration-700 ease-[var(--ease-soft)] group-hover:scale-[1.03]"

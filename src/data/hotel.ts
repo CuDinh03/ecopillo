@@ -313,6 +313,8 @@ export const { set: HOTEL_PAGE_SET, text: HOTEL_PAGE } = definePageText(
     baoGiaViDu: doan('Báo giá: chữ mờ ví dụ trong ô tin nhắn', 'Ví dụ: khách sạn 40 phòng ở Đà Nẵng, 20 giường 1m6 và 20 giường 1m8, cần ga bọc, vỏ chăn, ruột gối…'),
     baoGiaNut: chu('Báo giá: chữ nút gửi', 'Gửi yêu cầu báo giá'),
     anhBaoGia: anh('Báo giá: ảnh cạnh form', BASE_HOTEL_PHOTOS.quote),
+    hangTrangDoc: chu('Hàng trắng: hàng nút nhóm (trình đọc màn hình)', 'Nhóm hàng trắng'),
+    baoGiaMonDoc: chu('Hàng trắng: nút báo giá từng món (trình đọc màn hình)', 'Liên hệ báo giá {ten}', '{ten} là tên món'),
   },
 )
 

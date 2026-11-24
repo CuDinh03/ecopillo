@@ -87,7 +87,7 @@ export function WhiteGoods({ onQuote }: { onQuote: (message: string) => void }) 
 
           <div
             role="tablist"
-            aria-label="Nhóm hàng trắng"
+            aria-label={HOTEL_PAGE.hangTrangDoc}
             className="mt-6 flex max-w-full gap-1.5 overflow-x-auto rounded-full bg-ivory p-1.5 shadow-[var(--shadow-soft)] [scrollbar-width:none]"
           >
             {HOTEL_WHITE_GOODS.map((g, i) => {
@@ -188,7 +188,7 @@ function GroupPanel({
                 <span className="hidden text-small font-semibold text-deep-900 sm:inline">{HOTEL_PAGE.theGiaLienHe}</span>
                 <button
                   type="button"
-                  aria-label={`Liên hệ báo giá ${item.name}`}
+                  aria-label={chen(HOTEL_PAGE.baoGiaMonDoc, { ten: item.name })}
                   onClick={() => onQuoteItem(item)}
                   className="flex h-10 w-10 items-center justify-center rounded-full text-deep-800 transition hover:bg-mist-100"
                 >

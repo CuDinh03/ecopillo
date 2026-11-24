@@ -26,6 +26,7 @@ import {
   type LiveNewPattern,
   type LiveStory,
 } from './liveData'
+import { badgeText, CATALOG_TEXT } from './pageText/catalogText'
 
 export type SizeId = '160x200' | '180x200' | '200x220'
 
@@ -35,10 +36,11 @@ export interface SizeOption {
   bed: string
 }
 
+/** Chữ cỡ, chữ giường Ecopillo sửa ở Nội dung web (pageText/catalogText.ts); mã cỡ giữ nguyên */
 export const SIZES: readonly SizeOption[] = [
-  { id: '160x200', label: '160 × 200 cm', bed: 'Giường 1m6' },
-  { id: '180x200', label: '180 × 200 cm', bed: 'Giường 1m8' },
-  { id: '200x220', label: '200 × 220 cm', bed: 'Giường 2m2' },
+  { id: '160x200', label: CATALOG_TEXT.co160, bed: CATALOG_TEXT.giuong160 },
+  { id: '180x200', label: CATALOG_TEXT.co180, bed: CATALOG_TEXT.giuong180 },
+  { id: '200x220', label: CATALOG_TEXT.co220, bed: CATALOG_TEXT.giuong220 },
 ]
 
 export const sizeById = (id: SizeId): SizeOption => SIZES.find((s) => s.id === id) ?? SIZES[0]
@@ -108,7 +110,7 @@ export interface Pattern {
 /** Kiểu ga trong bộ: ga phủ chần (mặc định) hoặc ga chun chần (mục 28) */
 export type SheetStyle = 'phu' | 'chun'
 
-export const SHEET_LABELS: Readonly<Record<SheetStyle, string>> = { phu: 'Ga phủ chần', chun: 'Ga chun chần' }
+export const SHEET_LABELS: Readonly<Record<SheetStyle, string>> = { phu: CATALOG_TEXT.gaPhu, chun: CATALOG_TEXT.gaChun }
 
 export type CollectionKind = 'ga-phu' | 'ga-chun' | 'chan-ga' | 'chan-he'
 
@@ -197,7 +199,7 @@ const BASE_COLLECTIONS: readonly Collection[] = [
     id: 'eco-flora',
     name: 'Eco Flora',
     kind: 'ga-chun',
-    kindLabel: 'Bộ ga chun',
+    kindLabel: CATALOG_TEXT.loaiFlora,
     tagline: 'Thanh khiết và sinh động',
     description:
       'Bộ ga chun Lyocell chần thủ công từng đường, họa tiết cánh hoa và vân đá nhẹ nhàng. Lựa chọn khởi đầu cho phòng ngủ thanh lịch.',
@@ -224,7 +226,7 @@ const BASE_COLLECTIONS: readonly Collection[] = [
     id: 'eco-rosa',
     name: 'Eco Rosa',
     kind: 'chan-ga',
-    kindLabel: 'Bộ chăn ga Lyocell',
+    kindLabel: CATALOG_TEXT.loaiRosa,
     tagline: 'Tươi mới và sống động',
     description:
       // Catalog Ecopillo 22.07.2026: in hoạt tính
@@ -232,7 +234,7 @@ const BASE_COLLECTIONS: readonly Collection[] = [
     // Mô tả Google viết tay 08/11/2026 (C2), chờ Ecopillo duyệt
     metaDescription:
       'Bộ chăn ga Lyocell Eco Rosa in hoạt tính: hoa lá, hình học, họa tiết cho bé, màu tươi và bền. Mẫu mới ER45–ER49, đặt online.',
-    badge: 'Nhiều mẫu nhất',
+    ...badgeText(CATALOG_TEXT.nhanRosa),
     prices: price(4_950_000, 5_320_000, 5_690_000),
     gift: 'none',
     contents: SET_PHU_OR_CHUN_CONTENTS,
@@ -279,7 +281,7 @@ const BASE_COLLECTIONS: readonly Collection[] = [
     id: 'eco-tera',
     name: 'Eco Tera',
     kind: 'chan-ga',
-    kindLabel: 'Bộ chăn ga gối',
+    kindLabel: CATALOG_TEXT.loaiTera,
     tagline: 'Thanh lịch và hiện đại',
     description:
       'Lyocell trơn một màu với ánh lụa nhẹ, viền chần nổi quanh ga phủ. Sáu gam màu từ xanh da trời, hồng phấn đến kem và xám.',
@@ -302,7 +304,7 @@ const BASE_COLLECTIONS: readonly Collection[] = [
     id: 'eco-vera',
     name: 'Eco Vera',
     kind: 'chan-ga',
-    kindLabel: 'Bộ chăn ga gối',
+    kindLabel: CATALOG_TEXT.loaiVera,
     tagline: 'Nghệ thuật chạm cảm xúc',
     description:
       'Họa tiết hoa lá và hình học mềm mại trên nền Lyocell pastel, hợp phòng ngủ sáng màu và nhiều ánh nắng.',
@@ -325,7 +327,7 @@ const BASE_COLLECTIONS: readonly Collection[] = [
     id: 'eco-sweet',
     name: 'Eco Sweet',
     kind: 'ga-phu',
-    kindLabel: 'Bộ ga phủ dệt Jacquard',
+    kindLabel: CATALOG_TEXT.loaiSweet,
     tagline: 'Ngọt ngào và quý phái',
     description:
       'Hoa văn được dệt thẳng vào sợi Lyocell bằng kỹ thuật Jacquard, nổi khối tinh tế dưới ánh sáng. Bền màu, càng dùng càng mềm.',
@@ -346,7 +348,7 @@ const BASE_COLLECTIONS: readonly Collection[] = [
     id: 'eco-liora',
     name: 'Eco Liora',
     kind: 'chan-ga',
-    kindLabel: 'Bộ chăn ga',
+    kindLabel: CATALOG_TEXT.loaiLiora,
     tagline: 'Tinh tế và sang trọng',
     description:
       'Vải dệt kim sa độc quyền, từng sợi kim tuyến lấp lánh nhẹ trên nền hồng đào, xám, vàng ánh kim. Hợp làm quà cưới, quà tân gia cho những người thân yêu.',
@@ -367,11 +369,11 @@ const BASE_COLLECTIONS: readonly Collection[] = [
     id: 'eco-doris',
     name: 'Eco Doris',
     kind: 'ga-phu',
-    kindLabel: 'Bộ ga phủ',
+    kindLabel: CATALOG_TEXT.loaiDoris,
     tagline: 'Tinh xảo và đầy cuốn hút',
     description:
       'Tuyển chọn sợi Lyocell đẹp nhất, chần thêu dày và đều, đường may 4 mũi/cm chắc chắn. Tinh hoa của hơn 15 năm làm nghề.',
-    badge: 'Dòng cao nhất',
+    ...badgeText(CATALOG_TEXT.nhanDoris),
     prices: price(10_000_000, 10_000_000, 10_360_000),
     gift: 'none',
     contents: DORIS_CONTENTS,
@@ -398,7 +400,7 @@ const BASE_COLLECTIONS: readonly Collection[] = [
     id: 'chan-he-lyocell',
     name: 'Chăn hè Lyocell',
     kind: 'chan-he',
-    kindLabel: 'Chăn hè chần bông mỏng',
+    kindLabel: CATALOG_TEXT.loaiChanHe,
     tagline: 'Mát lành êm dịu, giấc hè êm ru',
     description: 'Vỏ Lyocell chần bông mỏng, đắp mát mùa hè, dùng riêng hoặc phối cùng bộ ga.',
     // Bảng giá 2026 chỉ có một cỡ chăn 200×220 (1.380.000đ), đắp được cho cả ba cỡ giường
@@ -508,10 +510,10 @@ const withCollectionText = (c: Collection): Collection => {
 }
 
 const KIND_OF_NEW: Readonly<Record<LiveNewCollection['kieu'], Pick<Collection, 'kind' | 'kindLabel' | 'contents'>>> = {
-  'ga-phu': { kind: 'ga-phu', kindLabel: 'Bộ ga phủ', contents: SET_PHU_CONTENTS },
-  'ga-chun': { kind: 'ga-chun', kindLabel: 'Bộ ga chun', contents: SET_CHUN_CONTENTS },
-  'chan-ga': { kind: 'chan-ga', kindLabel: 'Bộ chăn ga gối', contents: SET_PHU_CONTENTS },
-  'chan-he': { kind: 'chan-he', kindLabel: 'Chăn hè', contents: ['1 chăn hè chần bông mỏng'] },
+  'ga-phu': { kind: 'ga-phu', kindLabel: CATALOG_TEXT.loaiMoiGaPhu, contents: SET_PHU_CONTENTS },
+  'ga-chun': { kind: 'ga-chun', kindLabel: CATALOG_TEXT.loaiMoiGaChun, contents: SET_CHUN_CONTENTS },
+  'chan-ga': { kind: 'chan-ga', kindLabel: CATALOG_TEXT.loaiMoiChanGa, contents: SET_PHU_CONTENTS },
+  'chan-he': { kind: 'chan-he', kindLabel: CATALOG_TEXT.loaiMoiChanHe, contents: ['1 chăn hè chần bông mỏng'] },
 }
 
 /**
@@ -673,9 +675,9 @@ export const ESSENTIALS: readonly EssentialGroup[] = [
   },
 ]
 
-/** Đơn vị đếm: chăn hè tính "chiếc", còn lại tính "bộ" */
+/** Đơn vị đếm: chăn hè tính "chiếc", còn lại tính "bộ" (chữ Ecopillo sửa ở Nội dung web) */
 export const unitOf = (collection: Collection | undefined): string =>
-  collection?.kind === 'chan-he' ? 'chiếc' : 'bộ'
+  collection?.kind === 'chan-he' ? CATALOG_TEXT.donViChiec : CATALOG_TEXT.donViBo
 
 export interface ImageSource {
   src: string

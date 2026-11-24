@@ -4,6 +4,8 @@ import type { ImageSource } from '../../data/catalog'
 import { HomeLink } from './HomeLink'
 import { buttonClass, Container } from '../ui/primitives'
 import { Icon } from '../ui/Icon'
+import { chen } from '../../data/pageText/define'
+import { PRODUCT_DETAIL_TEXT } from '../../data/pageText/productUi'
 
 /**
  * Thư cảm ơn + ưu đãi 5% (mục 11 phản hồi 05/11/2026, owner chọn kiểu A).
@@ -29,7 +31,7 @@ function CardButton({
     <button
       type="button"
       onClick={() => onOpen(image)}
-      aria-label={`Xem to ${image.alt.split(':')[0].toLowerCase()}`}
+      aria-label={chen(THANK_YOU.zoomLabel, { ten: image.alt.split(':')[0].toLowerCase() })}
       className={`overflow-hidden rounded-xl border-[6px] border-white bg-white shadow-[var(--shadow-lift)] transition duration-500 ease-[var(--ease-soft)] focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-mist-600 ${className ?? ''}`}
     >
       <img
@@ -124,19 +126,19 @@ export function ThankYouLetters({ standalone = false }: ThankYouLettersProps) {
 
       <dialog
         ref={dialogRef}
-        aria-label={shown ? shown.alt.split(':')[0] : 'Thư cảm ơn'}
+        aria-label={shown ? shown.alt.split(':')[0] : THANK_YOU.dialogLabel}
         className="m-auto max-h-[calc(100svh-2rem)] w-[min(28rem,calc(100%-2rem))] rounded-[1.5rem] bg-ivory p-3 backdrop:bg-deep-950/70 sm:p-5"
         onClick={(e) => e.target === e.currentTarget && dialogRef.current?.close()}
       >
         <div className="flex items-start justify-between gap-3">
           <p className="font-display text-[1.15rem] leading-tight text-deep-900">
-            {shown?.alt.split(':')[0] ?? 'Thư cảm ơn'}
+            {shown?.alt.split(':')[0] ?? THANK_YOU.dialogLabel}
           </p>
           <button
             type="button"
             onClick={() => dialogRef.current?.close()}
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-mist-100 text-deep-900"
-            aria-label="Đóng"
+            aria-label={PRODUCT_DETAIL_TEXT.dong}
           >
             <Icon name="close" size={18} />
           </button>

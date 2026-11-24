@@ -10,6 +10,7 @@ import { SocialIcons } from '../home/SocialLinks'
 import { Logo } from './Logo'
 import { MenuLink } from './MenuLink'
 import { FOOTER_TEXT } from '../../data/pageText/footer'
+import { showroomKindText } from '../../data/pageText/dealers'
 import { useHydrated } from '../../hooks/useHydratedSearchParams'
 
 /**
@@ -170,7 +171,7 @@ export function Footer() {
                 <Icon name="pin" size={16} className="mt-1 shrink-0" />
                 <span>
                   <span className="block font-medium text-deep-900">
-                    {s.kind} · {s.city}
+                    {showroomKindText(s.kind)} · {s.city}
                   </span>
                   {s.address}
                 </span>

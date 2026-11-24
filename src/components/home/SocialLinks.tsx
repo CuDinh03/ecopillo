@@ -1,6 +1,7 @@
 import { SOCIAL_LINKS } from '../../data/brand'
 import { Icon } from '../ui/Icon'
 import { HOME_TEXT } from '../../data/pageText/home'
+import { chen } from '../../data/pageText/define'
 
 /**
  * Nền mỗi vòng theo màu hãng (anh Quang, Zalo 19/11/2026: "Youtube màu đỏ"; owner chọn phương án A 20/11/2026).
@@ -24,7 +25,7 @@ export function SocialIcons() {
             href={s.url}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`Ecopillo trên ${s.label}`}
+            aria-label={chen(HOME_TEXT.mangXaHoiDoc, { mang: s.label })}
             className={`flex h-11 w-11 items-center justify-center rounded-full text-ivory transition hover:-translate-y-0.5 hover:brightness-110 ${
               BRAND_BG[s.id] ?? 'bg-deep-800'
             }`}

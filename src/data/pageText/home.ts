@@ -179,5 +179,15 @@ export const { set: HOME_TEXT_SET, text: HOME_TEXT } = definePageText(
     veEcopillo: chu('Điện thoại: tiêu đề phần Về Ecopillo (có thẻ chuyển)', 'Về Ecopillo'),
     veEcopilloThe: dsDong('Điện thoại: chữ 3 thẻ chuyển của phần Về Ecopillo', ['Câu chuyện', 'Phim', 'Khách sạn'], 'Đúng 3 dòng theo thứ tự: câu chuyện, phim, khách sạn'),
     zaloChu: chu('Vòng mạng xã hội (chân trang, Liên hệ, menu điện thoại): chữ trong vòng Zalo', 'Zalo', 'Vòng nhỏ, nên giữ chữ ngắn'),
+    // Chữ cho trình đọc màn hình (không hiện trên màn hình, đọc cho người khiếm thị và Google)
+    mangXaHoiDoc: chu('Vòng mạng xã hội: chữ đọc cho trình đọc màn hình', 'Ecopillo trên {mang}', '{mang} là tên mạng, ví dụ Facebook'),
+    bannerDoc: chu('Banner: tên khối cho trình đọc màn hình', 'Ecopillo, chốn yên bắt đầu từ giấc ngủ ngon'),
+    camKetDoc: chu('Dải cam kết: tên khối cho trình đọc màn hình', 'Cam kết của Ecopillo'),
+    chatLieuDoc: chu('Khối chất liệu: tên cho trình đọc màn hình', 'Chất liệu và tay nghề'),
+    ruotOTruoc: chu('Ruột chăn gối: nút mũi tên trái (trình đọc màn hình)', '{nhom}: xem ô trước', '{nhom} là tên nhóm, ví dụ Ruột gối'),
+    ruotOSau: chu('Ruột chăn gối: nút mũi tên phải (trình đọc màn hình)', '{nhom}: xem ô sau', '{nhom} là tên nhóm'),
+    suKienKhacDoc: chu('Sự kiện: tên hàng sự kiện nhỏ (trình đọc màn hình)', 'Các sự kiện khác'),
+    namSaoDoc: chu('Nhận xét: năm ngôi sao (trình đọc màn hình)', '5 trên 5 sao'),
+    logoDoiTac: chu('Logo đối tác (trang chủ, Giới thiệu, Khách sạn): chữ thay ảnh', 'Logo {ten}', '{ten} là tên đối tác'),
   },
 )

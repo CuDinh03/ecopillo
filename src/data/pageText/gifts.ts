@@ -77,5 +77,6 @@ export const { set: GIFTS_TEXT_SET, text: GIFTS_TEXT } = definePageText(
       ],
       'Biểu tượng theo thứ tự: hộp, xe giao, thước',
     ),
+    themAnhDoc: chu('Quà doanh nghiệp: dải ảnh thêm (trình đọc màn hình)', 'Thêm ảnh quà tặng doanh nghiệp'),
   },
 )

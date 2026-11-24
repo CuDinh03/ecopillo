@@ -167,10 +167,10 @@ function EssentialRow({ group }: { group: Group }) {
           </HomeLink>
           {hasArrows && (
             <span className="hidden gap-2 sm:flex">
-              <button type="button" onClick={() => step(-1)} disabled={!edge.canPrev} aria-label={`${group.title}: xem ô trước`} className={RAIL_BUTTON}>
+              <button type="button" onClick={() => step(-1)} disabled={!edge.canPrev} aria-label={chen(HOME_TEXT.ruotOTruoc, { nhom: group.title })} className={RAIL_BUTTON}>
                 <Icon name="arrowLeft" size={16} />
               </button>
-              <button type="button" onClick={() => step(1)} disabled={!edge.canNext} aria-label={`${group.title}: xem ô sau`} className={RAIL_BUTTON}>
+              <button type="button" onClick={() => step(1)} disabled={!edge.canNext} aria-label={chen(HOME_TEXT.ruotOSau, { nhom: group.title })} className={RAIL_BUTTON}>
                 <Icon name="arrowRight" size={16} />
               </button>
             </span>

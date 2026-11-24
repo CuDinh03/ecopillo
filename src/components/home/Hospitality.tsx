@@ -7,6 +7,7 @@ import { Icon } from '../ui/Icon'
 import { Placeholder } from '../ui/Placeholder'
 import { ContactButtons, Container, SectionHeading } from '../ui/primitives'
 import { HOME_TEXT } from '../../data/pageText/home'
+import { chen } from '../../data/pageText/define'
 
 export function Hospitality() {
   return (
@@ -82,7 +83,7 @@ export function Hospitality() {
             >
               <img
                 src={partner.logo}
-                alt={`Logo ${partner.name}`}
+                alt={chen(HOME_TEXT.logoDoiTac, { ten: partner.name })}
                 loading="lazy"
                 decoding="async"
                 className="max-h-full max-w-full rounded-md object-contain"

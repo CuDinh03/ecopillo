@@ -99,7 +99,7 @@ export function MattressPicker() {
 
         <div className="mt-5 flex flex-col gap-3 sm:mt-6 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <ul
-            aria-label="Nhóm đệm"
+            aria-label={MATTRESS_TEXT.nhomDoc}
             className="-mx-5 flex gap-2 overflow-x-auto px-5 py-0.5 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
           >
             {/* Chị Phương 09/11/2026: "cho nền hoặc chữ đậm hơn": chữ đậm + viền chàm mảnh để nút nổi khỏi nền xanh */}

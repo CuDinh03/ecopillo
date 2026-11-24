@@ -93,5 +93,8 @@ export const { set: ABOUT_PAGE_TEXT_SET, text: ABOUT_PAGE_TEXT } = definePageTex
       srcSet: '/images/details/hero-ed25-sm.webp 640w, /images/details/hero-ed25.webp 1200w',
       alt: 'Phòng ngủ trải bộ Eco Doris ED25',
     }),
+    xemGiayDoc: chu('Chứng nhận: nút mở giấy (trình đọc màn hình)', 'Xem giấy {ten}', '{ten} là tên giấy chứng nhận'),
+    banChupGiay: chu('Chứng nhận: chữ thay ảnh bản chụp giấy', 'Bản chụp giấy {ten}', '{ten} là tên giấy chứng nhận'),
+    cauTrichDoc: chu('Báo chí: nút logo báo (trình đọc màn hình)', 'Câu trích của {bao}', '{bao} là tên báo'),
   },
 )

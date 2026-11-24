@@ -2,6 +2,8 @@ import { BRAND, CONTACT, SOCIAL_LINKS } from '../data/brand'
 import type { ImageSource } from '../data/catalog'
 import type { Faq } from '../data/content'
 import { SITE_ORIGIN, withSlash } from '../data/links'
+import { FOOTER_TEXT } from '../data/pageText/footer'
+import { PAGE_FRAME_TEXT } from '../data/pageText/pageFrame'
 
 /**
  * Dữ liệu cấu trúc (JSON-LD) và ảnh chia sẻ cho từng trang (SSG giai đoạn 2, docs/ke-hoach-ssg-va-wordpress.md).
@@ -47,7 +49,8 @@ export function organizationLd(): JsonLdObject[] {
     {
       '@context': CONTEXT,
       ...organizationRef(),
-      legalName: BRAND.company,
+      // Tên công ty theo ô Ecopillo sửa ở chân trang (Nội dung web → Chân trang)
+      legalName: FOOTER_TEXT.congTy,
       slogan: BRAND.slogan,
       email: CONTACT.email,
       // tel:0988832072 → +84988832072
@@ -69,7 +72,7 @@ export function breadcrumbLd(items: readonly BreadcrumbItem[]): JsonLdObject {
   return {
     '@context': CONTEXT,
     '@type': 'BreadcrumbList',
-    itemListElement: [{ name: 'Trang chủ', path: '/' }, ...items].map((item, i) => ({
+    itemListElement: [{ name: PAGE_FRAME_TEXT.trangChu, path: '/' }, ...items].map((item, i) => ({
       '@type': 'ListItem',
       position: i + 1,
       name: item.name,

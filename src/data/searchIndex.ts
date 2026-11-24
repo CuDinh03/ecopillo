@@ -2,6 +2,7 @@ import { ALL_POSTS } from './allPosts'
 import type { ImageSource } from './catalog'
 import { LISTINGS, PATHS } from './links'
 import { SEARCH_PAGES, SEARCH_TEXT } from './pageText/search'
+import { postLabelText } from './pageText/miscLabels'
 import { POLICY_NAV, policyPath } from './policyNav'
 import { postPath } from './posts'
 import { priceLabel, productPath, PRODUCTS, type CategoryId } from './products'
@@ -69,7 +70,7 @@ const pageEntries = (): SearchEntry[] => [
 ]
 
 const postEntries = (): SearchEntry[] =>
-  ALL_POSTS.map((post) => ({ kind: 'bai-viet', title: post.title, to: postPath(post), meta: post.category, image: post.cover }))
+  ALL_POSTS.map((post) => ({ kind: 'bai-viet', title: post.title, to: postPath(post), meta: postLabelText(post.category), image: post.cover }))
 
 export const SEARCH_INDEX: readonly SearchEntry[] = [...productEntries(), ...pageEntries(), ...postEntries()]
 

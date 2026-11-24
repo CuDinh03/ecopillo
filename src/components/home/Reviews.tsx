@@ -5,7 +5,7 @@ import { HOME_TEXT } from '../../data/pageText/home'
 
 function Stars() {
   return (
-    <span role="img" className="flex gap-0.5 text-brass-500" aria-label="5 trên 5 sao">
+    <span role="img" className="flex gap-0.5 text-brass-500" aria-label={HOME_TEXT.namSaoDoc}>
       {Array.from({ length: 5 }, (_, i) => (
         <svg key={i} viewBox="0 0 20 20" className="h-4 w-4 fill-current" aria-hidden="true">
           <path d="M10 1.8l2.5 5.2 5.7.8-4.1 4 1 5.6L10 14.7l-5.1 2.7 1-5.6-4.1-4 5.7-.8L10 1.8Z" />

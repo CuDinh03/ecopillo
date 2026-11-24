@@ -9,6 +9,7 @@ import {
   coverOf,
   ESSENTIALS,
   productImage,
+  SIZES,
   type Collection,
   type EssentialItem,
   type ImageSource,
@@ -18,6 +19,7 @@ import {
 import { chen } from './pageText/define'
 import { bandLabel, PRODUCT_LABELS } from './pageText/productLabels'
 import { PRODUCTS_PAGE_TEXT } from './pageText/products'
+import { PRODUCT_COPY } from './pageText/productCopy'
 import type { InfoSection } from './productInfo'
 import { textToInfo } from './productInfoText'
 
@@ -137,11 +139,11 @@ const collectionProduct = (c: Collection): Product => {
     max,
     image: coverOf(c),
     imageNote: c.imageNote,
+    // Các dòng chung Ecopillo sửa ở Nội dung web (pageText/productCopy.ts); dòng riêng Eco Sweet chèn sau dòng thứ hai
     details: [
-      'Vải Lyocell nhập khẩu, dệt từ sợi gỗ tự nhiên: mềm, mát, thoáng khí, lành tính với da nhạy cảm.',
-      'Họa tiết chần thêu độc quyền, đường may 4 mũi/cm.',
-      ...(c.kind === 'ga-phu' && c.id === 'eco-sweet' ? ['Hoa văn dệt Jacquard nổi khối.'] : []),
-      'Nhận may theo kích thước riêng: gọi hoặc nhắn Zalo để báo giá.',
+      ...PRODUCT_COPY.chiTietBo.slice(0, 2),
+      ...(c.kind === 'ga-phu' && c.id === 'eco-sweet' ? [PRODUCT_COPY.chiTietSweet] : []),
+      ...PRODUCT_COPY.chiTietBo.slice(2),
     ],
   }
 }
@@ -152,11 +154,11 @@ const ESSENTIAL_CATEGORY: Readonly<Record<string, CategoryId>> = {
   'chan-topper': 'dem',
 }
 
-const BED_SIZES = ['160 × 200 cm', '180 × 200 cm', '200 × 220 cm'] as const
 /** Năm cỡ đệm trong bảng giá 2026 (khách gửi 09/11/2026) */
 const MATTRESS_SIZES = ['120×200', '140×200', '160×200', '180×200', '200×220'] as const
+/** Ba cỡ giường: mã cỡ của bộ chăn ga (160x200…), chữ theo kích thước Ecopillo sửa ở Nội dung web */
 const sizeChoices = (prices: readonly (number | undefined)[] = []): ProductChoice[] =>
-  BED_SIZES.map((label, i) => ({ id: label.replace(/ × | cm/g, (m) => (m === ' × ' ? 'x' : '')), label, price: prices[i] }))
+  SIZES.map((s, i) => ({ id: s.id, label: s.label, price: prices[i] }))
 
 /** Giá cỡ giữa (180×200) của dòng bảng giá chỉ ghi thấp – cao: bảng giá 2026 trang 21 */
 const MIDDLE_PRICE: Readonly<Record<string, number>> = { 'Topper Micro Fiber': 3_850_000 }
@@ -171,8 +173,8 @@ const choicesFor = (category: CategoryId, item: EssentialItem): ProductChoice[] 
   if (min === max) return undefined
   if (category === 'goi')
     return [
-      { id: '45x65', label: '45 × 65 cm', price: min },
-      { id: '50x70', label: '50 × 70 cm', price: max },
+      { id: '45x65', label: PRODUCT_COPY.goi45, price: min },
+      { id: '50x70', label: PRODUCT_COPY.goi50, price: max },
     ]
   return sizeChoices([min, MIDDLE_PRICE[item.name], max])
 }
@@ -250,11 +252,9 @@ const DIVAN: Product = {
     { label: 'Bọc', value: 'Foam PU, vải Canvas' },
   ],
   choices: [
-    { id: '120x200', label: '120 × 200 cm', price: 6_580_000 },
-    { id: '140x200', label: '140 × 200 cm', price: 7_460_000 },
-    { id: '160x200', label: '160 × 200 cm', price: 7_860_000 },
-    { id: '180x200', label: '180 × 200 cm', price: 8_500_000 },
-    { id: '200x220', label: '200 × 220 cm', price: 9_250_000 },
+    { id: '120x200', label: PRODUCT_COPY.co120, price: 6_580_000 },
+    { id: '140x200', label: PRODUCT_COPY.co140, price: 7_460_000 },
+    ...sizeChoices([7_860_000, 8_500_000, 9_250_000]),
   ],
 }
 
@@ -291,11 +291,11 @@ const DEM_TRON: Product = {
     { label: 'Độ dày', value: '24 cm · 28 cm' },
     { label: 'Viền', value: '24 cm: 2 viền · 28 cm: 3 viền' },
   ],
-  choiceLabel: 'Cỡ và độ dày',
+  choiceLabel: PRODUCT_COPY.nhanCoDoDay,
   choices: [
-    { id: 'd200-24', label: 'Ø 200 cm · dày 24 cm', price: 20_715_000 },
-    { id: 'd200-28', label: 'Ø 200 cm · dày 28 cm', price: 25_280_000 },
-    { id: 'd220-28', label: 'Ø 220 cm · dày 28 cm', price: 27_614_000 },
+    { id: 'd200-24', label: PRODUCT_COPY.demTron200Mong, price: 20_715_000 },
+    { id: 'd200-28', label: PRODUCT_COPY.demTron200Day, price: 25_280_000 },
+    { id: 'd220-28', label: PRODUCT_COPY.demTron220Day, price: 27_614_000 },
   ],
 }
 
@@ -318,7 +318,7 @@ const essentialProducts: Product[] = ESSENTIALS.flatMap((group) =>
         min: item.min,
         max: item.max,
         imageNote: `Ảnh ${prefix.toLowerCase()}${itemName}`,
-        details: [item.note, 'Đặt ngay trên web, nhân viên gọi xác nhận trước khi giao. Giao cùng chính sách như bộ chăn ga.'],
+        details: [item.note, PRODUCT_COPY.ghiChuDat],
         choices: choicesFor(category, item),
       } satisfies Product
     }),
@@ -473,11 +473,12 @@ const CHAN_DONG_KIEU_HAN: Product = {
     { label: 'Bông', value: 'Microfiber chần liền vỏ' },
     { label: 'Mẫu', value: `${CHAN_HAN_CODES.length} mẫu` },
   ],
-  choiceLabel: 'Mẫu',
+  choiceLabel: PRODUCT_COPY.nhanMau,
   choices: CHAN_HAN_CODES.map((code) => ({ id: code.toLowerCase(), label: code, image: chanHanImage(code), price: CHAN_HAN_PRICE })),
 }
 
-const ORDER_NOTE = 'Đặt ngay trên web, nhân viên gọi xác nhận trước khi giao. Giao cùng chính sách như bộ chăn ga.'
+/** Dòng cuối phần chi tiết sản phẩm lẻ: Ecopillo sửa ở Nội dung web (pageText/productCopy.ts) */
+const ORDER_NOTE: string = PRODUCT_COPY.ghiChuDat
 
 /**
  * Chăn hè E-Cool: chị Phương (Zalo 11/11/2026) "C đang thấy thiếu chăn Ecool". Chữ, giá, cỡ, ảnh lấy từ trang sản phẩm
@@ -535,8 +536,8 @@ const RUOT_GOI_BONG_PE: Product = {
   imageNote: 'Ảnh ruột gối bông PE',
   details: [...BONG_PE_NOTES, 'Vỏ vải trắng viền chỉ, may nhãn Ecopillo.', ORDER_NOTE],
   choices: [
-    { id: '45x65', label: '45 × 65 cm', price: 180_000 },
-    { id: '50x70', label: '50 × 70 cm', price: 215_000 },
+    { id: '45x65', label: PRODUCT_COPY.goi45, price: 180_000 },
+    { id: '50x70', label: PRODUCT_COPY.goi50, price: 215_000 },
   ],
 }
 
@@ -725,7 +726,7 @@ const NANO_COMFORT: Product = {
   max: 6_742_000,
   imageNote: 'Ảnh đệm Foam cao cấp Nano Comfort',
   details: ['Kích thước và độ dày: nhân viên Ecopillo tư vấn khi gọi xác nhận đơn.'],
-  choices: [{ id: 'theo-tu-van', label: 'Theo tư vấn', price: 6_742_000 }],
+  choices: [{ id: 'theo-tu-van', label: PRODUCT_COPY.theoTuVan, price: 6_742_000 }],
 }
 
 const ECO_ROYAL: Product = {

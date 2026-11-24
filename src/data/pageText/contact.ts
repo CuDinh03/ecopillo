@@ -67,5 +67,7 @@ export const { set: CONTACT_PAGE_TEXT_SET, text: CONTACT_PAGE_TEXT } = definePag
     ),
     daNhanChuDe: chu('Sau khi gửi: dòng chủ đề', 'Chủ đề: {chuDe}', '{chuDe} là chủ đề Quý khách chọn'),
     daNhanNut: chu('Sau khi gửi: chữ nút gửi tin khác', 'Gửi tin nhắn khác'),
+    banDoTen: chu('Bản đồ văn phòng: tên khung bản đồ (trình đọc màn hình)', 'Bản đồ {loai} Ecopillo, {diaChi}', '{loai} là loại điểm, {diaChi} là địa chỉ'),
+    chonDiaDiemDoc: chu('Bản đồ văn phòng: hàng nút chọn địa điểm (trình đọc màn hình)', 'Chọn địa điểm'),
   },
 )

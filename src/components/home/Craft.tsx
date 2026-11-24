@@ -19,7 +19,7 @@ const TRUST: readonly { icon: IconName; title: string; text: string }[] = HOME_T
  */
 export function TrustStrip() {
   return (
-    <section aria-label="Cam kết của Ecopillo" className="pb-2">
+    <section aria-label={HOME_TEXT.camKetDoc} className="pb-2">
       <Container>
         <ul className="grid grid-cols-2 overflow-hidden rounded-[1.5rem] bg-ivory shadow-[var(--shadow-soft)] lg:grid-cols-5">
           {TRUST.map((item, i) => (
@@ -92,7 +92,7 @@ export function BrandStory() {
           <div
             tabIndex={0}
             role="group"
-            aria-label="Chất liệu và tay nghề"
+            aria-label={HOME_TEXT.chatLieuDoc}
             className="m-rail grid gap-4 focus-visible:outline-2 focus-visible:outline-deep-700 sm:grid-cols-6 xl:col-span-7"
           >
             <article data-reveal className="relative overflow-hidden rounded-[1.75rem] bg-deep-800 text-ivory sm:col-span-6 sm:grid sm:grid-cols-[1.35fr_1fr]">

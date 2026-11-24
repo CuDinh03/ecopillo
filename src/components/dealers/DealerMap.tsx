@@ -21,7 +21,7 @@ export function DealerMap({ dealer, className = '' }: DealerMapProps) {
       {dealer ? (
         <iframe
           key={dealer.id}
-          title={`Bản đồ ${dealer.ten}, ${dealer.dia_chi}`}
+          title={chen(DEALER_TEXT.banDoTen, { ten: dealer.ten, diaChi: dealer.dia_chi })}
           src={pinEmbedUrl(dealer.lat, dealer.lng)}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"

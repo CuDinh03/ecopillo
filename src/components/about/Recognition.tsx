@@ -6,6 +6,8 @@ import { revealDelay } from '../../lib/reveal'
 import { Icon } from '../ui/Icon'
 import { ABOUT_PAGE_TEXT } from '../../data/pageText/aboutPage'
 import { chen } from '../../data/pageText/define'
+import { HOME_TEXT } from '../../data/pageText/home'
+import { PRODUCT_DETAIL_TEXT } from '../../data/pageText/productUi'
 
 /**
  * Các khối "được ghi nhận" lấy từ catalog Ecopillo 22.07.2026 (owner chọn 24/10/2026, mẫu docs/de-xuat-phan-moi-catalog.html):
@@ -36,7 +38,7 @@ function useCertificateViewer() {
           type="button"
           onClick={() => dialogRef.current?.close()}
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-mist-100 text-deep-900"
-          aria-label="Đóng"
+          aria-label={PRODUCT_DETAIL_TEXT.dong}
         >
           <Icon name="close" size={18} />
         </button>
@@ -44,7 +46,7 @@ function useCertificateViewer() {
       {shown && (
         <img
           src={shown.imageUrl ?? `${shown.image}.webp`}
-          alt={`Bản chụp giấy ${shown.name}`}
+          alt={chen(ABOUT_PAGE_TEXT.banChupGiay, { ten: shown.name })}
           decoding="async"
           className="mx-auto mt-4 max-h-[calc(100svh-12rem)] w-auto rounded-lg bg-white object-contain shadow-[var(--shadow-soft)]"
         />
@@ -67,7 +69,7 @@ function CertificateCard({ certificate, onOpen, compact = false, index }: Certif
       <button
         type="button"
         onClick={() => onOpen(certificate)}
-        aria-label={`Xem giấy ${certificate.name}`}
+        aria-label={chen(ABOUT_PAGE_TEXT.xemGiayDoc, { ten: certificate.name })}
         className="group block h-full w-full rounded-2xl bg-ivory p-2.5 text-left shadow-[var(--shadow-soft)] transition duration-300 ease-[var(--ease-soft)] hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] sm:p-3"
       >
         <span className="block aspect-[3/4] overflow-hidden rounded-xl bg-mist-100 p-2 sm:p-3">
@@ -127,7 +129,7 @@ export function CertificateBadges({ showImages = true }: { showImages?: boolean 
             <button
               type="button"
               onClick={() => open(c)}
-              aria-label={`Xem giấy ${c.name}`}
+              aria-label={chen(ABOUT_PAGE_TEXT.xemGiayDoc, { ten: c.name })}
               className="flex h-full w-full flex-col items-center gap-2 rounded-xl bg-ivory p-2.5 text-center shadow-[var(--shadow-soft)] transition hover:shadow-[var(--shadow-lift)] sm:flex-row sm:gap-3 sm:p-3 sm:text-left"
             >
               <img
@@ -164,7 +166,7 @@ export function PressQuotes() {
               <button
                 type="button"
                 aria-pressed={isActive}
-                aria-label={`Câu trích của ${p.outlet}`}
+                aria-label={chen(ABOUT_PAGE_TEXT.cauTrichDoc, { bao: p.outlet })}
                 onClick={() => setActive(i)}
                 className={`group flex h-16 w-full items-center justify-center rounded-xl bg-ivory px-3 py-2 shadow-[var(--shadow-soft)] transition active:scale-[0.97] sm:h-[4.5rem] ${
                   isActive ? 'ring-2 ring-deep-900' : ''
@@ -235,7 +237,7 @@ export function PartnerLogos({ partners, className = '', itemClassName = 'h-16 s
           {/* Chưa gắn ảnh thì ẩn thẻ, kẻo trình duyệt hiện chữ thay thế trong ô */}
           <img
             src={showImages ? p.logo : undefined}
-            alt={`Logo ${p.name}`}
+            alt={chen(HOME_TEXT.logoDoiTac, { ten: p.name })}
             loading="lazy"
             decoding="async"
             className={`max-h-full max-w-full object-contain ${showImages ? '' : 'invisible'}`}
