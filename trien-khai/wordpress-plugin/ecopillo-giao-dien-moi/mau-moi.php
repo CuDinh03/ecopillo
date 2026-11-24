@@ -77,7 +77,7 @@ function eco_mm_color($product)
 /**
  * Mẫu mới và bảng báo. @return array{live: array, rows: array, pages: array, thuTu: array}
  * thuTu (25/11/2026, owner: Ecopillo tự đổi thứ tự phối màu): "<mã bộ>/<mã mẫu>" → "Thứ tự menu" của sản phẩm mẫu trong Woo
- * (ô Thuộc tính sản phẩm → Thứ tự menu), chỉ ghi số khác 0; cả mẫu có sẵn lẫn mẫu mới. Web xếp mẫu theo số này (catalog.ts).
+ * (hộp Dữ liệu sản phẩm → thẻ Nâng cao → Thứ tự menu), chỉ ghi số khác 0; cả mẫu có sẵn lẫn mẫu mới. Web xếp mẫu theo số này (catalog.ts).
  * pages: tên link → trang khung (đường dẫn trang mẫu có sẵn của cùng bộ)
  */
 function eco_mm_compute()
