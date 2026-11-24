@@ -17,6 +17,7 @@ import {
   liveCollectionText,
   liveNewCollections,
   liveNewPatterns,
+  livePatternOrder,
   livePattern,
   livePatternContent,
   markLiveDiffers,
@@ -558,6 +559,19 @@ const newPattern = (collection: Collection, p: LiveNewPattern): Pattern => {
   }
 }
 
+/**
+ * Thứ tự phối màu (25/11/2026): mẫu Ecopillo đặt "Thứ tự menu" khác 0 trong Woo đứng trước, số nhỏ trước; mẫu để 0 giữ thứ tự
+ * cũ (catalog, rồi mẫu mới) và đứng sau. Áp cho trang bộ sưu tập, hàng chọn màu, đặt hàng (đều đọc collection.patterns).
+ */
+const withPatternOrder = (collection: Collection, patterns: readonly Pattern[]): readonly Pattern[] => {
+  const ordered = patterns.map((p, i) => ({ p, i, n: livePatternOrder(collection.id, p.code) }))
+  if (!ordered.some((x) => x.n !== undefined)) return patterns
+  markLiveDiffers()
+  return [...ordered]
+    .sort((a, b) => (a.n === undefined ? 1 : 0) - (b.n === undefined ? 1 : 0) || (a.n ?? 0) - (b.n ?? 0) || a.i - b.i)
+    .map((x) => x.p)
+}
+
 const withNewPatterns = (collection: Collection, patterns: readonly Pattern[]): readonly Pattern[] => {
   const extra = liveNewPatterns(collection.id)
     .filter((p) => !patterns.some((q) => q.code === p.ma))
@@ -626,9 +640,12 @@ if (NEW_COLLECTIONS.length) markLiveDiffers()
 export const ALL_COLLECTIONS: readonly Collection[] = [
   ...BASE_COLLECTIONS.map(withCollectionText).map((c) => ({
     ...c,
-    patterns: withNewPatterns(
+    patterns: withPatternOrder(
       c,
-      c.patterns.map((p) => withLivePattern(c, withPatternContent(c, p))),
+      withNewPatterns(
+        c,
+        c.patterns.map((p) => withLivePattern(c, withPatternContent(c, p))),
+      ),
     ),
   })),
   ...NEW_COLLECTIONS,

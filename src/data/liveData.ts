@@ -603,6 +603,24 @@ export const livePatternContent = (collectionId: string, code: string): LivePatt
 /** Mẫu mới Ecopillo thêm trong WooCommerce cho một bộ sưu tập */
 export const liveNewPatterns = (collectionId: string): readonly LiveNewPattern[] => LIVE.mauMoi.filter((p) => p.bo === collectionId)
 
+/**
+ * Thứ tự phối màu Ecopillo đặt ở "Thứ tự menu" của sản phẩm mẫu trong Woo (mau-moi.php, 25/11/2026): "<mã bộ>/<mã mẫu>" → số.
+ * Plugin chỉ ghi số khác 0. Không tin mù: chỉ nhận số nguyên, khoá dạng chữ / số / gạch.
+ */
+const PATTERN_ORDER: ReadonlyMap<string, number> = (() => {
+  if (typeof window === 'undefined') return new Map()
+  const raw = (window as { __ECO_GIA__?: { thuTuMau?: unknown } }).__ECO_GIA__?.thuTuMau
+  if (!raw || typeof raw !== 'object') return new Map()
+  return new Map(
+    Object.entries(raw as Record<string, unknown>).filter(
+      (e): e is [string, number] => /^[a-z0-9-]{1,80}\/[A-Z0-9]{2,10}$/.test(e[0]) && Number.isInteger(e[1]) && e[1] !== 0,
+    ),
+  )
+})()
+
+/** Số "Thứ tự menu" của một mẫu (undefined = chưa đặt, để 0) */
+export const livePatternOrder = (collectionId: string, code: string): number | undefined => PATTERN_ORDER.get(`${collectionId}/${code}`)
+
 /** Mẫu mới theo tên trên link (trang /san-pham/<tên>/) */
 export const liveNewPatternBySlug = (slug: string): LiveNewPattern | undefined => LIVE.mauMoi.find((p) => p.duongDan === slug)
 

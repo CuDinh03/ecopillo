@@ -75,7 +75,9 @@ function eco_mm_color($product)
 }
 
 /**
- * Mẫu mới và bảng báo. @return array{live: array, rows: array, pages: array}
+ * Mẫu mới và bảng báo. @return array{live: array, rows: array, pages: array, thuTu: array}
+ * thuTu (25/11/2026, owner: Ecopillo tự đổi thứ tự phối màu): "<mã bộ>/<mã mẫu>" → "Thứ tự menu" của sản phẩm mẫu trong Woo
+ * (ô Thuộc tính sản phẩm → Thứ tự menu), chỉ ghi số khác 0; cả mẫu có sẵn lẫn mẫu mới. Web xếp mẫu theo số này (catalog.ts).
  * pages: tên link → trang khung (đường dẫn trang mẫu có sẵn của cùng bộ)
  */
 function eco_mm_compute()
@@ -85,11 +87,19 @@ function eco_mm_compute()
     $live = array();
     $rows = array();
     $pages = array();
+    $order = array();
     $sizes = array('160x200', '180x200', '200x220');
     foreach (isset($frame['boSuuTap']) ? $frame['boSuuTap'] : array() as $col) {
         $products = wc_get_products(array('status' => 'publish', 'limit' => 200, 'category' => array($col['danhMucWoo'])));
         foreach ($products as $product) {
             $slug = $product->get_slug();
+            $menu = (int) $product->get_menu_order();
+            if ($menu !== 0) {
+                $menu_code = eco_mm_code($product);
+                if ($menu_code !== '') {
+                    $order[$col['id'] . '/' . $menu_code] = $menu;
+                }
+            }
             if (isset($known[$slug])) {
                 continue;
             }
@@ -165,7 +175,7 @@ function eco_mm_compute()
             $pages[$slug] = array('khung' => $col['khung'], 'tieuDe' => $col['ten'] . ' ' . $code . ' · ' . $item['ten'], 'anh' => $image['src']);
         }
     }
-    return array('live' => $live, 'rows' => $rows, 'pages' => $pages);
+    return array('live' => $live, 'rows' => $rows, 'pages' => $pages, 'thuTu' => $order);
 }
 
 /* ---------------------------------------------------------------- Trang khung cho link mẫu mới */

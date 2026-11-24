@@ -331,11 +331,13 @@ function eco_dl_write()
     // Hết hàng sản phẩm lẻ, mẫu có sẵn (ton-kho.php, đợt F)
     $stock = $woo && function_exists('eco_tk_compute') ? eco_tk_compute() : array('sanPham' => array(), 'mau' => array());
     $has_stock = $stock['sanPham'] || $stock['mau'];
-    if ($prices === null && ($patterns['live'] || $items['live'] || $has_content_woo || $collections['live'] || $collections['chu'] || $has_categories || $has_hidden || $has_stock)) {
+    if ($prices === null && (!empty($patterns['thuTu']) || $patterns['live'] || $items['live'] || $has_content_woo || $collections['live'] || $collections['chu'] || $has_categories || $has_hidden || $has_stock)) {
         $prices = array('mau' => new stdClass(), 'sanPham' => new stdClass());
     }
     if ($prices !== null) {
         $prices['mauMoi'] = $patterns['live'];
+        // Thứ tự phối màu theo "Thứ tự menu" của sản phẩm mẫu trong Woo (mau-moi.php, 25/11/2026)
+        $prices['thuTuMau'] = !empty($patterns['thuTu']) ? $patterns['thuTu'] : new stdClass();
         $prices['sanPhamMoi'] = $items['live'];
         $prices['noiDungWoo'] = $content_woo;
         $prices['boSuuTapMoi'] = $collections['live'];

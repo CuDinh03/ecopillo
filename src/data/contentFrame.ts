@@ -28,6 +28,7 @@ import { FOOTER_TEXT_SET } from './pageText/footer'
 import { GIFTS_TEXT_SET } from './pageText/gifts'
 import { HOME_TEXT_SET } from './pageText/home'
 import { ESSENTIAL_TILES_SET } from './essentialTiles'
+import { POST_PINS_SET } from './postPins'
 import { ORDER_TEXT_SET } from './pageText/order'
 import { ORDER_CUSTOMER_TEXT_SET, ORDER_STEPS_TEXT_SET, ORDER_SUMMARY_TEXT_SET } from './pageText/orderFlow'
 import { PRIVACY_SECTIONS_SET, PRIVACY_TEXT_SET } from './pageText/privacy'
@@ -116,6 +117,7 @@ export const CONTENT_SETS: readonly EditableSet[] = [
   // Chữ từng trang (owner 20/11/2026: "đảm bảo tất cả mọi thứ trên web, khách đều tự chỉnh sửa được")
   HOME_TEXT_SET,
   ESSENTIAL_TILES_SET,
+  POST_PINS_SET,
   MATTRESS_TEXT_SET,
   MATTRESS_ROWS_SET,
   MATTRESS_CHIPS_SET,

@@ -2,6 +2,7 @@ import { liveHidden } from './liveData'
 import wordpressIndex from './bai-viet-wp/danh-sach.json'
 import { LIVE_POSTS, type LivePost } from './livePosts'
 import { CODE_POST_SLUGS, POSTS, type Post } from './posts'
+import { PINNED_POST_SLUGS } from './postPins'
 import { isPostSection, POST_SECTIONS, SECTION_LABELS, type PostLabel } from './postSections'
 
 /**
@@ -79,15 +80,21 @@ const MERGED_WORDPRESS: readonly Post[] = [
 ]
 
 /**
- * Bài trong code đứng đầu (bài chọn lọc), sau đó bài WordPress mới nhất trước. Bài có sẵn Ecopillo đã gỡ trong WordPress
+ * Bài ghim đứng đầu (mặc định ba bài trong code, Ecopillo đổi ở Nội dung web → Bài viết → Tin tức: bài ghim), sau đó bài WordPress mới nhất trước. Bài có sẵn Ecopillo đã gỡ trong WordPress
  * (nháp, riêng tư, thùng rác, xoá hẳn: đợt E2, plugin an-xoa.php) thì bỏ; link bài chuyển về trang Tin tức (máy chủ trả 301).
  * Bài dựng sẵn: POSTS đã bỏ bài Ecopillo ẩn ở Nội dung web, mục của bài lấy từ ô "Mục trên web" ở đó (gốc theo bảng postSections.ts).
  */
 const HIDDEN_POSTS = liveHidden().bai
+const SHOWN_POSTS: readonly Post[] = [...POSTS, ...MERGED_WORDPRESS].filter((p) => !HIDDEN_POSTS.has(p.slug))
+/** Bài ghim (postPins.ts, Ecopillo chọn ở Nội dung web; mặc định ba bài dựng sẵn) đứng đầu theo thứ tự Ecopillo xếp */
+const PINNED: readonly Post[] = PINNED_POST_SLUGS.flatMap((slug) => SHOWN_POSTS.find((p) => p.slug === slug) ?? [])
+const PINNED_SET = new Set(PINNED.map((p) => p.slug))
 export const ALL_POSTS: readonly Post[] = [
-  ...POSTS,
-  ...MERGED_WORDPRESS,
-].filter((p) => !HIDDEN_POSTS.has(p.slug))
+  ...PINNED,
+  ...MERGED_WORDPRESS.filter((p) => !HIDDEN_POSTS.has(p.slug) && !PINNED_SET.has(p.slug)),
+  // Bài dựng sẵn không ghim: cuối danh sách (không có ngày đăng để xếp cùng bài WordPress)
+  ...POSTS.filter((p) => !HIDDEN_POSTS.has(p.slug) && !PINNED_SET.has(p.slug)),
+]
 
 export const anyPostBySlug = (slug: string | undefined): Post | undefined =>
   ALL_POSTS.find((p) => p.slug === slug) ?? OWN_PAGES.find((p) => p.slug === slug)

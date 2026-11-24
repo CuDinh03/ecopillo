@@ -340,7 +340,7 @@ function eco_bst_compute()
         $patterns = array();
         $seen = array();
         $pattern_rows = array();
-        foreach (wc_get_products(array('status' => 'publish', 'limit' => 120, 'category' => array($term->slug))) as $product) {
+        foreach (wc_get_products(array('status' => 'publish', 'limit' => 120, 'category' => array($term->slug), 'orderby' => array('menu_order' => 'ASC', 'date' => 'DESC'))) as $product) {
             list($item, $item_problems) = eco_bst_pattern($product, $known, $seen);
             $pattern_rows[] = array(
                 'ten' => '· ' . $product->get_name(), 'id' => 0, 'sanPham' => $product->get_id(),
