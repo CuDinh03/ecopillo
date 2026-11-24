@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { CONTACT, mapEmbedUrl, OPENING_HOURS, SHOWROOMS } from '../data/brand'
-import { PATHS } from '../data/links'
+import { hiddenPageTarget, PATHS } from '../data/links'
 import { policyPath } from '../data/policyNav'
 import { Icon, ZaloMark } from '../components/ui/Icon'
 import { buttonClass, Container } from '../components/ui/primitives'
@@ -271,7 +271,7 @@ export function ContactPage() {
                         policyPath('chinh-sach-bao-hanh-san-pham'),
                         PATHS.hotel,
                         PATHS.faq,
-                      ].flatMap((href, i) => (CONTACT_PAGE_TEXT.hoiNhanh[i] ? [[CONTACT_PAGE_TEXT.hoiNhanh[i], href]] : [])).map(([label, href]) => (
+                      ].flatMap((href, i) => (CONTACT_PAGE_TEXT.hoiNhanh[i] && !hiddenPageTarget(href) ? [[CONTACT_PAGE_TEXT.hoiNhanh[i], href]] : [])).map(([label, href]) => (
                         <li key={label}>
                           <Link to={href} className="group flex min-h-11 items-center justify-between gap-3 py-2.5 text-deep-900 hover:underline">
                             {label}

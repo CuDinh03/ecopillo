@@ -1,6 +1,6 @@
 import { ALL_POSTS } from './allPosts'
 import type { ImageSource } from './catalog'
-import { LISTINGS, PATHS } from './links'
+import { hiddenPageTarget, LISTINGS, PATHS } from './links'
 import { SEARCH_PAGES, SEARCH_TEXT } from './pageText/search'
 import { postLabelText } from './pageText/miscLabels'
 import { POLICY_NAV, policyPath } from './policyNav'
@@ -75,7 +75,8 @@ const pageEntries = (): SearchEntry[] => [
 const postEntries = (): SearchEntry[] =>
   ALL_POSTS.map((post) => ({ kind: 'bai-viet', title: post.title, to: postPath(post), meta: postLabelText(post.category), image: post.cover }))
 
-export const SEARCH_INDEX: readonly SearchEntry[] = [...productEntries(), ...pageEntries(), ...postEntries()]
+/** Bỏ trang Ecopillo đã ẩn / gỡ (trang chính sách ẩn, danh mục ẩn…): link đó chỉ còn chuyển hướng */
+export const SEARCH_INDEX: readonly SearchEntry[] = [...productEntries(), ...pageEntries(), ...postEntries()].filter((entry) => !hiddenPageTarget(entry.to))
 
 /** Gợi ý khi ô tìm còn trống (Ecopillo sửa ở Nội dung web → Thanh tìm kiếm) */
 export const SEARCH_SUGGESTIONS: readonly string[] = SEARCH_TEXT.goiY

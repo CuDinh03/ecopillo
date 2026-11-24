@@ -1,6 +1,6 @@
 import { productImage, type ImageSource } from './catalog'
 import { hiddenPageTarget, LISTINGS, singleProductPath } from './links'
-import { LISTING_GUIDES } from './listingGuides'
+import { BASE_LISTING_GUIDES, LISTING_GUIDES } from './listingGuides'
 import { listingOf } from './listingProducts'
 import { liveList, type EditableField, type EditableSet } from './liveContent'
 import { ALL_PRODUCTS, hasPrice, isProductShown, PRODUCTS, productBySlug, productKind, type Product } from './products'
@@ -13,7 +13,8 @@ import { anh, chon, chu, definePageText, doan, dsDong, legacyPageText, link } fr
  */
 
 const DEM_PATH = '/danh-muc-san-pham/dem-ecopillo/'
-const DEM_GUIDE = LISTING_GUIDES[DEM_PATH]
+// Ecopillo bỏ phần "Chọn thế nào" của Đệm Ecopillo thì khối này vẫn dùng chữ gốc
+const DEM_GUIDE = LISTING_GUIDES[DEM_PATH] ?? BASE_LISTING_GUIDES[DEM_PATH]
 
 export interface MattressPreference {
   /** Tiêu đề cách nằm (từ LISTING_GUIDES) */

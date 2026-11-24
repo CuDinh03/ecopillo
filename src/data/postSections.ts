@@ -1,5 +1,5 @@
 import { slugify } from '../lib/slug'
-import { liveList, type EditableField, type EditableSet } from './liveContent'
+import { liveList, rowKey, type EditableField, type EditableSet } from './liveContent'
 
 /**
  * Nhóm của bài viết trên trang Tin tức (owner duyệt 18/11/2026, docs/de-xuat-phan-loai-bai-viet-18-11.html):
@@ -28,7 +28,8 @@ const RESERVED = new Set(['tin-tuc', 'cam-nang'])
 /**
  * Chủ đề Cẩm nang Ecopillo sửa ở Nội dung web → Bài viết → "Chủ đề Cẩm nang" (owner 24/11/2026: thêm, xoá, sửa được):
  * tên chủ đề (nút lọc trang Tin tức, nhãn trên thẻ bài, đầu bài viết), thứ tự nút. Mã chủ đề có sẵn giữ nguyên; chủ đề mới lấy mã
- * theo tên (cùng cách với plugin bai-viet-moi.php eco_bv_muc_options), nên đổi tên chủ đề mới thêm thì chọn lại mục cho bài.
+ * theo tên lúc lưu lần đầu (cờ khoaDongTheoTieuDe, plugin noi-dung.php eco_nd_fill_row_keys) rồi giữ nguyên khi đổi tên (đợt I 24/11/2026),
+ * nên bài đã chọn chủ đề không phải chọn lại. Dòng lưu trước đó chưa có mã: mã theo tên như trước (bai-viet-moi.php eco_bv_muc_options cũng vậy).
  * Xoá chủ đề: bài của chủ đề đó về nhóm theo chuyên mục WordPress (Tin tức / Cẩm nang).
  */
 export const POST_TOPIC_SET: EditableSet = {
@@ -48,13 +49,15 @@ export const POST_TOPIC_SET: EditableSet = {
       nhan: 'Tên chủ đề',
       kieu: 'chu',
       batBuoc: true,
-      goiY: 'Chủ đề thêm mới: đổi tên là đổi mã, các bài đã chọn chủ đề đó phải chọn lại ở ô "Mục trên web".',
+      goiY: 'Đổi tên được: bài đã chọn chủ đề này vẫn ở chủ đề này.',
     },
   ] satisfies EditableField[],
+  khoaDongTheoTieuDe: true,
 }
 
 const TOPIC_ROWS = liveList<TopicRow>(POST_TOPIC_SET.khoa, BASE_TOPIC_ROWS, POST_TOPIC_SET.truong, (_i, row) => ({
-  ...(BASE_TOPIC_ROWS.find((r) => r.ma === row.ma) ?? { ma: '', ten: '' }),
+  // Mã dòng (ô ẩn) lấy từ bản đã lưu: chủ đề mới giữ mã plugin đặt lúc lưu lần đầu
+  ...(BASE_TOPIC_ROWS.find((r) => r.ma === rowKey(row.ma)) ?? { ma: rowKey(row.ma), ten: '' }),
 }))
 
 export interface PostTopicEntry {

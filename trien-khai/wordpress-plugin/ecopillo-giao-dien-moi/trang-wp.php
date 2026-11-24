@@ -227,8 +227,52 @@ function eco_tw_code_posts()
 }
 
 /**
+ * Trang chính sách có sẵn Ecopillo ẩn ở Nội dung web → "Đầu các trang chính sách" (đợt I; src/data/policyKeys.ts làm cùng cách):
+ * dòng chọn "Ẩn", hoặc bộ đã lưu mà không còn dòng của trang đó. Chưa lưu bộ thì không ẩn trang nào. Link cũ mở nội dung
+ * trang đó (khung giá: chinhSachLinkCu) cũng chuyển. @return array<string, string> link trang → trang Hỏi đáp
+ */
+function eco_tw_policy_hidden()
+{
+    $sets = function_exists('eco_nd_sets') ? eco_nd_sets() : array();
+    $saved = function_exists('eco_nd_saved') ? eco_nd_saved('chinh-sach-dau-trang') : null;
+    if (!isset($sets['chinh-sach-dau-trang']) || !$saved || !is_array($saved['giaTri'])) {
+        return array();
+    }
+    $slugs = array();
+    foreach ((array) $sets['chinh-sach-dau-trang']['truong'] as $field) {
+        if (isset($field['khoa']) && $field['khoa'] === 'slug' && isset($field['luaChon'])) {
+            $slugs = array_map('strval', (array) $field['luaChon']);
+        }
+    }
+    // Dòng trên thắng khi hai dòng cùng trang; dòng lưu trước đợt I chưa có ô Hiện / Ẩn là đang hiện
+    $show = array();
+    foreach ($saved['giaTri'] as $row) {
+        $slug = is_array($row) && isset($row['slug']) ? sanitize_title((string) $row['slug']) : '';
+        if ($slug !== '' && !isset($show[$slug])) {
+            $show[$slug] = !isset($row['hien']) || $row['hien'] !== 'khong';
+        }
+    }
+    $frame = function_exists('eco_gia_frame') ? eco_gia_frame() : array();
+    $faq = isset($frame['trangHoiDap']) && eco_tw_is_path((string) $frame['trangHoiDap']) ? (string) $frame['trangHoiDap'] : '/hoi-dap/';
+    $aliases = isset($frame['chinhSachLinkCu']) ? (array) $frame['chinhSachLinkCu'] : array();
+    $map = array();
+    foreach ($slugs as $slug) {
+        if (!empty($show[$slug])) {
+            continue;
+        }
+        $map['/' . $slug . '/'] = $faq;
+        foreach ($aliases as $alias => $target) {
+            if ((string) $target === $slug && preg_match('/^[a-z0-9-]{1,200}$/', (string) $alias)) {
+                $map['/' . $alias . '/'] = $faq;
+            }
+        }
+    }
+    return $map;
+}
+
+/**
  * Trang đã gỡ → trang chuyển tới: danh mục ẩn / xoá (danh-muc.php), sản phẩm, mẫu, bài có sẵn đã gỡ (an-xoa.php),
- * bài viết dựng sẵn Ecopillo chọn "Ẩn" ở Nội dung web (eco_tw_code_posts)
+ * bài viết dựng sẵn Ecopillo chọn "Ẩn" ở Nội dung web (eco_tw_code_posts), trang chính sách đã ẩn (eco_tw_policy_hidden)
  */
 function eco_tw_hidden_map()
 {
@@ -236,7 +280,7 @@ function eco_tw_hidden_map()
     if (function_exists('eco_ax_compute')) {
         $map = array_merge(eco_ax_compute()['trang'], $map);
     }
-    return array_merge(eco_tw_code_posts()['an'], $map);
+    return array_merge(eco_tw_policy_hidden(), eco_tw_code_posts()['an'], $map);
 }
 
 /** Các trang cần WordPress trả (trang có sẵn đã đổi SEO, đã ẩn, có chuyển link Ecopillo thêm, có khối tự do) */

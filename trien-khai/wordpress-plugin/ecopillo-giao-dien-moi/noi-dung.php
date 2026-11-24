@@ -80,6 +80,28 @@ function eco_nd_field_options($field)
     return array($values, $labels);
 }
 
+/**
+ * Lựa chọn khớp một giá trị đã lưu: đúng hệt, không thì so sau sanitize_title. Ô chọn trang thay cho mã ẩn của dòng (đợt I,
+ * phần "Chọn thế nào" của danh mục): dòng lưu trước đó mang mã đã sanitize_title ("danh-muc-san-pham-dem-ecopillo"), vẫn về
+ * đúng "/danh-muc-san-pham/dem-ecopillo/" (giống rowKey trong liveContent.ts). Không khớp: null.
+ */
+function eco_nd_pick_option($options, $value)
+{
+    if (!is_string($value) || $value === '') {
+        return null;
+    }
+    if (in_array($value, $options, true)) {
+        return $value;
+    }
+    $key = sanitize_title($value);
+    foreach ($options as $option) {
+        if ($key !== '' && sanitize_title((string) $option) === $key) {
+            return (string) $option;
+        }
+    }
+    return null;
+}
+
 /** Giá trị → nhãn của một nguồn lựa chọn lúc chạy */
 function eco_nd_live_options($source)
 {
@@ -108,7 +130,7 @@ function eco_nd_live_options($source)
                 continue;
             }
             $name = isset($row['ten']) ? trim((string) $row['ten']) : '';
-            $id = isset($row['ma']) && (string) $row['ma'] !== '' ? sanitize_title((string) $row['ma']) : sanitize_title($name);
+            $id = isset($row['ma']) && (string) $row['ma'] !== '' ? sanitize_title((string) $row['ma']) : eco_nd_slug($name);
             $id = $id !== '' ? $id : 'nhom-' . ($i + 1);
             $out[$id] = 'Nhóm sản phẩm: ' . ($name !== '' ? $name : $id);
         }
@@ -162,8 +184,7 @@ function eco_nd_clean_field($field, $value)
             $text = is_string($value) ? str_replace(',', '.', trim($value)) : '';
             return is_numeric($text) ? (float) $text : null;
         case 'chon':
-            $options = eco_nd_field_options($field)[0];
-            return in_array($value, $options, true) ? $value : null;
+            return eco_nd_pick_option(eco_nd_field_options($field)[0], $value);
         case 'chon-nhieu':
             // Giữ thứ tự luaChon, chỉ nhận giá trị có trong danh sách (cả lựa chọn lấy lúc chạy)
             $options = eco_nd_field_options($field)[0];
@@ -272,8 +293,16 @@ function eco_nd_clean_row($set, $input, &$errors)
     return $row;
 }
 
+/** Mã từ chữ, giống slugify ở src/lib/slug.ts: bỏ dấu, chữ thường, mọi ký tự khác a-z0-9 thành một dấu "-" */
+function eco_nd_slug($text)
+{
+    $text = strtolower(remove_accents((string) $text));
+    return trim((string) preg_replace('/[^a-z0-9]+/', '-', $text), '-');
+}
+
 /**
- * Bộ có cờ `khoaDongTheoTieuDe` (nhóm sản phẩm: mã nằm trên link ?danh-muc=…): dòng mới chưa có mã lấy mã theo ô tiêu đề,
+ * Bộ có cờ `khoaDongTheoTieuDe` (nhóm sản phẩm: mã nằm trên link ?danh-muc=…; gam màu; chủ đề Cẩm nang): dòng mới chưa có mã
+ * lấy mã theo ô tiêu đề,
  * không trùng mã dòng khác (thêm -2, -3…). Dòng đã có mã giữ nguyên, nên đổi tên sau không đổi link.
  */
 function eco_nd_fill_row_keys($set, $rows)
@@ -293,7 +322,8 @@ function eco_nd_fill_row_keys($set, $rows)
         if (isset($row[$key]) && (string) $row[$key] !== '') {
             continue;
         }
-        $base = sanitize_title(isset($row[$title]) ? (string) $row[$title] : '');
+        // Lấy mã như web lấy mã dòng chưa có mã (slugify ở src/lib/slug.ts), để dòng cũ lưu lần đầu giữ đúng mã web đang dùng
+        $base = eco_nd_slug(isset($row[$title]) ? (string) $row[$title] : '');
         $base = $base !== '' ? $base : 'dong-' . ($i + 1);
         $id = $base;
         for ($n = 2; isset($used[$id]); $n++) {

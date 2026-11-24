@@ -1,3 +1,4 @@
+import { LISTINGS } from './links'
 import { liveList, rowKey, type EditableField, type EditableSet } from './liveContent'
 /**
  * Phần "Chọn thế nào" ở cuối trang danh mục nhỏ (đệm lò xo, ruột chăn gối…). Khoá là đường link trong LISTINGS (links.ts).
@@ -12,7 +13,8 @@ export interface ListingGuide {
   points: readonly { title: string; text: string }[]
 }
 
-const BASE_LISTING_GUIDES: Readonly<Record<string, ListingGuide>> = {
+/** Bản gốc trong code; khối đệm trang chủ (mattressPicker.ts) lấy chữ cách nằm ở đây khi Ecopillo bỏ phần của Đệm Ecopillo */
+export const BASE_LISTING_GUIDES: Readonly<Record<string, ListingGuide>> = {
   '/danh-muc-san-pham/dem-ecopillo/': {
     title: 'Chọn đệm theo cách Quý khách thích nằm',
     points: [
@@ -88,31 +90,50 @@ const BASE_LISTING_GUIDES: Readonly<Record<string, ListingGuide>> = {
   },
 }
 
-/* ——— Ecopillo tự sửa (Nội dung web → Chữ từng trang). Thêm, bớt dòng trong một phần được; không thêm phần cho danh mục mới ——— */
+/* ——— Ecopillo tự sửa (Nội dung web → Chữ từng trang) ———
+ * Owner 24/11/2026 ("thêm được thì phải sửa được và xoá được"): thêm phần cho bất kỳ trang danh mục nào, cả trang danh mục
+ * Ecopillo tạo sau trong Woo (ô "Trang danh mục", luaChonThem 'danh-muc'); xoá dòng là trang đó không còn phần "Chọn thế nào".
+ * Dòng lưu trước đợt này có mã ẩn `path` đã qua sanitize_title ("danh-muc-san-pham-dem-ecopillo"): so bằng rowKey để về đúng trang.
+ */
 
-const GUIDE_ROWS = Object.entries(BASE_LISTING_GUIDES).map(([path, g]) => ({ path, title: g.title, points: g.points.map((p) => ({ ...p })) }))
+interface GuideRow {
+  path: string
+  title: string
+  points: readonly { title: string; text: string }[]
+}
+
+const GUIDE_ROWS: readonly GuideRow[] = Object.entries(BASE_LISTING_GUIDES).map(([path, g]) => ({ path, title: g.title, points: g.points.map((p) => ({ ...p })) }))
+const LISTING_PATHS = Object.keys(LISTINGS)
 const GUIDE_FIELDS: readonly EditableField[] = [
+  {
+    khoa: 'path',
+    nhan: 'Trang danh mục',
+    kieu: 'chon',
+    batBuoc: true,
+    luaChon: LISTING_PATHS,
+    nhanLuaChon: LISTING_PATHS.map((path) => `${LISTINGS[path].title} (${path})`),
+    luaChonThem: [{ nguon: 'danh-muc' }],
+    goiY: 'Phần hiện ở cuối trang này. Mỗi trang một phần; hai dòng cùng trang thì dòng trên được dùng.',
+  },
   { khoa: 'title', nhan: 'Tiêu đề phần', kieu: 'chu', batBuoc: true },
   { khoa: 'points', nhan: 'Các ý', kieu: 'ds-cap', batBuoc: true, cap: ['title', 'text'], nhanCap: ['Chữ đậm', 'Câu giải thích'] },
 ]
 export const LISTING_GUIDES_SET: EditableSet = {
   khoa: 'chu-trang-danh-muc-chon-the-nao',
-  khongThemXoa: true,
-  khongDoiThuTu: true,
   nhom: 'Chữ từng trang',
   ten: 'Phần "Chọn thế nào" của danh mục',
-  moTa: 'Phần hướng dẫn chọn ở cuối các trang danh mục nhỏ (và 4 dòng cách nằm của khối đệm trang chủ, lấy từ phần của danh mục Đệm Ecopillo).',
+  moTa:
+    'Phần hướng dẫn chọn ở cuối các trang danh mục nhỏ (và 4 dòng cách nằm của khối đệm trang chủ, lấy từ phần của danh mục Đệm Ecopillo). ' +
+    'Thêm dòng và chọn trang để thêm phần cho một trang danh mục (cả trang danh mục mới tạo trong Woo); xoá dòng là trang đó không còn phần này.',
   kieu: 'nhieu',
   goc: GUIDE_ROWS,
   tieuDeDong: 'title',
-  khoaDong: 'path',
   truong: GUIDE_FIELDS,
 }
-const LIVE_GUIDES = liveList(LISTING_GUIDES_SET.khoa, GUIDE_ROWS, GUIDE_FIELDS, (i, row) => GUIDE_ROWS.find((r) => rowKey(r.path) === rowKey(row.path)) ?? GUIDE_ROWS[i] ?? GUIDE_ROWS[0])
+const EMPTY_GUIDE: GuideRow = { path: '', title: '', points: [] }
+const LIVE_GUIDES = liveList<GuideRow>(LISTING_GUIDES_SET.khoa, GUIDE_ROWS, GUIDE_FIELDS, (_i, row) => GUIDE_ROWS.find((r) => rowKey(r.path) === rowKey(row.path)) ?? EMPTY_GUIDE)
 
+/** Phần "Chọn thế nào" theo link trang danh mục. Chưa lưu: như bản gốc; đã lưu: đúng các dòng Ecopillo giữ (dòng trên thắng) */
 export const LISTING_GUIDES: Readonly<Record<string, ListingGuide>> = Object.fromEntries(
-  Object.entries(BASE_LISTING_GUIDES).map(([path, guide]) => {
-    const row = LIVE_GUIDES.find((r) => rowKey(r.path) === rowKey(path))
-    return [path, row ? { title: row.title, points: row.points } : guide]
-  }),
+  [...LIVE_GUIDES].reverse().map((row) => [row.path, { title: row.title, points: row.points }]),
 )

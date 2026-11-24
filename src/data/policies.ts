@@ -1,5 +1,5 @@
 import { CONTACT, OPENING_HOURS } from './brand'
-import type { PolicySlug } from './policyNav'
+import { POLICY_HEAD_KEY, POLICY_PAGE_FIELD, POLICY_SHOW_FIELD, type PolicySlug } from './policyKeys'
 import { liveList, type EditableField, type EditableSet } from './liveContent'
 import { BANK_LINE, DEPOSIT_CASES, HOME_TRIAL, NO_DEPOSIT } from './paymentPolicy'
 
@@ -342,19 +342,26 @@ const BASE_POLICIES: readonly Policy[] = [
 
 const NHOM_CHINH_SACH = 'Trang chính sách'
 
-/** Đầu mỗi trang chính sách (tên, mô tả Google, đoạn mở, 3 thẻ ý chính). Không thêm, bớt trang: link trang giữ theo web cũ */
+/**
+ * Đầu mỗi trang chính sách (tên, mô tả Google, đoạn mở, 3 thẻ ý chính) và Hiện / Ẩn từng trang (owner 24/11/2026, đợt I:
+ * "thêm được thì phải sửa được và xoá được"). Ẩn hoặc xoá dòng: link trang chuyển về Hỏi đáp (links.ts hiddenPageTarget, máy chủ
+ * trang-wp.php eco_tw_policy_hidden), bỏ khỏi menu, ô tìm, sơ đồ trang. Thêm lại dòng, chọn trang là trang hiện lại với chữ gốc.
+ * Trang chính sách mới: Trang WordPress tích "Hiện bằng giao diện mới", kiểu trang "Trang chính sách" (trang-moi.php).
+ */
 export const POLICY_HEAD_SET: EditableSet = {
-  khoa: 'chinh-sach-dau-trang',
-  khongThemXoa: true,
+  khoa: POLICY_HEAD_KEY,
   khongDoiThuTu: true,
   nhom: NHOM_CHINH_SACH,
   ten: 'Đầu các trang chính sách',
-  moTa: 'Tên trang, mô tả hiện trên Google, đoạn mở đầu, 3 thẻ ý chính của từng trang chính sách. Không thêm hay bớt trang ở đây.',
+  moTa:
+    'Tên trang, mô tả hiện trên Google, đoạn mở đầu, 3 thẻ ý chính của từng trang chính sách; Hiện / Ẩn từng trang (ẩn hoặc xoá dòng: link trang chuyển về Hỏi đáp). ' +
+    'Tên trên menu, thứ tự menu: bộ "Menu chính sách: các trang". Trang chính sách mới: Trang → Thêm mới trong WordPress, tích "Hiện trang này bằng giao diện mới", chọn kiểu "Trang chính sách".',
   kieu: 'nhieu',
-  goc: BASE_POLICIES.map(({ slug, title, description, intro, highlights }) => ({ slug, title, description, intro, highlights })),
+  goc: BASE_POLICIES.map(({ slug, title, description, intro, highlights }) => ({ slug, hien: 'co', title, description, intro, highlights })),
   tieuDeDong: 'title',
-  khoaDong: 'slug',
   truong: [
+    POLICY_PAGE_FIELD,
+    POLICY_SHOW_FIELD,
     { khoa: 'title', nhan: 'Tên trang', kieu: 'chu', batBuoc: true },
     { khoa: 'description', nhan: 'Mô tả hiện trên Google (70–155 ký tự)', kieu: 'doan', batBuoc: true },
     { khoa: 'intro', nhan: 'Đoạn mở đầu', kieu: 'doan', batBuoc: true },
@@ -381,11 +388,16 @@ export const POLICY_SECTION_SETS: readonly EditableSet[] = BASE_POLICIES.map((p)
   truong: SECTION_FIELDS,
 }))
 
-const LIVE_HEADS = liveList(POLICY_HEAD_SET.khoa, BASE_POLICIES, POLICY_HEAD_SET.truong, (i, row) => ({
-  ...(BASE_POLICIES.find((p) => p.slug === row.slug) ?? BASE_POLICIES[i] ?? BASE_POLICIES[0]),
+// Dòng chọn trang lạ thì bỏ (slug trống). Ô Hiện / Ẩn chỉ dùng ở policyKeys.ts, không ghép vào đây (bản lưu y gốc thì vẫn là gốc)
+const HEAD_FIELDS = POLICY_HEAD_SET.truong.filter((f) => f.khoa !== POLICY_SHOW_FIELD.khoa)
+const LIVE_HEADS = liveList<Policy>(POLICY_HEAD_SET.khoa, BASE_POLICIES, HEAD_FIELDS, (_i, row) => ({
+  ...(BASE_POLICIES.find((p) => p.slug === row.slug) ?? { ...BASE_POLICIES[0], slug: '' as PolicySlug }),
 }))
 
-/** Mỗi trang chính sách giữ đúng link (slug) gốc; trang không có trong danh sách sửa thì giữ bản gốc */
+/**
+ * Mỗi trang chính sách giữ đúng link (slug) gốc; trang không có trong danh sách sửa thì giữ bản gốc.
+ * Trang Ecopillo đã ẩn vẫn ở đây (PolicyPage chuyển link về Hỏi đáp)
+ */
 export const POLICIES: readonly Policy[] = BASE_POLICIES.map((base) => {
   const head = LIVE_HEADS.find((p) => p.slug === base.slug) ?? base
   return {

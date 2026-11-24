@@ -3,6 +3,7 @@ import { collectionPath, HOST_REDIRECTS, LISTINGS, PATHS, patternPath, singlePro
 import { ALL_POSTS } from './allPosts'
 import { PRODUCTS } from './products'
 import { TONES } from './stories'
+import { POLICY_ALIAS_OF } from './policyKeys'
 import { PRODUCT_INFO } from './productInfo'
 import { infoToText } from './productInfoText'
 
@@ -113,6 +114,10 @@ export interface PriceFrame {
   trangSanPham: string
   /** Trang Tin tức: nơi chuyển tới khi Ecopillo gỡ một bài viết có sẵn (đợt E2) */
   trangTinTuc: string
+  /** Trang Hỏi đáp: nơi chuyển tới khi Ecopillo ẩn một trang chính sách có sẵn (đợt I, trang-wp.php eco_tw_policy_hidden) */
+  trangHoiDap: string
+  /** Link cũ mở nội dung một trang chính sách (tên link → tên trang chính sách): trang đó ẩn thì link này cũng chuyển */
+  chinhSachLinkCu: Record<string, string>
 }
 
 const slugOf = (path: string): string => path.replace(/\/$/, '').split('/').pop() ?? ''
@@ -215,5 +220,5 @@ export function buildPriceFrame(): PriceFrame {
     })),
   ]
   const khungDanhMuc = Object.keys(LISTINGS).find((path) => LISTINGS[path]?.products?.length) ?? ''
-  return { mau, sanPham, noiDung, boMoi, boSuuTap, danhMuc, baiViet, baiTrongCode, khungBai, slugCu, trangDanhMuc, khungDanhMuc, trangSanPham: PATHS.products, trangTinTuc: PATHS.blog }
+  return { mau, sanPham, noiDung, boMoi, boSuuTap, danhMuc, baiViet, baiTrongCode, khungBai, slugCu, trangDanhMuc, khungDanhMuc, trangSanPham: PATHS.products, trangTinTuc: PATHS.blog, trangHoiDap: PATHS.faq, chinhSachLinkCu: { ...POLICY_ALIAS_OF } }
 }

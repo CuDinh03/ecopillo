@@ -7,6 +7,10 @@
  * Dùng chung đường đi của bài viết mới (bai-viet-moi.php): thân trang lọc bằng eco_bv_body, ghi bai/<tên>.json, mục trong
  * `window.__ECO_BAI__` có `trang: true` (src/data/livePosts.ts), trang khung do eco_bv_serve trả. Trang của web WordPress cũ
  * không tích thì không đổi gì. Gỡ: bỏ tích, chuyển nháp hoặc bỏ thùng rác.
+ *
+ * Kiểu trang (đợt I 24/11/2026, owner: "thêm được thì phải sửa được và xoá được"): "Trang chính sách" hiện trong khung các trang
+ * chính sách (menu chính sách bên trái, ArticlePage → PolicyLayout), mục trong `window.__ECO_BAI__` có `kieu: 'chinh-sach'`.
+ * Đưa lên menu chính sách: Nội dung web → Trang chính sách → "Menu chính sách: các trang".
  */
 
 if (!defined('ABSPATH')) {
@@ -14,6 +18,8 @@ if (!defined('ABSPATH')) {
 }
 
 define('ECO_TM_META', '_eco_trang_giao_dien_moi');
+/** Kiểu trang: không có = trang thường (khung bài viết); 'chinh-sach' = khung trang chính sách */
+define('ECO_TM_KIEU_META', '_eco_trang_kieu');
 
 add_action('add_meta_boxes_page', function () {
     add_meta_box('eco-trang-moi', 'Giao diện mới', 'eco_tm_box', 'page', 'side', 'high');
@@ -23,12 +29,20 @@ function eco_tm_box($post)
 {
     wp_nonce_field('eco_tm_luu', 'eco_tm_nonce');
     $on = get_post_meta($post->ID, ECO_TM_META, true) === '1';
+    $kind = eco_tm_kind($post->ID);
     $problem = $on ? eco_tm_problem($post) : '';
     ?>
     <p><label><input type="checkbox" name="eco_tm_bat" value="1" <?php checked($on); ?>>
         <strong>Hiện trang này bằng giao diện mới</strong></label></p>
     <p style="color:#555;margin:0">Trang hiện ở đúng link của nó (đường dẫn không dấu, một cấp, ví dụ <code>/uu-dai-thang-12/</code>), kiểu như một bài viết:
         tiêu đề, ảnh đại diện, nội dung. Đưa lên thanh đầu trang: Nội dung web → Menu chính, thêm dòng với link này. Bỏ tích hoặc chuyển nháp là gỡ.</p>
+    <p style="margin:12px 0 4px"><label for="eco-tm-kieu"><strong>Kiểu trang</strong></label></p>
+    <select id="eco-tm-kieu" name="eco_tm_kieu" style="width:100%">
+        <option value="" <?php selected($kind, ''); ?>>Trang thường (như một bài viết)</option>
+        <option value="chinh-sach" <?php selected($kind, 'chinh-sach'); ?>>Trang chính sách</option>
+    </select>
+    <p style="color:#555;margin:4px 0 0">Trang chính sách: hiện trong khung các trang chính sách (menu chính sách bên trái, tiêu đề, đoạn tóm tắt làm đoạn mở đầu).
+        Đưa vào menu chính sách: Nội dung web → Trang chính sách → Menu chính sách: các trang, thêm dòng với link này.</p>
     <?php if ($problem !== '') : ?>
         <p style="color:#b32d2e;font-weight:600;margin-top:8px">Chưa hiện: <?php echo esc_html($problem); ?></p>
     <?php endif;
@@ -48,6 +62,13 @@ add_action('save_post_page', function ($post_id) {
     } else {
         delete_post_meta($post_id, ECO_TM_META);
     }
+    // Kiểu trang: đổi kiểu cũng ghi lại (dòng dưới ghi khi trang đang / vừa tích)
+    $kind = isset($_POST['eco_tm_kieu']) ? sanitize_key(wp_unslash($_POST['eco_tm_kieu'])) : '';
+    if ($kind === 'chinh-sach') {
+        update_post_meta($post_id, ECO_TM_KIEU_META, 'chinh-sach');
+    } else {
+        delete_post_meta($post_id, ECO_TM_KIEU_META);
+    }
     if ($on || $was) {
         eco_gia_mark_dirty();
     }
@@ -60,6 +81,12 @@ foreach (array('trashed_post', 'untrashed_post', 'deleted_post') as $eco_tm_hook
             eco_gia_mark_dirty();
         }
     });
+}
+
+/** Kiểu trang đã chọn: '' (trang thường) hoặc 'chinh-sach' */
+function eco_tm_kind($post_id)
+{
+    return get_post_meta($post_id, ECO_TM_KIEU_META, true) === 'chinh-sach' ? 'chinh-sach' : '';
 }
 
 /** Lý do trang đã tích chưa hiện được (rỗng = hiện được) */
@@ -117,7 +144,7 @@ function eco_tm_compute()
         $result['live'][] = array(
             'duongDan' => $slug, 'tieuDe' => $title, 'tomTat' => $excerpt,
             'moTa' => mb_strlen($yoast, 'UTF-8') >= 50 ? $yoast : mb_substr($excerpt, 0, 155, 'UTF-8'),
-            'loai' => 'Cẩm nang', 'muc' => '', 'trang' => true,
+            'loai' => 'Cẩm nang', 'muc' => '', 'trang' => true, 'kieu' => eco_tm_kind($page->ID),
             'ngay' => get_the_date('Y-m-d', $page), 'sua' => get_post_modified_time('Y-m-d', false, $page),
             'phut' => max(1, (int) round($words / 220)), 'anh' => $cover ? $cover : null,
         );
