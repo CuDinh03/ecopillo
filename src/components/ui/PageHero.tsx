@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { PAGE_FRAME_TEXT } from '../../data/pageText/pageFrame'
 import { breadcrumbLd, type BreadcrumbItem } from '../../lib/structuredData'
 import { JsonLd } from '../seo/JsonLd'
 import { Container } from './primitives'
@@ -27,12 +28,12 @@ function crumbTrail(items: readonly Crumb[], pathname: string, current?: string)
 export function Breadcrumb({ items, current }: { items: readonly Crumb[]; current?: string }) {
   const { pathname } = useLocation()
   return (
-    <nav aria-label="Đường dẫn" className="text-sm text-ink-soft">
+    <nav aria-label={PAGE_FRAME_TEXT.duongDanNhan} className="text-sm text-ink-soft">
       <JsonLd data={breadcrumbLd(crumbTrail(items, pathname, current))} />
       <ol className="flex flex-wrap items-center gap-2">
         <li>
           <Link to="/" className="-my-3 inline-block py-3 hover:text-deep-900">
-            Trang chủ
+            {PAGE_FRAME_TEXT.trangChu}
           </Link>
         </li>
         {items.map((item) => (

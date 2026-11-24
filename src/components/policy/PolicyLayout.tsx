@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { POLICY_NAV } from '../../data/policyNav'
+import { POLICY_NAV, POLICY_NAV_TEXT } from '../../data/policyNav'
 import { relatedForPolicy } from '../../data/related'
 import { ExploreMore } from '../ui/ExploreMore'
 import { PageHero } from '../ui/PageHero'
@@ -20,14 +20,14 @@ export function PolicyLayout({ title, intro, meta, children }: PolicyLayoutProps
   const { pathname } = useLocation()
   return (
     <div className="pb-24">
-      <PageHero crumbs={[{ label: 'Chính sách' }, { label: title }]} eyebrow={COMMON_TEXT.chinhSachNhan} title={title} lead={intro}>
+      <PageHero crumbs={[{ label: POLICY_NAV_TEXT.duongDan }, { label: title }]} eyebrow={COMMON_TEXT.chinhSachNhan} title={title} lead={intro}>
         {meta}
       </PageHero>
 
       <Container className="mt-10 grid gap-10 sm:mt-14 lg:grid-cols-12 lg:gap-14">
         <aside className="min-w-0 lg:col-span-3">
-          <nav aria-label="Các chính sách" className="lg:sticky lg:top-28">
-            <p className="eyebrow hidden lg:block">Các chính sách</p>
+          <nav aria-label={POLICY_NAV_TEXT.tieuDeMenu} className="lg:sticky lg:top-28">
+            <p className="eyebrow hidden lg:block">{POLICY_NAV_TEXT.tieuDeMenu}</p>
             <ul className="m-rail -mx-5 flex gap-2 overflow-x-auto px-5 pb-1 sm:-mx-8 sm:px-8 lg:mx-0 lg:mt-5 lg:flex-col lg:gap-1 lg:overflow-visible lg:px-0">
               {POLICY_NAV.map((item) => (
                 <li key={item.to} className="shrink-0">

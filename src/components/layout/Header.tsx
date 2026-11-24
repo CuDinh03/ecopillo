@@ -1,58 +1,28 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { CONTACT } from '../../data/brand'
 import { PATHS, withSlash } from '../../data/links'
+import { HEADER_TEXT } from '../../data/pageText/header'
+import { isProductMenuItem, menuKey, SHOWN_MENU } from '../../data/pageText/mainMenu'
+import { SEARCH_TEXT } from '../../data/pageText/search'
 import { POLICY_ALIASES, POLICY_PAGES } from '../../data/policyNav'
 import { Icon, ZaloMark } from '../ui/Icon'
 import { buttonClass, Container } from '../ui/primitives'
 import { SocialIcons } from '../home/SocialLinks'
 import { Logo } from './Logo'
+import { MenuLink } from './MenuLink'
 import { NavMoreMenu } from './NavMoreMenu'
 import { DesktopProductMenu, MobileProductMenu } from './ProductMenu'
 import { SiteSearch } from './SiteSearch'
 
-interface NavItem {
-  href: string
-  label: string
-}
-
 /**
- * Biên bản chốt mục 48: Showroom đổi thành Hệ thống phân phối.
- * Góp ý 04/11/2026 mục 3, 13 (owner chọn B + X1 ngày 05/11/2026):
- * "Sản phẩm" mở ô xổ năm nhóm (ProductMenu.tsx); bỏ mục "Thêm", thay bằng link "Đăng ký đại lý".
- * Phản hồi 05/11 mục 9 (phương án A, docs/de-xuat-menu-lien-he-05-11.html):
- * thanh chỉ còn "Liên hệ mua hàng" (= /lien-he/) và "Đăng ký đại lý"; bỏ "Hệ thống phân phối"
- * khỏi thanh (điểm bán gộp vào trang Liên hệ, 301 /he-thong-phan-phoi/ → /lien-he/#diem-ban).
- * Tin tức, Quà tặng, Hỏi đáp rời thanh máy tính (05/11), owner đưa trở lại ngày 19/11/2026 (EXTRA_ITEMS bên dưới).
- * [XÁC NHẬN "Khách sạn & dự án" vẫn trên thanh] — giữ vì bán B2B, không phải liên hệ mua lẻ.
+ * Các mục menu Ecopillo tự sửa (Giao diện → Menu chính, src/data/pageText/mainMenu.ts; lịch sử quyết định ghi ở đó).
+ * Thanh máy tính: mục "luôn trên thanh" và mục "gom vào nút Thêm" theo thứ tự Ecopillo xếp. Mục "gom" nằm thẳng trên thanh
+ * từ 1280px; 1024–1279px không đủ chỗ (đo 19/11/2026: thiếu 42px khi có nút kính lúp) nên vào nút "Thêm" (NavMoreMenu.tsx).
  */
-export const NAV_ITEMS: readonly NavItem[] = [
-  { href: PATHS.products, label: 'Sản phẩm' },
-  // Tên ngắn cho vừa thanh ở 1024px (05/11/2026); link /gioi-thieu/ giữ nguyên
-  { href: PATHS.about, label: 'Giới thiệu' },
-  // Owner đổi tên 15/10/2026: "Khách sạn" → "Khách sạn và dự án"; viết "&" cho gọn thanh (05/11/2026)
-  { href: PATHS.hotel, label: 'Khách sạn & dự án' },
-  // Mục 9 phản hồi 05/11: gộp Hệ thống phân phối + Liên hệ thành "Liên hệ mua hàng"
-  { href: PATHS.contact, label: 'Liên hệ mua hàng' },
-  { href: PATHS.recruit, label: 'Đăng ký mở đại lý' },
-  // Khách yêu cầu 16/10/2026: "Quà tặng" thành "Quà tặng và sự kiện" (link giữ /qua-tang/)
-  { href: PATHS.gifts, label: 'Quà tặng và sự kiện' },
-  { href: PATHS.blog, label: 'Tin tức' },
-  { href: PATHS.faq, label: 'Hỏi đáp' },
-]
-
-const itemsOf = (hrefs: readonly string[]): NavItem[] => hrefs.flatMap((href) => NAV_ITEMS.filter((item) => item.href === href))
-
-/** Thanh menu máy tính, sau nút "Sản phẩm" */
-const BAR_ITEMS = itemsOf([PATHS.about, PATHS.hotel, PATHS.contact])
-
-/**
- * Owner 19/11/2026 (ảnh cột "Khám phá" ở chân trang: "tích hợp phần này thêm ở thanh phía trên"): ba mục rời thanh từ 05/11
- * trở lại thanh máy tính. Từ 1280px nằm thẳng trên thanh; 1024–1279px không đủ chỗ nên gom vào nút "Thêm" (NavMoreMenu.tsx),
- * kèm "Đăng ký mở đại lý" từ khi thanh có nút kính lúp (cùng ngày, đo: thiếu 42px ở 1024px).
- */
-const EXTRA_ITEMS = itemsOf([PATHS.recruit, PATHS.gifts, PATHS.blog, PATHS.faq])
+const BAR_ITEMS = SHOWN_MENU
+const MORE_ITEMS = SHOWN_MENU.filter((item) => item.cho === 'them')
 
 /**
  * Mục 10 (khách 16/10/2026: chữ menu "nhạt lắm k rõ"), owner chọn kiểu A 17/10: chữ đủ màu chàm, nét 500, không thêm nền.
@@ -72,8 +42,9 @@ const navClass = (active: boolean) => `${NAV_LINK} ${active ? NAV_ACTIVE : ''}`
 function useActiveHref(): string | null {
   const { pathname } = useLocation()
   const path = withSlash(pathname)
-  const page = NAV_ITEMS.find((i) => path.startsWith(i.href))
-  if (page) return page.href
+  // Chỉ so mục trỏ trong web; bỏ trang chủ (mọi đường dẫn đều bắt đầu bằng "/")
+  const page = SHOWN_MENU.map((i) => menuKey(i.link)).find((key) => key !== '/' && key.startsWith('/') && path.startsWith(key))
+  if (page) return page
   // Bộ sưu tập, danh mục nhỏ và trang từng sản phẩm của web cũ nằm dưới mục Sản phẩm
   if (path.startsWith('/danh-muc-san-pham/') || path.startsWith('/san-pham/')) return PATHS.products
   // Các trang chính sách nằm dưới mục Hỏi đáp
@@ -168,29 +139,31 @@ export function Header() {
         {/* Logo luôn hiện, cả ở trang chủ (banner 16/11/2026 không còn cụm chữ ECOPILLO lớn như A2 02/11) */}
         <Logo />
 
-        <nav aria-label="Điều hướng chính" className="hidden lg:block">
+        <nav aria-label={HEADER_TEXT.dieuHuong} className="hidden lg:block">
           <ul className="flex items-center gap-0.5 xl:gap-0 2xl:gap-0.5">
-            <DesktopProductMenu
-              label={NAV_ITEMS[0].label}
-              isOpen={isProductMenuOpen}
-              onOpenChange={setIsProductMenuOpen}
-              buttonClass={navClass(activeHref === PATHS.products)}
-            />
-            {BAR_ITEMS.map((item) => (
-              <li key={item.href}>
-                <Link to={item.href} className={navClass(item.href === activeHref)} aria-current={item.href === activeHref ? 'page' : undefined}>
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-            {EXTRA_ITEMS.map((item) => (
-              <li key={item.href} className="hidden xl:block">
-                <Link to={item.href} className={navClass(item.href === activeHref)} aria-current={item.href === activeHref ? 'page' : undefined}>
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-            <NavMoreMenu items={EXTRA_ITEMS} activeHref={activeHref} buttonClass={navClass(false)} />
+            {BAR_ITEMS.map((item, index) => {
+              const key = menuKey(item.link)
+              const isActive = key === activeHref
+              // Mục "gom vào nút Thêm": thẳng trên thanh từ 1280px
+              const place = item.cho === 'them' ? 'hidden xl:block' : undefined
+              return isProductMenuItem(item) ? (
+                <DesktopProductMenu
+                  key={`${index}-${key}`}
+                  label={item.ten}
+                  className={place}
+                  isOpen={isProductMenuOpen}
+                  onOpenChange={setIsProductMenuOpen}
+                  buttonClass={navClass(isActive)}
+                />
+              ) : (
+                <li key={`${index}-${key}`} className={place}>
+                  <MenuLink href={item.link} className={navClass(isActive)} aria-current={isActive ? 'page' : undefined}>
+                    {item.ten}
+                  </MenuLink>
+                </li>
+              )
+            })}
+            <NavMoreMenu items={MORE_ITEMS} activeHref={activeHref} buttonClass={navClass(false)} />
           </ul>
         </nav>
 
@@ -210,15 +183,15 @@ export function Header() {
           </a>
           {/* Điện thoại đã có nút Đặt hàng ở thanh dưới */}
           <span className="hidden sm:block">
-            <NavLink to={PATHS.order} className={buttonClass('primary', 'sm')}>
-              Đặt hàng
-            </NavLink>
+            <MenuLink href={HEADER_TEXT.datHangLink} isNav className={buttonClass('primary', 'sm')}>
+              {HEADER_TEXT.datHang}
+            </MenuLink>
           </span>
           {/* Thanh tìm kiếm, phương án B (19/11/2026): luôn hiện; điện thoại cạnh nút menu, máy tính đứng đầu nhóm nút bên phải */}
           <button
             ref={searchButtonRef}
             type="button"
-            aria-label="Mở ô tìm"
+            aria-label={HEADER_TEXT.moTim}
             aria-haspopup="dialog"
             aria-expanded={searchTop !== null}
             onClick={openSearch}
@@ -232,7 +205,7 @@ export function Header() {
             className="inline-flex h-11 w-11 items-center justify-center rounded-full text-deep-900 transition-colors hover:bg-mist-100 lg:hidden"
             aria-expanded={isMenuOpen}
             aria-controls="mobile-menu"
-            aria-label={isMenuOpen ? 'Đóng menu' : 'Mở menu'}
+            aria-label={isMenuOpen ? HEADER_TEXT.dongMenu : HEADER_TEXT.moMenu}
             onClick={() => setIsMenuOpen((open) => !open)}
           >
             <Icon name={isMenuOpen ? 'close' : 'menu'} size={22} />
@@ -257,28 +230,29 @@ export function Header() {
                 className="mb-2 flex h-12 w-full items-center gap-2.5 rounded-full bg-ivory px-4 text-left text-base text-ink-faint shadow-[var(--shadow-soft)]"
               >
                 <Icon name="search" size={19} className="text-deep-900" />
-                Quý khách muốn tìm sản phẩm gì?
+                {SEARCH_TEXT.oTim}
               </button>
-              <nav aria-label="Menu di động">
+              <nav aria-label={HEADER_TEXT.menuDiDong}>
                 <ul className="divide-y divide-ivory">
-                  {NAV_ITEMS.map((item, index) => {
+                  {SHOWN_MENU.map((item, index) => {
                     const number = String(index + 1).padStart(2, '0')
-                    const isActive = item.href === activeHref
+                    const key = menuKey(item.link)
+                    const isActive = key === activeHref
                     return (
-                      <li key={item.href}>
-                        {item.href === PATHS.products ? (
-                          <MobileProductMenu label={item.label} number={number} isActive={isActive} onNavigate={() => setIsMenuOpen(false)} />
+                      <li key={`${index}-${key}`}>
+                        {isProductMenuItem(item) ? (
+                          <MobileProductMenu label={item.ten} number={number} isActive={isActive} onNavigate={() => setIsMenuOpen(false)} />
                         ) : (
-                          <Link
-                            to={item.href}
+                          <MenuLink
+                            href={item.link}
                             aria-current={isActive ? 'page' : undefined}
                             className={`flex items-baseline gap-4 py-4 ${isActive ? 'text-mist-600' : 'text-deep-900'}`}
                             onClick={() => setIsMenuOpen(false)}
                           >
                             <span className="tabular text-xs text-ink-faint">{number}</span>
-                            <span className="font-display text-[1.6rem]">{item.label}</span>
+                            <span className="font-display text-[1.6rem]">{item.ten}</span>
                             {isActive && <span className="ml-auto h-2 w-2 self-center rounded-full bg-mist-600" />}
-                          </Link>
+                          </MenuLink>
                         )}
                       </li>
                     )
@@ -286,20 +260,20 @@ export function Header() {
                 </ul>
               </nav>
               <div className="mt-auto space-y-3 pt-8 pb-[max(2.5rem,env(safe-area-inset-bottom))]">
-                <Link to={PATHS.order} className={buttonClass('primary', 'lg', 'w-full')} onClick={() => setIsMenuOpen(false)}>
-                  Đặt hàng online
+                <MenuLink href={HEADER_TEXT.datHangLink} className={buttonClass('primary', 'lg', 'w-full')} onClick={() => setIsMenuOpen(false)}>
+                  {HEADER_TEXT.datHangOnline}
                   <Icon name="arrowRight" size={18} />
-                </Link>
+                </MenuLink>
                 <div className="grid grid-cols-2 gap-3">
                   <a href={CONTACT.hotlineTel} className={buttonClass('secondary', 'md')}>
-                    <Icon name="phone" size={17} className="text-call" /> Gọi ngay
+                    <Icon name="phone" size={17} className="text-call" /> {HEADER_TEXT.goiNgay}
                   </a>
                   <a href={CONTACT.zaloUrl} target="_blank" rel="noopener noreferrer" className={buttonClass('secondary', 'md')}>
-                    <ZaloMark /> Nhắn Zalo
+                    <ZaloMark /> {HEADER_TEXT.nhanZalo}
                   </a>
                 </div>
                 <p className="text-center text-sm text-ink-soft">
-                  Hotline / Zalo <span className="tabular font-medium text-deep-900">{CONTACT.hotlineDisplay}</span>
+                  {HEADER_TEXT.hotlineZalo} <span className="tabular font-medium text-deep-900">{CONTACT.hotlineDisplay}</span>
                 </p>
                 <div className="flex justify-center pt-2">
                   <SocialIcons />

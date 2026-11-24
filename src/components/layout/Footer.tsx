@@ -1,14 +1,14 @@
 import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { BRAND, CONTACT, OPENING_HOURS, SHOWROOMS } from '../../data/brand'
+import { CONTACT, OPENING_HOURS, SHOWROOMS } from '../../data/brand'
 import { Icon } from '../ui/Icon'
 import { Container } from '../ui/primitives'
-import { NAV_ITEMS } from './Header'
 import { POLICY_NAV } from '../../data/policyNav'
-import { PATHS } from '../../data/links'
-import { NEAR_ME_URL } from '../../data/dealers'
+import { chen } from '../../data/pageText/define'
+import { SHOWN_MENU } from '../../data/pageText/mainMenu'
 import { SocialIcons } from '../home/SocialLinks'
 import { Logo } from './Logo'
+import { MenuLink } from './MenuLink'
 import { FOOTER_TEXT } from '../../data/pageText/footer'
 import { useHydrated } from '../../hooks/useHydratedSearchParams'
 
@@ -78,20 +78,20 @@ export function Footer() {
             <Logo className="h-14" />
             {/* Một màu chàm, đậm (chị Phương 09/11/2026: "in đậm chỗ này, chữ về 1 màu"; trước có chữ đỏ) */}
             <p className="mt-6 max-w-xs text-sm leading-relaxed font-semibold text-deep-900">
-              {BRAND.company}. {FOOTER_TEXT.gioiThieu}
+              {FOOTER_TEXT.congTy}. {FOOTER_TEXT.gioiThieu}
             </p>
             {/* Điện thoại: hotline và nhắn tin luôn hiện, không nằm trong nhóm gập (D2, 08/11/2026) */}
             <ul className="mt-4 text-sm sm:hidden">
               <li>
                 <a href={CONTACT.hotlineTel} className={CONTACT_LINK}>
                   <Icon name="phone" size={16} /> <span className="tabular">{CONTACT.hotlineDisplay}</span>
-                  <span className="text-ink-faint">· có Zalo</span>
+                  <span className="text-ink-faint">{FOOTER_TEXT.coZalo}</span>
                 </a>
               </li>
               <li>
-                <Link to={PATHS.contact} className={MESSAGE_LINK}>
-                  <Icon name="mail" size={16} /> Gửi tin nhắn cho Ecopillo
-                </Link>
+                <MenuLink href={FOOTER_TEXT.guiTinLink} className={MESSAGE_LINK}>
+                  <Icon name="mail" size={16} /> {FOOTER_TEXT.guiTin}
+                </MenuLink>
               </li>
             </ul>
             {/* Bỏ dòng "Tốt · Thật · Thiện" ở chân trang (chị Phương 18/11/2026: "Bỏ cái này cuối trang") */}
@@ -100,22 +100,23 @@ export function Footer() {
             </div>
           </div>
 
-          <FooterGroup id="kham-pha" title="Khám phá" listClassName={LINK_LIST}>
-            {NAV_ITEMS.map((item) => (
-              <li key={item.href}>
-                <Link to={item.href} className={LIST_LINK}>
-                  {item.label}
-                </Link>
+          {/* Các mục menu chính đang hiện (Giao diện → Menu chính, cùng thứ tự với thanh đầu trang) */}
+          <FooterGroup id="kham-pha" title={FOOTER_TEXT.cotKhamPha} listClassName={LINK_LIST}>
+            {SHOWN_MENU.map((item, index) => (
+              <li key={`${index}-${item.link}`}>
+                <MenuLink href={item.link} className={LIST_LINK}>
+                  {item.ten}
+                </MenuLink>
               </li>
             ))}
             <li>
-              <Link to={PATHS.order} className={LIST_LINK}>
-                Đặt hàng online
-              </Link>
+              <MenuLink href={FOOTER_TEXT.datHangLink} className={LIST_LINK}>
+                {FOOTER_TEXT.datHang}
+              </MenuLink>
             </li>
           </FooterGroup>
 
-          <FooterGroup id="chinh-sach" title="Chính sách" listClassName={LINK_LIST}>
+          <FooterGroup id="chinh-sach" title={FOOTER_TEXT.cotChinhSach} listClassName={LINK_LIST}>
             {POLICY_NAV.map((item) => (
               <li key={item.to}>
                 <Link to={item.to} className={LIST_LINK}>
@@ -125,18 +126,18 @@ export function Footer() {
             ))}
           </FooterGroup>
 
-          <FooterGroup id="lien-he" title="Liên hệ" listClassName="text-sm max-sm:pb-3 sm:mt-5 sm:space-y-3">
+          <FooterGroup id="lien-he" title={FOOTER_TEXT.cotLienHe} listClassName="text-sm max-sm:pb-3 sm:mt-5 sm:space-y-3">
             {/* Hotline và "Gửi tin nhắn" trên điện thoại đã hiện ở cột đầu */}
             <li className="max-sm:hidden">
               <a href={CONTACT.hotlineTel} className={CONTACT_LINK}>
                 <Icon name="phone" size={16} /> <span className="tabular">{CONTACT.hotlineDisplay}</span>
-                <span className="text-ink-faint">· có Zalo</span>
+                <span className="text-ink-faint">{FOOTER_TEXT.coZalo}</span>
               </a>
             </li>
             <li>
               <a href={CONTACT.phoneTel} className={CONTACT_LINK}>
                 <Icon name="phone" size={16} /> <span className="tabular">{CONTACT.phoneDisplay}</span>
-                <span className="text-ink-faint">· điện thoại</span>
+                <span className="text-ink-faint">{FOOTER_TEXT.dienThoai}</span>
               </a>
             </li>
             <li>
@@ -151,18 +152,19 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className={CONTACT_LINK}
               >
-                <Icon name="facebook" size={16} /> Fanpage Ecopillo.com.vn
+                {/* Tên fanpage sửa ở Thông tin chung → Liên hệ (trước 24/11/2026 chữ viết cứng ở đây, sửa ở đó không đổi) */}
+                <Icon name="facebook" size={16} /> {CONTACT.fanpageDisplay}
               </a>
             </li>
             <li className="max-sm:hidden">
-              <Link to={PATHS.contact} className={MESSAGE_LINK}>
-                <Icon name="mail" size={16} /> Gửi tin nhắn cho Ecopillo
-              </Link>
+              <MenuLink href={FOOTER_TEXT.guiTinLink} className={MESSAGE_LINK}>
+                <Icon name="mail" size={16} /> {FOOTER_TEXT.guiTin}
+              </MenuLink>
             </li>
           </FooterGroup>
 
           {/* Mục 9 phản hồi 05/11: điểm bán gộp vào Liên hệ mua hàng; nhãn chân trang đổi theo */}
-          <FooterGroup id="diem-ban" title="Điểm bán" listClassName="space-y-4 text-sm max-sm:pb-5 sm:mt-5">
+          <FooterGroup id="diem-ban" title={FOOTER_TEXT.cotDiemBan} listClassName="space-y-4 text-sm max-sm:pb-5 sm:mt-5">
             {SHOWROOMS.map((s) => (
               <li key={s.id} className="flex gap-2.5">
                 <Icon name="pin" size={16} className="mt-1 shrink-0" />
@@ -176,12 +178,12 @@ export function Footer() {
             ))}
             <li className="flex gap-2.5">
               <Icon name="clock" size={16} className="mt-1 shrink-0" />
-              <span>Mở cửa {OPENING_HOURS}</span>
+              <span>{chen(FOOTER_TEXT.moCua, { gio: OPENING_HOURS })}</span>
             </li>
             <li>
-              <Link to={NEAR_ME_URL} className="-my-2 inline-flex items-center gap-1.5 py-2 font-medium text-deep-900 underline-offset-2 hover:underline">
-                <Icon name="locate" size={14} /> Tìm đại lý gần Quý khách
-              </Link>
+              <MenuLink href={FOOTER_TEXT.timDaiLyLink} className="-my-2 inline-flex items-center gap-1.5 py-2 font-medium text-deep-900 underline-offset-2 hover:underline">
+                <Icon name="locate" size={14} /> {FOOTER_TEXT.timDaiLy}
+              </MenuLink>
             </li>
           </FooterGroup>
         </div>
@@ -189,13 +191,13 @@ export function Footer() {
         <div className="mt-16 flex flex-col gap-6 border-t border-line pt-8 text-xs text-ink-faint md:flex-row md:items-center md:justify-between">
           <div className="space-y-1.5">
             <p>
-              © {year} {BRAND.company}. {FOOTER_TEXT.chungNhan}
+              © {year} {FOOTER_TEXT.congTy}. {FOOTER_TEXT.chungNhan}
             </p>
             <p>{FOOTER_TEXT.camKet}</p>
             <p>
-              <Link to={PATHS.privacy} className="-my-2.5 inline-block py-2.5 underline underline-offset-2 hover:text-deep-900">
-                Chính sách bảo vệ thông tin cá nhân
-              </Link>
+              <MenuLink href={FOOTER_TEXT.baoMatLink} className="-my-2.5 inline-block py-2.5 underline underline-offset-2 hover:text-deep-900">
+                {FOOTER_TEXT.baoMat}
+              </MenuLink>
             </p>
           </div>
           <a
@@ -203,7 +205,7 @@ export function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex shrink-0 self-start rounded-lg bg-white p-1.5 transition hover:opacity-90 md:self-auto"
-            aria-label="Website đã thông báo Bộ Công Thương"
+            aria-label={FOOTER_TEXT.boCongThuongNhan}
           >
             <img
               src={FOOTER_TEXT.anhBoCongThuong.src}

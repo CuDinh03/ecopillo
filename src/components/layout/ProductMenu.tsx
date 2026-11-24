@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Link } from 'react-router-dom'
-import { PRODUCT_MENU, PRODUCT_MENU_ALL, PRODUCT_MENU_GIFTS, type MenuGroup, type MenuRow } from '../../data/productMenu'
+import { chen } from '../../data/pageText/define'
+import { PRODUCT_MENU, PRODUCT_MENU_ALL, PRODUCT_MENU_GIFTS, PRODUCT_MENU_LABELS, type MenuGroup, type MenuRow } from '../../data/productMenu'
 import { formatVND } from '../../lib/format'
 import { Icon } from '../ui/Icon'
 import { Container } from '../ui/primitives'
 import { Placeholder } from '../ui/Placeholder'
+import { MenuLink } from './MenuLink'
 
 /**
  * Menu "Sản phẩm" xổ ra (góp ý 04/11/2026 mục 3, 13; owner chọn phương án B ngày 05/11/2026).
@@ -16,21 +17,26 @@ import { Placeholder } from '../ui/Placeholder'
 
 const PANEL_ID = 'product-menu'
 
+/** "từ 1.200.000đ" (chữ "từ" Ecopillo sửa ở Nội dung web) */
+const fromPrice = (min: number): string => `${PRODUCT_MENU_LABELS.from} ${formatVND(min)}`
+
 /** Giá trên một dòng: chữ sẵn (giá liên hệ…), "từ …", hoặc số cố định */
 const rowPrice = (row: MenuRow): string => {
   if (row.priceLabel) return row.priceLabel
-  return row.isFromPrice ? `từ ${formatVND(row.min)}` : formatVND(row.min)
+  return row.isFromPrice ? fromPrice(row.min) : formatVND(row.min)
 }
 
 interface DesktopProductMenuProps {
   label: string
+  /** Lớp của mục trên thanh (mục "gom vào nút Thêm" chỉ hiện từ 1280px) */
+  className?: string
   isOpen: boolean
   onOpenChange: (isOpen: boolean) => void
   /** Lớp chữ của mục menu (NAV_LINK, NAV_ACTIVE trong Header.tsx) */
   buttonClass: string
 }
 
-export function DesktopProductMenu({ label, isOpen, onOpenChange, buttonClass }: DesktopProductMenuProps) {
+export function DesktopProductMenu({ label, className, isOpen, onOpenChange, buttonClass }: DesktopProductMenuProps) {
   const ref = useRef<HTMLLIElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
@@ -59,7 +65,7 @@ export function DesktopProductMenu({ label, isOpen, onOpenChange, buttonClass }:
 
   return (
     // Không đặt `relative` ở đây: ô xổ bám theo <header> (sticky) để rộng bằng khung trang
-    <li ref={ref}>
+    <li ref={ref} className={className}>
       <button
         ref={buttonRef}
         type="button"
@@ -88,19 +94,19 @@ export function DesktopProductMenu({ label, isOpen, onOpenChange, buttonClass }:
                   ))}
                 </ul>
                 <div className="mt-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-line pt-4 text-small">
-                  <Link
-                    to={PRODUCT_MENU_ALL.to}
+                  <MenuLink
+                    href={PRODUCT_MENU_ALL.to}
                     onClick={close}
                     className="inline-flex items-center gap-1.5 font-semibold text-mist-600 underline-offset-4 hover:underline"
                   >
                     {PRODUCT_MENU_ALL.label}
                     <Icon name="arrowRight" size={16} />
-                  </Link>
+                  </MenuLink>
                   <p className="text-ink-soft">
                     {PRODUCT_MENU_GIFTS.lead}{' '}
-                    <Link to={PRODUCT_MENU_GIFTS.to} onClick={close} className="font-semibold text-mist-600 underline-offset-4 hover:underline">
+                    <MenuLink href={PRODUCT_MENU_GIFTS.to} onClick={close} className="font-semibold text-mist-600 underline-offset-4 hover:underline">
                       {PRODUCT_MENU_GIFTS.label}
-                    </Link>
+                    </MenuLink>
                   </p>
                 </div>
               </div>
@@ -118,14 +124,14 @@ export function DesktopProductMenu({ label, isOpen, onOpenChange, buttonClass }:
 function DesktopRow({ row, onNavigate }: { row: MenuRow; onNavigate: () => void }) {
   return (
     <li>
-      <Link
-        to={row.to}
+      <MenuLink
+        href={row.to}
         onClick={onNavigate}
         className="-mx-2 flex flex-wrap items-baseline justify-between gap-x-2 rounded-lg px-2 py-1.5 text-small text-deep-900 transition-colors hover:bg-mist-100"
       >
         <span>{row.label}</span>
         <span className="tabular text-xs whitespace-nowrap text-ink-faint">{rowPrice(row)}</span>
-      </Link>
+      </MenuLink>
     </li>
   )
 }
@@ -133,7 +139,7 @@ function DesktopRow({ row, onNavigate }: { row: MenuRow; onNavigate: () => void 
 function DesktopGroup({ group, onNavigate }: { group: MenuGroup; onNavigate: () => void }) {
   return (
     <>
-      <Link to={group.to} onClick={onNavigate} tabIndex={-1} aria-hidden className="group block overflow-hidden rounded-2xl">
+      <MenuLink href={group.to} onClick={onNavigate} tabIndex={-1} aria-hidden className="group block overflow-hidden rounded-2xl">
         <Placeholder
           image={{ ...group.image, alt: '' }}
           note={group.title}
@@ -141,11 +147,11 @@ function DesktopGroup({ group, onNavigate }: { group: MenuGroup; onNavigate: () 
           sizes="(min-width: 1240px) 220px, 18vw"
           className="aspect-[16/10] w-full transition-transform duration-500 ease-[var(--ease-soft)] group-hover:scale-[1.04]"
         />
-      </Link>
+      </MenuLink>
       <h3 className="mt-3 mb-1.5 font-display text-[1.06rem] leading-tight font-semibold text-deep-900">
-        <Link to={group.to} onClick={onNavigate} className="hover:text-mist-600">
+        <MenuLink href={group.to} onClick={onNavigate} className="hover:text-mist-600">
           {group.title}
-        </Link>
+        </MenuLink>
       </h3>
       {group.sections?.length ? (
         <div className="grid gap-3">
@@ -219,14 +225,14 @@ export function MobileProductMenu({ label, number, isActive, onNavigate }: Mobil
               onNavigate={onNavigate}
             />
           ))}
-          <Link
-            to={PRODUCT_MENU_ALL.to}
+          <MenuLink
+            href={PRODUCT_MENU_ALL.to}
             onClick={onNavigate}
             className="inline-flex items-center justify-center gap-1.5 py-3 text-small font-semibold text-mist-600"
           >
             {PRODUCT_MENU_ALL.label}
             <Icon name="arrowRight" size={16} />
-          </Link>
+          </MenuLink>
         </div>
       )}
     </>
@@ -273,7 +279,7 @@ function MobileGroup({ group, isOpen, onToggle, onNavigate }: MobileGroupProps) 
   // Nhóm có trang riêng mà chưa dòng nào trỏ tới: thêm link xem cả nhóm
   const hasOwnPage = !flatRows.some((row) => row.to === group.to)
   const groupPrice =
-    group.min > 0 ? `từ ${formatVND(group.min)}` : flatRows.find((r) => r.priceLabel)?.priceLabel ?? ''
+    group.min > 0 ? fromPrice(group.min) : flatRows.find((r) => r.priceLabel)?.priceLabel ?? ''
   const headClass = 'grid w-full grid-cols-[3rem_1fr_auto] items-center gap-3 py-2 pr-3 pl-2 text-left'
   const head = (
     <>
@@ -295,10 +301,10 @@ function MobileGroup({ group, isOpen, onToggle, onNavigate }: MobileGroupProps) 
    */
   if (flatRows.length === 1) {
     return (
-      <Link to={flatRows[0].to} onClick={onNavigate} className={`rounded-2xl bg-ivory shadow-[var(--shadow-soft)] ${headClass}`}>
+      <MenuLink href={flatRows[0].to} onClick={onNavigate} className={`rounded-2xl bg-ivory shadow-[var(--shadow-soft)] ${headClass}`}>
         {head}
         <Icon name="arrowRight" size={20} className="text-mist-600" />
-      </Link>
+      </MenuLink>
     )
   }
 
@@ -318,10 +324,10 @@ function MobileGroup({ group, isOpen, onToggle, onNavigate }: MobileGroupProps) 
                 <ul>
                   {section.rows.map((row) => (
                     <li key={`${section.title}-${row.to}-${row.label}`} className="border-t border-line first:border-t-0">
-                      <Link to={row.to} onClick={onNavigate} className="flex items-baseline justify-between gap-2 py-2.5 text-small text-deep-900">
+                      <MenuLink href={row.to} onClick={onNavigate} className="flex items-baseline justify-between gap-2 py-2.5 text-small text-deep-900">
                         <span className="min-w-0">{row.label}</span>
                         <span className="tabular text-xs whitespace-nowrap text-ink-faint">{rowPrice(row)}</span>
-                      </Link>
+                      </MenuLink>
                     </li>
                   ))}
                 </ul>
@@ -331,20 +337,20 @@ function MobileGroup({ group, isOpen, onToggle, onNavigate }: MobileGroupProps) 
             <ul>
               {group.rows.map((row) => (
                 <li key={`${row.to}-${row.label}`} className="border-t border-line">
-                  <Link to={row.to} onClick={onNavigate} className="flex items-baseline justify-between gap-2 py-2.5 text-small text-deep-900">
+                  <MenuLink href={row.to} onClick={onNavigate} className="flex items-baseline justify-between gap-2 py-2.5 text-small text-deep-900">
                     <span className="min-w-0">{row.label}</span>
                     <span className="tabular text-xs whitespace-nowrap text-ink-faint">{rowPrice(row)}</span>
-                  </Link>
+                  </MenuLink>
                 </li>
               ))}
             </ul>
           )}
           {hasOwnPage && (
             <div className="border-t border-line">
-              <Link to={group.to} onClick={onNavigate} className="flex items-center gap-1.5 py-2.5 text-small font-semibold text-mist-600">
-                Xem cả nhóm {group.title}
+              <MenuLink href={group.to} onClick={onNavigate} className="flex items-center gap-1.5 py-2.5 text-small font-semibold text-mist-600">
+                {chen(PRODUCT_MENU_LABELS.seeGroup, { nhom: group.title })}
                 <Icon name="arrowRight" size={15} />
-              </Link>
+              </MenuLink>
             </div>
           )}
         </div>
