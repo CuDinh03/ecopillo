@@ -52,12 +52,18 @@ function eco_tw_write_sitemap()
         return;
     }
     $hidden = eco_tw_hidden_map();
+    // Trang Ecopillo đặt ẩn khỏi Google (SEO từng trang, Yoast; 25/11/2026): không ghi vào sơ đồ
+    foreach (eco_tw_seo_map() as $path => $item) {
+        if (!empty($item['anGoogle'])) {
+            $hidden[$path] = true;
+        }
+    }
     // Trang Ecopillo đã đổi link: sơ đồ ghi link mới (giữ ngày sửa của trang)
     $aliases = eco_tw_aliases();
     $urls = array();
     foreach ($m as $row) {
         $path = (string) parse_url(html_entity_decode($row[1]), PHP_URL_PATH);
-        if ($path !== '' && !isset($hidden[$path])) {
+        if ($path !== '' && !isset($hidden[$path]) && !(isset($aliases[$path]) && isset($hidden[$aliases[$path]]))) {
             $urls[isset($aliases[$path]) ? $aliases[$path] : $path] = isset($row[2]) ? $row[2] : '';
         }
     }
@@ -129,6 +135,12 @@ function eco_tw_seo_map($fresh = false)
     foreach (eco_tw_code_posts()['seo'] as $path => $item) {
         $map[$path] = array_merge(isset($map[$path]) ? $map[$path] : array(), $item);
     }
+    // Khung Yoast SEO của bài, trang, sản phẩm (seo-yoast.php, lưu lúc ghi dữ liệu); danh mục đứng trên như du-lieu.js
+    foreach (function_exists('eco_sy_saved') ? eco_sy_saved() : array() as $path => $item) {
+        if (eco_tw_is_path((string) $path) && is_array($item)) {
+            $map[$path] = array_merge($item, isset($map[$path]) ? $map[$path] : array());
+        }
+    }
     $saved = function_exists('eco_nd_saved') ? eco_nd_saved('seo-tung-trang') : null;
     foreach ($saved && is_array($saved['giaTri']) ? $saved['giaTri'] : array() as $row) {
         $path = isset($row['duongDan']) ? strtolower(trailingslashit(trim((string) $row['duongDan']))) : '';
@@ -148,16 +160,33 @@ function eco_tw_seo_map($fresh = false)
         if ($image !== '') {
             $item['anh'] = $image;
         }
+        // Ô "Hiện trên Google" (25/11/2026): "an" ẩn, "hien" hiện kể cả khi Yoast đặt ẩn, "mac-dinh" / trống theo Yoast
+        $google = isset($row['google']) ? (string) $row['google'] : '';
+        if ($google === 'an') {
+            $item['anGoogle'] = true;
+        } elseif ($google === 'hien') {
+            unset($item['anGoogle']);
+        }
         if ($item) {
             $map[$path] = $item;
+        } else {
+            unset($map[$path]);
         }
     }
     return $map;
 }
 
-/** Ghi tiêu đề, mô tả, ảnh chia sẻ vào HTML (cùng cách tools/dung-san-html.mjs ghi lúc dựng); chữ đã thoát */
-function eco_tw_head($html, $title, $desc, $image = '')
+/**
+ * Ghi tiêu đề, mô tả, ảnh chia sẻ vào HTML (cùng cách tools/dung-san-html.mjs ghi lúc dựng); chữ đã thoát.
+ * $noindex: trang Ecopillo đặt ẩn khỏi Google, thêm thẻ robots noindex (người gọi gửi thêm X-Robots-Tag)
+ */
+function eco_tw_head($html, $title, $desc, $image = '', $noindex = false)
 {
+    if ($noindex) {
+        // Dấu data-eco-seo: web (usePageMeta.ts) gỡ thẻ này khi khách chuyển sang trang không ẩn
+        $html = preg_replace('#\s*<meta name="robots"[^>]*>#', '', $html);
+        $html = preg_replace('#</head>#', '<meta name="robots" content="noindex" data-eco-seo>' . "\n</head>", $html, 1);
+    }
     $set = function ($html, $attr, $value) {
         return preg_replace('#(' . preg_quote($attr, '#') . '\s+content=")[^"]*(")#', '${1}' . str_replace(array('\\', '$'), array('\\\\', '\$'), esc_attr($value)) . '${2}', $html, 1);
     };
@@ -665,15 +694,20 @@ function eco_tw_serve()
     $seo = eco_tw_seo_map();
     // Dòng SEO ghi theo link mới đứng trên dòng ghi theo link cũ (như usePageMeta.ts)
     $seo_key = isset($seo[$path]) ? $path : $source;
+    $noindex = false;
     if (isset($seo[$seo_key])) {
         $item = $seo[$seo_key];
-        $html = eco_tw_head($html, isset($item['tieuDe']) ? $item['tieuDe'] : '', isset($item['moTa']) ? $item['moTa'] : '', isset($item['anh']) ? $item['anh'] : '');
+        $noindex = !empty($item['anGoogle']);
+        $html = eco_tw_head($html, isset($item['tieuDe']) ? $item['tieuDe'] : '', isset($item['moTa']) ? $item['moTa'] : '', isset($item['anh']) ? $item['anh'] : '', $noindex);
     }
     $html = eco_tw_put_free_blocks($html, $source);
     $html = eco_tw_alias_html($html, $aliases);
     status_header(200);
     nocache_headers();
     header('Content-Type: text/html; charset=UTF-8');
+    if ($noindex) {
+        header('X-Robots-Tag: noindex');
+    }
     echo $html; // trang tĩnh của giao diện mới, các chữ chèn vào đã thoát
     exit;
 }

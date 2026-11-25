@@ -70,6 +70,23 @@ export function usePageMeta(title: string | null, description?: string, options:
   const seo = pageSeoFor(publicPath(pathname)) ?? pageSeoFor(pathname)
   const tabTitle = seo?.tieuDe ?? fullTitle(title)
   const metaDescription = seo?.moTa ?? description
+  const noindex = seo?.anGoogle === true
+
+  // Trang Ecopillo đặt ẩn khỏi Google (25/11/2026): máy chủ đã ghi thẻ robots + X-Robots-Tag; đây giữ đúng khi chuyển trang
+  // Chỉ đụng thẻ có dấu data-eco-seo (máy chủ ghi sẵn hoặc ở đây thêm): thẻ noindex của bản xem thử giữ nguyên
+  useEffect(() => {
+    const existing = document.querySelector<HTMLMetaElement>('meta[name="robots"][data-eco-seo]')
+    if (!noindex) {
+      existing?.remove()
+      return
+    }
+    const meta = existing ?? document.createElement('meta')
+    meta.name = 'robots'
+    meta.content = 'noindex'
+    meta.dataset.ecoSeo = ''
+    if (!existing) document.head.appendChild(meta)
+    return () => meta.remove()
+  }, [noindex])
 
   useEffect(() => {
     document.title = tabTitle

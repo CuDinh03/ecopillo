@@ -190,10 +190,14 @@ export interface LiveHidden {
   trang: Readonly<Record<string, string>>
 }
 
-/** Tiêu đề, mô tả trên Google của một trang (link → SEO) Ecopillo điền ở danh mục Woo (ô của plugin hoặc khung Yoast SEO) */
+/**
+ * Tiêu đề, mô tả trên Google của một trang (link → SEO) Ecopillo điền ở danh mục Woo (ô của plugin hoặc khung Yoast SEO),
+ * và từ 25/11/2026 ở khung Yoast SEO của bài, trang, sản phẩm (plugin seo-yoast.php). `anGoogle`: Yoast đặt không cho hiện trên Google
+ */
 export interface LiveSeo {
   tieuDe?: string
   moTa?: string
+  anGoogle?: boolean
 }
 
 interface LiveData {
@@ -502,8 +506,8 @@ function cleanSeo(input: unknown): Record<string, LiveSeo> {
   const seo: Record<string, LiveSeo> = {}
   for (const [path, value] of Object.entries(input && typeof input === 'object' ? input : {}).slice(0, 400)) {
     const v = (value ?? {}) as Record<string, unknown>
-    const item = { tieuDe: cleanText(v.tieuDe, 200), moTa: cleanText(v.moTa, 400) }
-    if ((path === '/' || isPagePath(path)) && (item.tieuDe || item.moTa)) seo[path] = Object.fromEntries(Object.entries(item).filter(([, x]) => x))
+    const item = { tieuDe: cleanText(v.tieuDe, 200), moTa: cleanText(v.moTa, 400), anGoogle: v.anGoogle === true }
+    if ((path === '/' || isPagePath(path)) && (item.tieuDe || item.moTa || item.anGoogle)) seo[path] = Object.fromEntries(Object.entries(item).filter(([, x]) => x))
   }
   return seo
 }

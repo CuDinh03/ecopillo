@@ -141,15 +141,16 @@ function eco_tm_compute()
         $yoast = eco_sp_text(get_post_meta($page->ID, '_yoast_wpseo_metadesc', true), 160);
         $words = count(preg_split('/\s+/u', trim(wp_strip_all_tags($body)), -1, PREG_SPLIT_NO_EMPTY));
         $cover = eco_sp_image(get_post_thumbnail_id($page));
+        $desc = mb_strlen($yoast, 'UTF-8') >= 50 ? $yoast : mb_substr($excerpt, 0, 155, 'UTF-8');
         $result['live'][] = array(
             'duongDan' => $slug, 'tieuDe' => $title, 'tomTat' => $excerpt,
-            'moTa' => mb_strlen($yoast, 'UTF-8') >= 50 ? $yoast : mb_substr($excerpt, 0, 155, 'UTF-8'),
+            'moTa' => $desc,
             'loai' => 'Cẩm nang', 'muc' => '', 'trang' => true, 'kieu' => eco_tm_kind($page->ID),
             'ngay' => get_the_date('Y-m-d', $page), 'sua' => get_post_modified_time('Y-m-d', false, $page),
             'phut' => max(1, (int) round($words / 220)), 'anh' => $cover ? $cover : null,
         );
         $result['bodies'][$slug] = $body;
-        $result['pages'][$slug] = array('khung' => $shell, 'tieuDe' => $title, 'anh' => $cover ? $cover['src'] : '', 'url' => '/' . $slug . '/');
+        $result['pages'][$slug] = array('khung' => $shell, 'tieuDe' => $title, 'moTa' => $desc, 'anh' => $cover ? $cover['src'] : '', 'url' => '/' . $slug . '/');
     }
     return $result;
 }

@@ -189,11 +189,12 @@ function eco_bv_compute()
         $words = count(preg_split('/\s+/u', trim(wp_strip_all_tags($body)), -1, PREG_SPLIT_NO_EMPTY));
         $cover = eco_sp_image(get_post_thumbnail_id($post));
         $muc = (string) get_post_meta($post->ID, ECO_BV_MUC_META, true);
+        $desc = mb_strlen($yoast, 'UTF-8') >= 50 ? $yoast : mb_substr($excerpt, 0, 155, 'UTF-8');
         $result['live'][] = array(
             'duongDan' => $slug,
             'tieuDe' => $title,
             'tomTat' => $excerpt,
-            'moTa' => mb_strlen($yoast, 'UTF-8') >= 50 ? $yoast : mb_substr($excerpt, 0, 155, 'UTF-8'),
+            'moTa' => $desc,
             'loai' => has_category(ECO_BV_TIN_TUC, $post) ? 'Tin tức' : 'Cẩm nang',
             'muc' => isset(eco_bv_muc_options()[$muc]) ? $muc : '',
             'ngay' => get_the_date('Y-m-d', $post),
@@ -204,7 +205,7 @@ function eco_bv_compute()
         );
         $result['bodies'][$slug] = $body;
         if (!isset($built[$slug])) {
-            $result['pages'][$slug] = array('khung' => $shell, 'tieuDe' => $title, 'anh' => $cover ? $cover['src'] : '', 'url' => '/' . $slug . '/');
+            $result['pages'][$slug] = array('khung' => $shell, 'tieuDe' => $title, 'moTa' => $desc, 'anh' => $cover ? $cover['src'] : '', 'url' => '/' . $slug . '/');
         }
     }
     return $result;

@@ -224,6 +224,23 @@ function eco_mm_shell($html, $slug, $page)
     if (!empty($page['anh'])) {
         $html = preg_replace('#(<meta property="og:image" content=")[^"]*(")#', '${1}' . esc_url($page['anh']) . '${2}', $html);
     }
+    // Mô tả Google: trước 25/11/2026 trang khung giữ mô tả của trang dùng làm khung (một bài / sản phẩm khác)
+    if (!empty($page['moTa'])) {
+        $desc = str_replace(array('\\', '$'), array('\\\\', '\$'), esc_attr((string) $page['moTa']));
+        $html = preg_replace('#(<meta name="description" content=")[^"]*(")#', '${1}' . $desc . '${2}', $html, 1);
+        $html = preg_replace('#(<meta property="og:description" content=")[^"]*(")#', '${1}' . $desc . '${2}', $html, 1);
+    }
+    // SEO Ecopillo điền cho link này (SEO từng trang, khung Yoast; trang-wp.php): đứng trên chữ của trang, kể cả ẩn khỏi Google
+    $seo = function_exists('eco_tw_seo_map') ? eco_tw_seo_map() : array();
+    $seo_path = (string) parse_url($url, PHP_URL_PATH);
+    if (isset($seo[$seo_path])) {
+        $item = $seo[$seo_path];
+        $noindex = !empty($item['anGoogle']);
+        $html = eco_tw_head($html, isset($item['tieuDe']) ? $item['tieuDe'] : '', isset($item['moTa']) ? $item['moTa'] : '', isset($item['anh']) ? $item['anh'] : '', $noindex);
+        if ($noindex) {
+            header('X-Robots-Tag: noindex');
+        }
+    }
     $html = preg_replace('#<script type="application/ld\+json">.*?</script>#s', '', $html);
     // Thân dựng sẵn nằm trong #root, ngay trước thẻ script hiệu ứng: bỏ để trình duyệt vẽ mẫu mới (main.tsx)
     $open = strpos($html, '<div id="root"');

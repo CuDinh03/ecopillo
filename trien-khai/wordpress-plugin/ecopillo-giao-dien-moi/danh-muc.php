@@ -78,6 +78,10 @@ function eco_dm_yoast($term)
             $out[$key] = $value;
         }
     }
+    // Nâng cao → "Cho phép công cụ tìm kiếm hiển thị … ?" = Không (25/11/2026, seo-yoast.php)
+    if (isset($meta['wpseo_noindex']) && $meta['wpseo_noindex'] === 'noindex') {
+        $out['anGoogle'] = true;
+    }
     return $out;
 }
 
@@ -89,7 +93,11 @@ function eco_dm_seo($term)
     $desc = eco_sp_text(get_term_meta($term->term_id, ECO_DM_META_SEO_MO_TA, true), 400);
     $title = $title !== '' ? $title : (isset($yoast['tieuDe']) ? eco_sp_text($yoast['tieuDe'], 200) : '');
     $desc = $desc !== '' ? $desc : (isset($yoast['moTa']) ? eco_sp_text($yoast['moTa'], 400) : '');
-    return array_filter(array('tieuDe' => $title, 'moTa' => $desc), 'strlen');
+    $seo = array_filter(array('tieuDe' => $title, 'moTa' => $desc), 'strlen');
+    if (!empty($yoast['anGoogle'])) {
+        $seo['anGoogle'] = true;
+    }
+    return $seo;
 }
 
 /** Sản phẩm, bộ chăn ga của một danh mục mới, theo thứ tự trong Woo. @return array{0: string[], 1: string[]} */

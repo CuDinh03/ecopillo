@@ -331,7 +331,10 @@ function eco_dl_write()
     // Hết hàng sản phẩm lẻ, mẫu có sẵn (ton-kho.php, đợt F)
     $stock = $woo && function_exists('eco_tk_compute') ? eco_tk_compute() : array('sanPham' => array(), 'mau' => array());
     $has_stock = $stock['sanPham'] || $stock['mau'];
-    if ($prices === null && (!empty($patterns['thuTu']) || $patterns['live'] || $items['live'] || $has_content_woo || $collections['live'] || $collections['chu'] || $has_categories || $has_hidden || $has_stock)) {
+    // SEO Ecopillo điền ở khung Yoast của bài, trang, sản phẩm (seo-yoast.php, 25/11/2026): lưu cho máy chủ, gộp vào `seo` cho web
+    $yoast_seo = function_exists('eco_sy_compute') ? eco_sy_compute($woo ? array_merge($items['pages'], $patterns['pages'], $collections['pagesMau']) : array()) : array();
+    update_option(ECO_SY_OPT, $yoast_seo, false);
+    if ($prices === null && ($yoast_seo || !empty($patterns['thuTu']) || $patterns['live'] || $items['live'] || $has_content_woo || $collections['live'] || $collections['chu'] || $has_categories || $has_hidden || $has_stock)) {
         $prices = array('mau' => new stdClass(), 'sanPham' => new stdClass());
     }
     if ($prices !== null) {
@@ -347,7 +350,9 @@ function eco_dl_write()
             'moi' => $categories['moi'],
             'an' => $categories['an'] ? $categories['an'] : new stdClass(),
         );
-        $prices['seo'] = $categories['seo'] ? $categories['seo'] : new stdClass();
+        // Danh mục và trang bài / sản phẩm khác link nhau; trùng thì danh mục (ô SEO của plugin) đứng trên
+        $all_seo = array_merge($yoast_seo, $categories['seo']);
+        $prices['seo'] = $all_seo ? $all_seo : new stdClass();
         $prices['tonKho'] = array(
             'sanPham' => $stock['sanPham'] ? $stock['sanPham'] : new stdClass(),
             'mau' => $stock['mau'] ? $stock['mau'] : new stdClass(),
@@ -455,4 +460,5 @@ require_once __DIR__ . '/an-xoa.php';
 require_once __DIR__ . '/ton-kho.php';
 require_once __DIR__ . '/trang-moi.php';
 require_once __DIR__ . '/bai-viet-moi.php';
+require_once __DIR__ . '/seo-yoast.php';
 require_once __DIR__ . '/gia-woo-quan-tri.php';

@@ -258,7 +258,8 @@ function eco_sp_compute()
             'chiTiet' => eco_sp_points($product->get_description()),
             'thongSo' => eco_sp_specs($product),
         ), $prices);
-        $result['pages'][$slug] = array('khung' => $cats[$mine[0]]['khung'], 'tieuDe' => $name, 'anh' => $image['src']);
+        $summary = eco_sp_text($product->get_short_description(), 400);
+        $result['pages'][$slug] = array('khung' => $cats[$mine[0]]['khung'], 'tieuDe' => $name, 'moTa' => mb_substr($summary, 0, 155, 'UTF-8'), 'anh' => $image['src']);
     }
     return $result;
 }
