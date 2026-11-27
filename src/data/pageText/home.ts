@@ -28,7 +28,7 @@ export const { set: HOME_TEXT_SET, text: HOME_TEXT } = definePageText(
     moTaGoogle: doan(
       'Mô tả trang chủ trên Google, Zalo, Facebook',
       'Chăn ga gối đệm Ecopillo mang giấc ngủ chất lượng cùng trải nghiệm tuyệt vời đến hàng triệu gia đình Việt một cách nhanh chóng và dễ dàng nhất.',
-      'Khoảng 150 chữ cái, hiện dưới tiêu đề khi gửi link',
+      'Khoảng 150 chữ cái, hiện gọn ngay dưới dải đầu trang chủ và dưới tiêu đề trên Google, khi gửi link',
     ),
     heSinhThai: chu('Dải dưới banner: tiêu đề ô Hệ sinh thái', 'Hệ sinh thái sản phẩm'),
     heSinhThaiPhu: chu('Dải dưới banner: chữ phụ sau tiêu đề (máy tính)', 'cho giấc ngủ trọn vẹn'),

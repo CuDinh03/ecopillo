@@ -102,6 +102,8 @@ interface SectionHeadingProps {
   eyebrow?: string
   title: ReactNode
   lead?: ReactNode
+  /** Chặn Google trích đoạn dẫn làm mô tả tìm kiếm (data-nosnippet), không ảnh hưởng lập chỉ mục hay hiển thị */
+  leadNoSnippet?: boolean
   align?: 'left' | 'center'
   tone?: 'light' | 'dark'
   id?: string
@@ -112,6 +114,7 @@ export function SectionHeading({
   eyebrow,
   title,
   lead,
+  leadNoSnippet = false,
   align = 'left',
   tone = 'light',
   id,
@@ -133,6 +136,7 @@ export function SectionHeading({
       </h2>
       {lead && (
         <p
+          data-nosnippet={leadNoSnippet ? '' : undefined}
           className={`mt-5 text-body leading-relaxed text-balance ${dark ? 'text-mist-200/90' : 'text-ink-soft'} ${
             centered ? 'mx-auto' : ''
           } max-w-xl`}

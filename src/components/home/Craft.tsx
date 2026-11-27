@@ -70,10 +70,13 @@ export function BrandStory() {
         {/* Hai cột từ 1280px: ở 1024–1279 cột chữ của ô "Đường may", "Dệt Jacquard" chỉ còn ~115px, tiêu đề gãy 3 dòng (rà máy tính bảng 06/11/2026) */}
         <div className="grid gap-8 sm:gap-14 xl:grid-cols-12 xl:gap-10">
           <div className="xl:col-span-5">
+            {/* Gắn data-nosnippet lên đoạn giới thiệu vải Lyocell (owner chốt 27/11/2026): tránh Google cắt đoạn này làm mô tả trang chủ
+                thay cho câu mô tả thương hiệu ngày 18/11 ở đầu trang */}
             <SectionHeading
               id="story-title"
               title={HOME_TEXT.chatLieuTieuDe}
               lead={LYOCELL_INTRO}
+              leadNoSnippet
             />
             <blockquote data-reveal style={revealDelay(1)} className="mt-6 border-l-2 sm:mt-8 border-mist-600 pl-5 font-display text-[1.35rem] leading-snug text-deep-800 italic">
               “{CRAFT_QUOTE}”

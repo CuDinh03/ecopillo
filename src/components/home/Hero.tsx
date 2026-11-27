@@ -4,6 +4,7 @@ import { buttonClass, Container } from '../ui/primitives'
 import { CONTACT } from '../../data/brand'
 import { HomeLink } from './HomeLink'
 import { HERO_CATEGORIES, HERO_HEADLINE, HERO_HEADLINE_PREFIX, HERO_IMAGES } from '../../data/heroBanner'
+import { pageSeoFor } from '../../data/liveSeo'
 import { HOME_TEXT } from '../../data/pageText/home'
 
 /**
@@ -193,17 +194,22 @@ const GOLD_FRAME = 'flex flex-col overflow-hidden rounded-2xl border-2 border-br
 const GOLD_TITLE = 'bg-brand-gold px-3.5 py-1.5 text-label font-medium tracking-[0.14em] text-deep-900 uppercase sm:px-4'
 const GOLD_CELL = 'rounded-xl bg-ivory shadow-[0_6px_14px_-10px_rgb(45_46_141/0.45)]'
 
+/** Câu mô tả trang chủ (chị Phương gửi 18/11/2026; đè bằng ô Mô tả trên Google của dòng "/" ở SEO từng trang nếu có) */
+const HOME_INTRO = pageSeoFor('/')?.moTa ?? HOME_TEXT.moTaGoogle
+
 /**
- * Dải trắng duy nhất: Hệ sinh thái sản phẩm | Vì một giấc ngủ chất lượng hơn.
+ * Dải trắng duy nhất: Hệ sinh thái sản phẩm | Vì một giấc ngủ chất lượng hơn, kèm câu giới thiệu gọn phía dưới.
  * Chị Phương 09/11/2026: "bên tốt thật thiện e cũng làm khung cam như bên hệ sinh thái cho cân": hai khối cùng khung vàng,
  * cao bằng nhau, bỏ vạch ngăn giữa.
+ * 27/11/2026 (owner chọn cách 1): đặt câu mô tả 18/11 gọn ngay dưới hai khung để Google ưu tiên trích đúng câu này thay cho đoạn vải Lyocell.
  */
 function BangEcBar() {
   return (
     <div
       style={delay(240)}
-      className="hero-in grid gap-4 rounded-[1.5rem] bg-ivory/92 p-4 shadow-[var(--shadow-lift)] ring-1 ring-ivory backdrop-blur-md sm:p-5 lg:grid-cols-[1.25fr_1fr] lg:gap-5 lg:px-6 lg:py-5"
+      className="hero-in rounded-[1.5rem] bg-ivory/92 p-4 shadow-[var(--shadow-lift)] ring-1 ring-ivory backdrop-blur-md sm:p-5 lg:px-6 lg:py-5"
     >
+      <div className="grid gap-4 lg:grid-cols-[1.25fr_1fr] lg:gap-5">
       {/*
         Mục 4 (khách yêu cầu 16/10/2026), kiểu B owner chọn 17/10/2026 (mẫu: docs/de-xuat-dau-trang-chu-goi-4.html):
         một khung vàng bao cả bốn ô, tiêu đề nằm trên dải vàng ở đầu khung, bốn ô to hơn trước.
@@ -254,6 +260,12 @@ function BangEcBar() {
           ))}
         </ul>
       </section>
+      </div>
+      {HOME_INTRO && (
+        <p className="mt-3.5 border-t border-line pt-3 text-center text-body-sm leading-relaxed text-balance text-ink-soft sm:mt-4 sm:pt-3.5 sm:text-body">
+          <span className="mx-auto block max-w-3xl">{HOME_INTRO}</span>
+        </p>
+      )}
     </div>
   )
 }

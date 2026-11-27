@@ -2,8 +2,10 @@ import { BRAND, CONTACT, SOCIAL_LINKS } from '../data/brand'
 import type { ImageSource } from '../data/catalog'
 import type { Faq } from '../data/content'
 import { SITE_ORIGIN, withSlash } from '../data/links'
+import { pageSeoFor } from '../data/liveSeo'
 import { publicPath } from '../data/pageAliases'
 import { FOOTER_TEXT } from '../data/pageText/footer'
+import { HOME_TEXT } from '../data/pageText/home'
 import { PAGE_FRAME_TEXT } from '../data/pageText/pageFrame'
 
 /**
@@ -46,19 +48,28 @@ const organizationRef = (): JsonLdObject => ({
 
 /** Trang chủ: thông tin doanh nghiệp và tên web */
 export function organizationLd(): JsonLdObject[] {
+  const description = pageSeoFor('/')?.moTa ?? HOME_TEXT.moTaGoogle
   return [
     {
       '@context': CONTEXT,
       ...organizationRef(),
       // Tên công ty theo ô Ecopillo sửa ở chân trang (Nội dung web → Chân trang)
       legalName: FOOTER_TEXT.congTy,
+      ...(description ? { description } : {}),
       slogan: BRAND.slogan,
       email: CONTACT.email,
       // tel:0988832072 → +84988832072
       telephone: CONTACT.hotlineTel.replace(/^tel:0/, '+84'),
       sameAs: SOCIAL_LINKS.filter((s) => s.id !== 'zalo').map((s) => s.url),
     },
-    { '@context': CONTEXT, '@type': 'WebSite', name: BRAND.name, url: pageUrl('/'), inLanguage: 'vi' },
+    {
+      '@context': CONTEXT,
+      '@type': 'WebSite',
+      name: BRAND.name,
+      url: pageUrl('/'),
+      ...(description ? { description } : {}),
+      inLanguage: 'vi',
+    },
   ]
 }
 
