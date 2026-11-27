@@ -570,8 +570,9 @@ function eco_tw_wanted_paths()
     $paths = array();
     $hidden = eco_tw_hidden_map();
     $redirects = function_exists('eco_nd_redirects') ? eco_nd_redirects() : array();
-    // Trang có khối tự do (đợt H): WordPress trả để ghi sẵn khối vào HTML
-    foreach (array_merge(array_keys(eco_tw_seo_map(true)), array_keys($hidden), array_keys($redirects), array_keys(eco_tw_free_blocks()), array_keys(eco_tw_aliases())) as $path) {
+    $dm_seo = function_exists('eco_dm_seo_files') ? array_keys(eco_dm_seo_files()) : array();
+    // Trang có khối tự do (đợt H) hoặc bài SEO danh mục (27/11): WordPress trả để ghi sẵn HTML cho Google
+    foreach (array_merge(array_keys(eco_tw_seo_map(true)), array_keys($hidden), array_keys($redirects), array_keys(eco_tw_free_blocks()), array_keys(eco_tw_aliases()), $dm_seo) as $path) {
         if (eco_tw_static_file($path) !== '') {
             $paths[$path] = true;
         }
@@ -699,6 +700,10 @@ function eco_tw_serve()
         $item = $seo[$seo_key];
         $noindex = !empty($item['anGoogle']);
         $html = eco_tw_head($html, isset($item['tieuDe']) ? $item['tieuDe'] : '', isset($item['moTa']) ? $item['moTa'] : '', isset($item['anh']) ? $item['anh'] : '', $noindex);
+    }
+    $html = eco_tw_put_category_seo($html, $source);
+    if ($path !== $source) {
+        $html = eco_tw_put_category_seo($html, $path);
     }
     $html = eco_tw_put_free_blocks($html, $source);
     $html = eco_tw_alias_html($html, $aliases);
@@ -837,14 +842,71 @@ function eco_tw_free_html($rows)
     return $html;
 }
 
-/** Ghi các khối tự do của trang vào HTML, ngay trước chân trang (không có chân trang thì cuối khung #root) */
-function eco_tw_put_free_blocks($html, $path)
+/**
+ * Ghi bài SEO cuối trang danh mục (danh-muc.php, 27/11/2026) vào HTML trả về từ máy chủ, ngay trước chân trang.
+ * Google đọc thẳng nội dung đầy đủ không phụ thuộc JavaScript; trình duyệt đọc lại HTML này trước khi React vẽ để hiện tức thì ở đúng chỗ (ngay dưới sản phẩm).
+ */
+function eco_tw_put_category_seo($html, $path)
 {
-    $blocks = eco_tw_free_blocks();
-    if (empty($blocks[$path])) {
+    if (strpos($html, 'data-eco-dm-seo=') !== false || !function_exists('eco_dm_read_seo_html')) {
         return $html;
     }
-    $add = eco_tw_free_html($blocks[$path]);
+    $body = eco_dm_read_seo_html($path);
+    if ($body === '') {
+        return $html;
+    }
+    $add = '<section class="py-12" data-eco-dm-seo="' . esc_attr($path) . '">'
+        . '<div class="mx-auto w-full max-w-[1240px] px-5 sm:px-8 lg:px-10">'
+        . '<article class="chu-deu rounded-[2rem] bg-ivory px-5 py-7 text-base leading-[1.75] text-ink-soft shadow-[var(--shadow-soft)] sm:px-10 sm:py-10 lg:px-14 lg:py-12">'
+        . '<div class="bai-wp">' . $body . '</div>'
+        . '</article></div></section>';
+    $at = strrpos($html, '<footer');
+    if ($at === false) {
+        $root = strpos($html, '<div id="root">');
+        $at = $root === false ? false : strpos($html, '</div>', $root);
+    }
+    return $at === false ? $html : substr($html, 0, $at) . $add . substr($html, $at);
+}
+
+/** Ghi các khối tự do của trang vào HTML, ngay trước chân trang (không có chân trang thì cuối khung #root). $layout_key dùng cho trang danh mục / bộ mới tạo chưa có trong bo-cuc-trang.json */
+function eco_tw_put_free_blocks($html, $path, $layout_key = '')
+{
+    $blocks = eco_tw_free_blocks();
+    $rows = !empty($blocks[$path]) ? $blocks[$path] : array();
+    if (!$rows && $layout_key !== '') {
+        $saved = function_exists('eco_nd_saved') ? eco_nd_saved('khoi-tu-do') : null;
+        foreach ($saved && is_array($saved['giaTri']) ? $saved['giaTri'] : array() as $row) {
+            if (!is_array($row) || (isset($row['hien']) && $row['hien'] === 'khong') || empty($row['viTri']) || !is_array($row['viTri'])) {
+                continue;
+            }
+            $matches_layout = false;
+            foreach ($row['viTri'] as $place) {
+                if (strstr((string) $place, '@', true) === $layout_key) {
+                    $matches_layout = true;
+                    break;
+                }
+            }
+            if (!$matches_layout) {
+                continue;
+            }
+            $only = array();
+            foreach (isset($row['chiTrang']) && is_array($row['chiTrang']) ? $row['chiTrang'] : array() as $raw) {
+                $p = strtolower((string) preg_replace('#^https?://[^/]+#i', '', trim((string) $raw)));
+                $p = (string) preg_replace('/[?#].*$/', '', $p);
+                $p = substr($p, -1) === '/' ? $p : $p . '/';
+                if (eco_tw_is_path($p)) {
+                    $only[$p] = true;
+                }
+            }
+            if (!$only || isset($only[$path])) {
+                $rows[] = $row;
+            }
+        }
+    }
+    if (!$rows) {
+        return $html;
+    }
+    $add = eco_tw_free_html($rows);
     if ($add === '') {
         return $html;
     }

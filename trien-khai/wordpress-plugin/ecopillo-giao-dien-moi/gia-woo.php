@@ -322,9 +322,9 @@ function eco_dl_write()
     $has_content_woo = (array) $content_woo['sanPham'] || (array) $content_woo['mau'];
     // Bộ sưu tập mới, chữ bộ có sẵn Ecopillo tạo / tích ở trang danh mục Woo (bo-suu-tap-moi.php)
     $collections = $woo && function_exists('eco_bst_compute') ? eco_bst_compute() : array('live' => array(), 'chu' => array(), 'pagesBo' => array(), 'pagesMau' => array());
-    // Danh mục sản phẩm Ecopillo thêm / sửa / ẩn / xoá, SEO danh mục (danh-muc.php, đợt E)
-    $categories = $woo && function_exists('eco_dm_compute') ? eco_dm_compute(true) : array('chu' => array(), 'moi' => array(), 'an' => array(), 'seo' => array(), 'pages' => array());
-    $has_categories = $categories['chu'] || $categories['moi'] || $categories['an'] || $categories['seo'];
+    // Danh mục sản phẩm Ecopillo thêm / sửa / ẩn / xoá, SEO danh mục, bài SEO cuối trang (danh-muc.php, đợt E + 27/11)
+    $categories = $woo && function_exists('eco_dm_compute') ? eco_dm_compute(true) : array('chu' => array(), 'moi' => array(), 'an' => array(), 'seo' => array(), 'pages' => array(), 'baiSeo' => array(), 'baiSeoHtml' => array());
+    $has_categories = $categories['chu'] || $categories['moi'] || $categories['an'] || $categories['seo'] || !empty($categories['baiSeo']);
     // Sản phẩm, mẫu, bộ, bài có sẵn Ecopillo đã gỡ (an-xoa.php, đợt E2)
     $hidden = function_exists('eco_ax_compute') ? eco_ax_compute() : array('sanPham' => array(), 'mau' => array(), 'bo' => array(), 'bai' => array(), 'trang' => array());
     $has_hidden = $hidden['sanPham'] || $hidden['mau'] || $hidden['bo'] || $hidden['bai'];
@@ -349,6 +349,7 @@ function eco_dl_write()
             'chu' => $categories['chu'] ? $categories['chu'] : new stdClass(),
             'moi' => $categories['moi'],
             'an' => $categories['an'] ? $categories['an'] : new stdClass(),
+            'baiSeo' => !empty($categories['baiSeo']) ? $categories['baiSeo'] : new stdClass(),
         );
         // Danh mục và trang bài / sản phẩm khác link nhau; trùng thì danh mục (ô SEO của plugin) đứng trên
         $all_seo = array_merge($yoast_seo, $categories['seo']);

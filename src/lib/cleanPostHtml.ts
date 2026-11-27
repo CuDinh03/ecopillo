@@ -34,7 +34,8 @@ function fixHref(href: string, slug: string): string {
   if (url.hostname.replace(/^www\./, '') !== 'ecopillo.com.vn' || url.pathname.startsWith('/wp-content/')) return href
   const path = url.pathname.endsWith('/') || url.pathname.includes('.') ? url.pathname : `${url.pathname}/`
   const target = redirectFor(path, COLLECTIONS) ?? path
-  if (target === `/${slug}/` && url.hash && !url.search) return url.hash
+  const current = slug.startsWith('/') ? slug : `/${slug}/`
+  if (target === current && url.hash && !url.search) return url.hash
   return `${target}${url.search}${url.hash}`
 }
 

@@ -156,9 +156,11 @@ const DEF_CONTACT_LAYOUT_SET = def('lien-he', 'trang Liên hệ mua hàng', [
 ])
 
 // Đợt E5 (owner 24/11/2026 "kể cả về bố cục"): thêm bố cục các trang còn lại
+// 27/11/2026: thêm khối "Nội dung SEO cuối trang danh mục" nằm ngay sau lưới sản phẩm (bố cục 1. Mô tả → 2. Sản phẩm → 3. Nội dung SEO)
 const DEF_CATEGORY_LAYOUT_SET = def('danh-muc', 'trang danh mục sản phẩm (mọi danh mục)', [
   { ma: 'san-pham', ten: 'Lưới sản phẩm' },
   { ma: 'phoi-mau', ten: 'Phối màu (danh mục bộ chăn ga)' },
+  { ma: 'noi-dung-seo', ten: 'Nội dung SEO cuối trang danh mục (khi có)' },
   { ma: 'chon-the-nao', ten: 'Chọn thế nào' },
   { ma: 'xem-tat-ca', ten: 'Nút Xem tất cả sản phẩm' },
   { ma: 'kham-pha', ten: 'Khám phá thêm (link liên quan)' },
@@ -169,6 +171,7 @@ const DEF_PRODUCTS_LAYOUT_SET = def('san-pham', 'trang Sản phẩm (chỉ ẩn 
   { ma: 'o-nhom', ten: 'Ô nhóm sản phẩm (mục Tất cả)' },
   { ma: 'ke', ten: 'Các kệ sản phẩm (mục Tất cả)' },
   { ma: 'tim-theo-bo', ten: 'Hàng tìm theo bộ sưu tập' },
+  { ma: 'noi-dung-seo', ten: 'Nội dung SEO cuối trang Sản phẩm (khi có)' },
 ], 'dau-cuoi')
 
 const DEF_PRODUCT_DETAIL_LAYOUT_SET = def('san-pham-le', 'trang sản phẩm lẻ (phần dưới ảnh và giá)', [
@@ -181,6 +184,7 @@ const DEF_PRODUCT_DETAIL_LAYOUT_SET = def('san-pham-le', 'trang sản phẩm l�
 
 const DEF_COLLECTION_DETAIL_LAYOUT_SET = def('bo-suu-tap', 'trang bộ sưu tập và từng mẫu (phần dưới)', [
   { ma: 'cung-gam', ten: 'Cùng gam màu ở bộ khác (khi lọc gam)' },
+  { ma: 'noi-dung-seo', ten: 'Nội dung SEO cuối trang bộ sưu tập (khi có)' },
   { ma: 'giao-hang', ten: 'Giống nhau ở mọi phối màu (giao hàng, bảo hành)' },
   { ma: 'danh-gia', ten: 'Đánh giá của khách (khi có)' },
   { ma: 'co-the-thich', ten: 'Có thể Quý khách thích' },

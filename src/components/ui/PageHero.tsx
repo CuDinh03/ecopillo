@@ -91,9 +91,20 @@ export function PageHero({ crumbs, eyebrow, title, lead, aside, children, tone =
           >
             {title}
           </h1>
-          {lead && (
-            <p className={`mt-5 max-w-xl text-body leading-relaxed text-balance ${deep ? 'text-mist-200/90' : 'text-ink-soft'}`}>{lead}</p>
-          )}
+          {lead &&
+            (typeof lead === 'string' && lead.includes('\n') ? (
+              <div className={`chu-deu mt-5 max-w-3xl space-y-3 text-body leading-relaxed ${deep ? 'text-mist-200/90' : 'text-ink-soft'}`}>
+                {lead
+                  .split(/\n+/)
+                  .map((line) => line.trim())
+                  .filter(Boolean)
+                  .map((line, i) => (
+                    <p key={i}>{line}</p>
+                  ))}
+              </div>
+            ) : (
+              <p className={`mt-5 max-w-xl text-body leading-relaxed text-balance ${deep ? 'text-mist-200/90' : 'text-ink-soft'}`}>{lead}</p>
+            ))}
           {children}
         </div>
         {aside && <div className="lg:col-span-6">{aside}</div>}

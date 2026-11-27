@@ -392,7 +392,29 @@ function eco_bst_serve()
     if ($html === '') {
         return;
     }
-    echo eco_mm_shell($html, '', $page); // trang tĩnh của giao diện mới, các chữ chèn vào đã thoát
+    $html = eco_mm_shell($html, '', $page);
+    $seo = function_exists('eco_tw_seo_map') ? eco_tw_seo_map() : array();
+    $item = isset($seo[$path]) ? $seo[$path] : array();
+    $noindex = !empty($item['anGoogle']);
+    if ($item && function_exists('eco_tw_head')) {
+        $html = eco_tw_head(
+            $html,
+            isset($item['tieuDe']) ? $item['tieuDe'] : '',
+            isset($item['moTa']) ? $item['moTa'] : '',
+            isset($item['anh']) ? $item['anh'] : '',
+            $noindex
+        );
+    }
+    if (function_exists('eco_tw_put_category_seo')) {
+        $html = eco_tw_put_category_seo($html, $path);
+    }
+    if (function_exists('eco_tw_put_free_blocks')) {
+        $html = eco_tw_put_free_blocks($html, $path, 'bo-suu-tap');
+    }
+    if ($noindex) {
+        header('X-Robots-Tag: noindex');
+    }
+    echo $html; // trang tĩnh của giao diện mới, các chữ chèn vào đã thoát
     exit;
 }
 

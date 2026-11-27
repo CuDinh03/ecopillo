@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
+import { CategorySeoContent } from '../components/products/CategorySeoContent'
 import { ColorwayCard } from '../components/products/ColorwayCard'
 import { ProductCard } from '../components/products/ProductCard'
 import { Icon } from '../components/ui/Icon'
@@ -30,7 +31,8 @@ export function CategoryPage() {
   const { pathname } = useLocation()
   // Sản phẩm trong trang: bản Ecopillo chọn ở Nội dung web (listingProducts.ts), chưa chọn thì như links.ts
   const listing = listingOf(withSlash(pathname))
-  usePageMeta(listing?.title ?? null, listing?.description)
+  // Mô tả đầu trang có thể gồm nhiều đoạn (\n\n): meta description gom thành một dòng gọn
+  usePageMeta(listing?.title ?? null, listing?.description.replace(/\s+/g, ' ').trim())
   if (!listing) return <NotFoundPage />
 
   const path = withSlash(pathname)
@@ -97,6 +99,7 @@ export function CategoryPage() {
                 </ul>
               </section>
             ),
+            'noi-dung-seo': <CategorySeoContent path={path} title={listing.title} />,
             'chon-the-nao': guide && (
               <section aria-labelledby="guide-title" className="mt-16 rounded-[2rem] bg-cream-50 p-6 shadow-[var(--shadow-soft)] first:mt-0 sm:mt-20 sm:p-10 sm:first:mt-0">
                 <h2 id="guide-title" className="font-display text-[1.6rem] leading-tight text-deep-900 sm:text-[2rem]">

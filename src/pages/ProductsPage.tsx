@@ -2,6 +2,7 @@ import { useMemo, useRef, type CSSProperties, type ReactNode } from 'react'
 import { PRODUCTS_FREE_END, PRODUCTS_FREE_START, PRODUCTS_ORDER } from '../data/pageLayout'
 import { Blocks } from '../components/ui/Blocks'
 import { Link } from 'react-router-dom'
+import { CategorySeoContent } from '../components/products/CategorySeoContent'
 import { ColorwayCard } from '../components/products/ColorwayCard'
 import { FilterPanel, SORTS, type FilterPanelProps, type SortId } from '../components/products/FilterPanel'
 import { GroupTiles } from '../components/products/GroupTiles'
@@ -11,6 +12,7 @@ import { ProductShelves } from '../components/products/ProductShelves'
 import { Icon } from '../components/ui/Icon'
 import { Select } from '../components/ui/Select'
 import { Container, FillIn } from '../components/ui/primitives'
+import { PATHS } from '../data/links'
 import { BEDDING_SETS, collectionRange, type Collection } from '../data/catalog'
 import {
   CATEGORIES,
@@ -370,6 +372,9 @@ export function ProductsPage() {
             )}
           </div>
         </div>
+        {PRODUCTS_SHOWN.has('noi-dung-seo') && (
+          <CategorySeoContent path={PATHS.products} title={PRODUCTS_PAGE_TEXT.tieuDe} className="mt-16 sm:mt-20" />
+        )}
       </Container>
       {/* Khối tự do Ecopillo đặt "cuối trang" (Nội dung web → Giao diện → Khối tự do) */}
       <Blocks order={PRODUCTS_FREE_END} blocks={{}} />

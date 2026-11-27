@@ -14,6 +14,7 @@ import {
   type Pattern,
   type SizeId,
 } from '../../data/catalog'
+import { collectionPath } from '../../data/links'
 import { priceLabel, type Product } from '../../data/products'
 import { chapterTitle, patternByParam, patternPath, sameToneElsewhere, storyOf, storySummary, toneById } from '../../data/stories'
 import { relatedForProduct } from '../../data/related'
@@ -23,6 +24,7 @@ import { productMetaDescription } from '../../lib/metaDescription'
 import { productLd, shareImageOf } from '../../lib/structuredData'
 import { JsonLd } from '../seo/JsonLd'
 import { ExploreMore } from '../ui/ExploreMore'
+import { CategorySeoContent } from '../products/CategorySeoContent'
 import { DetailBreadcrumb, MobileBuyBar, ProductInfoCards, RelatedProducts } from '../products/DetailParts'
 import { ProductReviews } from '../products/ProductReviews'
 import { Container } from '../ui/primitives'
@@ -170,6 +172,8 @@ export function CollectionDetail({ product, collection, patternParam }: Collecti
           khung="cot"
           blocks={{
             'cung-gam': tone ? <SameTone collection={collection} tone={tone} /> : null,
+            // Bài SEO của danh mục bộ sưu tập chỉ hiện trên trang bộ (không lặp sang từng trang phối màu để tránh trùng nội dung)
+            'noi-dung-seo': !patternParam ? <CategorySeoContent path={collectionPath(collection)} title={product.name} /> : null,
             'giao-hang': (
               <>
                 <h2 className="font-display mt-16 text-[1.6rem] leading-tight text-deep-900 sm:mt-20 sm:text-[2.2rem]">

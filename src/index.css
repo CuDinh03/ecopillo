@@ -1,4 +1,5 @@
-@import 'tailwindcss';
+/* Chỉ quét lớp Tailwind trong src/ (tránh quét thư mục ảnh gốc, sao lưu, worktree trên ổ rời) */
+@import 'tailwindcss' source('./');
 
 /*
  * Font dự phòng đã chỉnh cỡ, dùng trong lúc font web (Google Fonts, display=swap) chưa về.

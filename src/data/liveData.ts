@@ -176,6 +176,8 @@ export interface LiveCategories {
   chu: Readonly<Record<string, LiveCategoryText>>
   moi: readonly LiveNewCategory[]
   an: Readonly<Record<string, string>>
+  /** Bài viết SEO cuối trang danh mục (27/11/2026): link danh mục → tên file JSON trong uploads/ecopillo-du-lieu/danh-muc/ */
+  baiSeo: Readonly<Record<string, string>>
 }
 /**
  * Sản phẩm, mẫu, bộ sưu tập, bài viết có sẵn Ecopillo đã gỡ trong WordPress (đợt E2, plugin an-xoa.php): chuyển sang nháp,
@@ -476,11 +478,11 @@ const cleanSlugs = (v: unknown, count: number): string[] =>
   Array.isArray(v) ? [...new Set(v.filter((x): x is string => typeof x === 'string' && /^[a-z0-9-]{1,200}$/.test(x)))].slice(0, count) : []
 
 function cleanCategories(input: unknown): LiveCategories {
-  const raw = (input && typeof input === 'object' ? input : {}) as { chu?: unknown; moi?: unknown; an?: unknown }
+  const raw = (input && typeof input === 'object' ? input : {}) as { chu?: unknown; moi?: unknown; an?: unknown; baiSeo?: unknown }
   const chu: Record<string, LiveCategoryText> = {}
   for (const [path, value] of Object.entries(raw.chu && typeof raw.chu === 'object' ? raw.chu : {}).slice(0, 200)) {
     const v = (value ?? {}) as Record<string, unknown>
-    const text = { ten: cleanText(v.ten, 120), moTa: cleanText(v.moTa, 600) }
+    const text = { ten: cleanText(v.ten, 120), moTa: cleanText(v.moTa, 1500) }
     if (isPagePath(path) && (text.ten || text.moTa)) chu[path] = Object.fromEntries(Object.entries(text).filter(([, x]) => x))
   }
   const moi = (Array.isArray(raw.moi) ? raw.moi : [])
@@ -492,14 +494,18 @@ function cleanCategories(input: unknown): LiveCategories {
       const sanPham = cleanSlugs(v.sanPham, 120)
       const boSuuTap = cleanSlugs(v.boSuuTap, 30)
       if (!sanPham.length && !boSuuTap.length) return undefined
-      return { duongDan: v.duongDan, woo: v.woo, ten, moTa: cleanText(v.moTa, 600), sanPham, boSuuTap }
+      return { duongDan: v.duongDan, woo: v.woo, ten, moTa: cleanText(v.moTa, 1500), sanPham, boSuuTap }
     })
     .filter((x): x is LiveNewCategory => !!x)
   const an: Record<string, string> = {}
   for (const [path, to] of Object.entries(raw.an && typeof raw.an === 'object' ? raw.an : {}).slice(0, 200)) {
     if (isPagePath(path) && (to === '/' || isPagePath(to)) && to !== path) an[path] = to
   }
-  return { chu, moi, an }
+  const baiSeo: Record<string, string> = {}
+  for (const [path, key] of Object.entries(raw.baiSeo && typeof raw.baiSeo === 'object' ? raw.baiSeo : {}).slice(0, 200)) {
+    if (isPagePath(path) && typeof key === 'string' && /^[a-z0-9-]{3,160}$/.test(key)) baiSeo[path] = key
+  }
+  return { chu, moi, an, baiSeo }
 }
 
 function cleanSeo(input: unknown): Record<string, LiveSeo> {
@@ -526,7 +532,7 @@ function cleanHidden(input: unknown): LiveHidden {
 const NO_HIDDEN: LiveHidden = { sanPham: new Set(), mau: new Set(), bo: new Set(), bai: new Set(), trang: {} }
 
 function read(): LiveData {
-  const empty: LiveData = { mau: {}, sanPham: {}, mauMoi: [], sanPhamMoi: [], noiDungSanPham: {}, noiDungMau: {}, boSuuTapMoi: [], boSuuTapChu: {}, danhMuc: { chu: {}, moi: [], an: {} }, seo: {}, an: NO_HIDDEN, hetSanPham: {} }
+  const empty: LiveData = { mau: {}, sanPham: {}, mauMoi: [], sanPhamMoi: [], noiDungSanPham: {}, noiDungMau: {}, boSuuTapMoi: [], boSuuTapChu: {}, danhMuc: { chu: {}, moi: [], an: {}, baiSeo: {} }, seo: {}, an: NO_HIDDEN, hetSanPham: {} }
   if (typeof window === 'undefined') return empty
   const raw = (window as { __ECO_GIA__?: unknown }).__ECO_GIA__
   if (!raw || typeof raw !== 'object') return empty
@@ -634,8 +640,35 @@ export const liveNewProducts = (): readonly LiveNewProduct[] => LIVE.sanPhamMoi
 /** Sản phẩm lẻ mới theo tên trên link (trang /san-pham/<tên>/) */
 export const liveNewProductBySlug = (slug: string): LiveNewProduct | undefined => LIVE.sanPhamMoi.find((p) => p.duongDan === slug)
 
-/** Danh mục sản phẩm Ecopillo sửa trong Woo (đợt E): chữ trang có sẵn, trang mới, trang đã ẩn / xoá */
+/** Danh mục sản phẩm Ecopillo sửa trong Woo (đợt E): chữ trang có sẵn, trang mới, trang đã ẩn / xoá, bài SEO cuối trang */
 export const liveCategories = (): LiveCategories => LIVE.danhMuc
+
+/**
+ * Bài SEO cuối trang danh mục mà máy chủ đã ghi sẵn vào HTML (trang-wp.php `eco_tw_put_category_seo`):
+ * đọc một lần trước khi React gắn vào #root, để trang hiện tức thì không cần gọi mạng thêm trên lần mở đầu.
+ */
+const INLINE_CATEGORY_SEO: ReadonlyMap<string, string> = (() => {
+  if (typeof document === 'undefined') return new Map()
+  const map = new Map<string, string>()
+  document.querySelectorAll<HTMLElement>('[data-eco-dm-seo]').forEach((el) => {
+    const path = el.dataset.ecoDmSeo
+    const inner = el.querySelector('.bai-wp')?.innerHTML
+    if (path && isPagePath(path) && inner && inner.trim()) map.set(path, inner)
+  })
+  return map
+})()
+
+/** Tên file JSON bài SEO cuối trang danh mục (nếu Ecopillo đã viết cho danh mục này) */
+export const liveCategorySeoKey = (path: string): string | undefined => LIVE.danhMuc.baiSeo[path]
+
+/** HTML bài SEO máy chủ đã nhúng sẵn trong trang đầu tiên (nếu trùng đường link đang mở) */
+export const liveCategorySeoInline = (path: string): string | undefined => INLINE_CATEGORY_SEO.get(path)
+
+/** Đường dẫn file JSON bài SEO danh mục plugin ghi */
+export const liveCategorySeoUrl = (key: string): string => `/wp-content/uploads/ecopillo-du-lieu/danh-muc/${key}.json`
+
+/** Có danh mục nào có bài SEO cuối trang không: trang dựng sẵn khác bản HTML tĩnh, cần vẽ lại thay vì gắn vào */
+const hasLiveCategorySeo = (): boolean => Object.keys(LIVE.danhMuc.baiSeo).length > 0 || INLINE_CATEGORY_SEO.size > 0
 
 /** Tiêu đề, mô tả trên Google Ecopillo điền ở danh mục Woo, theo link trang */
 export const liveCategorySeo = (): Readonly<Record<string, LiveSeo>> => LIVE.seo
@@ -655,7 +688,7 @@ let differs = false
 export const markLiveDiffers = (): void => {
   differs = true
 }
-export const liveDiffers = (): boolean => differs || anyLiveHidden()
+export const liveDiffers = (): boolean => differs || anyLiveHidden() || hasLiveCategorySeo()
 
 /** Bảng giá mới: ghép ô giá live lên bảng cũ; không ô nào đổi thì trả lại đúng bảng cũ */
 export function mergePrices<T extends Readonly<Record<string, number>>>(base: T, live: Readonly<Record<string, number>> | undefined): T {
